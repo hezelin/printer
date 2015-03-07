@@ -3,6 +3,7 @@
 namespace app\controllers;
 use Yii;
 use app\models\RegisterForm;
+use app\models\LoginForm;
 use app\models\ToolBase;
 
 class AuthController extends \yii\web\Controller
@@ -20,7 +21,18 @@ class AuthController extends \yii\web\Controller
 
     public function actionLogin()
     {
-        return $this->render('login');
+        if (!\Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->goBack();
+        } else {
+            return $this->render('login', [
+                'model' => $model,
+            ]);
+        }
     }
 
     public function actionLogout()

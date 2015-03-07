@@ -7,12 +7,7 @@ class TestController extends \yii\web\Controller
 {
     public function actionCase()
     {
-        $str = "'./configure' '--prefix=/alidata/server/php' '--enable-opcache' '--with-config-file-path=/alidata/server/php/etc' '--with-mysql=mysqlnd' '--with-mysqli=mysqlnd' '--with-pdo-mysql=mysqlnd' '--enable-fpm' '--enable-fastcgi' '--enable-static' '--enable-inline-optimization' '--enable-sockets' '--enable-wddx' '--enable-zip' '--enable-calendar' '--enable-bcmath' '--enable-soap' '--with-zlib' '--with-iconv' '--with-gd' '--with-xmlrpc' '--enable-mbstring' '--without-sqlite' '--with-curl' '--enable-ftp' '--with-mcrypt' '--with-freetype-dir=/usr/local/freetype.2.1.10' '--with-jpeg-dir=/usr/local/jpeg.6' '--with-png-dir=/usr/local/libpng.1.2.50' '--disable-ipv6' '--disable-debug' '--with-openssl' '--disable-maintainer-zts' '--disable-safe-mode' '--disable-fileinfo'";
-        $str = str_replace('\'','',$str);
-
-        echo '<pre>';
-        echo $str;
-//        return $this->render('case');
+       echo md5('8716162FPIMUDQ4FPIMUDQ4');
     }
 
     public function actionFive()

@@ -1,38 +1,46 @@
 <?php
 
+/*
+ * 修改为 读取数据库登录
+ */
 namespace app\models;
 
-class User extends \yii\base\Object implements \yii\web\IdentityInterface
+class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
+    public static function tableName()
+    {
+        return 'tbl_user_base';
+    }
+
+    public function rules()
+    {
+        return [
+            [['email', 'password'], 'required'],
+            [['email'], 'email'],
+            [['password'], 'string', 'max' => 32],
+            [['auth_key'], 'string', 'max' => 100],
+            [['access_token'], 'string', 'max' => 100],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'uid' => 'ID',
+            'email' => '登录名',
+            'password' => '密码',
+            'auth_key' => 'AuthKey',
+            'access_token' => 'AccessToken',
+        ];
+    }
 
     /**
      * @inheritdoc
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return static::findOne($id);
     }
 
     /**
@@ -40,46 +48,51 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['access_token' => $token]);
     }
 
     /**
      * Finds user by username
-     *
-     * @param  string      $username
-     * @return static|null
+     * 登录名为 邮箱
      */
-    public static function findByUsername($username)
+    public static function findByUsername($email)
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
+
+        $user = User::find()
+            ->where(['email' => $email])
+            ->asArray()
+            ->one();
+
+        if($user){
+            return new static($user);
         }
 
         return null;
+
     }
 
     /**
-     * @inheritdoc
+     * 自定义 id
      */
     public function getId()
     {
-        return $this->id;
+        return $this->uid;
     }
 
     /**
-     * @inheritdoc
+     * 自定义 auth_key
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
+    }
+
+    /*
+     * 自定义 userName 为 数据表 name 字段
+     */
+    public function getUserName()
+    {
+        return $this->name;
     }
 
     /**
@@ -87,17 +100,15 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return $this->auth_key === $authKey;
     }
 
     /**
-     * Validates password
-     *
-     * @param  string  $password password to validate
-     * @return boolean if password provided is valid for current user
+     * 验证密码
+     * 密码规则为 md5($password.$this->salt.$this->salt)
      */
     public function validatePassword($password)
     {
-        return $this->password === $password;
+        return $this->password === md5($password . $this->salt . $this->salt);
     }
 }
