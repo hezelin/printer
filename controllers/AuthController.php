@@ -5,9 +5,34 @@ use Yii;
 use app\models\RegisterForm;
 use app\models\LoginForm;
 use app\models\ToolBase;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 
 class AuthController extends \yii\web\Controller
 {
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['logout'],
+                'rules' => [
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ];
+    }
 
     public function actionCheck()
     {
@@ -37,7 +62,9 @@ class AuthController extends \yii\web\Controller
 
     public function actionLogout()
     {
-        return $this->render('logout');
+        Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 
     public function actionRegister()
