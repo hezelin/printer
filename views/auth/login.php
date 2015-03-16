@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -33,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
             <?= Html::submitButton('登录', ['class' => 'col-md-1 btn btn-primary', 'name' => 'login-button']) ?>
+            <?= Html::a('注册', Url::toRoute('auth/register'),['class' => 'col-md-offset-1 col-md-1 btn btn-default'] ) ?>
         </div>
     </div>
 

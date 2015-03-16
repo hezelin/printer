@@ -7,7 +7,7 @@ class TestController extends \yii\web\Controller
 {
     public function actionCase()
     {
-       echo md5('8716162FPIMUDQ4FPIMUDQ4');
+        return $this->render('case');
     }
 
     public function actionFive()

@@ -7,6 +7,7 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'language' => 'zh-CN',
+    'name' => '蓝标打印机',
     'components' => [
         'urlManager' =>[
             'enablePrettyUrl' => true,

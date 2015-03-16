@@ -5,8 +5,10 @@ use Yii;
 use app\models\RegisterForm;
 use app\models\LoginForm;
 use app\models\ToolBase;
+use app\models\DataCity;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+
 
 class AuthController extends \yii\web\Controller
 {
@@ -78,16 +80,22 @@ class AuthController extends \yii\web\Controller
             $model->create_time = time();
             $model->password = md5($model->pswd.$model->salt.$model->salt);
 
-            if(!$model->save()){
+            // 注册成功
+            if($model->save()){
+
+                $this->goHome();
+            }else{
                 print_r($model->errors);
             }
-
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
 //            return $this->refresh();
         }
 
-        return $this->render('register',array('model'=>$model));
+        return $this->render('register',array(
+            'model'=>$model,
+            'province'=>DataCity::$province,
+            'city' => DataCity::$city,
+            'region' => DataCity::$region,
+        ));
     }
 
 }
