@@ -3,8 +3,6 @@
 namespace app\controllers;
 use app\models\DataCity;
 use Yii;
-use yii\web\Request;
-
 
 class AddressController extends \yii\web\Controller
 {
