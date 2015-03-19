@@ -3,6 +3,8 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Modal;
 use yii\captcha\Captcha;
+use yii\helpers\Url;
+
 
 
 /* @var $this yii\web\View */
@@ -41,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
             <?= Html::submitButton('注册', ['class' => 'col-md-1 btn btn-primary', 'name' => 'login-button']) ?>
+            <?= Html::a('登录', Url::toRoute('auth/login'),['class' => 'col-md-offset-1 col-md-2 btn btn-default'] ) ?>
         </div>
     </div>
 

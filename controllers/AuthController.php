@@ -82,7 +82,7 @@ class AuthController extends \yii\web\Controller
 
             // 注册成功
             if($model->save()){
-
+                Yii::$app->user->identity = $model;         // 赋值登录
                 $this->goHome();
             }else{
                 print_r($model->errors);
