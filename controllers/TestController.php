@@ -1,13 +1,34 @@
 <?php
 
 namespace app\controllers;
-
+use Yii;
 
 class TestController extends \yii\web\Controller
 {
     public function actionCase()
     {
-        return $this->render('case');
+        $file = 'C:\Users\harry\Desktop\html.txt';
+//        $remote = 'http://misuosi.com/';
+        $remote = $file;
+        $data = file_get_contents($remote);
+//        echo $data;
+//        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        $perl =[
+            'css' => '/<link .*?href="(.*?)".*?>/is',
+            'img' => '/<img .*?href="(.*?)".*?>/is',
+            'js' => '/<script .*?src="(.*?)".*?script>/is',
+
+        ];
+
+        $assets = [];
+//        preg_match_all($perl['css'],$data, $assets['css']);
+//        preg_match_all($perl['js'],$data, $assets['js']);
+        preg_match_all($perl['img'],$data, $assets['img']);
+//        echo file_put_contents($file,$data);
+//        return $this->render('case');
+        echo '<pre>';
+        print_r($assets);
+
     }
 
     public function actionFive()

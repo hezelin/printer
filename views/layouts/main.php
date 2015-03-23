@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
@@ -27,20 +28,31 @@ AppAsset::register($this);
         <?php
             NavBar::begin([
                 'brandLabel' => Yii::$app->name,
-//                'brandLabel' => '蓝标打印机',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
             echo Nav::widget([
+                'options' => ['class' => 'navbar-nav'],
+                'items' => [
+                    [
+                        'label' => '微信管理',
+                        'items' => [
+                           ['label' => '我的公众号', 'url' => Url::to(['weixin/index'])],
+                           ['label' => '添加公众号', 'url' => Url::to(['weixin/add'])],
+                        ],
+                    ],
+                    ['label' => '我的主页', 'url' => ['/site/about']],
+                    ['label' => '机器管理', 'url' => ['/site/contact']],
+                ],
+            ]);
+
+            echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
-                    ['label' => 'Home', 'url' => ['/site/index']],
-                    ['label' => 'About', 'url' => ['/site/about']],
-                    ['label' => 'Contact', 'url' => ['/site/contact']],
                     Yii::$app->user->isGuest ?
-                        ['label' => '登录', 'url' => ['/auth/login']] :
+                        ['label' => '登录', 'url' => ['/auth/login']]:
                         ['label' => '退出 (' . Yii::$app->user->identity->username . ')',
                             'url' => ['/auth/logout'],
                             'linkOptions' => ['data-method' => 'post']
