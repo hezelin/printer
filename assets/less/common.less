@@ -1,0 +1,102 @@
+@charset "utf-8";
+/*
+
+	@arguments :  就是捕捉用户所有传入的参数，然后拼接
+*/
+.alpha(@alpha:50){ opacity:(@alpha/100); filter: progid:DXImageTransform.Microsoft.Alpha(opacity=@alpha); }
+.size(@size:14px){font-size:@size;}
+.h-l(@height:30px){height:@height;line-height:@height;}
+.l(@hei:30px){line-height:@hei;}
+.h(@h:30px){height:@h;}
+.w(@w:30px){width:@w;}
+.o(){overflow:hidden;}
+.t-c(@position:center){ text-align:@position;}
+.left(){float:left;}
+.color(@c:@text-color){color:@c;}
+
+.bg-c(@bgc:#fff){background-color:@bgc;}
+.bg-u(@url){ background-image:url(@url);}
+.bg-r(@repeat){background-repeat:@repeat;}
+.bg-p(@x:0,@y:0){ background-position:@x @y;}
+
+.p(@p:0){ padding:@p;}
+.p-l(@p-l:0){ padding-left:@p-l;}
+.p-r(@p-r:0){ padding-right:@p-r;}
+.p-t(@p-t:0){ padding-top:@p-t;}
+.p-b(@p-b:0){ padding-bottom:@p-b;}
+
+.m(@m:0){ margin:@m;}
+.m-l(@m-l:0){ margin-left:@m-l;}
+.m-r(@m-r:0){ margin-right:@m-r;}
+.m-t(@m-t:0){ margin-top:@m-t;}
+.m-b(@m-b:0){ margin-bottom:@m-b;}
+
+.b(@b:none){ border:@b;}
+.b-l(@b-l:none){ border-left:@b-l;}
+.b-r(@b-r:none){ border-right:@b-r;}
+.b-t(@b-t:none){ border-top:@b-t;}
+.b-b(@b-b:none){ border-bottom:@b-b;}
+
+/********  圆角  ***************/
+.radius (@radius: 5px) {
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    -ms-border-radius: @radius;
+    -o-border-radius: @radius;
+    border-radius: @radius;
+}
+/********* 阴影 *****
+.box-shadow(@style,@c) when ( iscolor(@c) ){
+	box-shadow:@style @c;
+	-webkit-box-shadow:@style @c;
+	-moz-box-shadow:@style @c;
+}
+**********/
+.box-shadow(@style:@shadow-value){
+	box-shadow:@style;
+	-webkit-box-shadow:@style;
+	-moz-box-shadow:@style;
+}
+.box-shadow-inset(@style:@shadow-value){
+	box-shadow:@style inset;
+	-webkit-box-shadow:@style inset;
+	-moz-box-shadow:@style inset;
+}
+/********   省略号  ********/
+.nowrap(@w:300px){
+	width:@w;
+	white-space:nowrap; 
+	text-overflow:ellipsis;
+	-o-text-overflow:ellipsis;
+	overflow: hidden;
+}
+/**********  渐变 ***********/
+.linear(@topcolor,@bottomcolor){
+	background-image: -moz-linear-gradient(top, @topcolor,@bottomcolor);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, @topcolor), color-stop(1,@bottomcolor));
+	background-image: -o-linear-gradient(top,  @topcolor,@bottomcolor); 
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@{topcolor}', endColorstr='@{bottomcolor}', GradientType='0');
+}
+
+
+/***********  字体  ************/
+@zi-ti:Microsoft YaHei;
+/***********  图标 url *********/
+
+
+
+/*********** 自定义常量  ***************/
+@base-color:#dddddd;
+
+/*
+
+lighten(@color, 10%);     // return a color which is 10% *lighter* than @color,	较明亮些
+darken(@color, 10%);      // return a color which is 10% *darker* than @color	较暗些
+saturate(@color, 10%);    // return a color 10% *more* saturated than @color	饱和度高些
+desaturate(@color, 10%);  // return a color 10% *less* saturated than @color	饱和度低些
+
+fadein(@color, 10%);      // return a color 10% *less* transparent than @color	透明些
+fadeout(@color, 10%);     // return a color 10% *more* transparent than @color	不透明些
+fade(@color, 50%);        // return @color with 50% transparency				50% 透明度
+
+*/
