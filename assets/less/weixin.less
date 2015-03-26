@@ -1,9 +1,46 @@
 @import 'common.less';
 @import "site.less";
 
+
+/**********   微信布局  *****************/
 #tree-menu{
   background-color: #DDDDDD;
   .bg-c(@base-color);
   .p-t(20px);
   .h(600px);
 }
+
+/***********   微信布局结束 ******************/
+
+
+/***********   微信管理 ******************/
+
+.circle{
+  .w(16px); .h(16px); .radius(16px);
+  .bg-c(@base-color);
+  .left;
+  .m-r(5px);
+  .m-t(2px);
+}
+
+.due-status{
+  color: red;
+  .circle{.bg-c(red);}
+}
+
+.init-status{
+  color: #cccccc;
+  .circle{.bg-c(#dddddd);}
+}
+
+.run-status{
+  color: #00ca00;
+  .circle{.bg-c(#00ca00);}
+}
+
+.stop-status{
+  color: orange;
+  .circle{.bg-c(orange);}
+}
+/***********   微信管理结束 ***************/
+

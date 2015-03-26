@@ -70,7 +70,7 @@ WeixinAsset::register($this);
 <P style="height: 40px">&nbsp;</P>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-2" id="tree-menu">
+                <div class="col-sm-2 col-md-2" id="tree-menu">
                     <div id="w0" class="panel-group">
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -110,7 +110,7 @@ WeixinAsset::register($this);
                         </div>
                     </div>
                 </div>
-                <div class="col-md-10">
+                <div class="col-sm-10 col-md-10">
                     <p style="height: 20px">&nbsp;</p>
                     <?= $content ?>
                 </div>

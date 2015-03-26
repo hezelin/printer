@@ -14,7 +14,9 @@ $config = [
             'baseUrl' => '/',
             'scriptUrl' => '',
             'rules' => [
-                #此处填写你网站url 规则
+                '<controller:\w+>/<id:\d+>'=>'<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
+                '<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
             ],
         ],
         'request' => [

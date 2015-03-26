@@ -18,6 +18,7 @@ use Yii;
  * @property integer $pay_time
  * @property double $pay_total
  * @property integer $status
+ * @property integer $vip_level
  * @property string $create_time
  * @property string $enable
  */
@@ -38,7 +39,7 @@ class TblWeixin extends \yii\db\ActiveRecord
     {
         return [
             [['uid', 'name', 'wx_num', 'app_id', 'app_secret', 'due_time', 'create_time'], 'required'],
-            [['uid', 'due_time', 'try_time', 'pay_time', 'status', 'create_time'], 'integer'],
+            [['uid', 'due_time', 'try_time', 'pay_time', 'status', 'vip_level', 'create_time'], 'integer'],
             [['pay_total'], 'number'],
             [['enable'], 'string'],
             [['name', 'wx_num'], 'string', 'max' => 100],
@@ -63,7 +64,8 @@ class TblWeixin extends \yii\db\ActiveRecord
             'try_time' => '试用次数',
             'pay_time' => '付款次数',
             'pay_total' => '总付款金额',
-            'status' => '状态1试用，2付费',
+            'status' => '状态',
+            'vip_level' => '会员套餐',
             'create_time' => '创建时间',
             'enable' => '是否有效',
         ];

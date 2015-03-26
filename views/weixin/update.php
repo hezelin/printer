@@ -2,7 +2,7 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
-$this->title = '添加公众号';
+$this->title = '修改公众号';
 ?>
 
 <div class="alert alert-info" role="alert">
@@ -30,7 +30,7 @@ $this->title = '添加公众号';
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
             <div class="m-l-12">
-            <?= Html::submitButton('添加', ['class' => 'col-md-offset-1 col-md-2 btn btn-primary', 'name' => 'login-button']) ?>
+            <?= Html::submitButton('保存修改', ['class' => 'col-md-offset-1 col-md-2 btn btn-primary', 'name' => 'login-button']) ?>
             </div>
         </div>
     </div>

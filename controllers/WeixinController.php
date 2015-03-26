@@ -3,20 +3,21 @@
 namespace app\controllers;
 use Yii;
 use app\models\TblWeixin;
+use yii\data\ActiveDataProvider;
 
 class WeixinController extends \yii\web\Controller
 {
-    public $layout = 'leftmenu';
+    public $layout = 'weixin';
     public function actionAdd()
     {
-        if (Yii::$app->user->isGuest)  $this->redirect(['auth/login','url'=>'/weixin/add']);
-
+//        if (Yii::$app->user->isGuest)  return $this->redirect(['auth/login','url'=>'/weixin/add']);
         $model = new TblWeixin();
         if($model->load(Yii::$app->request->post()))
         {
             $model->create_time = time();
-            $model->due_time = $model->create_time;
+            $model->due_time = $model->create_time + 3600*24*7;             // 免费试用 7 天
             $model->uid = Yii::$app->user->id;
+
             if($model->save()){
                 $this->redirect('index');
             }else{
@@ -26,14 +27,73 @@ class WeixinController extends \yii\web\Controller
         return $this->render('add',['model'=>$model]);
     }
 
-    public function actionIndex()
+    public function actionUpdate($id)
     {
-        return $this->render('index');
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
     }
 
-    public function actionView()
+    public function actionIndex()
     {
-        return $this->render('view');
+        $dataProvider = new ActiveDataProvider([
+            'query' => TblWeixin::find(),
+            'pagination' => [
+                'pageSize' => 15,
+            ],
+        ]);
+
+        return $this->render('index',['dataProvider'=>$dataProvider]);
     }
+
+    public function actionView($id)
+    {
+        $host = Yii::$app->request->hostInfo;
+        $model = $this->findModel($id);
+        return $this->render('view', [
+            'model' => $model,
+            'wxToken' => md5($model->id . Yii::$app->params['wxTokenSalt']),
+            'host' => $host,
+        ]);
+    }
+
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /*
+     * 启动公众号功能
+     */
+    public function actionStart($id)
+    {
+
+    }
+
+    /*
+     * 停止公众号
+     */
+    public function actionStop($id)
+    {
+
+    }
+
+    protected function findModel($id)
+    {
+        if (($model = TblWeixin::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
 
 }
