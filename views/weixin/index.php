@@ -55,7 +55,7 @@ echo GridView::widget([
                 $icon = '<i class="glyphicon glyphicon-time"></i> ';
                 if($dueTime <= $time) return Html::tag('span',$icon.date('Y-m-d H:i',$dueTime),['class'=>'red']);
                 else if( ($dueTime - 259200) < $time  )
-                    return Html::tag('span',$icon.date('Y-m-d H:i',$dueTime),['class'=>'yellow']);
+                    return Html::tag('span',$icon.date('Y-m-d H:i',$dueTime),['class'=>'orange']);
                 return Html::tag('span',$icon.date('Y-m-d H:i',$dueTime));
             }
         ],

@@ -77,24 +77,55 @@ WeixinAsset::register($this);
                         [
                             'items' => [
                                 [
-                                    'label' => '微信管理',
+                                    'label' => '微官网',
                                     'items' => [
-                                        ['label' => '我的公众号', 'url' => '/weixin/index'],
-                                        ['label' => '添加公众号', 'url' => '/weixin/add'],
+                                        ['label' => '店铺装修', 'url' => '/home/fitment'],
+                                        ['label' => '店铺设置', 'url' => '/home/setting'],
+                                        ['label' => '样式选择', 'url' => '/home/style'],
                                     ],
                                 ],
                                 [
-                                    'label' => '我的账号',
+                                    'label' => '机器管理',
                                     'items' => [
-                                        ['label' => '修改密码', 'url' => '/user/reset'],
-                                        ['label' => '查看日志', 'url' => '/user/log'],
+                                        ['label' => '机器列表', 'url' => '/machine/list'],
+                                        ['label' => '机器状态', 'url' => '/machine/status'],
                                     ],
                                 ],
                                 [
-                                    'label' => '权限管理',
+                                    'label' => '二维码管理',
                                     'items' => [
-                                        ['label' => '角色管理','url' => '/role/index'],
-                                        ['label' => '账户管理','url' => '/account/index'],
+                                        ['label' => '积分二维码','url' => '/code/score'],
+                                        ['label' => '生成机器码','url' => '/code/machine'],
+                                        ['label' => '维修员绑定码','url' => '/code/binding'],
+                                    ],
+                                ],
+                                [
+                                    'label' => '租借管理',
+                                    'items' => [
+                                        ['label' => '租借统计','url' => '/rent/index'],
+                                        ['label' => '租借列表','url' => '/rent/list'],
+                                    ],
+                                ],
+                                [
+                                    'label' => '维修管理',
+                                    'items' => [
+                                        ['label' => '待处理维修','url' => '/rent/index'],
+                                        ['label' => '维修列表','url' => '/rent/list'],
+                                    ],
+                                ],
+                                [
+                                    'label' => '维修员管理',
+                                    'items' => [
+                                        ['label' => '工作报表','url' => '/staff/index'],
+                                        ['label' => '维修员列表','url' => '/staff/list'],
+                                        ['label' => '维修绑定','url' => '/code/binding'],
+                                    ],
+                                ],
+                                [
+                                    'label' => '耗材管理',
+                                    'items' => [
+                                        ['label' => '耗材列表','url' => '/item/list'],
+                                        ['label' => '录入耗材','url' => '/item/add'],
                                     ],
                                 ],
                             ],
