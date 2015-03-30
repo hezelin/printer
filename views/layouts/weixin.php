@@ -4,6 +4,8 @@ use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use app\assets\WeixinAsset;
+use app\components\TreeMenuWidget;
+
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -70,7 +72,7 @@ WeixinAsset::register($this);
 <P style="height: 40px">&nbsp;</P>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-2 col-md-2" id="tree-menu">
+                <!--<div class="col-sm-2 col-md-2" id="tree-menu">
                     <div id="w0" class="panel-group">
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -109,8 +111,39 @@ WeixinAsset::register($this);
                             </div>
                         </div>
                     </div>
-                </div>
-
+                </div>-->
+                <?php
+                    echo TreeMenuWidget::widget(
+                        [
+                            'items' => [
+                                [
+                                    'label' => '微信管理',
+                                    'items' => [
+                                        ['label' => '我的公众号', 'url' => '/weixin/index'],
+                                        ['label' => '添加公众号', 'url' => '/weixin/add'],
+                                    ],
+                                ],
+                                [
+                                    'label' => '我的账号',
+                                    'items' => [
+                                        ['label' => '修改密码', 'url' => '#'],
+                                        ['label' => '查看日志', 'url' => '#'],
+                                    ],
+                                ],
+                                [
+                                    'label' => '权限管理',
+                                    'items' => [
+                                        ['label' => '角色管理','url' => 'auth/login'],
+                                        ['label' => '账户管理','url' => 'auth/login'],
+                                    ],
+                                ],
+                                [
+                                    'label' => '测试',
+                                    'url' => '#',
+                                ]
+                            ],
+                        ]);
+                ?>
                 <div class="col-sm-2 col-md-2">
                     &nbsp;
                 </div>
@@ -122,11 +155,6 @@ WeixinAsset::register($this);
         </div>
     </div>
 <?php $this->endBody() ?>
-<script>
-    $(function(){
-        $('#tree-menu').height( $(document).height() - 60 );
-    })
-</script>
 </body>
 </html>
 <?php $this->endPage() ?>

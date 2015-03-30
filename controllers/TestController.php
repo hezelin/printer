@@ -1,73 +1,116 @@
 <?php
 
 namespace app\controllers;
+
 use Yii;
+use app\models\TblWeixin;
+use app\models\ToolBase;
+use yii\data\ActiveDataProvider;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 
-class TestController extends \yii\web\Controller
+/**
+ * TestController implements the CRUD actions for TblWeixin model.
+ */
+class TestController extends Controller
 {
-    public function actionCase()
+    public function behaviors()
     {
-        $file = 'C:\Users\harry\Desktop\html.txt';
-//        $remote = 'http://misuosi.com/';
-        $remote = $file;
-        $data = file_get_contents($remote);
-//        echo $data;
-//        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        $perl =[
-            'css' => '/<link .*?href="(.*?)".*?>/is',
-            'img' => '/<img .*?href="(.*?)".*?>/is',
-            'js' => '/<script .*?src="(.*?)".*?script>/is',
-
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                ],
+            ],
         ];
-
-        $assets = [];
-//        preg_match_all($perl['css'],$data, $assets['css']);
-//        preg_match_all($perl['js'],$data, $assets['js']);
-        preg_match_all($perl['img'],$data, $assets['img']);
-//        echo file_put_contents($file,$data);
-//        return $this->render('case');
-        echo '<pre>';
-        print_r($assets);
-
     }
 
-    public function actionFive()
-    {
-        return $this->render('five');
-    }
-
-    public function actionFour()
-    {
-        return $this->render('four');
-    }
-
+    /**
+     * Lists all TblWeixin models.
+     * @return mixed
+     */
     public function actionIndex()
     {
-        $rand = uniqid( $this->getSalt(7) );
-        return $this->render('index',array('rand'=>$rand));
+        return $this->render('index');
     }
 
-    public function actionOne()
+    /**
+     * Displays a single TblWeixin model.
+     * @param string $id
+     * @return mixed
+     */
+    public function actionView($id)
     {
-        return $this->render('one');
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
     }
 
-    public function actionThree()
+    /**
+     * Creates a new TblWeixin model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
     {
-        return $this->render('three');
+        $model = new TblWeixin();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
     }
 
-    public function actionTwo()
+    /**
+     * Updates an existing TblWeixin model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param string $id
+     * @return mixed
+     */
+    public function actionUpdate($id)
     {
-        return $this->render('two');
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
     }
 
-    public function getSalt($len=8)
+    /**
+     * Deletes an existing TblWeixin model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param string $id
+     * @return mixed
+     */
+    public function actionDelete($id)
     {
-        $str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        for($i=0,$salt='';$i<$len;$i++)
-            $salt.=$str[mt_rand(0,61)];
-        return $salt;
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
     }
 
+    /**
+     * Finds the TblWeixin model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param string $id
+     * @return TblWeixin the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = TblWeixin::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
 }

@@ -1,7 +1,6 @@
 @import "common.less";
 
 #tree-menu{
-  background-color: #DDDDDD;
   .bg-c(@base-color);
   .p-t(20px);
   position: fixed;
@@ -32,6 +31,13 @@
   .panel-title > a{
     display: block;
     color: #111111;
+  }
+
+  .panel-title > .head-active{
+    color: #ffffff;
+    .bg-c( @color);
+    .radius(4px);
+    .p(6px 0);
   }
 
   .panel-group{
