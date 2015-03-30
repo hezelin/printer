@@ -72,46 +72,6 @@ WeixinAsset::register($this);
 <P style="height: 40px">&nbsp;</P>
         <div class="container-fluid">
             <div class="row">
-                <!--<div class="col-sm-2 col-md-2" id="tree-menu">
-                    <div id="w0" class="panel-group">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a class="collapse-toggle" href="#w0-collapse1" data-toggle="collapse" data-parent="#w0">
-                                        <i class="glyphicon glyphicon-menu-right"></i>&nbsp;微信管理
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="w0-collapse1" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <ul class="nav nav-pills nav-stacked">
-                                        <li role="presentation"><a href="#">Home</a></li>
-                                        <li role="presentation"><a href="#">Profile</a></li>
-                                        <li role="presentation"><a href="#">Messages</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a class="collapse-toggle" href="#w0-collapse2" data-toggle="collapse" data-parent="#w0">
-                                        <i class="glyphicon glyphicon-menu-right"></i>&nbsp;机器管理
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="w0-collapse2" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <ul class="nav nav-pills nav-stacked">
-                                        <li role="presentation"><a href="#">Home</a></li>
-                                        <li role="presentation"><a href="#">Profile</a></li>
-                                        <li role="presentation"><a href="#">Messages</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
                 <?php
                     echo TreeMenuWidget::widget(
                         [
