@@ -1,6 +1,10 @@
 <?php
 
 namespace app\controllers;
+use Yii;
+use app\models\Carousel;
+use app\models\UploadForm;
+use yii\web\UploadedFile;
 
 class HomeController extends \yii\web\Controller
 {
@@ -11,7 +15,17 @@ class HomeController extends \yii\web\Controller
      */
     public function actionFitment()
     {
-        return $this->render('fitment');
+        $model = new UploadForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+
+            if ($model->file && $model->validate()) {
+                $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
+            }
+        }
+
+        return $this->render('fitment', ['model' => $model]);
     }
 
     /*
@@ -19,7 +33,8 @@ class HomeController extends \yii\web\Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $carousel=Carousel::find()->All();
+        return $this->renderPartial('index',['carousel'=>$carousel]);
     }
 
     /*

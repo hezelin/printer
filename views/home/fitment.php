@@ -1,9 +1,25 @@
 <?php
-/* @var $this yii\web\View */
+$this->title = '店铺装修';
+use yii\bootstrap\Alert;
 ?>
-<h1>home/fitment</h1>
+请在此处上传轮播图片
 
-<p>
-    You may change the content of this page by modifying
-    the file <code><?= __FILE__; ?></code>.
-</p>
+<?php
+use yii\widgets\ActiveForm;
+?>
+
+<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+
+<?= $form->field($model, 'file')->fileInput() ?>
+
+    <button>Submit</button>
+
+<?php ActiveForm::end() ?>
+<?php
+Alert::begin([
+    'options' => [
+         'class' => 'alert-info',
+    ],
+     'body' => 'Say hello...<br>sdfs',
+ ]);
+Alert::end();
