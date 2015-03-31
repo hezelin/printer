@@ -55,7 +55,7 @@ echo GridView::widget([
                 $icon = '<i class="glyphicon glyphicon-time"></i> ';
                 if($dueTime <= $time) return Html::tag('span',$icon.date('Y-m-d H:i',$dueTime),['class'=>'red']);
                 else if( ($dueTime - 259200) < $time  )
-                    return Html::tag('span',$icon.date('Y-m-d H:i',$dueTime),['class'=>'yellow']);
+                    return Html::tag('span',$icon.date('Y-m-d H:i',$dueTime),['class'=>'orange']);
                 return Html::tag('span',$icon.date('Y-m-d H:i',$dueTime));
             }
         ],
@@ -72,8 +72,11 @@ echo GridView::widget([
                 'upgrade' => function($url,$model,$key){
                     return Html::a('升级', $url);
                 },
-                'console' => function($url,$model, $key) {
+                'console' => function($url,$model, $key){
                     return Html::a('<span class="glyphicon glyphicon-home"></span>',Url::to(['console/view','id'=>$model->id]) ,['title'=>'控制台']);
+                },
+                'update' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);
                 },
                 'start' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-play"></span>',$url,[

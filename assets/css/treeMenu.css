@@ -1,0 +1,80 @@
+@charset "utf-8";
+/*
+
+	@arguments :  就是捕捉用户所有传入的参数，然后拼接
+*/
+/********  圆角  ***************/
+/********* 阴影 *****
+.box-shadow(@style,@c) when ( iscolor(@c) ){
+	box-shadow:@style @c;
+	-webkit-box-shadow:@style @c;
+	-moz-box-shadow:@style @c;
+}
+**********/
+/********   省略号  ********/
+/**********  渐变 ***********/
+/***********  字体  ************/
+/***********  图标 url *********/
+/*********** 颜色常量  ***************/
+/*
+
+lighten(@color, 10%);     // return a color which is 10% *lighter* than @color,	较明亮些
+darken(@color, 10%);      // return a color which is 10% *darker* than @color	较暗些
+saturate(@color, 10%);    // return a color 10% *more* saturated than @color	饱和度高些
+desaturate(@color, 10%);  // return a color 10% *less* saturated than @color	饱和度低些
+
+fadein(@color, 10%);      // return a color 10% *less* transparent than @color	透明些
+fadeout(@color, 10%);     // return a color 10% *more* transparent than @color	不透明些
+fade(@color, 50%);        // return @color with 50% transparency				50% 透明度
+
+*/
+#tree-menu {
+  background-color: #dddddd;
+  padding-top: 20px;
+  position: fixed;
+  z-index: 100;
+}
+#tree-menu .panel {
+  box-shadow: none;
+  background-color: #DDDDDD;
+}
+#tree-menu .panel-body {
+  padding: 0;
+}
+#tree-menu .nav > li > a {
+  padding: 5px 25px 5px;
+  color: #333333;
+}
+#tree-menu .nav-pills > li.active > a,
+#tree-menu .nav-pills > li.active > a:focus,
+#tree-menu .nav-pills > li.active > a:hover,
+#tree-menu .nav-pills > li > a:focus {
+  color: #ffffff;
+  background-color: #337ab7;
+}
+#tree-menu .panel-title > a {
+  display: block;
+  color: #111111;
+}
+#tree-menu .panel-title > .head-active {
+  color: #ffffff;
+  background-color: #337ab7;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  padding: 6px 0;
+}
+#tree-menu .panel-default {
+  border: none;
+}
+#tree-menu .panel-default .panel-heading {
+  background-color: #DDDDDD !important;
+  border-bottom: none !important;
+  padding-left: 0;
+}
+#tree-menu a:focus,
+#tree-menu a:hover {
+  text-decoration: none;
+}

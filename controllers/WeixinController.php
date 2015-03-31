@@ -3,11 +3,35 @@
 namespace app\controllers;
 use Yii;
 use app\models\TblWeixin;
+use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 
 class WeixinController extends \yii\web\Controller
 {
     public $layout = 'weixin';
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['login', 'logout', 'signup'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['login', 'signup'],
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['logout'],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionAdd()
     {
 //        if (Yii::$app->user->isGuest)  return $this->redirect(['auth/login','url'=>'/weixin/add']);
