@@ -92,3 +92,6 @@ a.desc:after {
 .m-l-12 {
   margin-left: 12px;
 }
+.modal-loading {
+  width: 100px;
+}

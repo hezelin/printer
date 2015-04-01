@@ -99,7 +99,8 @@ class WeixinController extends \yii\web\Controller
      */
     public function actionStart($id)
     {
-
+        sleep(1);
+        echo json_encode(['status'=>1]);
     }
 
     /*
@@ -107,7 +108,8 @@ class WeixinController extends \yii\web\Controller
      */
     public function actionStop($id)
     {
-
+        sleep(1);
+        echo json_encode(['status'=>1]);
     }
 
     protected function findModel($id)
