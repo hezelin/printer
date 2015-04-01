@@ -18,14 +18,46 @@ class HomeController extends \yii\web\Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->file = UploadedFile::getInstance($model, 'file');
-
-            if ($model->file && $model->validate()) {
-                $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
-            }
+//            $model->image = UploadedFile::getInstance($model, 'image[1]');
+//
+//            if ($model->image && $model->validate()) {
+//                $model->image->saveAs('uploads/' . $model->image->baseName . '.' . $model->image->extension);
+//            }
         }
+        echo "<span id='aa'>adfsdw</span>";
+        echo "<script>alert($('#aa').text())</script>";
 
         return $this->render('fitment', ['model' => $model]);
+    }
+
+    /*
+     * 接收上传的图片并返回信息
+     */
+    public function actionReceiveimage()
+    {
+
+        if (Yii::$app->request->isPost) {
+            $model = new UploadForm();
+            $model->image = UploadedFile::getInstance($model, 'image');
+
+            if ($model->image ) {
+                $filename = $model->image->baseName .'.'. $model->image->extension;
+                $model->image->saveAs('uploads/' . $filename);
+            }
+
+            //返回上传的图片信息并显示
+            return '
+                { "files": [
+                    {
+                        "name": "'.$filename.'",
+                        "size": '.$model->image->size.',
+                        "url": "/uploads/' .$filename.'",
+                        "thumbnailUrl": "/uploads/' .$filename.'",
+                        "deleteUrl": "carousel/delete",
+                        "deleteType": "DELETE"
+                    }
+                ]}';
+        }
     }
 
     /*

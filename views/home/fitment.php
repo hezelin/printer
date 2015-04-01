@@ -1,25 +1,33 @@
 <?php
 $this->title = '店铺装修';
-use yii\bootstrap\Alert;
+use dosamigos\fileupload\FileUploadUI;
+
 ?>
-请在此处上传轮播图片
+<h3>首页轮播图片设置</h3>
+<?php //$form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']])?>
 
-<?php
-use yii\widgets\ActiveForm;
-?>
 
-<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
-
-<?= $form->field($model, 'file')->fileInput() ?>
-
-    <button>Submit</button>
-
-<?php ActiveForm::end() ?>
-<?php
-Alert::begin([
-    'options' => [
-         'class' => 'alert-info',
+<?= FileUploadUI::widget([
+    'model' => $model,
+    'attribute' => 'image',
+    'url' => ['home/receiveimage', 'id' => $model->image],
+    'gallery' => false,
+    'fieldOptions' => [
+        'accept' => 'image/*'
     ],
-     'body' => 'Say hello...<br>sdfs',
- ]);
-Alert::end();
+    'clientOptions' => [
+        'maxFileSize' => 2000000
+    ],
+    // 打印日志
+    'clientEvents' => [
+        'fileuploaddone' => 'function(e, data) {
+                                    console.log(e);
+                                    console.log(data);
+                                }',
+        'fileuploadfail' => 'function(e, data) {
+                                    console.log(e);
+                                    console.log(data);
+                                }',
+    ],
+]);
+?>
