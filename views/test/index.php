@@ -1,11 +1,12 @@
 <?php
-/* @var $this yii\web\View */
-$this->title = '测试';
-?>
-<h1>test/index</h1>
+use app\components\TreeMenuWidget;
 
-<?=$rand?>
-<p>
-    You may change the content of this page by modifying
-    the file <code><?= __FILE__; ?></code>.
-</p>
+
+/* @var $this yii\web\View */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = 'Tbl Weixins';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+
+    <div><a href="/test/ajax" data-pjax>ajax 链接测试</a></div>

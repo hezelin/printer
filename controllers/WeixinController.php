@@ -67,7 +67,7 @@ class WeixinController extends \yii\web\Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => TblWeixin::find(),
+            'query' => TblWeixin::find()->where(['enable'=>'Y']),
             'pagination' => [
                 'pageSize' => 15,
             ],
@@ -89,8 +89,9 @@ class WeixinController extends \yii\web\Controller
 
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $model->enable = 'N';
+        $model->save();
         return $this->redirect(['index']);
     }
 
@@ -99,8 +100,10 @@ class WeixinController extends \yii\web\Controller
      */
     public function actionStart($id)
     {
-        sleep(1);
-        echo json_encode(['status'=>1]);
+        $model = $this->findModel($id);
+        $model->status = 2;
+        if($model->save())
+            return json_encode(['status'=>1]);
     }
 
     /*
@@ -108,8 +111,10 @@ class WeixinController extends \yii\web\Controller
      */
     public function actionStop($id)
     {
-        sleep(1);
-        echo json_encode(['status'=>1]);
+        $model = $this->findModel($id);
+        $model->status = 3;
+        if($model->save())
+            return json_encode(['status'=>1]);
     }
 
     protected function findModel($id)
