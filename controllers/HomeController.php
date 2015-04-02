@@ -16,18 +16,9 @@ class HomeController extends \yii\web\Controller
     public function actionFitment()
     {
         $model = new UploadForm();
-
-        if (Yii::$app->request->isPost) {
-//            $model->image = UploadedFile::getInstance($model, 'image[1]');
-//
-//            if ($model->image && $model->validate()) {
-//                $model->image->saveAs('uploads/' . $model->image->baseName . '.' . $model->image->extension);
-//            }
-        }
-        echo "<span id='aa'>adfsdw</span>";
-        echo "<script>alert($('#aa').text())</script>";
-
-        return $this->render('fitment', ['model' => $model]);
+        $carousel0=Carousel::find()->where(['show' => 0])->all();  //未展示
+        $carousel=Carousel::find()->where(['show' => 1])->all();   //已展示
+        return $this->render('fitment', ['model' => $model,'carousel'=>$carousel,'carousel0'=>$carousel0]);
     }
 
     /*
@@ -40,24 +31,83 @@ class HomeController extends \yii\web\Controller
             $model = new UploadForm();
             $model->image = UploadedFile::getInstance($model, 'image');
 
-            if ($model->image ) {
-                $filename = $model->image->baseName .'.'. $model->image->extension;
-                $model->image->saveAs('uploads/' . $filename);
-            }
+            if ( $model->image ) {
 
-            //返回上传的图片信息并显示
-            return '
-                { "files": [
+                //非图片格式
+                if(substr($model->image->type,0,5)!='image') {
+                    return '{"files": [
+                        {
+                            "name": "'.$model->image->baseName.$model->image->extension.'",
+                            "size": ' . $model->image->size . ',
+                            "error": "请上传图片文件！"
+                        }
+                    ]}';
+                }
+                //空文件
+                if($model->image->size <= 0) {
+                    return '{"files": [
+                        {
+                            "name": "'.$model->image->baseName.$model->image->extension.'",
+                            "size": ' . $model->image->size . ',
+                            "error": "请勿上传空文件！"
+                        }
+                    ]}';
+                }
+
+                //上传
+                $filename = time().'_'.rand(100,999).'.'. $model->image->extension;  //原名$model->image->baseName
+                //if(!file_exists('uploads/')) mkdir('uploads/');
+                $yearmonthdir = date('Ym').'/';
+                if(!file_exists('uploads/'.$yearmonthdir)) mkdir('uploads/'.$yearmonthdir);
+                $filepath = 'uploads/'.$yearmonthdir.$filename;
+                $model->image->saveAs($filepath);
+
+                $newcarousel = new Carousel();
+                $newcarousel->imgurl = $filepath;
+                $newcarousel->link = '';
+                $newcarousel->title = '标题';
+                $newid=2;//$newcarousel->save();
+
+                //返回上传的图片信息并显示
+//                $returnarr = [
+//                    'files' => [
+//                        'name' => $filename,
+//                        'size' => $model->image->size,
+//                        'url' => '/'.$filepath,
+//                        'thumbnailUrl' => '/'.$filepath,
+//                        'deleteUrl' => 'home/delimg?imagename='.$filepath,
+//                        'deleteType' => 'DELETE'
+//                    ]
+//                ];
+//                return json_encode($returnarr);   //报空文件错
+
+              return '{ "files": [
                     {
+                        "id":"'.$newid.'",
                         "name": "'.$filename.'",
                         "size": '.$model->image->size.',
-                        "url": "/uploads/' .$filename.'",
-                        "thumbnailUrl": "/uploads/' .$filename.'",
-                        "deleteUrl": "carousel/delete",
+                        "url" : "/'.$filepath.'",
+                        "thumbnailUrl": "/'.$filepath.'",
+                        "deleteUrl": "home/delimg?imagename=' .$filepath.'",
                         "deleteType": "DELETE"
                     }
                 ]}';
+            }
         }
+    }
+
+    /*
+     * 删除上传的图片
+     */
+    public function actionDelimg($id)
+    {
+        echo 'del'.$id;
+//        return '{"files": [
+//
+//  {
+//      "' .$imagename.'": true
+//  }
+//]}';
     }
 
     /*
@@ -65,7 +115,7 @@ class HomeController extends \yii\web\Controller
      */
     public function actionIndex()
     {
-        $carousel=Carousel::find()->All();
+        $carousel=Carousel::find()->where(['show' => 1])->all();
         return $this->renderPartial('index',['carousel'=>$carousel]);
     }
 
