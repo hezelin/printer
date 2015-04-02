@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 use app\models\TblUserBase;
-use app\models\TblWeixin;
 use Yii;
 use app\models\ResetpswdForm;
 
@@ -25,8 +24,7 @@ class UserController extends \yii\web\Controller
                     $auth->password = md5($model->acPassword . $auth->salt . $auth->salt );
 
                  if( $auth->save() ){
-                     Yii::$app->session->setFlash('success','密码修改成功！');
-//                     $model->refresh();
+                     return $this->render('//tips/success',['tips'=>'密码修改成功！']);
                  }
                  else
                      Yii::$app->session->setFlash('error',implode("\n",$model->errors));
