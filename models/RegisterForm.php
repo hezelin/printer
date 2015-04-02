@@ -58,4 +58,8 @@ class RegisterForm extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getUser()
+    {
+        return User::findOne($this->uid);
+    }
 }
