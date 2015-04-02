@@ -1,5 +1,5 @@
 <?php
-/* @var $this yii\web\View */
+$this->title = '积分二维码';
 ?>
 <h1>code/score</h1>
 
