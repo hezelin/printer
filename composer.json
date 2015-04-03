@@ -19,7 +19,7 @@
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
         "linslin/yii2-curl": "*",
-        "xj/yii2-qrcode-widget": "*",
+        "xj/yii2-qrcode-widget": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

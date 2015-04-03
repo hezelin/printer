@@ -29,7 +29,7 @@ WeixinAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => Yii::$app->name,
+                'brandLabel' => Yii::$app->session['wechat']['name'],
                 'brandUrl' => Yii::$app->homeUrl,
                 'brandOptions' => [
                     'style' => 'color:#ffffff',
@@ -45,17 +45,11 @@ WeixinAsset::register($this);
                 'options' => ['class' => 'navbar-nav'],
                 'items' => [
                     [
-                        'label' => '微信管理',
-                        'items' => [
-                           ['label' => '我的公众号', 'url' => Url::to(['weixin/index'])],
-                           ['label' => '添加公众号', 'url' => Url::to(['weixin/add'])],
-                        ],
+                        'label' => '返回实例',
+                        'url' => ['/weixin/index'],
                     ],
-                    ['label' => '我的主页', 'url' => ['/site/about']],
-                    ['label' => '机器管理', 'url' => ['/site/contact']],
                 ],
             ]);
-
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
@@ -73,9 +67,15 @@ WeixinAsset::register($this);
         <div class="container-fluid">
             <div class="row">
                 <?php
+//                    $aa = Url::toRoute( ['console/view','id'=>Yii::$app->session['wechat']['id'] );
                     echo TreeMenuWidget::widget(
                         [
                             'items' => [
+                                [
+                                    'label' => '实例详情',
+                                    'url' => [ Url::toRoute( ['console/view','id'=>Yii::$app->session['wechat']['id'] ]) ],
+                                    'route' => '/console/view',
+                                ],
                                 [
                                     'label' => '微官网',
                                     'items' => [
@@ -87,7 +87,7 @@ WeixinAsset::register($this);
                                 [
                                     'label' => '机器管理',
                                     'items' => [
-                                        ['label' => '机器列表', 'url' => '/machine/list'],
+                                        ['label' => '机器列表', 'url' => '/machine/list','route' => '/home/fitment'],
                                         ['label' => '机器状态', 'url' => '/machine/status'],
                                     ],
                                 ],
@@ -118,7 +118,6 @@ WeixinAsset::register($this);
                                     'items' => [
                                         ['label' => '工作报表','url' => '/staff/index'],
                                         ['label' => '维修员列表','url' => '/staff/list'],
-                                        ['label' => '维修绑定','url' => '/code/binding'],
                                     ],
                                 ],
                                 [
