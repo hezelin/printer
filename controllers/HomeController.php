@@ -1,5 +1,4 @@
 <?php
-
 namespace app\controllers;
 use Yii;
 use app\models\Carousel;
@@ -16,8 +15,10 @@ class HomeController extends \yii\web\Controller
     public function actionFitment()
     {
         $model = new UploadForm();
-        $carousel0=Carousel::find()->where(['show' => 0])->all();  //未展示
-        $carousel=Carousel::find()->where(['show' => 1])->all();   //已展示
+        if(!isset(Yii::$app->session['weixinid'])) $this->redirect('/weixin/index');
+        $weixinid = Yii::$app->session['weixinid'];
+        $carousel0=Carousel::find()->where(['show'=>0,'weixinid'=>$weixinid])->all();  //未展示
+        $carousel=Carousel::find()->where(['show'=>1,'weixinid'=>$weixinid])->all();   //已展示
         return $this->render('fitment', ['model' => $model,'carousel'=>$carousel,'carousel0'=>$carousel0]);
     }
 
@@ -63,12 +64,16 @@ class HomeController extends \yii\web\Controller
                 $model->image->saveAs($filepath);
 
                 $newcarousel = new Carousel();
+                $newcarousel->weixinid = Yii::$app->session['weixinid'];
                 $newcarousel->imgurl = $filepath;
                 $newcarousel->link = '';
-                $newcarousel->title = '标题';
-                $newid=2;//$newcarousel->save();
+                $newcarousel->title = '默认标题';
+                $newcarousel->show = 1;
+                $newcarousel->save();
+                $newid = $newcarousel->attributes['id'];
 
-                //返回上传的图片信息并显示
+                if($newid) {
+                    //返回上传的图片信息并显示
 //                $returnarr = [
 //                    'files' => [
 //                        'name' => $filename,
@@ -81,17 +86,18 @@ class HomeController extends \yii\web\Controller
 //                ];
 //                return json_encode($returnarr);   //报空文件错
 
-              return '{ "files": [
-                    {
-                        "id":"'.$newid.'",
-                        "name": "'.$filename.'",
-                        "size": '.$model->image->size.',
-                        "url" : "/'.$filepath.'",
-                        "thumbnailUrl": "/'.$filepath.'",
-                        "deleteUrl": "home/delimg?imagename=' .$filepath.'",
-                        "deleteType": "DELETE"
-                    }
-                ]}';
+                    return '{ "files": [
+                        {
+                            "id":"' . $newid . '",
+                            "name": "' . $filename . '",
+                            "size": ' . $model->image->size . ',
+                            "url" : "/' . $filepath . '",
+                            "thumbnailUrl": "/' . $filepath . '",
+                            "deleteUrl": "home/delimg?imagename=' . $filepath . '",
+                            "deleteType": "DELETE"
+                        }
+                    ]}';
+                }
             }
         }
     }
@@ -101,7 +107,11 @@ class HomeController extends \yii\web\Controller
      */
     public function actionDelimg($id)
     {
-        echo 'del'.$id;
+        $carousel = Carousel::findOne($id);
+        $res=$carousel->delete();
+
+        @unlink($carousel['imgurl']);
+        return $res;
 //        return '{"files": [
 //
 //  {
@@ -111,11 +121,44 @@ class HomeController extends \yii\web\Controller
     }
 
     /*
+     * Ajax批量删除轮播图
+     */
+    public function actionMuldelcarousel(){
+        if (isset($_POST['delids'])) {
+            $i = 0;    //成功删除数
+            $carousel = Carousel::findAll($_POST['delids']);
+            foreach ($carousel as $onecarousel) {
+                @unlink($onecarousel['imgurl']);
+                $onecarousel->delete();
+                $i++;
+            }
+            return $i;
+        }
+    }
+
+    /*
+     * Ajax快速更改表格字段文本
+     */
+    public function actionChangetext(){
+        if (isset($_GET['val'])) {
+            $newval=$_GET['val']=='点击设置'?'':$_GET['val'];
+            $carousel = Carousel::findOne($_GET['id']);
+            $carousel -> $_GET['field'] = $newval;
+            if($carousel -> save())
+                $resarr = ['status' => 1 ];
+            else $resarr = ['status' => 0, 'error' => 'Changed 0' ];
+        }
+        else
+            $resarr = ['status' => 0, 'error' => 'GET is empty' ];
+        return json_encode($resarr);
+    }
+
+    /*
      * 微官网
      */
     public function actionIndex()
     {
-        $carousel=Carousel::find()->where(['show' => 1])->all();
+        $carousel=Carousel::find()->where(['show'=>1,'weixinid'=>1])->all();
         return $this->renderPartial('index',['carousel'=>$carousel]);
     }
 
@@ -132,6 +175,7 @@ class HomeController extends \yii\web\Controller
      */
     public function actionSetting()
     {
+        \Yii::$app->getSession()->setFlash('error', 'This is the message');
         return $this->render('setting');
     }
 

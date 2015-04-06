@@ -1,25 +1,40 @@
 <?php
     $this->title = '店铺装修';
+    use yii\helpers\Html;
     use dosamigos\fileupload\FileUploadUI;
-    //$this->registerJsFile("/js/weixin/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
+    use yii\bootstrap\Alert;
+    $this->registerJsFile("/js/weixin/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
+    $this->registerJsFile("/js/myjs.js");
 ?>
-<!--<script>-->
-<!--    $(document).ready(function(){-->
-<!--        //alert("Hello world!"); //测试jQuery-->
-<!--    });-->
-<!--</script>-->
+
+<style>
+    .textedit {
+        padding-right: 18px;
+        background: url('/images/pencil.png') no-repeat right;
+        background-size: 16px;
+    }
+</style>
+
+<!--Ajax加载提示-->
+<div id="loading_tip" style="background-color:orange; display:none">提交请求...&nbsp;&nbsp;&nbsp;<img src="/images/loading.gif"></div>
+<div id="success_tip" style="background-color:rgb(13,214,12); display:none;">操作成功</div>
+<div id="error_tip" style="background-color:red; display:none"></div>
 
 <h3>首页轮播图片设置</h3>
 <hr>
-<h4>未展示轮播图</h4>
-
-<?php //$form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']])?>
-
-
+<?=Alert::widget([
+    'options' => [
+        'class' => 'alert-info',
+        'style' => 'color:gray; font-size: 12px',
+    ],
+    'body' => '<strong>温馨提示</strong>：为保证显示质量，请上传长宽比例为2:1的图片。',
+    ])
+?>
+<!--上传图片插件-->
 <?= FileUploadUI::widget([
     'model' => $model,
     'attribute' => 'image',
-    'url' => ['home/receiveimage', 'id' => $model->image],
+    'url' => ['home/receiveimage', 'weixinid' => $_GET['id']],
     'gallery' => false,
     'fieldOptions' => [
         'accept' => 'image/*',
@@ -31,6 +46,8 @@
     // 打印日志
     'clientEvents' => [
         'fileuploaddone' => 'function(e, data) {
+                                    $("#newadd").show();
+                                    $("#newtable").show();
                                     console.log(e);
                                     console.log(data);
                                 }',
@@ -39,14 +56,14 @@
                                     console.log(data);
                                 }',
         'fileuploaddestroy' => 'function(e, data) {
-                                    $(this).find(tr).remove();
-                                }',   //还是得添加删除按钮事件
+                                    //还得添加删除按钮事件$(this).find(tr).remove();
+                                }',
     ],
 ]);
 ?>
 
 <hr>
-<h4>已展示轮播图</h4>
+<h4>已添加轮播图</h4>
     <table role="presentation" class="table table-striped">
         <tbody class="files">
         <tr align="center">
@@ -74,28 +91,28 @@ foreach ($carousel as $onecarousel) {
             <span class="preview">
 
                     <a href="<?php echo $imagepath;?>" target="_blank" title="<?php echo $onecarousel['imgurl'];?>" data-gallery="">
-                        <img src="<?php echo $imagepath;?>" title="<?php echo $onecarousel['title'];?>" height="100"/></a>
+                        <img src="<?php echo $imagepath;?>" title="<?php echo $onecarousel['title'];?>" style="max-height: 100px"/></a>
 
             </span>
             </td>
             <td>
                 <p class="name">
 
-                    <a href="<?php echo $onecarousel['link'];?>" title="<?php echo $onecarousel['imgurl']?>" download="<?php echo $onecarousel['imgurl']?>" data-gallery=""><?php echo $onecarousel['title'];?></a>
+                    <span class="textedit" data-tdtype="edit" data-id="<?=$onecarousel['id'] ?>" data-field="title" data-unique="0"><?php echo trim($onecarousel['title'])?$onecarousel['title']:"点击设置";?></span>
 
                 </p>
 
             </td>
             <td>
-                <span class="size"><?php echo $onecarousel['link'];?></span>
+                <span class="textedit" data-tdtype="edit" data-id="<?=$onecarousel['id'] ?>" data-field="link" data-unique="0"><?php echo trim($onecarousel['link'])?$onecarousel['link']:"点击设置";?></span>
             </td>
             <td>
 
-                <button class="btn btn-danger delete" data-type="DELETE" data-url="home/delimg">
+                <button class="btn btn-danger delete" data-id="<?=$onecarousel['id'] ?>" data-type="DELETE" data-url="home/delimg" onclick="deleteimg(this)">
                     <i class="glyphicon glyphicon-trash"></i>
-                    <span>移除展示</span>
+                    <span>删除</span>
                 </button>
-                <input name="delete" value="1" class="toggle" type="checkbox">
+                <input name="delete" value="<?=$onecarousel['id'] ?>" class="toggle" type="checkbox">
 
             </td>
         </tr>
