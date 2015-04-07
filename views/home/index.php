@@ -1,5 +1,8 @@
 <?php
+use yii\web\View;
 $this->title = '蓝标打印机微网站';
+//$this->registerJsFile("/js/weixin/jquery.min.js",['position' => View::POS_HEAD]);
+//$this->registerJsFile("/js/weixin/iscroll.js",['position' => View::POS_HEAD]);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -19,8 +22,8 @@ $this->title = '蓝标打印机微网站';
         .banner img {width: 100%;}
     </style>
 
-    <script type="text/javascript" src="/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/js/iscroll.js"></script>
+    <script type="text/javascript" src="/js/weixin/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/weixin/iscroll.js"></script>
     <script type="text/javascript">
         var myScroll;
         function loaded(){
@@ -41,42 +44,162 @@ $this->title = '蓝标打印机微网站';
 
 <body>
 
+<!--左下角导航菜单-->
+<style type="text/css">
+    body { margin-bottom:60px !important; }
+    ul, li { list-style:none; margin:0; padding:0 }
+    #plug-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0); z-index:800; transition: all 100ms ease-out; -webkit-transition: all 100ms ease-out; }
+    .top_bar { position:fixed; bottom:0; left:0px; z-index:900; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: Helvetica, Tahoma, Arial, Microsoft YaHei, sans-serif; }
+    .plug-menu { -webkit-appearance:button; display:inline-block; width:36px; height:36px; border-radius:36px; position: absolute; bottom:17px; left: 17px; z-index:999; box-shadow: 0 0 0 4px #FFFFFF, 0 2px 5px 4px rgba(0, 0, 0, 0.25); background-color: #B70000; -webkit-transition: -webkit-transform 200ms; -webkit-transform:rotate(1deg); color:#fff; background-image:url('plug.png'); background-repeat: no-repeat; -webkit-background-size: 80% auto; background-size: 80% auto; background-position: center center; }
+    .plug-menu:before { font-size:20px; margin:9px 0 0 9px; }
+    .plug-menu:checked { -webkit-transform:rotate(135deg); }
+    .top_menu { margin-left: -45px; }
+    .top_menu>li { min-width: 86px; padding: 0 10px; height:32px; border-radius:32px; box-shadow: 0 0 0 3px #FFFFFF, 0 2px 5px 3px rgba(0, 0, 0, 0.25); background:#B70000; margin-bottom: 23px; margin-left: 23px; z-index:900; transition: all 200ms ease-out; -webkit-transition: all 200ms ease-out; }
+    .top_menu>li:last-child { margin-bottom: 80px; }
+    .top_menu>li a { color:#fff; font-size:20px; display: block; height: 100%; line-height: 33px; text-indent:26px; text-decoration:none; position:relative; font-size:16px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; }
+    .top_menu>li a img { display: block; width: 24px; height: 24px; text-indent: -999px; position: absolute; top: 50%; left: 10px; margin-top: -13px; margin-left: -12px; }
+    .top_menu>li.on:nth-of-type(1) {
+        -webkit-transform: translate(45px, 0) rotate(0deg);
+        transition: all 700ms ease-out;
+        -webkit-transition: all 700ms ease-out;
+    }
+    .top_menu>li.on:nth-of-type(2) {
+        -webkit-transform: translate(45px, 0) rotate(0deg);
+        transition: all 600ms ease-out;
+        -webkit-transition: all 600ms ease-out;
+    }
+    .top_menu>li.on:nth-of-type(3) {
+        -webkit-transform: translate(45px, 0) rotate(0deg);
+        transition: all 500ms ease-out;
+        -webkit-transition: all 500ms ease-out;
+    }
+    .top_menu>li.on:nth-of-type(4) {
+        -webkit-transform: translate(45px, 0) rotate(0deg);
+        transition: all 400ms ease-out;
+        -webkit-transition: all 400ms ease-out;
+    }
+    .top_menu>li.on:nth-of-type(5) {
+        -webkit-transform: translate(45px, 0) rotate(0deg);
+        transition: all 300ms ease-out;
+        -webkit-transition: all 300ms ease-out;
+    }
+    .top_menu>li.on:nth-of-type(6) {
+        -webkit-transform: translate(45px, 0) rotate(0deg);
+        transition: all 200ms ease-out;
+        -webkit-transition: all 200ms ease-out;
+    }
+
+    /**/
+    .top_menu>li.out:nth-of-type(1) {
+        -webkit-transform: translate(45px, 280px) rotate(0deg);
+        transition: all 600ms ease-out;
+        -webkit-transition: all 600ms ease-out;
+    }
+    .top_menu>li.out:nth-of-type(2) {
+        -webkit-transform: translate(45px, 235px) rotate(0deg);
+        transition: all 500ms ease-out;
+        -webkit-transition: all 500ms ease-out;
+    }
+    .top_menu>li.out:nth-of-type(3) {
+        -webkit-transform: translate(45px, 190px) rotate(0deg);
+        transition: all 400ms ease-out;
+        -webkit-transition: all 400ms ease-out;
+    }
+    .top_menu>li.out:nth-of-type(4) {
+        -webkit-transform: translate(45px, 145px) rotate(0deg);
+        transition: all 300ms ease-out;
+        -webkit-transition: all 300ms ease-out;
+    }
+    .top_menu>li.out:nth-of-type(5) {
+        -webkit-transform: translate(45px, 100px) rotate(0deg);
+        transition: all 200ms ease-out;
+        -webkit-transition: all 200ms ease-out;
+    }
+    .top_menu>li.out:nth-of-type(6) {
+        -webkit-transform: translate(45px, 55px) rotate(0deg);
+        transition: all 100ms ease-out;
+        -webkit-transition: all 100ms ease-out;
+    }
+    .top_menu>li.out { width: 20px; height: 20px; min-width: 20px; border-radius: 20px; padding: 0; opacity: 0; }
+    .top_menu>li.out a { display:none; }
+    #sharemcover { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: none; z-index: 20000; }
+    #sharemcover img { position: fixed; right: 18px; top: 5px; width: 260px; height: 180px; z-index: 20001; border:0; }
+</style>
+<div class="top_bar" style="-webkit-transform:translate3d(0,0,0)">
+    <nav>
+        <ul id="top_menu" class="top_menu">
+            <input type="checkbox" id="plug-btn" class="plug-menu themeStyle" style="background-color:;background-image:url('/images/plug.png');border:0px;">
+            <li class="themeStyle out" style="background:"> <a href="tel:88888888"><img src="/images/plugmenu1.png"><label>一键拨号</label></a></li>
+            <li class="themeStyle out" style="background:"> <a href="javascript:void(0)"><img src="/images/plugmenu3.png"><label>一键导航</label></a></li>
+            <li class="themeStyle out" style="background:"> <a href="javascript:void(0)"><img src="/images/plugmenu5.png"><label>一键分享</label></a></li>
+            <li class="themeStyle out" style="background:"> <a href="javascript:void(0)"><img src="/images/plugmenu6.png"><label>微官网</label></a></li>
+        </ul>
+    </nav>
+</div>
 
 
-<div class="banner">
+<div id="plug-wrap" style="display: none;" ></div>
+<script>
+    $(function(){
+        $(".plug-menu").click(function(){
+            var li = $(this).parents('ul').find('li');
+            if(li.attr("class") == "themeStyle on"){
+                li.removeClass("themeStyle on");
+                li.addClass("themeStyle out");
+            }else{
+                li.removeClass("themeStyle out");
+                li.addClass("themeStyle on");
+            }
+        });
+    });
+</script>
+
+<!--网页主体-->
+<div class="banner" style="margin-top: 2px">
 
     <div id="wrapper">
         <div id="scroller">
             <ul id="thelist">
-                <li><p>幻灯片01</p><a href="javascript:void(0)"><img src="/images/2.jpg" /></a></li>
-                <li><p>幻灯片02</p><a href="javascript:void(0)"><img src="/images/4.jpg" /></a></li>
-                <li><p>幻灯片03</p><a href="javascript:void(0)"><img src="/images/2.jpg" /></a></li>
-                <li><p>幻灯片04</p><a href="javascript:void(0)"><img src="/images/1.gif" /></a></li>
+                <?php
+                $i=0;
+                foreach($carousel as $onecarousel) {
+                    if(is_file($onecarousel['imgurl'])){
+                        $i++;
+                ?>
+                <li><p><?= $onecarousel['title'] ?></p>
+                    <a href="<?= $onecarousel['link']?$onecarousel['link']:'javascript:void(0)' ?>">
+                        <img src="/<?= $onecarousel['imgurl'] ?>" /></a><!--图片大小未统一-->
+                </li>
+                <?php
+                    }
+                }
+                if($i == 0)
+                echo "<div>暂无任何图片</div>";
+                ?>
             </ul>
         </div>
     </div>
 
     <div id="nav">
         <ul id="indicator">
-            <li class="active" ></li>
-            <li></li>
-            <li></li>
-            <li></li>
+
+            <li class="active"></li>
+            <?php for($j=0;$j<$i-1;$j++) echo "<li></li>"?>
         </ul>
     </div>
 
 </div>
 
 <ul class="mainmenu">
-    <li><a href="/" ><b><img src="/images/tb01.png" /></b><span>关于我们</span></a></li>
-    <li><a href="/" ><b><img src="/images/tb02.png" /></b><span>新闻中心</span></a></li>
+    <li><a href="/" ><b><img src="/images/tb01.png" /></b><span>新闻中心</span></a></li>
+    <li><a href="/" ><b><img src="/images/tb02.png" /></b><span>关于我们</span></a></li>
     <li><a href="/" ><b><img src="/images/tb03.png" /></b><span>产品展示</span></a></li>
-    <li><a href="/" ><b><img src="/images/tb04.png" /></b><span>成功案例</span></a></li>
+    <li><a href="/" ><b><img src="/images/tb08.png" /></b><span>成功案例</span></a></li>
     <li><a href="/" ><b><img src="/images/tb05.png" /></b><span>下载中心</span></a></li>
     <li><a href="/" ><b><img src="/images/tb06.png" /></b><span>团队介绍</span></a></li>
     <li><a href="/" ><b><img src="/images/tb06.png" /></b><span>人才招聘</span></a></li>
     <li><a href="/" ><b><img src="/images/tb07.png" /></b><span>联系我们</span></a></li>
-    <li><a href="/" ><b><img src="/images/tb08.png" /></b><span>在线留言</span></a></li>
+    <li><a href="/" ><b><img src="/images/tb04.png" /></b><span>在线留言</span></a></li>
 </ul>
 
 
@@ -101,184 +224,7 @@ $this->title = '蓝标打印机微网站';
     }
 </script>
 
-<div class="copyright"><br /><br />Copyright © 2014-2015 <a href="http://www.printer.com">蓝标打印机</a> All rights reserved.</div>
+<div class="copyright"><br /><br />Copyright © 2014-2015 <a href="home/index">蓝标打印机<br /> All rights reserved.</div>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head>-->
-<!--    <meta charset="utf-8" />-->
-<!---->
-<!--    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />-->
-<!--    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">-->
-<!--    <meta name="Keywords" content="微盟、微信营销、微信代运营、微信定制开发、微信托管、微网站、微商城、微营销" />-->
-<!--    <meta name="Description" content="微盟，国内最大的微信公众智能服务平台，微盟八大微体系：微菜单、微官网、微会员、微活动、微商城、微推送、微服务、微统计，企业微营销必备。" />-->
-<!--    <!-- Mobile Devices Support @begin -->-->
-<!--    <meta content="application/xhtml+xml;charset=UTF-8" http-equiv="Content-Type">-->
-<!--    <meta content="telephone=no, address=no" name="format-detection">-->
-<!--    <meta name="apple-mobile-web-app-capable" content="yes" /> <!-- apple devices fullscreen -->-->
-<!--    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />-->
-<!--    <!-- Mobile Devices Support @end -->-->
-<!--    <link rel="shortcut icon" href="other" />-->
-<!--</head>-->
-<!---->
-<!--<body onselectstart="return true;" ondragstart="return false;" style="margin-top: 52px; width:100%">-->
-<!--<div data-role="container" class="">-->
-<!--    <header data-role="header">-->
-<!--        <div data-role="widget" data-widget="music105" class="music105">-->
-<!--            <link rel="stylesheet" href="other/music105.css">-->
-<!--            <script src="other/player.js" ></script>-->
-<!--            <a href="javascript:void(0);" class="btn_music" onclick="playbox.init(this).play();"></a><audio id="audio" loop src="http://video.weimob.com/video/66/5a/5e/mp3/20141127/雨的印记.mp3" style="pointer-events:none;display:none;width:0!important;height:0!important;"></audio>-->
-<!--        </div>-->
-<!--        <section id="imgSwipe" class="img_swipe">-->
-<!--            <ul>-->
-<!---->
-<!--                --><?php //foreach ($carousel as $onecarousel) {?>
-<!--                    <li>-->
-<!--                        <a href="--><?php //echo $onecarousel['link'];?><!--">-->
-<!--                            <div class="img"><img src="--><?php //echo $onecarousel['imgurl'];?><!--" /></div>-->
-<!--                            <div class="text">-->
-<!--                                <p style="margin-top: -10px">--><?php //echo $onecarousel['title'];?><!--</p>-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                --><?php //} ?>
-<!--            </ul>-->
-<!--            <div class="swipe_num"><span id="curNum">1</span>/<span id="totalNum"></span></div>-->
-<!--        </section>-->
-<!--    </header>-->
-<!---->
-<!---->
-<!---->
-<!---->
-<!---->
-<!---->
-<!---->
-<!---->
-<!--    <section data-role="body">-->
-<!--        <div class="tel_wrap"><a href="tel:0662-3521188" class="ico_tel"></a></div>-->
-<!--        <div class="index_list" id="indexList">-->
-<!--            <ul>-->
-<!--                <li>-->
-<!--                    <a href="/weisite/channel?pid=366661&bid=220293&wechatid=fromUsername&categoryid=715253&wxref=mp.weixin.qq.com">-->
-<!--                        <i class="icon-home"></i>-->
-<!--                        <p>阳江资讯</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <a href="/weisite/channel?pid=366661&bid=220293&wechatid=fromUsername&categoryid=715230&wxref=mp.weixin.qq.com">-->
-<!--                        <i class="icon-search"></i>-->
-<!--                        <p>聚焦商机</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <a href="/weisite/channel?pid=366661&bid=220293&wechatid=fromUsername&categoryid=715685&wxref=mp.weixin.qq.com">-->
-<!--                        <i class="icon-unlink"></i>-->
-<!--                        <p>微城会友</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <a href="/weisite/channel?pid=366661&bid=220293&wechatid=fromUsername&categoryid=715252&wxref=mp.weixin.qq.com">-->
-<!--                        <i class="icon-android"></i>-->
-<!--                        <p>便民中心</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <a href="/webmidautumn/index?id=10044&pid=366661&wechatid=fromUsername&v=b4292b1ca7efa5acbdf31c0d71950d17&wxref=mp.weixin.qq.com">-->
-<!--                        <i class="icon-gift"></i>-->
-<!--                        <p>最新活动</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <a href="http://3g.inbai.com/interface/signin/signin.jsp?agentid=47610">-->
-<!--                        <i class="icon-wmfont wm-calculate"></i>-->
-<!--                        <p>签到送话费</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <a href="/userinfo/index?id=&pid=366661&bid=220293&wechatid=fromUsername&wxref=mp.weixin.qq.com">-->
-<!--                        <i class="icon-credit-card"></i>-->
-<!--                        <p>微城会员卡</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <a href="/weisite/list?pid=366661&bid=220293&wechatid=fromUsername&ltid=984889&wxref=mp.weixin.qq.com">-->
-<!--                        <i class="icon-wrench"></i>-->
-<!--                        <p>本地服务</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <a href="./index.php?r=user/login">-->
-<!--                        <i class="icon-home"></i>-->
-<!--                        <p>我要登录</p>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
-<!--    </section>-->
-<!---->
-<!--    <footer data-role="footer">-->
-<!--        <div class="copyright" class="copyright" ><a href="/weisite/home?pid=366661&bid=220293&wechatid=fromUsername&wxref=mp.weixin.qq.com" style="color:#D42620">© 技术支持：XX</a></div>-->
-<!--    </footer>-->
-<!---->
-<!--    <div mark="stat_code" style="width:0px; height:0px; display:none;">-->
-<!--    </div>-->
-<!--</body>-->
-<!--<script type="text/javascript">-->
-<!--    (function() {-->
-<!--        var wtj = document.createElement('script'); wtj.type = 'text/javascript'; wtj.async = true;-->
-<!--        wtj.src = 'http://tj.weimob.com/wtj.js?url=' + encodeURIComponent(location.href);-->
-<!--        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wtj, s);-->
-<!--    })();-->
-<!--    function weimobAfterShare(shareFromWechatId,sendFriendLink,shareToPlatform){-->
-<!--        var wmShare = document.createElement('script'); wmShare.type = 'text/javascript'; wmShare.async = true;-->
-<!--        wmShare.src = 'http://tj.weimob.com/api-share.js?fromWechatId=' + shareFromWechatId + '&shareToPlatform=';-->
-<!--        wmShare.src += shareToPlatform + '&pid=366661&sendFriendLink=' + encodeURIComponent(sendFriendLink);-->
-<!--        var stj = document.getElementsByTagName('script')[0]; stj.parentNode.insertBefore(wmShare, stj);-->
-<!--    }-->
-<!---->
-<!--</script>-->
-<!--<script type="text/javascript" src="other/ChatFloat.js"></script>-->
-<!--<script type="text/javascript">-->
-<!--    var str_domain = location.href.split('/',4)[2];-->
-<!--    var boolIsTest = true;-->
-<!--    if(str_domain == 'www.weimob.com' || str_domain.indexOf('m.weimob.com') > 0){-->
-<!--        boolIsTest = false;-->
-<!--    }-->
-<!--    //1.0 web-->
-<!--    new ChatFloat({-->
-<!--        AId: '366661',-->
-<!--        openid: "",-->
-<!--        top:150,-->
-<!--        right:0,-->
-<!--        IsTest:boolIsTest-->
-<!--    });-->
-<!--</script>-->
-<!--<!---->
-<!--echo STATIC_DOMAIN."/src/jQuery.js?v=10101011-->
-<!---->-->
-<!--<script type="text/javascript" src="other/share_channel.js"></script>-->
-<!--<script type="text/javascript" src="other/base64.js"></script>-->
-<!--<script type="text/javascript" src="http://stc.weimob.com/src/st/st.js?v=1427104540"></script>-->
-<!--<script type="text/javascript">-->
-<!--    st.push("_triggerEvent",{-->
-<!--        "is_statistic_on":"on", //开关-->
-<!--        "statisticServerPath": "http://statistic.weimob.com/wm.js", //统计地址-->
-<!--        "memcServerPath": "http://statistic.weimob.com/memc?cmd=get", //缓存地址-->
-<!--        "stat_action":"loadPage",  //统计动作类型-->
-<!--        "stat_optValue":""    //参数值-->
-<!--    });-->
-<!--</script>-->
-<!---->
-<!--</html>-->
