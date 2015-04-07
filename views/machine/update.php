@@ -1,9 +1,12 @@
 <?php
-/* @var $this yii\web\View */
-?>
-<h1>machine/update</h1>
 
-<p>
-    You may change the content of this page by modifying
-    the file <code><?= __FILE__; ?></code>.
-</p>
+use yii\helpers\Html;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\TblMachine */
+
+$this->title = '机器资料修改';
+?>
+
+<?= $this->render('_form', [ 'model' => $model ]) ?>
+

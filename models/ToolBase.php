@@ -46,7 +46,7 @@ class ToolBase {
                 if(is_array($a))
                     $string .= self::arrayToString($a);
                 else
-                    $string .= $a;
+                    $string .= "\n".$a;
             }
             return $string;
         }

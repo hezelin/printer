@@ -30,7 +30,7 @@ WeixinAsset::register($this);
         <?php
             NavBar::begin([
                 'brandLabel' => Yii::$app->session['wechat']['name'],
-                'brandUrl' => Yii::$app->homeUrl,
+                'brandUrl' => Url::toRoute( ['console/view','id'=>Yii::$app->session['wechat']['id'] ]),
                 'brandOptions' => [
                     'style' => 'color:#ffffff',
                 ],
@@ -87,7 +87,8 @@ WeixinAsset::register($this);
                                 [
                                     'label' => '机器管理',
                                     'items' => [
-                                        ['label' => '机器列表', 'url' => '/machine/list','route' => '/home/fitment'],
+                                        ['label' => '机器列表', 'url' => '/machine/list'],
+                                        ['label' => '添加机器', 'url' => '/machine/add'],
                                         ['label' => '机器状态', 'url' => '/machine/status'],
                                     ],
                                 ],

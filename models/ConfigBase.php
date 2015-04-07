@@ -5,6 +5,9 @@ namespace app\models;
  */
 class ConfigBase
 {
+    /*
+     * 公众号 等级
+     */
     public static $vip = array(
         1 => '试用版',
         2 => '普通版',
@@ -15,6 +18,10 @@ class ConfigBase
         return isset(self::$vip[$id])? self::$vip[$id]:'出错';
     }
 
+
+    /*
+     * 公众号 状态
+     */
     public static $wxStatus = array(
         1 => '未开通',
         2 => '运行中',
@@ -25,4 +32,17 @@ class ConfigBase
     public static function getWxStatus($id){
         return isset(self::$wxStatus[$id])? self::$wxStatus[$id]:'出错';
     }
+
+    /*
+     * 机器租借状态
+     */
+    public static $mxStatus = array(
+        1 => '闲置中',
+        2 => '已租借',
+    );
+
+    public static function getMxStatus($id){
+        return isset(self::$mxStatus[$id])? self::$mxStatus[$id]:'出错';
+    }
+
 }
