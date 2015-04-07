@@ -15,10 +15,12 @@ class HomeController extends \yii\web\Controller
     public function actionFitment()
     {
         $model = new UploadForm();
+
         if(!isset(Yii::$app->session['wechat'])) $this->redirect('/weixin/index');
         $weixinid = Yii::$app->session['wechat']['id'];
         $carousel=Carousel::find()->where(['show' => 1,'weixinid' => $weixinid])->all();
         return $this->render('fitment', ['model' => $model,'carousel' => $carousel]);
+//>>> 82c0bb31bed8c25bcf6874f1ab328b1494b838c9
     }
 
     /*
