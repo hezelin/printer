@@ -10,14 +10,18 @@ use Yii;
 class TreeMenuWidget extends Widget{
 
     /*
-     * echo TreeMenuWidget::widget(
-        [
-            'items' => [
+     * 'items' => [
                 [
-                    'label' => '微信管理',
+                    'label' => '实例详情',
+                    'url' => [ Url::toRoute( ['console/view','id'=>Yii::$app->session['wechat']['id'] ]) ],
+                    'route' => '/console/view',
+                ],
+                [
+                    'label' => '微官网',
                     'items' => [
-                        ['label' => '我的公众号', 'url' => '/weixin/index'],
-                        ['label' => '添加公众号', 'url' => '/weixin/add'],
+                        ['label' => '店铺装修', 'url' => '/home/fitment'],
+                        ['label' => '店铺设置', 'url' => '/home/setting'],
+                        ['label' => '样式选择', 'url' => '/home/style'],
                     ],
                 ],
                 [
@@ -41,6 +45,10 @@ class TreeMenuWidget extends Widget{
             ],
         ]);
      */
+    /*
+     * 顶部 top 距离
+     */
+    public $top = 60;
     public $options;
     public $route;
     public $items;
@@ -159,6 +167,9 @@ class TreeMenuWidget extends Widget{
                     return 'in';
         }
 
+        if (isset($item['route'])  && (strpos(ltrim($item['route'],'/'),$this->route ) !== false) )
+            return 'head-active';
+
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])
             && (strpos(ltrim($item['url'][0],'/'),$this->route ) !== false) )
             return 'head-active';
@@ -177,7 +188,7 @@ class TreeMenuWidget extends Widget{
     private  function registerScript()
     {
         $script = <<<JS_TREE
-        $('#tree-menu').height( $(document).height() - 60 );
+        $('#tree-menu').height( $(document).height() - {$this->top} );
 JS_TREE;
         $this->view->registerJs($script,\yii\web\View::POS_READY);
     }
