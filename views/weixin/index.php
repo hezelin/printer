@@ -3,6 +3,8 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\models\ConfigBase;
+use app\components\LoadingWidget;
+
 $this->title = '我的公众号';
 ?>
 
@@ -27,6 +29,7 @@ echo GridView::widget([
             'class' => 'yii\grid\DataColumn',
             'attribute'=>'status',
             'format' => 'html',
+            'contentOptions' => ['class'=>'ct-status'],
             'value' => function($data){
 
                 $a = Html::tag('i','&nbsp;',['class'=>'circle']);
@@ -79,17 +82,43 @@ echo GridView::widget([
                     return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);
                 },
                 'start' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-play"></span>',$url,[
-                        'title'=>'启动',
-                        'data-method'=>'post',
-                        'data-pjax'=>'0',
-                    ]);
+                    $option = ['title'=>'启动', 'class'=>'lin-loading'];
+                    if($model->status != 3)
+                        Html::addCssClass($option,'my-disabled');
+                    return Html::a('<span class="glyphicon glyphicon-play"></span>',$url,$option);
                 },
                 'stop' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-stop"></span>',$url,['title'=>'停止']);
+                    $option = ['title'=>'停止', 'class'=>'lin-loading-2'];
+                    if($model->status != 2 || $model->due_time < time())
+                        Html::addCssClass($option,'my-disabled');
+                    return Html::a('<span class="glyphicon glyphicon-stop"></span>',$url,$option);
                 }
             ]
         ]
     ],
 ]);
+
+?>
+
+<?php
+    echo LoadingWidget::widget([
+        'success' => 'function(reply){
+            if(reply.status == 1){
+                th.closest("td").prevAll(".ct-status").html( "<span class=\"run-status\"><i class=\"circle\">&nbsp;</i>运行中</span>");
+                th.addClass("my-disabled");
+                th.next("a").removeClass("my-disabled");
+            }
+        }',
+    ]);
+
+    echo LoadingWidget::widget([
+        'target' => '.lin-loading-2',
+        'success' => 'function(reply){
+                if(reply.status == 1){
+                    th.closest("td").prevAll(".ct-status").html( "<span class=\"stop-status\"><i class=\"circle\">&nbsp;</i>已停止</span>");
+                    th.addClass("my-disabled");
+                    th.prev("a").removeClass("my-disabled");
+                }
+            }',
+    ]);
 ?>

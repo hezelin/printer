@@ -15,16 +15,11 @@ class WeixinController extends \yii\web\Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['login', 'logout', 'signup'],
+//                'only' => ['add', 'update', 'index','view','delete','start','stop'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['login', 'signup'],
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['logout'],
+                        'actions' => ['add', 'update', 'index','view','delete','start','stop'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -67,7 +62,7 @@ class WeixinController extends \yii\web\Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => TblWeixin::find(),
+            'query' => TblWeixin::find()->where(['enable'=>'Y']),
             'pagination' => [
                 'pageSize' => 15,
             ],
@@ -89,8 +84,9 @@ class WeixinController extends \yii\web\Controller
 
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $model->enable = 'N';
+        $model->save();
         return $this->redirect(['index']);
     }
 
@@ -99,7 +95,10 @@ class WeixinController extends \yii\web\Controller
      */
     public function actionStart($id)
     {
-
+        $model = $this->findModel($id);
+        $model->status = 2;
+        if($model->save())
+            return json_encode(['status'=>1]);
     }
 
     /*
@@ -107,7 +106,10 @@ class WeixinController extends \yii\web\Controller
      */
     public function actionStop($id)
     {
-
+        $model = $this->findModel($id);
+        $model->status = 3;
+        if($model->save())
+            return json_encode(['status'=>1]);
     }
 
     protected function findModel($id)

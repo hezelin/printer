@@ -48,6 +48,10 @@ class TestController extends Controller
         ]);
     }
 
+    public function actionAjax()
+    {
+        echo rand(1,20000);
+    }
     /**
      * Creates a new TblWeixin model.
      * If creation is successful, the browser will be redirected to the 'view' page.

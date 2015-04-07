@@ -1,7 +1,7 @@
 <?php
-$this->title = '积分二维码';
+/* @var $this yii\web\View */
 ?>
-<h1>code/score</h1>
+<h1>tips/index</h1>
 
 <p>
     You may change the content of this page by modifying
