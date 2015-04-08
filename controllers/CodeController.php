@@ -2,8 +2,13 @@
 
 namespace app\controllers;
 
+use app\models\TblMachine;
+use yii\helpers\Url;
+
 class CodeController extends \yii\web\Controller
 {
+    public $qrcodeApiUrl = 'http://qr.liantu.com/api.php?';
+
     public $layout = 'console';
 
     public function actionBinding()
@@ -16,9 +21,20 @@ class CodeController extends \yii\web\Controller
         return $this->render('index');
     }
 
-    public function actionMachine()
+    /*
+     * 生成机器码
+     */
+    public function actionMachine($id)
     {
-        return $this->render('machine');
+        $model = TblMachine::findOne($id);
+        $urlParams = [
+            'text' => Url::toRoute(['codeapi/machine','id'=>$id],'http'),
+        ];
+
+        $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+
+
+        return $this->render('machine',['model'=>$model,'qrcodeImgUrl'=>$qrcodeImgUrl]);
     }
 
     public function actionScore()
