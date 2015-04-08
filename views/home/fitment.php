@@ -1,8 +1,10 @@
 <?php
     $this->title = '店铺装修';
-    use yii\helpers\Html;
+
     use dosamigos\fileupload\FileUploadUI;
     use yii\bootstrap\Alert;
+    use app\components\LoadingWidget;
+
     $this->registerJsFile("/js/weixin/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
     $this->registerJsFile("/js/myjs.js");
 ?>
@@ -14,11 +16,6 @@
         background-size: 16px;
     }
 </style>
-
-<!--Ajax加载提示-->
-<div id="loading_tip" style="background-color:orange; display:none">提交请求...&nbsp;&nbsp;&nbsp;<img src="/images/loading.gif"></div>
-<div id="success_tip" style="background-color:rgb(13,214,12); display:none;">操作成功</div>
-<div id="error_tip" style="background-color:red; display:none"></div>
 
 <h3>首页轮播图片设置</h3>
 <hr>
@@ -118,3 +115,15 @@
 <?php }} ?>
         </tbody>
     </table>
+
+<?php
+//    echo LoadingWidget::widget([
+//        'target' => '.delete',
+//        'url' => 'delimg',
+//        'success' => 'function(reply){
+//                    if(reply.status == 1){
+//                        js remove..;
+//                    }
+//                }',
+//    ]);
+?>

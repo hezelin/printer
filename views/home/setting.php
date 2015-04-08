@@ -12,15 +12,7 @@ $this->title = '店铺设置';
 </div>
 
     <?php
-    use yii\bootstrap\Alert;
-    if( Yii::$app->getSession()->hasFlash('error') ) {
-        echo Alert::widget([
-            'options' => [
-                'class' => 'alert-error',///没有红色
-            ],
-            'body' => Yii::$app->getSession()->getFlash('error'),
-        ]);
-    }
+
     $form = ActiveForm::begin([
         'id' => 'setting-form',
         'options' => ['class' => 'form-horizontal'],
@@ -31,15 +23,22 @@ $this->title = '店铺设置';
     ])
     ?>
 
-<!--    --><?//= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'webname')->textInput() ?>
+    <?= $form->field($model, 'weixinid')->textInput() ?>
+    <?= $form->field($model, 'title')->textInput() ?>
+    <?= $form->field($model, 'description')->textarea() ?>
+
+    <?= $form->field($model, 'status')->radioList([1=>'启用',0=>'关闭']) ?>
+    <?= Html::hiddenInput('RegisterForm[area]','',['id'=>'city-region-id'])?>
 
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
-                <?= Html::submitButton('保存', ['class' => 'col-md-offset-1 col-md-2 btn btn-primary', 'name' => 'login-button']) ?>
+            <?= Html::submitButton('提交保存', ['class' => 'col-md-2 btn btn-primary', 'name' => 'setting-button']) ?>
         </div>
     </div>
 
-    <?php ActiveForm::end();?>
+    <?php ActiveForm::end(); ?>
+
 
 
 
@@ -59,65 +58,86 @@ $this->title = '店铺设置';
 <body>
 <!--[if lte IE 9]><script type='text/javascript' src='http://static.ptweixin.com/js/plugin/jquery/jquery.watermark-1.3.js?t=201409101111' ></script>
 <![endif]-->
-<script language="javascript">$(document).ready(frame_obj.search_form_init); var session_id='pie73hdr59rfjjs0fhumkulds6';</script>
+<script language="javascript">$(document).ready(frame_obj.search_form_init); var session_id='abe1qju6k52gkqs7tgbl8rqk73';</script>
 <div id="iframe_page">
     <div class="iframe_content">
-        <link href='http://static.ptweixin.com/member/css/shop.css?t=201409101111' rel='stylesheet' type='text/css'  />
-        <script type='text/javascript' src='http://static.ptweixin.com/member/js/shop.js?t=201409101111' ></script>
+
+        <link href='http://static.ptweixin.com/member/css/web.css?t=201409101111' rel='stylesheet' type='text/css'  />
+        <script type='text/javascript' src='http://static.ptweixin.com/member/js/web.js?t=201409101111' ></script>
         <div class="r_nav">
             <ul>
-                <li class="cur"><a href="./?m=shop&a=index">基本设置</a></li>
-                <li class=""><a href="./?m=shop&a=skin">风格设置</a></li>
-                <li class=""><a href="./?m=shop&a=home">首页设置</a></li>
-                <li class=""><a href="./?m=shop&a=products">产品管理</a></li>
-                <li class=""><a href="./?m=shop&a=orders">订单管理</a></li>
-
+                <li class="cur"><a href="./?m=web&a=index">基本设置</a></li>
+                <li class=""><a href="./?m=web&a=skin">风格设置</a></li>
+                <li class=""><a href="./?m=web&a=home">首页设置</a></li>
+                <li class=""><a href="./?m=web&a=column">栏目管理</a></li>
+                <li class=""><a href="./?m=web&a=lbs">一键导航</a></li>
             </ul>
         </div>
         <link href='http://static.ptweixin.com/js/plugin/operamasks/operamasks-ui.css?t=201409101111' rel='stylesheet' type='text/css'  />
         <script type='text/javascript' src='http://static.ptweixin.com/js/plugin/operamasks/operamasks-ui.min.js?t=201409101111' ></script>
-        <script language="javascript">$(document).ready(frame_obj.config_form_init);</script>
+        <script language="javascript">
+            $(document).ready(function(){
+                web_obj.web_config_init();
+                frame_obj.config_form_init();
+            });
+        </script>
         <div class="r_con_config r_con_wrap">
             <form id="config_form">
                 <table border="0" cellpadding="0" cellspacing="0">
                     <tr>
                         <td width="50%" valign="top">
-                            <h1><span class="fc_red">*</span> <strong>微商城名称</strong></h1>
-                            <input type="text" class="input" name="ShopName" value="" maxlength="30" notnull />
+                            <h1><span class="fc_red">*</span> <strong>微官网名称</strong></h1>
+                            <input type="text" class="input" name="SiteName" value="" maxlength="30" notnull />
                         </td>
                         <td width="50%" valign="top">
-                            <h1><strong>需要物流</strong><span class="tips">（关闭后下订单无需填写收货地址）</span></h1>
-                            <div class="input"><input type="checkbox" name="NeedShipping" value="1"  /><span class="tips">如果您提供的是本地化服务，无需物流，请关闭</span>div>
+                            <h1><strong>一键拨号</strong> <input type="checkbox" name="CallEnable" value="1" checked /><span class="tips">启用</span></h1>
+                            <input type="text" class="input" name="CallPhoneNumber" value="" maxlength="20" />
                         </td>
                     </tr>
                     <tr>
                         <td valign="top">
-                            <h1><strong>订单手机短信通知</strong> <input type="checkbox" name="SendSms" value="1"  /><span class="tips">启用（填接收短信的手机号）</span></h1>
-                            <input type="text" class="input" name="SendSmsMobilePhone" value="" maxlength="11" />
+                            <h1><strong>动画效果</strong></h1>
+                            <div class="input">
+                                <input type="radio" value="0" name="Animation" checked />无
+                                <input type="radio" value="1" name="Animation"  />雪花
+                                <input type="radio" value="2" name="Animation"  />烟花
+                            </div>
                         </td>
                         <td valign="top">
-                            <h1><strong>产品评论</strong> <input type="checkbox" name="NeedReview" value="1"  /><span class="tips">启用</span></h1>
-                            <div class="input"><input type="checkbox" name="ReviewPass" value="1"  /><span class="tips">如果评论需要审核后才显示，请开启本选项</span></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td valign="top">
-                            <h1><strong>下订单获得积分</strong> <input type="checkbox" name="GetIntegral" value="1"  /><span class="tips">启用（每元可获得的积分数）</span></h1>
-                            <input type="text" class="input" name="GetIntegralValue" value="0.00" maxlength="5" />
-                        </td>
-                        <td valign="top">
-                            <h1><strong>分配订单到子门店系统</strong></h1>
-                            <div class="input"><input type="checkbox" name="NeedStores" value="1"  /><span class="tips">如果您需要让各家门店分别管理订单，请开启</span></div>
+                            <h1><strong>分享图标</strong></h1>
+                            <div class="input"><input type="checkbox" name="ArticleShareBtn" value="1" checked /><span class="tips">详细页是否显示分享图标</span></div>
                         </td>
                     </tr>
                     <tr>
                         <td valign="top">
-                            <h1><strong>开启库存</strong> <input type="checkbox" name="NeedStock" value="1"  /><span class="tips">开启库存后购买数量不能大于库存量</span></h1>
-                            <div class="input"><input type="checkbox" name="AutoStock" value="1"  /><span class="tips">如果商品库存为0时自动下架</span></div>
+                            <h1><strong>引导页</strong></h1>
+                            <div class="input">
+                                <input type="radio" value="0" name="PagesShow" checked />无
+                                <input type="radio" value="1" name="PagesShow"  />马赛克
+                                <input type="radio" value="2" name="PagesShow"  />淡出
+                                <input type="radio" value="3" name="PagesShow"  />开门
+                            </div>
+                            <div class="rows"><span class="lbar">播放时间(秒):</span><span class="rbar"><input type="text" class="input w70" name="ShowTime" value="3" maxlength="10" /></span>
+                                <div class="clear"></div>
+                            </div>
+                            <div class="pages_pic">
+                                <span class="up_input"><input name="PagesPicUpload" id="PagesPicUpload" type="file" /></span>
+                                <span class="tips">建议尺寸:640*1010px</span>
+                                <div class="clear"></div>
+                            </div>
+                            <div id="PagesPicDetail"></div>
+                            <input type="hidden" name="PagesPic" value="" />
                         </td>
                         <td valign="top">
-                            <h1><strong>搜索</strong><span class="tips">（<input type="radio" name="SearchStyle" value="0" checked="checked" />关闭&nbsp;&nbsp;<input type="radio" name="SearchStyle" value="1"  />固定&nbsp;&nbsp;<input type="radio" name="SearchStyle" value="2"  />浮动）</span></h1>
-                            <input type="text" class="input" name="SearchInit" value="这是一个神奇的搜索"  />
+                            <h1><strong>背景音乐</strong><span class="tips">（填写音乐链接地址或上传音乐文件）</span></h1>
+                            <input type="text" class="input" name="MusicPath" value="" maxlength="800" />
+                            <div class="up_mp3">
+                                <span class="up_input"><input name="MusicUpload" id="MusicUpload" type="file" /></span>
+                                <span class="tips">500KB以内，mp3格式</span>
+                            </div>
+                            <div class="blank9"></div>
+                            <h1><strong>搜索</strong> <input type="checkbox" name="NeedSearch" value="1"  /><span class="tips">启用</span></h1>
+                            <input type="text" class="input" name="SearchInit" value="这是一个神奇的搜索" maxlength="20" />
                         </td>
                     </tr>
                 </table>
@@ -128,12 +148,12 @@ $this->title = '店铺设置';
                             <div class="reply_msg">
                                 <div class="m_left">
                                     <span class="fc_red">*</span> 触发关键词<span class="tips_key">（有多个关键词请用空格隔开）</span><br />
-                                    <input type="text" class="input" name="ReplyKeyword" value="商城" maxlength="100" notnull /><br /><br /><br />
+                                    <input type="text" class="input" name="ReplyKeyword" value="官网" maxlength="100" notnull /><br /><br /><br />
                                     <span class="fc_red">*</span> 匹配模式<br />
                                     <div class="input"><input type="radio" name="PatternMethod" value="0" checked />精确匹配<span class="tips">（输入的文字和此关键词一样才触发）</span></div>
                                     <div class="input"><input type="radio" name="PatternMethod" value="1"  />模糊匹配<span class="tips">（输入的文字包含此关键词就触发）</span></div><br /><br />
                                     <span class="fc_red">*</span> 图文消息标题<br />
-                                    <input type="text" class="input" name="ReplyTitle" value="商城" maxlength="100" notnull /><br /><br /><br />
+                                    <input type="text" class="input" name="ReplyTitle" value="官网" maxlength="100" notnull /><br /><br /><br />
                                     <span class="fc_red">*</span> 图文消息简介<br />
                                     <textarea name="BriefDescription"></textarea>
                                 </div>
@@ -144,11 +164,11 @@ $this->title = '店铺设置';
                                 </div>
                                 <div class="clear"></div>
                             </div>
-                            <input type="hidden" name="ReplyImgPath" value="http://static.ptweixin.com/api/images/global/cover/shop.jpg" />
+                            <input type="hidden" name="ReplyImgPath" value="http://static.ptweixin.com/api/images/global/cover/web.jpg" />
                         </td>
                     </tr>
                 </table>		<div class="submit"><input type="submit" name="submit_button" value="提交保存" /></div>
-                <input type="hidden" name="do_action" value="shop.config">
+                <input type="hidden" name="do_action" value="web.config">
             </form>
         </div>	</div>
 </div>

@@ -15,13 +15,16 @@ function trim(s){
 //<span data-tdtype="edit" data-field="name" data-unique='1' data-id="<?php echo $info[id];?>" class="tdedit"><?php echo $info[name];?></span>
 function deleteimg(obj){
     if(confirm('确定删除该轮播图？')){
+        //var loadingimg=document.createElement("img");
+        //loadingimg.setAttribute('id','aaa');
+        //loadingimg.setAttribute('src','/images/loading.gif');
+        //$('#aaa').insertAfter($('h4'));
         $.ajax({
             //type:'POST',
             url:'delimg?id='+$(obj).attr('data-id'),
             success:function(msg){
                 if(msg){
-                    alert('已删除');
-                    $(obj).parent().parent().remove(); //移除hr
+                    $(obj).parent().parent().fadeOut(1000,function(){$(this).remove()}); //移除hr
                 }
             }
         });
@@ -93,7 +96,7 @@ $(document).ready(function(){
                             return false;
                         }
                         else if(result.status == 1) {   //修改成功
-                            alert('change suc');
+                            //alert('已修改');
                             //$('#loading_tip').slideUp();
                             //$("#success_tip").slideDown(); //操作成功
                             //setTimeout('$("#success_tip").slideUp()',1500);
@@ -122,7 +125,7 @@ $(document).ready(function(){
                 alert('请选中要删除的记录');
                 return false;
             }
-            if(confirm('确定要删除所选图片？')){
+            if(confirm('确定要删除已选的'+checkobj.length+'张图片？')){
                 $(checkobj).each(function() {
                     checkids.push($(this).val());
                 });
@@ -132,7 +135,7 @@ $(document).ready(function(){
                     url : 'muldelcarousel',
                     success:function(msg){
                         if(msg > 0){
-                            alert('已删除'+msg+'条记录');
+                            //alert('已删除'+msg+'条记录');
                             if(msg == checkobj.length){ //成功删除所有记录
                                 $(checkobj).each(function() {
                                     $(this).parent().parent().fadeOut(1000,function(){$(this).remove()});

@@ -4,6 +4,7 @@ use Yii;
 use app\models\Carousel;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
+use app\models\WebSettingForm;
 
 class HomeController extends \yii\web\Controller
 {
@@ -65,7 +66,7 @@ class HomeController extends \yii\web\Controller
                 $model->image->saveAs($filepath);
 
                 $newcarousel = new Carousel();
-                $newcarousel->weixinid = Yii::$app->session['weixinid'];
+                $newcarousel->weixinid = Yii::$app->session['wechat']['id'];
                 $newcarousel->imgurl = $filepath;
                 $newcarousel->link = '';
                 $newcarousel->title = '默认标题';
@@ -176,8 +177,28 @@ class HomeController extends \yii\web\Controller
      */
     public function actionSetting()
     {
-        \Yii::$app->getSession()->setFlash('error', 'This is the message');
-        return $this->render('setting');
+        $model = new WebSettingForm();
+
+        if ( $model->load(Yii::$app->request->post()) ) {
+
+//            $model->ip = Yii::$app->request->userIP;
+//            $model->create_time = time();
+//            $model->password = md5($model->pswd.$model->salt.$model->salt);
+//
+//            // 成功
+//            if($model->save()){
+////                Yii::$app->user->identity = $model;         // 赋值登录
+//                Yii::$app->getUser()->login( $model->getUser() );
+//                $this->goHome();
+//            }else{
+//                print_r($model->errors);
+//            }
+////            return $this->refresh();
+            echo 'received';
+        }
+        return $this->render('setting',array(
+            'model'=>$model,
+        ));
     }
 
     /*
