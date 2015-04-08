@@ -5,6 +5,7 @@ use Yii;
 use app\models\TblWeixin;
 use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
 
 class WeixinController extends \yii\web\Controller
 {
@@ -62,11 +63,18 @@ class WeixinController extends \yii\web\Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => TblWeixin::find()->where(['enable'=>'Y']),
+            'query' => TblWeixin::find()->where(['enable'=>'Y','uid'=>Yii::$app->user->id]),
             'pagination' => [
                 'pageSize' => 15,
             ],
         ]);
+
+        if(  ! $dataProvider->getTotalCount() )
+            return $this->render('//tips/success',[
+                'tips' => '亲，你还没有添加任何公众号！',
+                'btnText' => '添加公众号',
+                'btnUrl' => Url::toRoute(['weixin/add'])
+            ]);
 
         return $this->render('index',['dataProvider'=>$dataProvider]);
     }
