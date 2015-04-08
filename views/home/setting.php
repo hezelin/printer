@@ -8,14 +8,36 @@ $this->title = '店铺设置';
 ?>
 
 <div class="alert alert-info" role="alert">
-    请设置微信店铺
+    1. 快捷导航菜单将包含4项快捷菜单按钮，启用一键拨号时请设定正确的电话号码。<br/>
+    2. 设置触发信息后，当用户输入匹配的关键词后公众号将自动回复设定的单图文消息，其链接为微官网首页。<br/>
+    3. <span class="red">精确匹配</span>意为用户输入的文字与关键词完全一致才触发，<span class="red">模糊匹配</span>则为输入的文字中包含关键词就会触发。
 </div>
+<?php
+echo yii\bootstrap\Tabs::widget([
+    'items' => [
+        [
+            'label' => '店铺基础设置',
+            'content' => '第一页',
+            'active' => true  //默认
+        ],
+        [
+            'label' => '触发信息设置',
+            'content' => '第二页',
+            'headerOptions' => [],
+            'linkOptions' => [],  //tag属性
+            'options' => ['id' => 'myveryownID',],
+        ]
+    ],
+]);
+?>
+<hr>
+    <h4>&nbsp;店铺基础设置</h4>
+<hr>
 
     <?php
-
     $form = ActiveForm::begin([
         'id' => 'setting-form',
-        'options' => ['class' => 'form-horizontal'],
+        'options' => ['id' => 'storesetting-form','class' => 'form-horizontal','enctype' => 'multipart/form-data'],
         'fieldConfig' => [
             'template' => "{label}\n<div class=\"col-lg-5\">{input}</div>\n<div class=\"col-lg-5\">{error}</div>",
             'labelOptions' => ['class' => 'col-lg-2 control-label'],
@@ -23,16 +45,27 @@ $this->title = '店铺设置';
     ])
     ?>
 
-    <?= $form->field($model, 'webname')->textInput() ?>
-    <?= $form->field($model, 'weixinid')->textInput() ?>
+    <?= Html::hiddenInput('weixinid',Yii::$app->session['wechat']['id']) ?>
+    <?= Html::tag('div',
+        Html::label('微信绑定','websettingform-wechat',['class' => 'col-lg-2 control-label']).
+        Html::tag('div',Yii::$app->session['wechat']['name'],['id' => 'websettingform-wechat', 'class' => 'col-lg-5', 'style' => 'padding-top: 7px;']),
+        ['class' => 'form-group']) ?>
+    <?= $form->field($model, 'storename')->textInput(['value'=>$model->storename?$model->storename:Yii::$app->session['wechat']['name']]) ?>
+    <?= $form->field($model, 'showmenu')->radioList(['1'=>'展示','0'=>'隐藏']) ?>
+    <?= $form->field($model, 'status')->radioList(['1'=>'启用','0'=>'关闭']) ?>
+
+<hr>
+    <h4>&nbsp;触发信息设置</h4>
+<hr>
+
+    <?= $form->field($model, 'matchmode')->radioList([1=>'精确匹配',0=>'模糊匹配']) ?>
     <?= $form->field($model, 'title')->textInput() ?>
     <?= $form->field($model, 'description')->textarea() ?>
+    <?= $form->field($model, 'image')->fileInput() ?>
 
-    <?= $form->field($model, 'status')->radioList([1=>'启用',0=>'关闭']) ?>
-    <?= Html::hiddenInput('RegisterForm[area]','',['id'=>'city-region-id'])?>
 
     <div class="form-group">
-        <div class="col-lg-offset-1 col-lg-11">
+        <div class="h3 col-lg-offset-2 col-lg-9">
             <?= Html::submitButton('提交保存', ['class' => 'col-md-2 btn btn-primary', 'name' => 'setting-button']) ?>
         </div>
     </div>
@@ -49,7 +82,7 @@ $this->title = '店铺设置';
 <head>
     <meta charset="utf-8">
     <title>微曼科技</title>
-    <link href='http://static.ptweixin.com/css/global.css?t=201409101111' rel='stylesheet' type='text/css'  />
+    <!--<link href='http://static.ptweixin.com/css/global.css?t=201409101111' rel='stylesheet' type='text/css'  />-->
     <link href='http://static.ptweixin.com/css/frame.css?t=201409101111' rel='stylesheet' type='text/css'  />
     <script type='text/javascript' src='http://static.ptweixin.com/js/jquery-1.7.2.min.js?t=201409101111' ></script>
     <script type='text/javascript' src='http://static.ptweixin.com/js/frame.js?t=201409101111' ></script>

@@ -115,15 +115,3 @@
 <?php }} ?>
         </tbody>
     </table>
-
-<?php
-//    echo LoadingWidget::widget([
-//        'target' => '.delete',
-//        'url' => 'delimg',
-//        'success' => 'function(reply){
-//                    if(reply.status == 1){
-//                        js remove..;
-//                    }
-//                }',
-//    ]);
-?>

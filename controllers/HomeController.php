@@ -4,7 +4,8 @@ use Yii;
 use app\models\Carousel;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
-use app\models\WebSettingForm;
+use app\models\StoreSettingForm;
+use yii\web\NotFoundHttpException;
 
 class HomeController extends \yii\web\Controller
 {
@@ -177,28 +178,16 @@ class HomeController extends \yii\web\Controller
      */
     public function actionSetting()
     {
-        $model = new WebSettingForm();
+        if(!isset(Yii::$app->session['wechat'])) $this->redirect('/weixin/index');
+        $model = StoreSettingForm::find()->where(['wx_id' => Yii::$app->session['wechat']['id']])->one();
+        //若不存在，应执行添加..(添加weixin表时应添加setting表)
+        if($model == null) throw new NotFoundHttpException('查看的页面不存在');
 
         if ( $model->load(Yii::$app->request->post()) ) {
-
-//            $model->ip = Yii::$app->request->userIP;
-//            $model->create_time = time();
-//            $model->password = md5($model->pswd.$model->salt.$model->salt);
-//
-//            // 成功
-//            if($model->save()){
-////                Yii::$app->user->identity = $model;         // 赋值登录
-//                Yii::$app->getUser()->login( $model->getUser() );
-//                $this->goHome();
-//            }else{
-//                print_r($model->errors);
-//            }
-////            return $this->refresh();
-            echo 'received';
+            $model->save();
         }
-        return $this->render('setting',array(
-            'model'=>$model,
-        ));
+
+        return $this->render('setting',['model' => $model]);
     }
 
     /*
