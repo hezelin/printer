@@ -5,6 +5,7 @@ use app\models\Carousel;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
 use app\models\StoreSettingForm;
+use app\models\SingleImageTextForm;
 use yii\web\NotFoundHttpException;
 
 class HomeController extends \yii\web\Controller
@@ -179,6 +180,7 @@ class HomeController extends \yii\web\Controller
     public function actionSetting()
     {
         if(!isset(Yii::$app->session['wechat'])) $this->redirect('/weixin/index');
+
         $model = StoreSettingForm::find()->where(['wx_id' => Yii::$app->session['wechat']['id']])->one();
         //若不存在，应执行添加..(添加weixin表时应添加setting表)
         if($model == null) throw new NotFoundHttpException('查看的页面不存在');
@@ -187,7 +189,37 @@ class HomeController extends \yii\web\Controller
             $model->save();
         }
 
-        return $this->render('setting',['model' => $model]);
+        $model2 = SingleImageTextForm::find()->where(['wx_id' => Yii::$app->session['wechat']['id']])->one();
+        //if($model2 == null) 添加用new
+
+        if ( $model2->load(Yii::$app->request->post()) ) {
+            $model2->description = Yii::$app->request->post('SingleImageTextForm')['description'];
+
+
+
+
+//            $model = new UploadForm();
+//
+//            if (Yii::$app->request->isPost) {
+//                $model->file = UploadedFile::getInstance($model, 'file');
+//
+//                if ($model->file && $model->validate()) {
+//                    $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
+//                }
+//            }
+//
+//            return $this->render('upload', ['model' => $model]);
+
+
+
+
+
+
+
+            $model2->save();var_dump($_FILES);
+        }
+
+        return $this->render('setting',['model' => $model, 'model2' => $model2]);
     }
 
     /*
