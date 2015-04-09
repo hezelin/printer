@@ -17,8 +17,7 @@ class StoreSettingForm extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['storename', 'title', 'showmenu', 'status'], 'required'],
-            [['title','description'], 'string'],
+            [['storename', 'showmenu', 'status'], 'required'],
             [['storename'], 'string', 'max' => 60],
             [['tel'],'match','pattern'=>'/^1[0-9]{10}$/','message'=>'手机号码格式错误'],
         ];

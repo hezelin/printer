@@ -3,14 +3,11 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
-class SingleImageTextForm extends \yii\db\ActiveRecord
+class SingleImageTextForm extends ActiveRecord
 {
-//    public $keyword = '微官网';
-//    public $matchmode = 1;
-//    public $title = '微官网标题';
-//    public $description;
-//    public $image = 'http://files.leiphone.com/uploads/01-5/-2/01-58-24-14.png';
+    public $imagefile;   //file型
 
     public static function tableName()
     {
@@ -23,10 +20,10 @@ class SingleImageTextForm extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['keyword', 'title', 'matchmode'], 'required'],
+            [['keyword', 'title', 'matchmode', 'status'], 'required'],
             [['keyword','title'], 'string'],
             [['keyword'], 'string', 'max' => 30],
-            [['image'], 'file', 'extensions' => 'gif, jpg, png, bmp, jpeg'],
+            [['imagefile'], 'file', 'extensions' => 'gif, jpg, png, bmp, jpeg'],
         ];
     }
 
@@ -40,7 +37,8 @@ class SingleImageTextForm extends \yii\db\ActiveRecord
             'matchmode' => '匹配模式',
             'title' => '图文消息标题',
             'description' => '图文消息简介',
-            'image' => '图文消息封面',
+            'imagefile' => '图文消息封面',
+            'status' => '启用规则',
         ];
     }
 }

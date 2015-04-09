@@ -67,10 +67,10 @@ $this->title = '店铺设置';
     <?= $form2->field($model2, 'matchmode')->radioList([1=>'精确匹配',2=>'模糊匹配']) ?>
     <?= $form2->field($model2, 'title')->textInput() ?>
     <?= $form2->field($model2, 'description')->textarea() ?>
-    <?= $form2->field($model2, 'image')->fileInput() ?>
-    <?php if($model2->image){ //is_file()?
-        echo '<img class="col-lg-offset-2" src="'.$model2->image.'" style="border:1px solid #ccc;max-width:350px">';
-    }?>
+    <?= $form2->field($model2, 'imagefile')->fileInput() ?>
+    <img class="col-lg-offset-2" src="/<?=is_file($model2->imageurl)?$model2->imageurl:'images/home.jpg' ?>" style="border:1px solid #ccc;max-width:350px">
+    <!--$image = 'http://files.leiphone.com/uploads/01-5/-2/01-58-24-14.png';-->
+    <?= $form2->field($model2, 'status')->radioList(['1'=>'是','0'=>'否']) ?>
 
     <div class="form-group">
         <div class="h3 col-lg-offset-2 col-lg-9">

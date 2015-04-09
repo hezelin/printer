@@ -61,7 +61,7 @@ class HomeController extends \yii\web\Controller
 
                 //上传
                 $filename = time().'_'.rand(100,999).'.'. $model->image->extension;  //原名$model->image->baseName
-                //if(!file_exists('uploads/')) mkdir('uploads/');
+
                 $yearmonthdir = date('Ym').'/';
                 if(!file_exists('uploads/'.$yearmonthdir)) mkdir('uploads/'.$yearmonthdir);
                 $filepath = 'uploads/'.$yearmonthdir.$filename;
@@ -190,33 +190,37 @@ class HomeController extends \yii\web\Controller
         }
 
         $model2 = SingleImageTextForm::find()->where(['wx_id' => Yii::$app->session['wechat']['id']])->one();
-        //if($model2 == null) 添加用new
+        if($model2 == null){   //第一次进入添加，或在添加公众号时添加
+            $model2 = new SingleImageTextForm();
+            $model2->wx_id = Yii::$app->session['wechat']['id'];
+            $model2->keyword = '微官网';
+            $model2->matchmode = 1;
+            $model2->title = '微官网首页';
+            $model2->description = '点击前往微官网首页';
+            $model2->imageurl = 'images/home.jpg';
+            $model2->status = '1';
+            $model2->save();
+            $this->refresh();
+        }
 
         if ( $model2->load(Yii::$app->request->post()) ) {
             $model2->description = Yii::$app->request->post('SingleImageTextForm')['description'];
+            $model2->status = Yii::$app->request->post('SingleImageTextForm')['status'];
 
+            //封面图上传处理
+            $model2->imagefile = UploadedFile::getInstance($model2, 'imagefile');
+            if ($model2->imagefile) {    //更换了封面图
+                $filename = time().'_'.rand(100,999).'.'. $model2->imagefile->extension;
+                $yearmonthdir = date('Ym').'/';
+                if(!file_exists('uploads/'.$yearmonthdir)) mkdir('uploads/'.$yearmonthdir);
+                $filepath = 'uploads/'.$yearmonthdir.$filename;
+                $model2->imagefile->saveAs($filepath);
+                $model2->imageurl = $filepath;
+            }
+            if(!is_file($model2->imageurl)) $model2->imageurl = 'images/home.jpg';  //默认图片
 
-
-
-//            $model = new UploadForm();
-//
-//            if (Yii::$app->request->isPost) {
-//                $model->file = UploadedFile::getInstance($model, 'file');
-//
-//                if ($model->file && $model->validate()) {
-//                    $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
-//                }
-//            }
-//
-//            return $this->render('upload', ['model' => $model]);
-
-
-
-
-
-
-
-            $model2->save();var_dump($_FILES);
+            $model2->imagefile = null;   //没有清空则不能直接使用save()
+            $model2->save();
         }
 
         return $this->render('setting',['model' => $model, 'model2' => $model2]);
