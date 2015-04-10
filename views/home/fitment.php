@@ -5,7 +5,7 @@
     use yii\bootstrap\Alert;
     use app\components\LoadingWidget;
 
-    $this->registerJsFile("/js/weixin/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
+    $this->registerJsFile("/js/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
     $this->registerJsFile("/js/myjs.js");
 ?>
 

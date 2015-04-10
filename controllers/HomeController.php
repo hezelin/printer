@@ -1,11 +1,11 @@
 <?php
 namespace app\controllers;
+use app\models\TblWeixin;
 use Yii;
 use app\models\Carousel;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
-use app\models\StoreSettingForm;
-use app\models\SingleImageTextForm;
+use app\models\TblStoreSetting;
 use yii\web\NotFoundHttpException;
 
 class HomeController extends \yii\web\Controller
@@ -18,12 +18,10 @@ class HomeController extends \yii\web\Controller
     public function actionFitment()
     {
         $model = new UploadForm();
-
         if(!isset(Yii::$app->session['wechat'])) $this->redirect('/weixin/index');
         $weixinid = Yii::$app->session['wechat']['id'];
         $carousel=Carousel::find()->where(['show' => 1,'weixinid' => $weixinid])->all();
         return $this->render('fitment', ['model' => $model,'carousel' => $carousel]);
-//>>> 82c0bb31bed8c25bcf6874f1ab328b1494b838c9
     }
 
     /*
@@ -116,12 +114,6 @@ class HomeController extends \yii\web\Controller
 
         @unlink($carousel['imgurl']);
         return $res;
-//        return '{"files": [
-//
-//  {
-//      "' .$imagename.'": true
-//  }
-//]}';
     }
 
     /*
@@ -160,10 +152,13 @@ class HomeController extends \yii\web\Controller
     /*
      * 微官网
      */
-    public function actionIndex()
+    public function actionIndex($id)
     {
-        $carousel=Carousel::find()->where(['show'=>1,'weixinid'=>1])->all();
-        return $this->renderPartial('index',['carousel'=>$carousel]);
+        $this->layout = 'home';  //使用home布局
+        $carousel=Carousel::find()->where(['show'=>1,'weixinid'=>$id])->all();
+        $store_setting=TblStoreSetting::find()->where(['wx_id'=>$id])->one();
+        $weixin=TblWeixin::findone($id);
+        return $this->render('index',['carousel'=>$carousel,'store_setting'=>$store_setting,'weixin'=>$weixin]);
     }
 
     /*
@@ -181,49 +176,54 @@ class HomeController extends \yii\web\Controller
     {
         if(!isset(Yii::$app->session['wechat'])) $this->redirect('/weixin/index');
 
-        $model = StoreSettingForm::find()->where(['wx_id' => Yii::$app->session['wechat']['id']])->one();
-        //若不存在，应执行添加..(添加weixin表时应添加setting表)
+        $model = TblStoreSetting::find()->where(['wx_id'=>Yii::$app->session['wechat']['id'],'enable'=>'Y'])->one();
+        //若不存在，可执行添加..(添加weixin表时应添加setting表)
         if($model == null) throw new NotFoundHttpException('查看的页面不存在');
 
         if ( $model->load(Yii::$app->request->post()) ) {
-            $model->save();
-        }
-
-        $model2 = SingleImageTextForm::find()->where(['wx_id' => Yii::$app->session['wechat']['id']])->one();
-        if($model2 == null){   //第一次进入添加，或在添加公众号时添加
-            $model2 = new SingleImageTextForm();
-            $model2->wx_id = Yii::$app->session['wechat']['id'];
-            $model2->keyword = '微官网';
-            $model2->matchmode = 1;
-            $model2->title = '微官网首页';
-            $model2->description = '点击前往微官网首页';
-            $model2->imageurl = 'images/home.jpg';
-            $model2->status = '1';
-            $model2->save();
-            $this->refresh();
-        }
-
-        if ( $model2->load(Yii::$app->request->post()) ) {
-            $model2->description = Yii::$app->request->post('SingleImageTextForm')['description'];
-            $model2->status = Yii::$app->request->post('SingleImageTextForm')['status'];
-
-            //封面图上传处理
-            $model2->imagefile = UploadedFile::getInstance($model2, 'imagefile');
-            if ($model2->imagefile) {    //更换了封面图
-                $filename = time().'_'.rand(100,999).'.'. $model2->imagefile->extension;
-                $yearmonthdir = date('Ym').'/';
-                if(!file_exists('uploads/'.$yearmonthdir)) mkdir('uploads/'.$yearmonthdir);
-                $filepath = 'uploads/'.$yearmonthdir.$filename;
-                $model2->imagefile->saveAs($filepath);
-                $model2->imageurl = $filepath;
+            if($model->save()){
+                //
+            }else{
+                print_r($model->errors);
             }
-            if(!is_file($model2->imageurl)) $model2->imageurl = 'images/home.jpg';  //默认图片
-
-            $model2->imagefile = null;   //没有清空则不能直接使用save()
-            $model2->save();
         }
 
-        return $this->render('setting',['model' => $model, 'model2' => $model2]);
+//        //触发信息设置
+//        $model2 = SingleImageTextForm::find()->where(['wx_id' => Yii::$app->session['wechat']['id']])->one();
+//        if($model2 == null){   //第一次进入添加，或在添加公众号时添加
+//            $model2 = new SingleImageTextForm();
+//            $model2->wx_id = Yii::$app->session['wechat']['id'];
+//            $model2->keyword = '微官网';
+//            $model2->matchmode = 1;
+//            $model2->title = '微官网首页';
+//            $model2->description = '点击前往微官网首页';
+//            $model2->imageurl = 'images/home.jpg';
+//            $model2->status = '1';
+//            $model2->save();
+//            $this->refresh();
+//        }
+//
+//        if ( $model2->load(Yii::$app->request->post()) ) {
+//            $model2->description = Yii::$app->request->post('SingleImageTextForm')['description'];
+//            $model2->status = Yii::$app->request->post('SingleImageTextForm')['status'];
+//
+//            //封面图上传处理
+//            $model2->imagefile = UploadedFile::getInstance($model2, 'imagefile');
+//            if ($model2->imagefile) {    //更换了封面图
+//                $filename = time().'_'.rand(100,999).'.'. $model2->imagefile->extension;
+//                $yearmonthdir = date('Ym').'/';
+//                if(!file_exists('uploads/'.$yearmonthdir)) mkdir('uploads/'.$yearmonthdir);
+//                $filepath = 'uploads/'.$yearmonthdir.$filename;
+//                $model2->imagefile->saveAs($filepath);
+//                $model2->imageurl = $filepath;
+//            }
+//            if(!is_file($model2->imageurl)) $model2->imageurl = 'images/home.jpg';  //默认图片
+//
+//            $model2->imagefile = null;   //没有清空则不能直接使用save()
+//            $model2->save();
+//        }
+
+        return $this->render('setting',['model' => $model]);
     }
 
     /*

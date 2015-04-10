@@ -1,7 +1,4 @@
-/*!
- * iScroll v4.1.9 ~ Copyright (c) 2011 Matteo Spinelli, http://cubiq.org
- * Released under MIT license, http://cubiq.org/license
- */
+/**************首页轮播图动作*****************/
  var ii =0;
 (function(){
 var m = Math,
@@ -1092,3 +1089,44 @@ if (typeof exports !== 'undefined') exports.iScroll = iScroll;
 else window.iScroll = iScroll;
 
 })();
+
+//应用轮播图代码
+var myScroll;
+function loaded(){
+	myScroll = new iScroll('wrapper', {
+		snap: true,
+		momentum: false,
+		hScrollbar: false,
+		onScrollEnd: function () {
+			document.querySelector('#indicator > li.active').className = '';
+			document.querySelector('#indicator > li:nth-child(' + (this.currPageX+1) + ')').className = 'active';
+		}
+	});
+}
+document.addEventListener('DOMContentLoaded', loaded, false);
+
+
+
+var count = document.getElementById("thelist").getElementsByTagName("img").length;
+
+var count2 = document.getElementsByClassName("menuimg").length;
+for(i=0;i<count;i++){
+	//设置图片显示大小
+	document.getElementById("thelist").getElementsByTagName("li").item(i).style.cssText = " width:"+100/count+"%";
+	document.getElementById("thelist").getElementsByTagName("img").item(i).style.cssText = " width:"+document.body.clientWidth+"px";
+	document.getElementById("thelist").getElementsByTagName("img").item(i).style.cssText = " height:"+document.body.clientWidth/2+"px";
+}
+document.getElementById("scroller").style.cssText = " width:"+document.body.clientWidth*count+"px";
+
+setInterval(function(){
+	myScroll.scrollToPage('next', 0,400,count);
+},3500 );
+
+window.onresize = function(){
+	for(i=0;i<count;i++){
+		document.getElementById("thelist").getElementsByTagName("li").item(i).style.cssText = " width:"+100/count+"%";
+		document.getElementById("thelist").getElementsByTagName("img").item(i).style.cssText = " width:"+document.body.clientWidth+"px";
+		document.getElementById("thelist").getElementsByTagName("img").item(i).style.cssText = " height:"+document.body.clientWidth/2+"px";
+	}
+	document.getElementById("scroller").style.cssText = " width:"+document.body.clientWidth*count+"px";
+}
