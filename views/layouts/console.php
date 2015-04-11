@@ -96,7 +96,7 @@ WeixinAsset::register($this);
                                     'label' => '二维码管理',
                                     'items' => [
                                         ['label' => '积分二维码','url' => '/code/score'],
-                                        ['label' => '生成机器码','url' => '/code/machine'],
+                                        ['label' => '生成机器码','url' => '/code/index'],
                                         ['label' => '维修员绑定码','url' => '/code/binding'],
                                     ],
                                 ],
