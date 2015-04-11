@@ -38,6 +38,13 @@ $this->title = '店铺设置';
     <?= $form->field($model, 'store_name')->textInput(['value'=>$model->store_name?$model->store_name:Yii::$app->session['wechat']['name']]) ?>
     <?= $form->field($model, 'menu_name')->textInput() ?>
     <?= $form->field($model, 'style')->dropDownList(['1'=>'home-default.css'],['prompt'=>'请选择']) ?>
+    <?php
+        switch($model->style){
+            case '1': $cssimg = 'home-default.jpg'; break;
+            default : $cssimg = 'home-default.jpg';
+        }
+    ?>
+    <img id="cssimg" class="col-lg-offset-3" src="/images/<?= $cssimg ?>" style="border:1px solid #ccc;max-width:250px">
     <?= $form->field($model, 'status')->radioList(['1'=>'开启','0'=>'关闭']) ?>
 
     <div class="form-group">
@@ -47,3 +54,27 @@ $this->title = '店铺设置';
     </div>
 
     <?php ActiveForm::end(); ?>
+
+
+<script>
+    <?php $this->beginBlock('JS_END') ?>
+    //样式文件的选择及预览
+    $('#tblstoresetting-style').on('change',function(){
+        if($(this).val() == ''){
+            $('#cssimg').hide();
+            return false;
+        }
+        switch($(this).val()){
+            case '1': cssimg = 'home-default.jpg'; break;
+            default : cssimg = 'home-default.jpg';
+        }
+        $('#cssimg').attr('src','/images/'+ cssimg)
+        if(!($('#cssimg').is(':visible')))
+            $('#cssimg').show();
+    });
+
+    <?php $this->endBlock();?>
+</script>
+<?php
+    $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
+?>

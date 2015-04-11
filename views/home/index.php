@@ -2,7 +2,13 @@
     use yii\helpers\Url;
     $this->title = $store_setting->store_name;
     if(!$store_setting->status) {echo '本网站暂已关闭！';exit;}
+    switch($store_setting->style){
+        case '1': $cssfile = 'home-default.css'; break;
+        default : $cssfile = 'home-default.css';
+    }
+    $this->registerCssFile("/css/home/".$cssfile);
 ?>
+<link href="/css/weixin.css" rel="stylesheet">
 
 <!--轮播图-->
 <div class="banner" style="margin-top: 2px">

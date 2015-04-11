@@ -15,7 +15,7 @@ class HomeAsset extends AssetBundle
     public $css = [
         'css/home/button_menu.css',  //位于web文件夹而非assets
         'css/home/iscroll.css',
-        'css/home/style.css',
+        //'css/home/home-default.css',  //动态数据
     ];
     public $js = [
         'js/home/button_menu.js',

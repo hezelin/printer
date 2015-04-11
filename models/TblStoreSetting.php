@@ -32,7 +32,8 @@ class TblStoreSetting extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'store_name', 'wx_id', 'menu_name', 'style', 'status', 'add_time'], 'required'],
+            [['id', 'store_name', 'wx_id', 'menu_name', 'status', 'add_time'], 'required'],
+            [['style'], 'required', 'message'=>'请选择样式'],
             [['id', 'wx_id', 'add_time'], 'integer'],
             [['status', 'enable'], 'string'],
             [['store_name'], 'string', 'max' => 60],
