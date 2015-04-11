@@ -120,8 +120,19 @@
         </tbody>
     </table>
 
+
+<?php
+//echo Html::a('删除', ['delimg', 'id' => $model->id], [
+//    'class' => 'btn btn-danger',
+//    'data' => [
+//        'confirm' => '确定删除该轮播图？',
+//        'method' => 'post',
+//    ],
+//]); ?>
+
 <?= LoadingWidget::widget([  //动态添加的元素用不了
-    'target' => '.deletebtn',
+    'target' => '.table',
+    'childTarget' => '.deletebtn',
     'confirmMessage'=>'确定删除该轮播图？',
     'th' => 'obj',      //$(this)
     'url' => "delimg/'+$(this).attr('data-id')+'", //注意调用处外围有单引号

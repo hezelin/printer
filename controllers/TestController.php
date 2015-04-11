@@ -10,6 +10,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use app\models\Carousel;
+
 /**
  * TestController implements the CRUD actions for TblWeixin model.
  */
@@ -116,5 +118,15 @@ class TestController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionModaltest()
+    {
+        return $this->render('modal_test');
+    }
+    public function actionGetimage()
+    {
+        $carousel=Carousel::find()->where(['weixinid' => 1])->asArray()->one();
+        return json_encode($carousel);
     }
 }
