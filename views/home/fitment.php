@@ -3,6 +3,7 @@
 
     use dosamigos\fileupload\FileUploadUI;
     use yii\bootstrap\Alert;
+    use yii\helpers\Url;
     use app\components\LoadingWidget;
 
     $this->registerJsFile("/js/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
@@ -17,7 +18,10 @@
     }
 </style>
 
-<h3>首页轮播图片设置</h3>
+<h3>首页轮播图片设置
+    <a href="<?= Url::toRoute(['home/index','id'=>Yii::$app->session['wechat']['id']]) ?>" target="_blank" style="font-size:14px;float: right;">
+        前往店铺首页</a>
+</h3>
 <hr>
 <?=Alert::widget([
     'options' => [
@@ -94,7 +98,7 @@
             <td>
                 <p class="name">
 
-                    <span class="textedit" data-tdtype="edit" data-id="<?=$onecarousel['id'] ?>" data-field="title" data-unique="0"><?php echo trim($onecarousel['title'])?$onecarousel['title']:"点击设置";?></span>
+                    <span class="textedit" data-tdtype="edit" data-id="<?=$onecarousel['id'] ?>" data-field="title" data-require="1" data-unique="0"><?php echo trim($onecarousel['title'])?$onecarousel['title']:"点击设置";?></span>
 
                 </p>
 
@@ -104,7 +108,7 @@
             </td>
             <td>
 
-                <button class="btn btn-danger delete" data-id="<?=$onecarousel['id'] ?>" data-type="DELETE" data-url="home/delimg" onclick="deleteimg(this)">
+                <button class="btn btn-danger deletebtn" data-id="<?=$onecarousel['id'] ?>" data-type="DELETE">
                     <i class="glyphicon glyphicon-trash"></i>
                     <span>删除</span>
                 </button>
@@ -115,3 +119,16 @@
 <?php }} ?>
         </tbody>
     </table>
+
+<?= LoadingWidget::widget([  //动态添加的元素用不了
+    'target' => '.deletebtn',
+    'confirmMessage'=>'确定删除该轮播图？',
+    'th' => 'obj',      //$(this)
+    'url' => "delimg/'+$(this).attr('data-id')+'", //注意调用处外围有单引号
+    'success' => 'function(msg){
+            if(msg){
+                obj.parent().parent().fadeOut(1000,function(){$(this).remove()}); //移除hr
+            }
+        }',
+]);
+?>

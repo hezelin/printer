@@ -156,7 +156,8 @@ class HomeController extends \yii\web\Controller
     {
         $this->layout = 'home';  //使用home布局
         $carousel=Carousel::find()->where(['show'=>1,'weixinid'=>$id])->all();
-        $store_setting=TblStoreSetting::find()->where(['wx_id'=>$id])->one();
+        $store_setting=TblStoreSetting::find()->where(['enable'=>'Y','wx_id'=>$id])->one();
+        if($store_setting == null) throw new NotFoundHttpException('您所访问的页面不存在');
         $weixin=TblWeixin::findone($id);
         return $this->render('index',['carousel'=>$carousel,'store_setting'=>$store_setting,'weixin'=>$weixin]);
     }
