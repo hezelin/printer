@@ -24,6 +24,9 @@ class LoadingWidget extends Widget{
     public $beforeSend = 'function(XHR){}';
     public $success = 'function(reply){}';
     public $wid;
+    //OS增加
+    public $confirmMessage = '';
+    public $childTarget = '';
 
     public function init(){
         parent::init();
@@ -58,23 +61,28 @@ MODAL_CONTENT;
     private  function registerScript()
     {
         $this->url = $this->url? "'" . $this->url . "'" : "$(this).attr('href')";
+        $this->childTarget = $this->childTarget? "'" . $this->childTarget . "'," : ""; //可作用于动态添加的元素
+        $confirm1 = $this->confirmMessage? "if(confirm('".$this->confirmMessage."')){":"";
+        $confirm2 = $this->confirmMessage? "}":"";
 
         $script = <<<JS_TREE
-        $('{$this->target}').click(function(){
+        $('{$this->target}').on('click',{$this->childTarget}function(){
             if( $(this).hasClass('my-disabled') || $(this).hasClass('disabled') )
                 return false;
-            var {$this->th} = $(this);
-            $('#{$this->wid}').modal('show');
-            $.ajax({
-                type:'{$this->type}',
-                url:{$this->url},
-                dataType:'{$this->dataType}',
-                beforeSend:{$this->beforeSend},
-                success:{$this->success},
-                complete:function(XHR, TS){
-                    $('#{$this->wid}').modal('hide');
-                }
-            });
+            {$confirm1}
+                var {$this->th} = $(this);
+                $('#{$this->wid}').modal('show');
+                $.ajax({
+                    type:'{$this->type}',
+                    url:{$this->url},
+                    dataType:'{$this->dataType}',
+                    beforeSend:{$this->beforeSend},
+                    success:{$this->success},
+                    complete:function(XHR, TS){
+                        $('#{$this->wid}').modal('hide');
+                    }
+                });
+            {$confirm2}
 
             return false;
         });

@@ -1,0 +1,30 @@
+@charset "utf-8";
+/*
+
+	@arguments :  就是捕捉用户所有传入的参数，然后拼接
+*/
+/********  圆角  ***************/
+/********* 阴影 *****
+.box-shadow(@style,@c) when ( iscolor(@c) ){
+	box-shadow:@style @c;
+	-webkit-box-shadow:@style @c;
+	-moz-box-shadow:@style @c;
+}
+**********/
+/********   省略号  ********/
+/**********  渐变 ***********/
+/***********  字体  ************/
+/***********  图标 url *********/
+/*********** 颜色常量  ***************/
+/*
+
+lighten(@color, 10%);     // return a color which is 10% *lighter* than @color,	较明亮些
+darken(@color, 10%);      // return a color which is 10% *darker* than @color	较暗些
+saturate(@color, 10%);    // return a color 10% *more* saturated than @color	饱和度高些
+desaturate(@color, 10%);  // return a color 10% *less* saturated than @color	饱和度低些
+
+fadein(@color, 10%);      // return a color 10% *less* transparent than @color	透明些
+fadeout(@color, 10%);     // return a color 10% *more* transparent than @color	不透明些
+fade(@color, 50%);        // return @color with 50% transparency				50% 透明度
+
+*/

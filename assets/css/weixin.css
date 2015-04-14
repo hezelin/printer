@@ -1,0 +1,213 @@
+@charset "utf-8";
+/*
+
+	@arguments :  就是捕捉用户所有传入的参数，然后拼接
+*/
+/********  圆角  ***************/
+/********* 阴影 *****
+.box-shadow(@style,@c) when ( iscolor(@c) ){
+	box-shadow:@style @c;
+	-webkit-box-shadow:@style @c;
+	-moz-box-shadow:@style @c;
+}
+**********/
+/********   省略号  ********/
+/**********  渐变 ***********/
+/***********  字体  ************/
+/***********  图标 url *********/
+/*********** 颜色常量  ***************/
+/*
+
+lighten(@color, 10%);     // return a color which is 10% *lighter* than @color,	较明亮些
+darken(@color, 10%);      // return a color which is 10% *darker* than @color	较暗些
+saturate(@color, 10%);    // return a color 10% *more* saturated than @color	饱和度高些
+desaturate(@color, 10%);  // return a color 10% *less* saturated than @color	饱和度低些
+
+fadein(@color, 10%);      // return a color 10% *less* transparent than @color	透明些
+fadeout(@color, 10%);     // return a color 10% *more* transparent than @color	不透明些
+fade(@color, 50%);        // return @color with 50% transparency				50% 透明度
+
+*/
+html,
+body {
+  height: 100%;
+}
+.wrap {
+  min-height: 100%;
+  height: auto;
+  margin: 0 auto -60px;
+  padding: 0 0 60px;
+}
+.wrap > .container {
+  padding: 70px 15px 20px;
+}
+.footer {
+  height: 60px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+.jumbotron {
+  text-align: center;
+  background-color: transparent;
+}
+.jumbotron .btn {
+  font-size: 21px;
+  padding: 14px 24px;
+}
+.not-set {
+  color: #c55;
+  font-style: italic;
+}
+/* add sorting icons to gridview sort links */
+a.asc:after,
+a.desc:after {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  padding-left: 5px;
+}
+a.asc:after {
+  content: /*"\e113"*/ "\e151";
+}
+a.desc:after {
+  content: /*"\e114"*/ "\e152";
+}
+.sort-numerical a.asc:after {
+  content: "\e153";
+}
+.sort-numerical a.desc:after {
+  content: "\e154";
+}
+.sort-ordinal a.asc:after {
+  content: "\e155";
+}
+.sort-ordinal a.desc:after {
+  content: "\e156";
+}
+.grid-view th {
+  white-space: nowrap;
+}
+.hint-block {
+  display: block;
+  margin-top: 5px;
+  color: #999;
+}
+.error-summary {
+  color: #a94442;
+  background: #fdf7f7;
+  border-left: 3px solid #eed3d7;
+  padding: 10px 20px;
+  margin: 0 0 15px 0;
+}
+.red {
+  color: red;
+}
+.yellow {
+  color: yellow;
+}
+.green {
+  color: #008000;
+}
+.blue {
+  color: #0000ff;
+}
+.orange {
+  color: orange;
+}
+.m-l-12 {
+  margin-left: 12px;
+}
+#tree-menu {
+  background-color: #dddddd;
+  padding-top: 20px;
+  position: fixed;
+  z-index: 100;
+}
+#tree-menu .panel {
+  box-shadow: none;
+  background-color: #DDDDDD;
+}
+#tree-menu .panel-body {
+  padding: 0;
+}
+#tree-menu .nav > li > a {
+  padding: 5px 25px 5px;
+  color: #333333;
+}
+#tree-menu .nav-pills > li.active > a,
+#tree-menu .nav-pills > li.active > a:focus,
+#tree-menu .nav-pills > li.active > a:hover,
+#tree-menu .nav-pills > li > a:focus {
+  color: #ffffff;
+  background-color: #337ab7;
+}
+#tree-menu .panel-title > a {
+  display: block;
+  color: #111111;
+}
+#tree-menu .panel-title > .head-active {
+  color: #ffffff;
+  background-color: #337ab7;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  padding: 6px 0;
+}
+#tree-menu .panel-default {
+  border: none;
+}
+#tree-menu .panel-default .panel-heading {
+  background-color: #DDDDDD !important;
+  border-bottom: none !important;
+  padding-left: 0;
+}
+#tree-menu a:focus,
+#tree-menu a:hover {
+  text-decoration: none;
+}
+/***********   微信管理 ******************/
+.circle {
+  width: 16px;
+  height: 16px;
+  -webkit-border-radius: 16px;
+  -moz-border-radius: 16px;
+  -ms-border-radius: 16px;
+  -o-border-radius: 16px;
+  border-radius: 16px;
+  background-color: #dddddd;
+  float: left;
+  margin-right: 5px;
+  margin-top: 2px;
+}
+.due-status {
+  color: red;
+}
+.due-status .circle {
+  background-color: #ff0000;
+}
+.init-status {
+  color: #cccccc;
+}
+.init-status .circle {
+  background-color: #dddddd;
+}
+.run-status {
+  color: #00ca00;
+}
+.run-status .circle {
+  background-color: #00ca00;
+}
+.stop-status {
+  color: orange;
+}
+.stop-status .circle {
+  background-color: #ffa500;
+}
+/***********   微信管理结束 ***************/
