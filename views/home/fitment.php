@@ -1,11 +1,10 @@
 <?php
-    $this->title = '店铺装修';
-
     use dosamigos\fileupload\FileUploadUI;
     use yii\bootstrap\Alert;
     use yii\helpers\Url;
     use app\components\LoadingWidget;
 
+    $this->title = '店铺装修';
     $this->registerJsFile("/js/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
     $this->registerJsFile("/js/myjs.js");
 ?>
@@ -35,7 +34,8 @@
 <?= FileUploadUI::widget([
     'model' => $model,
     'attribute' => 'image',
-    'url' => ['home/receiveimage', 'weixinid' => $_GET['id']],
+//    'url' => ['home/receiveimage', 'weixinid' => $_GET['id']],
+    'url' => Url::toRoute(['home/receiveimage', 'weixinid' => Yii::$app->session['wechat']['id']]),
     'gallery' => false,
     'fieldOptions' => [
         'accept' => 'image/*',
