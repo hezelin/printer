@@ -11,17 +11,13 @@ class AppController extends \yii\web\Controller
         return $this->render('index');
     }
 
-    public function actionView()
+    public function actionView($id)
     {
         $wx = new WxChat($_GET);
-        $wx->token = md5( Yii::$app->params['token'].$wx->getId() );
-        //$wx->debug = true;
+        $wx->token = md5( $id . Yii::$app->params['wxTokenSalt'] );
 
-        //网址接入时使用
         if (isset($_GET['echostr']))
-        {
             $wx->valid();
-        }
 
         $wx->init();
         $reply = '';

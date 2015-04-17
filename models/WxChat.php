@@ -3,11 +3,10 @@
 namespace app\models;
 
 use Yii;
+
 /**
  * 微信消息 模型
  */
-
-
 class WxChat
 {
 
@@ -18,7 +17,6 @@ class WxChat
     public $echostr;
     //
     public $token;
-    public $debug = false;
     public $msg = array();
     public $setFlag = false;
 
@@ -33,8 +31,6 @@ class WxChat
     {
         foreach ($params as $k1 => $v1)
         {
-
-
             if (property_exists($this, $k1))
                 $this->$k1 = $v1;
         }
@@ -48,10 +44,9 @@ class WxChat
      */
     public function valid()
     {
-        //valid signature , option
         if($this->checkSignature()){
             echo $this->echostr;
-            Yii::app()->end();
+            Yii::$app->end();
         }
     }
 
@@ -64,10 +59,7 @@ class WxChat
     public function init()
     {
         $postStr = empty($GLOBALS["HTTP_RAW_POST_DATA"]) ? '' : $GLOBALS["HTTP_RAW_POST_DATA"];
-        if ($this->debug)
-        {
-            $this->log($postStr);
-        }
+
         if (!empty($postStr)) {
             $this->msg = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
         }
@@ -168,10 +160,7 @@ class WxChat
      */
     public function reply($data)
     {
-        if ($this->debug)
-        {
-            $this->log($data);
-        }
+
         echo $data;
     }
 
@@ -188,29 +177,8 @@ class WxChat
         $tmpStr = implode( $tmpArr );
         $tmpStr = sha1( $tmpStr );
 
-        if( $tmpStr == $this->signature ){
-            return true;
-        }else{
-            return false;
-        }
+        return ($tmpStr == $this->signature)? true:fasle;
     }
-
-    /**
-     * log
-     *
-     * @access private
-     * @return void
-     */
-    private function log($log)
-    {
-        if ($this->debug)
-        {
-            file_put_contents(Yii::getPathOfAlias('application').'/runtime/weixin_log.txt', var_export($log, true)."\n\r", FILE_APPEND);
-        }
-    }
-
-
-
 
 
 }
