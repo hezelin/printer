@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\WxBase;
 use Yii;
 use app\models\TblWeixin;
 use yii\filters\AccessControl;
@@ -137,7 +138,7 @@ class WeixinController extends \yii\web\Controller
         $model->status = 2;
         $model->due_time = time() + 3600 * 24 * 7;
         if($model->save()){
-
+            \app\models\WxBase::createMenu();
             return $this->redirect(['index']);
         }
 //        return $this->render('open');
