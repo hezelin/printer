@@ -4,15 +4,15 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b85c59db407aa164df05afd246802c43",
+    "hash": "ab4b15f15dbf9c83b2946a3102db634d",
     "packages": [
         {
             "name": "2amigos/yii2-file-upload-widget",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/2amigos/yii2-file-upload-widget.git",
-                "reference": "94c266ea8b44acec9c95873d0dd8ff339db609fd",
+                "reference": "2ecf63e5f47e429e95ab598391399e0ed03e716f",
                 "mirrors": [
                     {
                         "url": "/%package%/%normalizedUrl%.%type%",
@@ -22,8 +22,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/2amigos/yii2-file-upload-widget/zipball/94c266ea8b44acec9c95873d0dd8ff339db609fd",
-                "reference": "94c266ea8b44acec9c95873d0dd8ff339db609fd",
+                "url": "https://api.github.com/repos/2amigos/yii2-file-upload-widget/zipball/2ecf63e5f47e429e95ab598391399e0ed03e716f",
+                "reference": "2ecf63e5f47e429e95ab598391399e0ed03e716f",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -34,7 +34,7 @@
             },
             "require": {
                 "2amigos/yii2-gallery-widget": "~1.0",
-                "bower-asset/blueimp-file-upload": "~9.9",
+                "bower-asset/blueimp-file-upload": "~9.9.0",
                 "yiisoft/yii2": "~2.0.0",
                 "yiisoft/yii2-bootstrap": "~2.0.0"
             },
@@ -83,7 +83,7 @@
                 "yii 2",
                 "yii2"
             ],
-            "time": "2015-04-12 22:02:35"
+            "time": "2015-04-14 19:11:24"
         },
         {
             "name": "2amigos/yii2-gallery-widget",
@@ -645,6 +645,60 @@
             "license": [
                 "MIT"
             ]
+        },
+        {
+            "name": "callmez/yii2-wechat-sdk",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/callmez/yii2-wechat-sdk.git",
+                "reference": "25e2d99c5e9bfd44edbe5e65ef519507c66cfa3c",
+                "mirrors": [
+                    {
+                        "url": "/%package%/%normalizedUrl%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/callmez/yii2-wechat-sdk/zipball/25e2d99c5e9bfd44edbe5e65ef519507c66cfa3c",
+                "reference": "25e2d99c5e9bfd44edbe5e65ef519507c66cfa3c",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "http://pkg.phpcomposer.com/repo/packagist/dists/%package%/%version%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "callmez\\wechat\\sdk\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "CallMeZ",
+                    "email": "callme-z@qq.com"
+                }
+            ],
+            "description": "The wechat api for the Yii framework",
+            "keywords": [
+                "sdk",
+                "wechat",
+                "weixin",
+                "yii2"
+            ],
+            "time": "2015-03-18 09:02:06"
         },
         {
             "name": "cebe/markdown",
@@ -1651,7 +1705,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "callmez/yii2-wechat-sdk": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

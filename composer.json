@@ -21,7 +21,8 @@
         "yiisoft/yii2-swiftmailer": "*",
         "linslin/yii2-curl": "*",
         "xj/yii2-qrcode-widget": "*",
-        "2amigos/yii2-file-upload-widget": "*"
+        "2amigos/yii2-file-upload-widget": "*",
+        "callmez/yii2-wechat-sdk": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
