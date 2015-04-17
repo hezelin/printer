@@ -120,6 +120,33 @@ class WeixinController extends \yii\web\Controller
             return json_encode(['status'=>1]);
     }
 
+    /*
+     * 续费
+     */
+    public function actionRenew($id)
+    {
+        return $this->render('renew');
+    }
+
+    /*
+     * 开通 , 设置菜单 + 开通
+     */
+    public function actionOpen($id)
+    {
+        $model = $this->findModel($id);
+        $model->status = 2;
+        $model->due_time = time() + 3600 * 24 * 7;
+        if($model->save()){
+
+            return $this->redirect(['index']);
+        }
+//        return $this->render('open');
+    }
+
+
+    /*
+     * 找到
+     */
     protected function findModel($id)
     {
         if (($model = TblWeixin::findOne($id)) !== null) {
@@ -128,6 +155,5 @@ class WeixinController extends \yii\web\Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-
 
 }

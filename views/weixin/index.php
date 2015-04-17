@@ -69,7 +69,7 @@ echo GridView::widget([
             'buttons' => [
                 'renew' => function($url,$model,$key){
                     if($model->status == 1)
-                        return Html::a('开通',$url);
+                        return Html::a('开通',Url::to(['weixin/open','id'=>$model->id]));
                     return Html::a('续费', $url);
                 },
                 'upgrade' => function($url,$model,$key){
