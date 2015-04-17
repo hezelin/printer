@@ -14,7 +14,15 @@ $this->title = '店铺设置';
 <!--    2. 设置触发信息后，当用户输入匹配的关键词后公众号将自动回复设定的单图文消息，其链接为微官网首页。<br/>-->
 <!--    3. <span class="red">精确匹配</span>意为用户输入的文字与关键词完全一致才触发，<span class="red">模糊匹配</span>则为输入的文字中包含关键词就会触发。-->
 </div>
-
+<?php
+    if( Yii::$app->session->hasFlash('error') )
+    echo Alert::widget([
+    'options' => [
+    'class' => 'alert-danger',
+    ],
+    'body' => Yii::$app->session->getFlash('error'),
+    ]);
+?>
 <hr>
     <h4>&nbsp;店铺基础设置<a href="<?= Url::toRoute(['home/index','id'=>Yii::$app->session['wechat']['id']]) ?>"
                       target="_blank" style="font-size:14px;float: right;">前往店铺首页</a></h4>
@@ -45,7 +53,6 @@ $this->title = '店铺设置';
         }
     ?>
     <img id="cssimg" class="col-lg-offset-3" src="/images/<?= $cssimg ?>" style="border:1px solid #ccc;max-width:250px">
-    <?= $form->field($model, 'status')->radioList(['1'=>'开启','0'=>'关闭']) ?>
 
     <div class="form-group">
         <div class="h3 col-lg-offset-2 col-lg-9">

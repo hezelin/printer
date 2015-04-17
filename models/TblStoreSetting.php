@@ -12,7 +12,6 @@ use Yii;
  * @property string $store_name
  * @property string $menu_name
  * @property string $style
- * @property string $status
  * @property string $add_time
  * @property string $enable
  */
@@ -32,10 +31,9 @@ class TblStoreSetting extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'store_name', 'wx_id', 'menu_name', 'status', 'add_time'], 'required'],
-            [['style'], 'required', 'message'=>'请选择样式'],
+            [['id', 'wx_id', 'menu_name', 'add_time'], 'required'],
             [['id', 'wx_id', 'add_time'], 'integer'],
-            [['status', 'enable'], 'string'],
+            [['enable'], 'string'],
             [['store_name'], 'string', 'max' => 60],
             [['menu_name'], 'string', 'max' => 20],
             [['style'], 'string', 'max' => 50]
@@ -48,12 +46,11 @@ class TblStoreSetting extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'wx_id' => '微信ID',
+            'id' => '店铺设置id',
+            'wx_id' => '微信id',
             'store_name' => '店铺名称',
-            'menu_name' => '微信入口菜单名',
-            'style' => '样式选择',
-            'status' => '店铺开关',
+            'menu_name' => '微信入口名字',
+            'style' => '样式',
             'add_time' => '添加时间',
             'enable' => '是否有效',
         ];

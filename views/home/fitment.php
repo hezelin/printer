@@ -49,12 +49,8 @@
         'fileuploaddone' => 'function(e, data) {
                                     $("#newadd").show();
                                     $("#newtable").show();
-                                    console.log(e);
-                                    console.log(data);
                                 }',
         'fileuploadfail' => 'function(e, data) {
-                                    console.log(e);
-                                    console.log(data);
                                 }',
         'fileuploaddestroy' => 'function(e, data) {
                                     //还得添加删除按钮事件$(this).find(tr).remove();

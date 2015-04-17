@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 use app\models\TblWeixin;
+use app\models\ToolBase;
 use Yii;
 use app\models\Carousel;
 use app\models\UploadForm;
@@ -182,11 +183,10 @@ class HomeController extends \yii\web\Controller
         if($model == null) throw new NotFoundHttpException('查看的页面不存在');
 
         if ( $model->load(Yii::$app->request->post()) ) {
-            if($model->save()){
-                //
-            }else{
-                print_r($model->errors);
-            }
+            if($model->save())
+                return $this->render('//tips/success',['tips'=>'资料修改成功']);
+            else
+                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
 //        //触发信息设置
