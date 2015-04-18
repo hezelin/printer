@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 use app\models\TblWeixin;
+use yii\helpers\Url;
 use app\models\ToolBase;
 use Yii;
 use app\models\Carousel;
@@ -76,30 +77,18 @@ class HomeController extends \yii\web\Controller
                 $newid = $newcarousel->attributes['id'];
 
                 if($newid) {
-                    //返回上传的图片信息并显示
-//                $returnarr = [
-//                    'files' => [
-//                        'name' => $filename,
-//                        'size' => $model->image->size,
-//                        'url' => '/'.$filepath,
-//                        'thumbnailUrl' => '/'.$filepath,
-//                        'deleteUrl' => 'home/delimg?imagename='.$filepath,
-//                        'deleteType' => 'DELETE'
-//                    ]
-//                ];
-//                return json_encode($returnarr);   //报空文件错
-
-                    return '{ "files": [
-                        {
-                            "id":"' . $newid . '",
-                            "name": "' . $filename . '",
-                            "size": ' . $model->image->size . ',
-                            "url" : "/' . $filepath . '",
-                            "thumbnailUrl": "/' . $filepath . '",
-                            "deleteUrl": "home/delimg?imagename=' . $filepath . '",
-                            "deleteType": "DELETE"
-                        }
-                    ]}';
+                    $data = [
+                        'files'=>[
+                            'id'=>$newid,
+                            'name'=>$filename,
+                            'size'=>$model->image->size,
+                            'url'=>'/' . $filepath,
+                            'thumbnailUrl'=>'/' . $filepath,
+                            'deleteUrl'=> Url::toRoute(['home/delimg','imagename'=>$filepath]),
+                            'deleteType'=>'DELETE'
+                        ]
+                    ];
+                    return json_encode($data);
                 }
             }
         }
@@ -159,6 +148,7 @@ class HomeController extends \yii\web\Controller
         $carousel=Carousel::find()->where(['show'=>1,'weixinid'=>$id])->all();
         $store_setting=TblStoreSetting::find()->where(['enable'=>'Y','wx_id'=>$id])->one();
         if($store_setting == null) throw new NotFoundHttpException('您所访问的页面不存在');
+
         $weixin=TblWeixin::findone($id);
         return $this->render('index',['carousel'=>$carousel,'store_setting'=>$store_setting,'weixin'=>$weixin]);
     }
@@ -234,5 +224,6 @@ class HomeController extends \yii\web\Controller
     {
         return $this->render('style');
     }
+
 
 }

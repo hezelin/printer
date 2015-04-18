@@ -3,8 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\base\InvalidParamException;
 use yii\helpers\Url;
-use app\models\Curl;
 /*
  * 微信基本公共库
  */
@@ -33,7 +33,6 @@ class WxBase {
      */
     public static function webOpenId()
     {
-
         $openUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize';
 //        $url = Yii::$app->request->hostInfo.'/openUrl/route?route='.Yii::$app->request->url;
         $url = Url::toRoute(['openurl/route','route'=>Yii::$app->request->url],true);
@@ -61,7 +60,7 @@ class WxBase {
         $data = array(
             'grant_type'=>'client_credential',
             'appid'=>Yii::$app->session['wechat']['app_id'],
-            'secret'=>Yii::$app->params['wechat']['app_secret'],
+            'secret'=>Yii::$app->session['wechat']['app_secret'],
         );
 
         $curl = new Curl();
@@ -94,14 +93,18 @@ class WxBase {
      */
     public static  function createMenu()
     {
+        if( ! Yii::$app->session['wechat']['id'] )
+            throw new InvalidParamException('参数错误！');
         $curl = new Curl();
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create';
 
-        return $curl->postJson($url,
+        $req = $curl->postJson($url,
             json_encode(self::menu(),JSON_UNESCAPED_UNICODE),
             array('access_token'=>self::accessToken())
         );
+        return $req['errmsg'] == 'ok' ? true: false;
     }
+
 
     /*
      * 微信餐单
@@ -113,7 +116,7 @@ class WxBase {
                 array(
                     'name'=>'科隆服务',
                     'type'=>'view',
-                    'url'=>Yii::$app->request->hostInfo.'/works/show',
+                    'url'=>Url::toRoute(['home/index','id'=>Yii::$app->session['wechat']['id']],true)
                 )
             ),
         );

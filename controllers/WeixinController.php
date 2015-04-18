@@ -7,6 +7,7 @@ use app\models\TblWeixin;
 use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
 
 class WeixinController extends \yii\web\Controller
 {
@@ -21,7 +22,7 @@ class WeixinController extends \yii\web\Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['add', 'update', 'index','view','delete','start','stop'],
+                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -134,14 +135,21 @@ class WeixinController extends \yii\web\Controller
      */
     public function actionOpen($id)
     {
+
         $model = $this->findModel($id);
+
+        if(!Yii::$app->session['wechat']){
+            Yii::$app->session['wechat'] = $model->attributes;
+        }
+
+        if( !\app\models\WxBase::createMenu() )
+            throw new BadRequestHttpException('创建菜单失败!');
+
         $model->status = 2;
         $model->due_time = time() + 3600 * 24 * 7;
         if($model->save()){
-            \app\models\WxBase::createMenu();
             return $this->redirect(['index']);
         }
-//        return $this->render('open');
     }
 
 
