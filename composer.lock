@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ab4b15f15dbf9c83b2946a3102db634d",
+    "hash": "24769d736ef724a65e7724597c3bfa4b",
     "packages": [
         {
             "name": "2amigos/yii2-file-upload-widget",
@@ -647,60 +647,6 @@
             ]
         },
         {
-            "name": "callmez/yii2-wechat-sdk",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/callmez/yii2-wechat-sdk.git",
-                "reference": "25e2d99c5e9bfd44edbe5e65ef519507c66cfa3c",
-                "mirrors": [
-                    {
-                        "url": "/%package%/%normalizedUrl%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/callmez/yii2-wechat-sdk/zipball/25e2d99c5e9bfd44edbe5e65ef519507c66cfa3c",
-                "reference": "25e2d99c5e9bfd44edbe5e65ef519507c66cfa3c",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "http://pkg.phpcomposer.com/repo/packagist/dists/%package%/%version%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "yiisoft/yii2": "*"
-            },
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "callmez\\wechat\\sdk\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "CallMeZ",
-                    "email": "callme-z@qq.com"
-                }
-            ],
-            "description": "The wechat api for the Yii framework",
-            "keywords": [
-                "sdk",
-                "wechat",
-                "weixin",
-                "yii2"
-            ],
-            "time": "2015-03-18 09:02:06"
-        },
-        {
             "name": "cebe/markdown",
             "version": "1.0.2",
             "source": {
@@ -945,54 +891,6 @@
                 "mailer"
             ],
             "time": "2015-03-14 06:06:39"
-        },
-        {
-            "name": "xj/yii2-qrcode-widget",
-            "version": "1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/xjflyttp/yii2-qrcode-widget.git",
-                "reference": "f6031ecb67dd34c95eca7c3eb99cf19dd9a94eba",
-                "mirrors": [
-                    {
-                        "url": "/%package%/%normalizedUrl%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/xjflyttp/yii2-qrcode-widget/zipball/f6031ecb67dd34c95eca7c3eb99cf19dd9a94eba",
-                "reference": "f6031ecb67dd34c95eca7c3eb99cf19dd9a94eba",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "http://pkg.phpcomposer.com/repo/packagist/dists/%package%/%version%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "yiisoft/yii2": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "xj\\qrcode\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "xjflyttp",
-                    "email": "xjflyttp@gmail.com"
-                }
-            ],
-            "description": "yii2-qrcode-widget",
-            "time": "2015-01-15 12:44:14"
         },
         {
             "name": "yiisoft/yii2",
@@ -1265,6 +1163,54 @@
             "description": "The Jquery UI extension for the Yii framework",
             "keywords": [
                 "jQuery UI",
+                "yii2"
+            ],
+            "time": "2015-03-01 06:22:44"
+        },
+        {
+            "name": "yiisoft/yii2-redis",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yiisoft/yii2-redis.git",
+                "reference": "a25496113e81e63d2627ea5170a910edd2a841c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yiisoft/yii2-redis/zipball/a25496113e81e63d2627ea5170a910edd2a841c6",
+                "reference": "a25496113e81e63d2627ea5170a910edd2a841c6",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii\\redis\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Carsten Brandt",
+                    "email": "mail@cebe.cc"
+                }
+            ],
+            "description": "Redis Cache, Session and ActiveRecord for the Yii framework",
+            "keywords": [
+                "active-record",
+                "cache",
+                "redis",
+                "session",
                 "yii2"
             ],
             "time": "2015-03-01 06:22:44"
@@ -1705,9 +1651,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "callmez/yii2-wechat-sdk": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
