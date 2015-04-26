@@ -1,11 +1,14 @@
 <?php
 
 namespace app\controllers;
+use app\models\WxBase;
 use app\models\WxChat;
 use Yii;
 
 class AppController extends \yii\web\Controller
 {
+    public $enableCsrfValidation = false;
+
     public function actionIndex()
     {
         return $this->render('index');
@@ -14,7 +17,6 @@ class AppController extends \yii\web\Controller
     public function actionView($id)
     {
         $wx = new WxChat($_GET);
-        $wx->token = md5( $id . Yii::$app->params['wxTokenSalt'] );
 
         if (isset($_GET['echostr']))
             $wx->valid();
@@ -22,6 +24,7 @@ class AppController extends \yii\web\Controller
         $wx->init();
         $reply = '';
         $msgType = empty($wx->msg->MsgType) ? '' : strtolower($wx->msg->MsgType);
+
         switch ($msgType)
         {
             case 'text':
@@ -43,8 +46,32 @@ class AppController extends \yii\web\Controller
                 //无效消息情况下的处理方式
                 break;
         }
-//        echo $wx->makeEvent();
+
+        /*
+         * 用户关注，保存资料
+         */
+        if($wx->msg->Event == 'subscribe'){
+            $weixin = new WxBase($id);
+            $weixin->getUser($wx->msg->FromUserName,true);
+        }
+
+        /*
+         * 取消关注，删除资料
+         */
+        if($wx->msg->Event == 'unsubscribe'){
+            $weixin = new WxBase($id);
+            $weixin->delUser($wx->msg->FromUserName);
+        }
+
+
         $wx->reply($reply);
+    }
+
+    public function actionTest($id)
+    {
+        $weixin = new WxBase($id);
+        $weixin->delUser('oXMyut8n0CaEuXxxKv2mkelk_uaY');
+
     }
 
 }

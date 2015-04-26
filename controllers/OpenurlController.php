@@ -1,25 +1,31 @@
 <?php
 namespace app\controllers;
-use app\models\Curl;
 
+use app\models\Curl;
+use yii\helpers\Url;
+use app\models\WxBase;
+use Yii;
+use yii\web\BadRequestHttpException;
 
 class OpenurlController extends \yii\web\Controller
 {
     /*
      * 微信网页授权 回调页面
      * 可获取到 openid ，并且跳转会 route 参数的来源 url
+     * 防住死循环，增加一个参数 request_num = 1;
      */
-    public function actionRoute()
+    public function actionRoute($id)
     {
+        if(isset($_GET['request_num']) && $_GET['request_num'] >= 1 )
+            throw new BadRequestHttpException('不合法请求');
 
         if($_GET['code'])
         {
             $route = $_GET['route'];
-            $store_id = substr(strrchr($route, '/'), 1);
-            $appData = $this->getAppSecret($store_id);
+
             $param2 = array(
-                'appid'=>$appData['appId'],
-                'secret'=>$appData['appSecret'],
+                'appid'=>WxBase::appId($id),
+                'secret'=>WxBase::appSecret($id),
                 'grant_type'=>'authorization_code',
                 'code'=>$_GET['code'],
             );
@@ -27,23 +33,26 @@ class OpenurlController extends \yii\web\Controller
             $curl = new Curl();
             $data2 = $curl->getJson('https://api.weixin.qq.com/sns/oauth2/access_token',$param2);
 
-            header('Location: '.$route.'?openId='.$data2['openid'], true, 302);
+            /*
+             * 拉取用户资料
+             */
+            if($_GET['state'] == 'userinfo'){
+                $userinfo = $curl->get('https://api.weixin.qq.com/sns/userinfo',[
+                    'access_token'=>$data2['access_token'],
+                    'openid'=>$data2['openid'],
+                    'lang'=>'zh_CN'
+                ]);
+                print_r($userinfo);
+                exit;
+            }
+
+            Yii::$app->session->set('openid',$data2['openid']);
+
+            $this->redirect( Url::toRoute([$route,['openid'=>$data2['openid'],'request_num'=>1]]));
+//            $this->redirect($route.'?openId='.$data2['openid']);
         }
-
-        $url = 'http://app.chebao360.com/openUrl/route?route='.urlencode('http://app.chebao360.com/cart/list/9');
-//        $url = 'http://app.chebao360.com/openUrl/route';
-        $params = array(
-            'appid'=>'wx834acfe59f25eb80',
-            'redirect_uri'=>$url,
-            'response_type'=>'code',
-            'scope'=>'snsapi_base',
-            'state'=>1,
-        );
-        // 最后的锚点 #wechat_redirect 不可省略
-        $openUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize';
-
-        echo $openUrl.'?'.http_build_query($params).'#wechat_redirect';
     }
+
     public function actionCode()
     {
         echo '<pre>';
@@ -120,33 +129,5 @@ class OpenurlController extends \yii\web\Controller
 
         echo $html;
     }
-
-    public function getSecret()
-    {
-        if(isset( Yii::$app->session['storeId']) )
-            return Yii::$app->session['storeId'];
-    }
-
-
-    public function getAppSecret($storeId)
-    {
-//        if(isset( Yii::$app->session['appId'],Yii::$app->session['appSecret']) )
-//            return array('appSecret'=>Yii::$app->session['appSecret'],'appId'=>Yii::$app->session['appId']) ;
-
-        $data = Yii::$app->db->createCommand()
-            ->select('app_id as appId,app_secret as appSecret')
-            ->from('tbl_store')
-            ->where('id=:id',array(':id'=>$storeId))
-            ->queryRow();
-
-//        if($data){
-//            Yii::$app->session['appId'] = $data['appId'];
-//            Yii::$app->session['appSecret']
-//        }
-
-        return $data;
-    }
-
-
 }
 
