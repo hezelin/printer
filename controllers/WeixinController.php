@@ -22,7 +22,7 @@ class WeixinController extends \yii\web\Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open'],
+                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open','select'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -153,6 +153,20 @@ class WeixinController extends \yii\web\Controller
         }
     }
 
+    /*
+     * 数据过期，请重新选择公众号操作
+     */
+    public function actionSelect()
+    {
+        $dataProvider = new ActiveDataProvider([
+            'query' => TblWeixin::find()->where(['enable'=>'Y','uid'=>Yii::$app->user->id]),
+            'pagination' => [
+                'pageSize' => 15,
+            ],
+        ]);
+
+        return $this->render('select',['dataProvider'=>$dataProvider,'callback_url'=>Yii::$app->request->get('url')]);
+    }
 
     /*
      * 找到

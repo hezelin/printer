@@ -69,7 +69,7 @@ class WxBase {
          * 如果是 请求下面的链接
          * 如果否 跳转到登录页面
          */
-        Yii::$app->getResponse()->redirect( self::webOpenId($id));
+        return Yii::$app->getResponse()->redirect( self::webOpenId($id));
     }
 
     /*
@@ -80,7 +80,7 @@ class WxBase {
      */
     public static function webUser($id)
     {
-        Yii::$app->getResponse()->redirect( self::webOpenId($id,'userinfo'));
+        return Yii::$app->getResponse()->redirect( self::webOpenId($id,'userinfo'));
     }
 
     /*

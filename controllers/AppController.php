@@ -25,7 +25,7 @@ class AppController extends \yii\web\Controller
             $wx->valid();
 
         $wx->init();
-        $reply = '';
+
         $msgType = empty($wx->msg->MsgType) ? '' : strtolower($wx->msg->MsgType);
 
         switch ($msgType)
@@ -76,21 +76,21 @@ class AppController extends \yii\web\Controller
             {
                 $maintain = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$wx->msg->FromUserName]);
                 if($maintain)
-                    echo $wx->makeText( date('Y-m-d H:i',$maintain->add_time).'已绑定为维修员，无需再绑定！');
+                    return $wx->makeText( date('Y-m-d H:i',$maintain->add_time).'已绑定为维修员，无需再绑定！');
                 else{
                     $maintain = new TblUserMaintain();
                     $maintain->wx_id = $id;
                     $maintain->openid = (string)$wx->msg->FromUserName;
                     $maintain->add_time = time();
                     if($maintain->save())
-                        echo $wx->makeText('成功绑定为维修员！');
-                    else echo $wx->makeText( ToolBase::arrayToString($maintain->errors));
+                        return $wx->makeText('成功绑定为维修员！');
+                    return $wx->makeText( ToolBase::arrayToString($maintain->errors));
                 }
             }
         }
 
 
-        $wx->reply($reply);
+//        $wx->reply($reply);
     }
 
     /*
