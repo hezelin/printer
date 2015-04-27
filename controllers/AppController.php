@@ -1,6 +1,9 @@
 <?php
 
 namespace app\controllers;
+use app\models\TblUserMaintain;
+use app\models\TblUserWechat;
+use app\models\ToolBase;
 use app\models\WxBase;
 use app\models\WxChat;
 use Yii;
@@ -63,8 +66,39 @@ class AppController extends \yii\web\Controller
             $weixin->delUser($wx->msg->FromUserName);
         }
 
+        /*
+         * 二维码扫描处理,关注事件扫描二维码
+         */
+        if( ($wx->msg->Event == 'SCAN' && $key = $wx->msg->EventKey) ||
+            ($wx->msg->Event == 'subscribe' && substr($wx->msg->EventKey,0,8) == 'qrscene_' && $key = substr($wx->msg->EventKey,8,-1))
+        ){
+            if($key == 1)       // 绑定维修员事件
+            {
+                $maintain = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$wx->msg->FromUserName]);
+                if($maintain)
+                    echo $wx->makeText( date('Y-m-d H:i',$maintain->add_time).'已绑定为维修员，无需再绑定！');
+                else{
+                    $maintain = new TblUserMaintain();
+                    $maintain->wx_id = $id;
+                    $maintain->openid = (string)$wx->msg->FromUserName;
+                    $maintain->add_time = time();
+                    if($maintain->save())
+                        echo $wx->makeText('成功绑定为维修员！');
+                    else echo $wx->makeText( ToolBase::arrayToString($maintain->errors));
+                }
+            }
+        }
+
 
         $wx->reply($reply);
+    }
+
+    /*
+     * 扫描事件处理
+     * $key == 1,绑定维修员
+     */
+    private function scan($key){
+
     }
 
     public function actionTest($id)
