@@ -11,7 +11,7 @@ use Yii;
  * @property string $access_token
  * @property string $auth_key
  * @property string $email
- * @property integer $phone
+ * @property string $phone
  * @property string $name
  * @property string $password
  * @property string $salt
@@ -37,10 +37,11 @@ class TblUserBase extends \yii\db\ActiveRecord
     {
         return [
             [['email', 'phone', 'name', 'password', 'salt', 'area', 'ip', 'create_time'], 'required'],
-            [['phone', 'area', 'create_time'], 'integer'],
+            [['area', 'create_time'], 'integer'],
             [['enable'], 'string'],
             [['access_token', 'auth_key'], 'string', 'max' => 200],
             [['email', 'name'], 'string', 'max' => 40],
+            [['phone'], 'string', 'max' => 11],
             [['password'], 'string', 'max' => 32],
             [['salt'], 'string', 'max' => 8],
             [['ip'], 'string', 'max' => 15]

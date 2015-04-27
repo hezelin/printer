@@ -185,6 +185,16 @@ class WxBase {
     }
 
     /*
+     * 生成二维码
+     */
+    public function qrcode()
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create';
+        $curl = new Curl();
+        return $curl->get($url,['access_token'=>$this->accessToken()]);
+    }
+
+    /*
      * 创建菜单
      * @parmas $data 为菜单数组
      * 要求不能对中文编码 ，JSON_UNESCAPED_UNICODE
