@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\MachineSearch;
 use Yii;
 use app\models\TblMachine;
+use app\models\WxBase;
 use yii\helpers\Url;
 use yii\filters\VerbFilter;
 
@@ -36,14 +37,8 @@ class CodeController extends \yii\web\Controller
     public function actionBinding()
     {
         $id = Yii::$app->session['wechat']['id'];
-
-        $urlParams = [
-            'text' => Url::toRoute(['codeapi/binding','id'=>$id],'http'),
-        ];
-
-        $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
-
-        return $this->render('binding',[ 'qrcodeImgUrl'=>$qrcodeImgUrl ]);
+        $wx = new WxBase($id);
+        return $this->render('binding',[ 'qrcodeImgUrl'=>$wx->bindMaintainCode() ]);
     }
 
     /*
