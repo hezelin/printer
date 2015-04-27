@@ -1,6 +1,8 @@
 <?php
 namespace app\controllers;
+use app\models\TblUserMaintain;
 use app\models\TblWeixin;
+use app\models\WxBase;
 use yii\helpers\Url;
 use app\models\ToolBase;
 use Yii;
@@ -12,6 +14,8 @@ use yii\web\NotFoundHttpException;
 
 class HomeController extends \yii\web\Controller
 {
+    public $enableCsrfValidation = false;
+
     public $layout = 'console';
 
     /*
@@ -140,11 +144,17 @@ class HomeController extends \yii\web\Controller
     }
 
     /*
-     * 微官网
+     * 微官网，判断是否微信人员
      */
     public function actionIndex($id)
     {
         $this->layout = 'home';  //使用home布局
+
+        $openid = WxBase::openId($id);
+        if(!$this->checkMaintain($id,$openid)){             // 维修员页面跳转
+            return $this->render('maintain');
+        }
+
         $carousel=Carousel::find()->where(['show'=>1,'weixinid'=>$id])->all();
         $store_setting=TblStoreSetting::find()->where(['enable'=>'Y','wx_id'=>$id])->one();
         if($store_setting == null) throw new NotFoundHttpException('您所访问的页面不存在');
@@ -225,5 +235,12 @@ class HomeController extends \yii\web\Controller
         return $this->render('style');
     }
 
+    /*
+     * 检查是否维修员
+     */
+    private function checkMaintain($id,$openid)
+    {
+        return TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$openid])? false:true;
+    }
 
 }
