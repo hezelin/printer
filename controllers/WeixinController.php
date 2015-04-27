@@ -142,7 +142,8 @@ class WeixinController extends \yii\web\Controller
             Yii::$app->session['wechat'] = $model->attributes;
         }
 
-        if( !\app\models\WxBase::createMenu() )
+        $wechat = new WxBase($id);
+        if( ! $wechat->createMenu() )
             throw new BadRequestHttpException('创建菜单失败!');
 
         $model->status = 2;
