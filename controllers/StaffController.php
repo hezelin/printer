@@ -2,6 +2,13 @@
 
 namespace app\controllers;
 
+use app\models\Cache;
+use yii\data\ActiveDataProvider;
+use app\models\TblUserMaintain;
+use app\models\TblUserMaintainSearch;
+use Yii;
+
+
 class StaffController extends \yii\web\Controller
 {
     public $layout = 'console';
@@ -23,7 +30,10 @@ class StaffController extends \yii\web\Controller
 
     public function actionList()
     {
-        return $this->render('list');
+        $searchModel = new TblUserMaintainSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
+        return $this->render('list',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
     }
 
     public function actionUpdate()

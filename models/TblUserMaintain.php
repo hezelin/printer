@@ -13,6 +13,11 @@ use Yii;
  */
 class TblUserMaintain extends \yii\db\ActiveRecord
 {
+    public function getUserinfo()
+    {
+        return $this->hasOne(TblUserWechat::className(), ['wx_id' => 'wx_id','openid'=>'openid']);
+    }
+
     /**
      * @inheritdoc
      */
