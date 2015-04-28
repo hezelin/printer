@@ -1,5 +1,6 @@
 <?php
 namespace app\controllers;
+use app\models\Cache;
 use app\models\TblUserMaintain;
 use app\models\TblWeixin;
 use app\models\WxBase;
@@ -25,7 +26,7 @@ class HomeController extends \yii\web\Controller
     {
         $model = new UploadForm();
         if(!isset(Yii::$app->session['wechat'])) $this->redirect('/weixin/index');
-        $weixinid = Yii::$app->session['wechat']['id'];
+        $weixinid = Cache::getWid();
         $carousel=Carousel::find()->where(['show' => 1,'weixinid' => $weixinid])->all();
         return $this->render('fitment', ['model' => $model,'carousel' => $carousel]);
     }
@@ -44,23 +45,30 @@ class HomeController extends \yii\web\Controller
 
                 //非图片格式
                 if(substr($model->image->type,0,5)!='image') {
-                    return '{"files": [
-                        {
-                            "name": "'.$model->image->baseName.$model->image->extension.'",
-                            "size": ' . $model->image->size . ',
-                            "error": "请上传图片文件！"
-                        }
-                    ]}';
+                    $data = [
+                        'files'=>[
+                            [
+                                'name'=>$model->image->baseName.$model->image->extension,
+                                'size'=>$model->image->size,
+                                'error'=>'请上传图片文件！'
+                            ]
+                        ]
+                    ];
+                    return json_encode($data);
                 }
                 //空文件
                 if($model->image->size <= 0) {
-                    return '{"files": [
-                        {
-                            "name": "'.$model->image->baseName.$model->image->extension.'",
-                            "size": ' . $model->image->size . ',
-                            "error": "请勿上传空文件！"
-                        }
-                    ]}';
+
+                    $data = [
+                        'files'=>[
+                            [
+                                'name'=>$model->image->baseName.$model->image->extension,
+                                'size'=>$model->image->size,
+                                'error'=>'请勿上传空文件！'
+                            ]
+                        ]
+                    ];
+                    return json_encode($data);
                 }
 
                 //上传
@@ -83,13 +91,15 @@ class HomeController extends \yii\web\Controller
                 if($newid) {
                     $data = [
                         'files'=>[
-                            'id'=>$newid,
-                            'name'=>$filename,
-                            'size'=>$model->image->size,
-                            'url'=>'/' . $filepath,
-                            'thumbnailUrl'=>'/' . $filepath,
-                            'deleteUrl'=> Url::toRoute(['home/delimg','imagename'=>$filepath]),
-                            'deleteType'=>'DELETE'
+                            [
+                                'id'=>$newid,
+                                'name'=>$filename,
+                                'size'=>$model->image->size,
+                                'url'=>'/' . $filepath,
+                                'thumbnailUrl'=>'/' . $filepath,
+                                'deleteUrl'=> Url::toRoute(['home/delimg','imagename'=>$filepath]),
+                                'deleteType'=>'DELETE'
+                            ]
                         ]
                     ];
                     return json_encode($data);
