@@ -160,17 +160,20 @@ class HomeController extends \yii\web\Controller
     {
         $this->layout = 'home';  //使用home布局
 
-        $openid = WxBase::openId($id);
+//        $openid = WxBase::openId($id);
+        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+
         if(!$this->checkMaintain($id,$openid)){             // 维修员页面跳转
             return $this->render('maintain');
         }
 
-        $carousel=Carousel::find()->where(['show'=>1,'weixinid'=>$id])->all();
-        $store_setting=TblStoreSetting::find()->where(['enable'=>'Y','wx_id'=>$id])->one();
-        if($store_setting == null) throw new NotFoundHttpException('您所访问的页面不存在');
+        $setting = TblStoreSetting::find(['enable'=>'Y','wx_id'=>$id])
+            ->with('carousel')->limit(5)->asArray()->one();
 
-        $weixin=TblWeixin::findone($id);
-        return $this->render('index',['carousel'=>$carousel,'store_setting'=>$store_setting,'weixin'=>$weixin]);
+        if($setting == null)
+            throw new NotFoundHttpException('您所访问的页面不存在');
+
+        return $this->render('index',['setting'=>$setting]);
     }
 
     /*
@@ -198,41 +201,6 @@ class HomeController extends \yii\web\Controller
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
-
-//        //触发信息设置
-//        $model2 = SingleImageTextForm::find()->where(['wx_id' => Yii::$app->session['wechat']['id']])->one();
-//        if($model2 == null){   //第一次进入添加，或在添加公众号时添加
-//            $model2 = new SingleImageTextForm();
-//            $model2->wx_id = Yii::$app->session['wechat']['id'];
-//            $model2->keyword = '微官网';
-//            $model2->matchmode = 1;
-//            $model2->title = '微官网首页';
-//            $model2->description = '点击前往微官网首页';
-//            $model2->imageurl = 'images/home.jpg';
-//            $model2->status = '1';
-//            $model2->save();
-//            $this->refresh();
-//        }
-//
-//        if ( $model2->load(Yii::$app->request->post()) ) {
-//            $model2->description = Yii::$app->request->post('SingleImageTextForm')['description'];
-//            $model2->status = Yii::$app->request->post('SingleImageTextForm')['status'];
-//
-//            //封面图上传处理
-//            $model2->imagefile = UploadedFile::getInstance($model2, 'imagefile');
-//            if ($model2->imagefile) {    //更换了封面图
-//                $filename = time().'_'.rand(100,999).'.'. $model2->imagefile->extension;
-//                $yearmonthdir = date('Ym').'/';
-//                if(!file_exists('uploads/'.$yearmonthdir)) mkdir('uploads/'.$yearmonthdir);
-//                $filepath = 'uploads/'.$yearmonthdir.$filename;
-//                $model2->imagefile->saveAs($filepath);
-//                $model2->imageurl = $filepath;
-//            }
-//            if(!is_file($model2->imageurl)) $model2->imageurl = 'images/home.jpg';  //默认图片
-//
-//            $model2->imagefile = null;   //没有清空则不能直接使用save()
-//            $model2->save();
-//        }
 
         return $this->render('setting',['model' => $model]);
     }

@@ -17,9 +17,16 @@ use Yii;
  */
 class TblStoreSetting extends \yii\db\ActiveRecord
 {
-    /**
-     * @inheritdoc
+    /*
+     * 关联轮播图表
      */
+    public function getCarousel()
+    {
+        return $this->hasMany(Carousel::className(), ['weixinid' => 'wx_id'])
+            ->where(['show'=>1])            // where 条件查询
+            ->orderBy('id');
+    }
+
     public static function tableName()
     {
         return 'tbl_store_setting';

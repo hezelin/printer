@@ -37,6 +37,10 @@ HomeAsset::register($this);
 <!--网页内容-->
 <?= $content ?>
 
+<div class="copyright">
+    技术支持：<?= Yii::$app->name ?>
+</div>
+
 <?php $this->endBody() ?>
 
 </body>
