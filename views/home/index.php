@@ -1,51 +1,15 @@
 <?php
-
 use yii\helpers\Url;
+use app\components\CarouselWidget;
 
 $this->title = $setting['store_name'];
 
 $this->registerCssFile('/css/home/'.$setting['style']);
-$this->registerJsFile('/js/home/iscroll.js');
+//$this->registerJsFile('/js/iscroll5.js');
 
 ?>
 
-<!--轮播图-->
-<div class="banner">
-
-    <div id="wrapper">
-        <div id="scroller">
-            <ul id="thelist">
-                <?php
-                $i=0;
-                foreach($setting['carousel'] as $onecarousel) {
-                    if(is_file($onecarousel['imgurl'])){
-                        $i++;
-                ?>
-                <li>
-                    <p><?= $onecarousel['title'] ?></p>
-                    <a href="<?= $onecarousel['link']?$onecarousel['link']:'javascript:void(0)' ?>">
-                        <img src="/<?= $onecarousel['imgurl'] ?>" style="width: 100%;" />
-                    </a><!--图片大小未统一-->
-                </li>
-                <?php
-                    }
-                }
-                if($i == 0)
-                echo "<div>暂无任何图片</div>";
-                ?>
-            </ul>
-        </div>
-    </div>
-
-    <div id="nav">
-        <ul id="indicator">
-            <li class="active"></li>
-            <?php for($j=0;$j<$i-1;$j++) echo "<li></li>"?>
-        </ul>
-    </div>
-
-</div>
-
+<?= CarouselWidget::widget(['data'=>$setting['carousel']]) ?>
 <!--首页菜单-->
 <ul id="main-menu">
     <li><a href="<?= Url::toRoute(['i/machine']) ?>" ><b><img src="/images/tb01.png" /></b><span>我的机器</span></a></li>

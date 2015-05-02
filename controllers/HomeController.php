@@ -172,7 +172,6 @@ class HomeController extends \yii\web\Controller
 
         if($setting == null)
             throw new NotFoundHttpException('您所访问的页面不存在');
-
         return $this->render('index',['setting'=>$setting]);
     }
 

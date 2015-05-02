@@ -16,10 +16,11 @@ class HomeAsset extends AssetBundle
         'css/home.css',  //位于web文件夹而非assets
     ];
     public $js = [
-        'js/home/button_menu.js'
+//        'js/home/button_menu.js'
     ];
     public $depends = [
-        'app\assets\ZeptoAsset',
+        'app\assets\IscrollAsset',
+//        'app\assets\ZeptoAsset',
     ];
 }
 

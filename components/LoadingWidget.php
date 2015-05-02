@@ -34,7 +34,6 @@ class LoadingWidget extends Widget{
     }
 
     public function run(){
-
         $this->registerScript();
         return $this->renderItems();
     }

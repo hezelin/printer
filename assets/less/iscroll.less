@@ -1,125 +1,107 @@
-/*iscroll*/
-
-.banner {
-	width:100%;
-	margin:0 auto;
-	padding:0;
-	background-color:#151515;
-}
-#wrapper {
-	margin:0;
-	width:100%;
-	height:auto;
-	float:left;
-	position:relative;	/* On older OS versions "position" and "z-index" must be defined, */
-	z-index:1;			/* it seems that recent webkit is less picky and works anyway. */
-	overflow:hidden;
-	
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-#scroller {
-	height:auto;
-	float:left;
-	padding:0;
+html {
+  -ms-touch-action: none;
 }
 
-#scroller ul {
-	list-style:none;
-	display:block;
-	float:left;
-	width:100%;
-	height:auto;
-	padding:0;
-	margin:0;
-	text-align:left;
+body, ul, li {
+  padding: 0;
+  margin: 0;
+  border: 0;
 }
 
-#scroller li {
-	
-	display:block; float:left;
-	width:auto; height:auto;
-	text-align:center;
-	font-size:0px;
-	padding:0;
-	position:relative;
-}
-#scroller li a{
-	
-	display:block;
-	padding:0;
-	margin:0;
-}
-#scroller li p{
-	position:absolute;
-	z-index:2;
-	display:block;
-	width:100%;
-	bottom:0;
-	background-color:rgba(0, 0, 0, 0.5);
-	color:#F4F4F4;
-	font-size:14px;
-    height: 30px;
-	line-height:30px;
-	text-align: left;
-    text-indent: 10px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-	padding:0;
-	margin:0;
-}
-#nav {
-	float: right;
-    margin-top: -18px;
-    padding: 0;
-    position: relative;
-    width: auto;
-    z-index: 3;
+body {
+  font-size: 12px;
+  font-family: ubuntu, helvetica, arial;
+  overflow: hidden; /* this is important to prevent the whole page to bounce */
 }
 
-#prev, #next {
-	float:left;
-	font-weight:bold;
-	font-size:14px;
-	padding:5px 0;
-	width:80px;
-	display: none;
+#carousel-wrap {
+  position: relative;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  background: #444;
+  overflow: hidden;
 }
 
-#next {
-	float:right;
-	text-align:right;
+#carousel {
+  width: 200px;
+  height: auto;
+  margin: 0 auto;
 }
 
-#indicator > li {
-	display:block; float:left;
-	list-style:none;
-	padding:0; margin:0;
+#carousel-iscroll {
+  position: absolute;
+  z-index: 1;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  width: 800px;
+  height: auto;
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  -o-text-size-adjust: none;
+  text-size-adjust: none;
+  background-color: #444;
 }
 
-#indicator {
-	display: block;
-    margin: 0;
-    padding: 0;
-    width: auto;
+.slide {
+  width: 200px;
+  height: auto;
+  float: left;
+  text-align: center;
+  position: relative;
 }
 
-#indicator > li {
-	text-indent:-9999em;
-	width:8px; height:8px;
-	-webkit-border-radius:4px;
-	-moz-border-radius:4px;
-	-o-border-radius:4px;
-	border-radius:4px;
-	background:#888;
-	overflow:hidden;
-	margin-right:4px;
+.slide img{
+  border: 0;
+  border-image-width:0;
 }
 
-#indicator > li.active {
-	background:#DDDDDD;
+.carousel-title{
+  position: absolute;
+  height: 30px;
+  line-height: 30px;
+  background-color: #333;
+  width: 100%;
+  color: #fff;
+  bottom: 0;
+  left: 0;
+  .alpha(50);
+  text-align: left;
+  padding-left: 15px;
 }
 
-#indicator > li:last-child {
-	margin:0 8px 0 0;
+
+#carousel-nav {
+  position: absolute;
+  z-index: 199;
+  top: 0;
+  right: 2px;
+  width: 80px;      // 30*3 -10
+  height: 20px;
+  margin: 10px auto;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUBAMAAABohZD3AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUGCDYztyDUJgAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAGFBMVEUAAADNzc3Nzc3Nzc3Nzc3Nzc3Nzc3///8aWwwLAAAABnRSTlMAX5Ks3/nRD0HIAAAAAWJLR0QHFmGI6wAAAFtJREFUGFdjYGBgEHYNMWRAAJE0IHCEc5nSwEABxleD8JOgXMY0KBCA8FlgfAcIXwzGT4TwzWD8ZAjfDcZPgfDDYPxU7Hx09ejmoduH7h5096L7B8O/6OGBGl4APYg8TQ0XAScAAAAASUVORK5CYII=);
 }
 
+#dotty {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: #777;
+}
