@@ -20,7 +20,7 @@ body {
   overflow: hidden; /* this is important to prevent the whole page to bounce */
 }
 
-#viewport {
+#carousel-wrap {
   position: relative;
   width: 100%;
   height: auto;
@@ -29,13 +29,13 @@ body {
   overflow: hidden;
 }
 
-#wrapper {
+#carousel {
   width: 200px;
   height: auto;
   margin: 0 auto;
 }
 
-#scroller {
+#carousel-iscroll {
   position: absolute;
   z-index: 1;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
@@ -86,19 +86,8 @@ body {
   padding-left: 15px;
 }
 
-.painting {
-  width: 140px;
-  height: 200px;
-  border-radius: 10px;
-  margin: 20px auto;
-  border: 1px solid #000;
-  box-shadow:
-  inset 2px 2px 6px rgba(255,255,255,0.6),
-    inset -2px -2px 6px rgba(0,0,0,0.6),
-  0 1px 8px rgba(0,0,0,0.8);
-}
 
-#indicator {
+#carousel-nav {
   position: absolute;
   z-index: 199;
   top: 0;
