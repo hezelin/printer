@@ -1,9 +1,6 @@
 <?php
 namespace app\controllers;
 use app\models\Cache;
-use app\models\TblUserMaintain;
-use app\models\TblWeixin;
-use app\models\WxBase;
 use yii\helpers\Url;
 use app\models\ToolBase;
 use Yii;
@@ -153,35 +150,6 @@ class HomeController extends \yii\web\Controller
         return json_encode($resarr);
     }
 
-    /*
-     * 微官网，判断是否微信人员
-     */
-    public function actionIndex($id)
-    {
-        $this->layout = 'home';  //使用home布局
-
-//        $openid = WxBase::openId($id);
-        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
-
-        if(!$this->checkMaintain($id,$openid)){             // 维修员页面跳转
-            return $this->render('maintain');
-        }
-
-        $setting = TblStoreSetting::find(['enable'=>'Y','wx_id'=>$id])
-            ->with('carousel')->limit(5)->asArray()->one();
-
-        if($setting == null)
-            throw new NotFoundHttpException('您所访问的页面不存在');
-        return $this->render('index',['setting'=>$setting]);
-    }
-
-    /*
-     * 维修员官网
-     */
-    public function actionMaintain()
-    {
-        return $this->render('maintain');
-    }
 
     /*
      * 官网设置
@@ -212,12 +180,5 @@ class HomeController extends \yii\web\Controller
         return $this->render('style');
     }
 
-    /*
-     * 检查是否维修员
-     */
-    private function checkMaintain($id,$openid)
-    {
-        return TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$openid])? false:true;
-    }
 
 }

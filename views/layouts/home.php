@@ -15,7 +15,8 @@ HomeAsset::register($this);
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
     <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head() //引入资源文件//$this->registerJsFile("/js/weixin/jquery.min.js",['position' => yii\web\View::POS_HEAD]); ?>
+    <?php $this->head() //引入资源文件?>
+
 </head>
 <body>
 
