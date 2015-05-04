@@ -18,9 +18,9 @@ class MachineSearch extends TblMachine
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'depreciation', 'add_time', 'rent_time', 'maintain_time', 'status'], 'integer'],
-            [['serial_id', 'brand', 'type', 'buy_time', 'remark', 'enable'], 'safe'],
-            [['price'], 'number'],
+            [['id', 'wx_id', 'add_time', 'rent_time', 'maintain_time', 'status'], 'integer'],
+            [['serial_id', 'brand', 'type', 'buy_time', 'function', 'enable'], 'safe'],
+            [['price','monthly_rent'], 'number'],
         ];
     }
 
@@ -60,7 +60,7 @@ class MachineSearch extends TblMachine
             'id' => $this->id,
             'wx_id' => $this->wx_id,
             'price' => $this->price,
-            'depreciation' => $this->depreciation,
+            'monthly_rent' => $this->monthly_rent,
             'buy_time' => $this->buy_time,
             'add_time' => $this->add_time,
             'rent_time' => $this->rent_time,
@@ -71,7 +71,7 @@ class MachineSearch extends TblMachine
         $query->andFilterWhere(['like', 'serial_id', $this->serial_id])
             ->andFilterWhere(['like', 'brand', $this->brand])
             ->andFilterWhere(['like', 'type', $this->type])
-            ->andFilterWhere(['like', 'remark', $this->remark])
+            ->andFilterWhere(['like', 'function', $this->function])
             ->andFilterWhere(['like', 'enable', $this->enable]);
 
         return $dataProvider;

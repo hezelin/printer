@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use dosamigos\datepicker\DatePicker;
+use karpoff\icrop\CropImageUpload;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\TblMachine */
@@ -26,6 +27,8 @@ use dosamigos\datepicker\DatePicker;
     <?= $form->field($model, 'type')->textInput(['maxlength' => 50]) ?>
 
     <?= $form->field($model, 'price')->textInput() ?>
+    <?= $form->field($model, 'monthly_rent')->textInput() ?>
+    <?= $form->field($model, 'function')->textInput(['placeholder'=>'例如：双面复印，网络打印']) ?>
 
     <?= $form->field($model, 'buy_time')->widget(\yii\jui\DatePicker::classname(), [
         'dateFormat' => 'yyyy-MM-dd',
@@ -33,8 +36,6 @@ use dosamigos\datepicker\DatePicker;
             'class' => 'form-control',
         ]
     ]) ?>
-    <?= $form->field($model, 'depreciation')->dropDownList([10=>'全新',9=>'9成',8=>'8成',7=>'7成',6=>'6成',5=>'5成',4=>'4成',3=>'3成',2=>'2成',1=>'1成']) ?>
-    <?= $form->field($model, 'remark')->textInput() ?>
 
     <?php
         if( $model->isNewRecord )

@@ -52,7 +52,10 @@ $this->title = '机器详情';
                 'attribute'=>'price',
                 'value' => formatPrice($model->price),
             ],
-            'depreciation',
+            [
+                'attribute'=>'monthly_rent',
+                'value' => formatPrice($model->monthly_rent),
+            ],
             'buy_time',
             [
                 'attribute'=>'add_time',
@@ -60,7 +63,7 @@ $this->title = '机器详情';
                 ],
             'rent_time',
             'maintain_time',
-            'remark',
+            'function',
             [
                 'attribute' => 'status',
                 'format' => 'html',

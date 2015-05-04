@@ -6,6 +6,7 @@ use Yii;
 //use app\models\TblWeixin;
 use yii\base\InvalidParamException;
 use yii\web\NotFoundHttpException;
+use karpoff\icrop\CropImageUploadBehavior;
 
 
 class TblMachine extends \yii\db\ActiveRecord
@@ -26,14 +27,16 @@ class TblMachine extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['wx_id', 'brand', 'type', 'price', 'depreciation', 'buy_time', 'add_time'], 'required'],
-            [['wx_id', 'depreciation', 'add_time', 'rent_time', 'maintain_time', 'status'], 'integer'],
-            [['price'], 'number'],
+            [['wx_id', 'brand', 'type', 'buy_time', 'add_time'], 'required'],
+            [['wx_id', 'add_time', 'rent_time', 'maintain_time', 'status'], 'integer'],
+            [['price', 'monthly_rent'], 'number'],
             [['buy_time'], 'safe'],
             [['enable'], 'string'],
             [['serial_id'], 'string', 'max' => 10],
             [['brand', 'type'], 'string', 'max' => 50],
-            [['remark'], 'string', 'max' => 200],
+            [['function'], 'string', 'max' => 300],
+            [['else_attr'], 'string', 'max' => 1000],
+            [['cover'], 'file', 'extensions' => 'jpeg, gif, png, jpg', 'on' => ['add', 'update']],
             [['amount'], 'number']
         ];
     }
@@ -45,17 +48,19 @@ class TblMachine extends \yii\db\ActiveRecord
     {
         return [
             'id' => '系统id',
-            'serial_id' => '编号',
             'wx_id' => '公众号id',
+            'serial_id' => '编号',
             'brand' => '品牌',
             'type' => '机器型号',
-            'price' => '购买价格',
-            'depreciation' => '成新',
-            'buy_time' => '购买时间',
+            'cover' => '封面',
+            'price' => '成本价格',
+            'monthly_rent' => '月租',
+            'buy_time' => '上市时间',
             'add_time' => '添加时间',
             'rent_time' => '出租次数',
             'maintain_time' => '维修次数',
-            'remark' => '备注',
+            'function' => '功能',
+            'else_attr' => '补充属性',
             'status' => '机器状态',
             'enable' => '是否有效',
             'amount' => '数量',
@@ -90,7 +95,7 @@ class TblMachine extends \yii\db\ActiveRecord
 
     /*
      * 批量插入机器
-     * ['wx_id','serial_id','brand','type','price','buy_time','depreciation','remark','add_time']
+     * ['wx_id','serial_id','brand','type','price','buy_time','add_time']
      */
     public function multiSave()
     {
@@ -104,14 +109,14 @@ class TblMachine extends \yii\db\ActiveRecord
             $row[3] = $this->type;
             $row[4] = $this->price;
             $row[5] = $this->buy_time;
-            $row[6] = $this->depreciation;
-            $row[7] = $this->remark;
+            $row[6] = $this->monthly_rent;
+            $row[7] = $this->function;
             $row[8] = time();
             $rows[] = $row;
         }
 
         $row = Yii::$app->db->createCommand()->batchInsert('tbl_machine',
-            ['wx_id','serial_id','brand','type','price','buy_time','depreciation','remark','add_time'],$rows
+            ['wx_id','serial_id','brand','type','price','buy_time','monthly_rent','function','add_time'],$rows
         )->execute();
 
         if($row)

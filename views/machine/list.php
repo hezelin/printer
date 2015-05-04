@@ -36,7 +36,7 @@ $this->title = '机器列表';
                      return $data->status == 1? Html::a(ConfigBase::getMxStatus($data->status),Url::toRoute(['rent/add','id'=>$data->id]),['class'=>'green']): ConfigBase::getMxStatus($data->status) ;
                  }
              ],
-             'remark',
+             'function',
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',

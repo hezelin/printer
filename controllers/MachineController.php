@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\Cache;
 use Yii;
 use app\models\TblMachine;
 use app\models\MachineSearch;
@@ -30,11 +31,12 @@ class MachineController extends \yii\web\Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $serialId = !$model->serial_id? (Yii::$app->session['wechat']['machine_count'] + 1):$model->serial_id;
+            $wx_id = Cache::getWid();
+            $serialId = $model->serial_id? :(Yii::$app->session['wechat']['machine_count'] + 1);
 
             $initSerialId = $model->serial_id;                      // multisave 用到
             $model->serial_id = (string)$serialId;
-            $model->wx_id = Yii::$app->session['wechat']['id'];
+            $model->wx_id = $wx_id;
             $model->add_time = time();
 
             if( !$model->validate() ){                              // 验证数据是否完整
