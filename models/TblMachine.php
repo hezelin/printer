@@ -112,12 +112,13 @@ class TblMachine extends \yii\db\ActiveRecord
             $row[6] = $this->monthly_rent;
             $row[7] = $this->function;
             $row[8] = $this->cover;
-            $row[9] = time();
+            $row[9] = $this->else_attr;
+            $row[10] = time();
             $rows[] = $row;
         }
 
         $row = Yii::$app->db->createCommand()->batchInsert('tbl_machine',
-            ['wx_id','serial_id','brand','type','price','buy_time','monthly_rent','function','cover','add_time'],$rows
+            ['wx_id','serial_id','brand','type','price','buy_time','monthly_rent','function','cover','else_attr','add_time'],$rows
         )->execute();
 
         if($row)
