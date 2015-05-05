@@ -16,8 +16,8 @@ class ImageController extends \yii\web\Controller
         $dir='/uploads/marchine/'.date('Ym').'/'.date('d').'/';
 
         // 新建路径
-         $imgdir['o'] = ToolBase::newDir($dir.'/o/', Yii::getAlias('@webroot') );
-         $imgdir['m'] = ToolBase::newDir($dir.'/m/', Yii::getAlias('@webroot') );
+         $imgdir['o'] = ToolBase::newDir($dir.'o/', Yii::getAlias('@webroot') );
+         $imgdir['m'] = ToolBase::newDir($dir.'m/', Yii::getAlias('@webroot') );
 
         $path=pathinfo($_FILES['uploadfile']['name']);
         $type=strtolower($path['extension']);														//文件 扩展名

@@ -38,6 +38,20 @@ $this->title = '机器详情';
         function getStatus($model){
             return $model->status == 1? Html::a(ConfigBase::getMxStatus($model->status),Url::toRoute(['rent/add','id'=>$model->id]),['class'=>'green']): ConfigBase::getMxStatus($model->status) ;
         }
+
+        function formatImage($model){
+            return '<img src="'.$model->cover.'" width=100 >';
+        }
+        function elseAttr($model){
+            $arr = json_decode($model->else_attr,true);
+            if(!$arr)
+                return '无';
+            $html = '';
+            foreach($arr as $row)
+                $html .= '<p>'.$row['name'].' : <span class="orange">'.$row['value'].'</span>';
+
+            return $html;
+        }
     ?>
     <?= DetailView::widget([
         'model' => $model,
@@ -69,5 +83,15 @@ $this->title = '机器详情';
                 'format' => 'html',
                 'value' => getStatus($model),
             ],
+            [
+                'attribute' => 'else_attr',
+                'format' => 'html',
+                'value' =>elseAttr($model),
+            ],
+            [
+                'attribute' => 'cover',
+                'format' => 'html',
+                'value' => formatImage($model),
+            ]
         ],
     ]) ?>

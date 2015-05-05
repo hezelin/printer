@@ -34,9 +34,9 @@ class TblMachine extends \yii\db\ActiveRecord
             [['enable'], 'string'],
             [['serial_id'], 'string', 'max' => 10],
             [['brand', 'type'], 'string', 'max' => 50],
+            [['cover'], 'string', 'max' => 60],
             [['function'], 'string', 'max' => 300],
             [['else_attr'], 'string', 'max' => 1000],
-            [['cover'], 'file', 'extensions' => 'jpeg, gif, png, jpg', 'on' => ['add', 'update']],
             [['amount'], 'number']
         ];
     }
@@ -63,7 +63,7 @@ class TblMachine extends \yii\db\ActiveRecord
             'else_attr' => '补充属性',
             'status' => '机器状态',
             'enable' => '是否有效',
-            'amount' => '数量',
+            'amount' => '机器数量',
         ];
     }
 

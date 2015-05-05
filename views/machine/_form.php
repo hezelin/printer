@@ -43,7 +43,7 @@ use app\components\MoreattrWidget;
         <div class="col-lg-5">
             <input type="hidden" id="tblmachine-cover" class="form-control" name="TblMachine[cover]">
             <div id="image-ajaxupload">上传图片</div>
-            <img id="image-show" width="50" />
+            <img id="image-show" width="200" />
         </div>
         <div class="col-lg-5">
             <div class="help-block"></div>
@@ -108,11 +108,12 @@ $this->registerJsFile('js/ajaxupload/ajaxupload.min.js',[
                 status.text('正在上传中...');
             },
             onComplete: function(file, response){
+                status.text('上传完成');
                 var obj=eval("("+response+")");
                 if(obj.status == 1){
-                    status.html('<img src="'+obj.url+'"/>');
+//                    status.html('<img src="'+obj.url+'"/>');
                     if($url) $($url).val( obj.url );
-                    $($img).val(obj.url);
+                    $($img).attr('src',obj.url);
                     return true;
                 }
                 else status.text( obj.msg);
