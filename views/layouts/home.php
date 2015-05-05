@@ -44,6 +44,20 @@ HomeAsset::register($this);
 
 <?php $this->endBody() ?>
 
+<script>
+    $(function(){
+        $(".plug-menu").click(function(){
+            var li = $(this).parents('ul').find('li');
+            if(li.attr("class") == "themeStyle on"){
+                li.removeClass("themeStyle on");
+                li.addClass("themeStyle out");
+            }else{
+                li.removeClass("themeStyle out");
+                li.addClass("themeStyle on");
+            }
+        });
+    });
+</script>
 </body>
 </html>
 <?php $this->endPage() ?>

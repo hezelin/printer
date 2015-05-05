@@ -20,7 +20,7 @@ class HomeAsset extends AssetBundle
     ];
     public $depends = [
         'app\assets\IscrollAsset',
-//        'app\assets\ZeptoAsset',
+        'app\assets\ZeptoAsset',
     ];
 }
 

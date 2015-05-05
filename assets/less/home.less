@@ -13,6 +13,8 @@ h2 { font-size:16px; }
 
 body {background-color:#eee; }
 
+.blank-info{ background-color: #ffffff; width: 100%; height: 200px; line-height: 200px;
+vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
 
 /*   首页 li 排版  ********/
 #main-menu:after { clear: both; content: " "; display: block; }
@@ -37,8 +39,107 @@ body {background-color:#eee; }
 /**********   首页排版结束  ************/
 
 .copyright{
-   padding:8px; text-align:center; font-size:14px; color:#999;  margin-top: 20px;
-  a { color:#666; }
+   padding:18px 0 8px 0; text-align:center; font-size:14px; color:#999;
 }
 
+/************  租借机器列表 ***************/
 
+#rent-list{
+  position: relative;
+  padding: 0;
+  margin: 0;
+  background-color: #EEEEEE;
+
+  a{
+    display: block;
+  }
+  ul >li{
+    background-color: #fff;
+    padding: 5px;
+    margin-bottom: 10px;;
+    height: 140px;
+    float: left;
+    width: 100%;
+  }
+  .li-cover{
+    width: 40%;
+    height: 160px;
+    float: left;
+    text-align: center;
+    position: relative;
+    vertical-align: middle;
+  }
+  .li-cover-img{
+    max-width: 100%;
+    max-height: 120px;
+  }
+  .li-name{
+    .nowrap(56%);
+    margin-top: 4px;
+    font-family: "microsoft yahei";
+    color: #000;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .li-row{
+    height: 30px;
+    line-height: 30px;
+    float: left;
+    width: 56%;
+    margin-left: 4%;
+  }
+  .li-label{
+    font-size: 12px;
+    color: #999999;
+    width: 15%;
+  }
+  .li-yan{
+    vertical-align: middle;
+    color: #c40000;
+    font-size: 18px;
+    font-family: Arial;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+  .li-price{
+    vertical-align: middle;
+    color: #c40000;
+    font-weight: bolder;
+    font-family: Arial;
+    font-size: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .li-func{
+    line-height: 24px;
+    font-size: 14px;
+    color: #333333;
+    height: 48px;
+    margin-top: 4px;
+    overflow: hidden;
+    float: left;
+  }
+}
+
+/************   我的机器 ****************/
+
+.hint{
+  padding: 2em 10%;
+  color: #999;
+  text-align: center;
+  font-size: 1.5em;
+  line-height: 1.5em;
+}
+
+.button{
+  background: #4684cf;
+  color: #fff;
+  border: none;
+  width: 80%;
+  margin: 0.5em auto;
+  height: 2.5em;
+  line-height: 2.5em;
+  font-size: 1.5em;
+  text-align: center;
+  display: block;
+  .radius(4px);
+}
