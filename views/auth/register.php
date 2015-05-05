@@ -102,7 +102,6 @@ Modal::end();
 
 <script>
     <?php $this->beginBlock('JS_END') ?>
-    $(function(){
         // 省份、城市、地区 三级联
         $('#my-city').on('change','.th-city,.th-province',function(){
             var treeId = $(this).val();
@@ -129,10 +128,9 @@ Modal::end();
             $('#city-region-id').val($('#wrap-region .form-control').val());
             $('#city-modal').modal('hide');
         });
-    });
     <?php $this->endBlock();?>
 </script>
 
 <?php
-    $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
+    $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 ?>
