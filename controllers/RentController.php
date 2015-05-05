@@ -47,6 +47,14 @@ class RentController extends \yii\web\Controller
         return $this->render('detail',['model'=>$model]);
     }
 
+    /*
+     * 租借申请
+     */
+    public function actionApply($id)
+    {
+        echo 'xxxxxxxxxxxxxxx',$id;
+    }
+
     public function actionUpdate()
     {
         return $this->render('update');
