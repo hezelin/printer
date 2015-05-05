@@ -35,7 +35,6 @@ $this->title = '生成机器码';
                 return $data->status == 1? Html::a(ConfigBase::getMxStatus($data->status),Url::toRoute(['rent/add','id'=>$data->id]),['class'=>'green']): ConfigBase::getMxStatus($data->status) ;
             }
         ],
-        'remark',
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',

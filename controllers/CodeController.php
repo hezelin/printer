@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Cache;
 use app\models\MachineSearch;
 use Yii;
 use app\models\TblMachine;
@@ -36,7 +37,7 @@ class CodeController extends \yii\web\Controller
      */
     public function actionBinding()
     {
-        $id = Yii::$app->session['wechat']['id'];
+        $id = Cache::getWid();
         $wx = new WxBase($id);
         return $this->render('binding',[ 'qrcodeImgUrl'=>$wx->bindMaintainCode() ]);
     }
