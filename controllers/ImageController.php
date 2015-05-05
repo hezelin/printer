@@ -36,7 +36,7 @@ class ImageController extends \yii\web\Controller
 
         if(move_uploaded_file($_FILES['uploadfile']['tmp_name'], $imgdir['o'].$filename)){
             ToolBase::mt($imgdir['o'].$filename, $imgdir['m'].$filename,600,9000);
-            echo json_encode( ['status'=>1,'url'=>$dir.'/m/'.$filename] );
+            echo json_encode( ['status'=>1,'url'=>$dir.'m/'.$filename] );
         }
     }
 

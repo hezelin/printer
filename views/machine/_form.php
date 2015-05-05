@@ -41,9 +41,9 @@ use app\components\MoreattrWidget;
     <div class="form-group field-tblmachine-cover">
         <label class="col-lg-2 control-label" for="tblmachine-cover">封面图片</label>
         <div class="col-lg-5">
-            <input type="hidden" id="tblmachine-cover" class="form-control" name="TblMachine[cover]">
+            <input type="hidden" id="tblmachine-cover" class="form-control" name="TblMachine[cover]" value="<?=$model->cover?>">
             <div id="image-ajaxupload">上传图片</div>
-            <img id="image-show" width="200" />
+            <img id="image-show" width="200" src="<?=$model->cover?>" />
         </div>
         <div class="col-lg-5">
             <div class="help-block"></div>
