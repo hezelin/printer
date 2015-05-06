@@ -1,15 +1,7 @@
 <?php
     $this->title = '提交申请';
 ?>
-<style>
-    .wechat-form{ margin-top: 30px;}
-    .wechat-input{ width: 80%; display: block; margin: 5% auto;
-    height: 40px; line-height: 40px; padding: 0 5px; font-size: 16px;
-    color: #999999; border: 1px solid #CCCCCC;}
-    .error-list{
-        color: red;
-    }
-</style>
+
 <div class="error-list">
     <?php
         echo $error? :'';
