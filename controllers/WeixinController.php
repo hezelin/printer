@@ -22,7 +22,7 @@ class WeixinController extends \yii\web\Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open','select'],
+                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open','select','createmenu'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -168,6 +168,16 @@ class WeixinController extends \yii\web\Controller
         return $this->render('select',['dataProvider'=>$dataProvider,'callback_url'=>Yii::$app->request->get('url')]);
     }
 
+    /*
+     * 刷新菜单
+     */
+    public function actionCreatemenu($id)
+    {
+        $wechat = new WxBase($id);
+        if( ! $wechat->createMenu() )
+            throw new BadRequestHttpException('创建菜单失败!');
+        return '菜单创建成果！';
+    }
     /*
      * 找到
      */

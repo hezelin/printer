@@ -101,7 +101,7 @@ class AppController extends \yii\web\Controller
 
     }
 
-    public function actionTest($id)
+    public function actionCreateMenu($id)
     {
         $weixin = new WxBase($id);
         $weixin->delUser('oXMyut8n0CaEuXxxKv2mkelk_uaY');
