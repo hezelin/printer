@@ -56,6 +56,7 @@ class WxBase {
 
     /*
      * 获取用户 openId
+     * @params $id 公众号id
      */
     public static function openId($id)
     {
@@ -175,12 +176,8 @@ class WxBase {
      */
     public function accessToken($isCache = true)
     {
-        if($isCache)
-            return $this->setAccessToken();
-
-        if( $token = Yii::$app->redis->get('wx:'.$this->id.':token'))
+        if( $isCache && $token = Yii::$app->redis->get('wx:'.$this->id.':token'))
             return $token;
-
         return $this->setAccessToken();
     }
 
@@ -264,7 +261,7 @@ class WxBase {
                 [
                     'name'=>'科隆服务',
                     'type'=>'view',
-                    'url'=>Url::toRoute(['home/index','id'=>$this->id],true)
+                    'url'=>Url::toRoute(['wechat/index','id'=>$this->id],true)
                 ]
             ],
         ];
