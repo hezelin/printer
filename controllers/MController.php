@@ -34,4 +34,12 @@ class MController extends \yii\web\Controller
         return $this->render('task');
     }
 
+    /*
+     * 微信维修申请
+     */
+    public function actionApply($id,$mid)
+    {
+        return $this->render('apply');
+    }
+
 }

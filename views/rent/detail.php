@@ -40,10 +40,16 @@ use yii\helpers\Url;
         <?php endforeach;?>
     </ul>
     <?php endif;?>
-
+    <p style="height: 50px;">&nbsp;</p>
     <div style="clear:both; display: none;"></div>
 
+    <?php if( Yii::$app->request->get('from') == 'machine') :?>
+    <a class="de-fiexd-bottom" href="<?=Url::toRoute(['m/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
+        维修申请
+    </a>
+    <?php else:?>
     <a class="de-fiexd-bottom" href="<?=Url::toRoute(['rent/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
         租借机器
     </a>
+    <?php endif;?>
 </div>
