@@ -1,17 +1,32 @@
 <?php
 
 namespace app\controllers;
+use app\models\TblWechatMachine;
+use app\models\WxBase;
+use yii\web\NotFoundHttpException;
 
 class IController extends \yii\web\Controller
 {
+    public  $layout = 'home';  //使用home布局
+
     public function actionIndex()
     {
         return $this->render('index');
     }
 
-    public function actionMachine()
+    /*
+     * 我的机器
+     */
+    public function actionMachine($id)
     {
-        return $this->render('machine');
+//        $openid = WxBase::openId($id);
+        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+        $model = TblWechatMachine::find(['wx_id' => $id, 'openid' => $openid])->asArray()->all();
+        // 没有机器，跳转到租借页面
+        if(!$model){
+
+        }
+        return $this->render('machine',['model'=>$model,'id'=>$id]);
     }
 
     public function actionScore()
@@ -23,5 +38,6 @@ class IController extends \yii\web\Controller
     {
         return $this->render('service');
     }
+
 
 }

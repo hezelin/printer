@@ -63,6 +63,7 @@ class RentController extends \yii\web\Controller
         $model->openid = WxBase::openId($id);
         $model->machine_id = $mid;
         $model->add_time = time();
+        $model->due_time = time();
 
         $error = false;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

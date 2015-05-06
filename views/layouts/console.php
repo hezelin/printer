@@ -102,8 +102,9 @@ WeixinAsset::register($this);
                                 [
                                     'label' => '租借管理',
                                     'items' => [
-                                        ['label' => '租借统计','url' => '/rent/index'],
-                                        ['label' => '租借列表','url' => '/rent/list'],
+                                        ['label' => '租借统计','url' => '/adminrent/index'],
+                                        ['label' => '租借列表','url' => '/adminrent/list'],
+                                        ['label' => '租借申请','url' => '/adminrent/apply'],
                                     ],
                                 ],
                                 [
