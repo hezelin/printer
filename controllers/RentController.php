@@ -3,6 +3,11 @@
 namespace app\controllers;
 
 use app\models\TblMachine;
+use app\models\TblRentApply;
+use app\models\ToolBase;
+use app\models\WxBase;
+use Yii;
+use yii\helpers\Url;
 
 class RentController extends \yii\web\Controller
 {
@@ -49,10 +54,30 @@ class RentController extends \yii\web\Controller
 
     /*
      * 租借申请
+     * $id 为公众号id,$mid 为机器id
      */
-    public function actionApply($id)
+    public function actionApply($id,$mid)
     {
-        echo 'xxxxxxxxxxxxxxx',$id;
+        $model = new TblRentApply();
+        $model->wx_id = $id;
+        $model->openid = WxBase::openId($id);
+        $model->machine_id = $mid;
+        $model->add_time = time();
+
+        $error = false;
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            $this->refresh();
+            return $this->render('//tips/homestatus',[
+                'tips'=>'感谢您的申请，我们会在1~2个工作日跟你联系！',
+                'btnText'=>'返回',
+//                'btnUrl'=>Url::toRoute(['rent/list','id'=>$id])
+                'btnUrl'=>'javascript:history.go(-2)'
+            ]);
+        }else{
+            $error = ToolBase::arrayToString( $model->errors );
+        }
+
+        return $this->render('apply',['model'=>$model,'error'=>$error]);
     }
 
     public function actionUpdate()

@@ -43,7 +43,7 @@ use yii\helpers\Url;
 
     <div style="clear:both; display: none;"></div>
 
-    <a class="de-fiexd-bottom" href="<?=Url::toRoute(['rent/apply','id'=>$model->wx_id])?>">
+    <a class="de-fiexd-bottom" href="<?=Url::toRoute(['rent/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
         租借机器
     </a>
 </div>
