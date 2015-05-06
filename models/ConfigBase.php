@@ -45,4 +45,17 @@ class ConfigBase
         return isset(self::$mxStatus[$id])? self::$mxStatus[$id]:'出错';
     }
 
+    /*
+     * 租借申请
+     */
+    public static $rentStatus = [
+        1 => '审核中',
+        2 => '租借成功',
+        3 => '资料错误'
+    ];
+
+    public static function getRentStatus($id){
+        return isset(self::$rentStatus[$id])? self::$rentStatus[$id]:'出错';
+    }
+
 }
