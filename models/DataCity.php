@@ -47,4 +47,19 @@ class DataCity {
             'tree-target'=>'#wrap-'.$targetName,
         ]);
     }
+
+    /*
+     * 根据 region id 获取地址的名字
+     */
+    public static  function getAddress($treeId)
+    {
+        $data = (new \yii\db\Query())
+            ->select('t.name as region,c.name as city,p.name as province')
+            ->from('tbl_city as t')
+            ->leftJoin('tbl_city as c','c.id=t.pid')
+            ->leftJoin('tbl_city as p','p.id=c.pid')
+            ->where('t.id=:id',[':id'=>$treeId])
+            ->one();
+        return $data['province'].','.$data['city'].','.$data['region'];
+    }
 } 
