@@ -14,18 +14,19 @@ class WechatController extends \yii\web\Controller
      */
     public function actionIndex($id)
     {
-//        $openid = WxBase::openId($id);
-        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
-
-        if(!$this->checkMaintain($id,$openid)){             // 维修员页面跳转
-            return $this->render('maintain');
-        }
+        $openid = WxBase::openId($id);
+//        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
 
         $setting = TblStoreSetting::find(['enable'=>'Y','wx_id'=>$id])
             ->with('carousel')->limit(5)->asArray()->one();
 
         if($setting == null)
             throw new NotFoundHttpException('您所访问的页面不存在');
+
+        if(!$this->checkMaintain($id,$openid)){             // 维修员页面跳转
+            return $this->render('maintain',['setting'=>$setting]);
+        }
+
         return $this->render('index',['setting'=>$setting]);
     }
 
