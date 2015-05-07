@@ -44,7 +44,7 @@ use yii\helpers\Url;
     <div style="clear:both; display: none;"></div>
 
     <?php if( Yii::$app->request->get('from') == 'machine') :?>
-    <a class="de-fiexd-bottom" href="<?=Url::toRoute(['m/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
+    <a class="de-fiexd-bottom" href="<?=Url::toRoute(['i/mapply','id'=>$model->wx_id,'mid'=>$model->id])?>">
         维修申请
     </a>
     <?php else:?>
