@@ -52,13 +52,54 @@ class AdminrentController extends \yii\web\Controller
         if($model->load( Yii::$app->request->post()))
         {
             $model->due_time = $model->due_time? strtotime($model->due_time):0;
-            if($model->save())
-                return $this->render('//tips/success',[
-                    'tips'=>'审核成功，并且资料录入',
-                    'btnText'=>'返回',
-                    'btnUrl'=>Url::toRoute(['adminrent/apply'])
-                ]);
 
+            if($model->save()) {
+                // 如果是审核通过，改版机器的状态 和 出租次数
+                if ( $model->status == 2) {
+                    $machine = TblMachine::findOne($model->machine_id);
+                    $machine->rent_time = (int)$machine->rent_time + 1;
+                    $machine->status = 2;
+                    $machine->save();
+                }
+                return $this->render('//tips/success', [
+                    'tips' => '审核成功，并且资料录入',
+                    'btnText' => '返回',
+                    'btnUrl' => Url::toRoute(['adminrent/apply'])
+                ]);
+            }
+            else
+                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
+        }
+
+        if( $model->region )
+            $model->areaText = DataCity::getAddress($model->region);
+
+        return $this->render('check',[
+            'model'=>$model,
+            'province'=>DataCity::$province,
+            'city' => DataCity::$city,
+            'region' => DataCity::$region,
+        ]);
+    }
+
+    /*
+     * 租借申请审核，资料录入
+     */
+    public function actionUpdate($id)
+    {
+        $model = TblRentApply::findOne($id);
+
+        if($model->load( Yii::$app->request->post()))
+        {
+            $model->due_time = $model->due_time? strtotime($model->due_time):0;
+
+            if($model->save()) {
+                return $this->render('//tips/success', [
+                    'tips' => '资料修改成功',
+                    'btnText' => '返回',
+                    'btnUrl' => Url::toRoute(['adminrent/list'])
+                ]);
+            }
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }

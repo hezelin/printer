@@ -51,9 +51,9 @@ echo GridView::widget([
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions' => ['style'=>'width:100px'],
-            'template' => '{check} &nbsp; {change} &nbsp; {delete}',
+            'template' => '{update} &nbsp; {change} &nbsp; {delete}',
             'buttons' => [
-                'check' => function($url,$model,$key){
+                'update' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);
                 },
                 'change' => function($url,$model,$key){
