@@ -53,9 +53,13 @@ class StaffController extends \yii\web\Controller
         return $this->render('list',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
     }
 
-    public function actionUpdate()
+    public function actionUpdate($wx_id,$openid)
     {
-        return $this->render('update');
+        $model = $this->findModel($wx_id,$openid);
+        if($model->load(Yii::$app->request->post()) && $model->save())
+            $this->redirect(['list']);
+
+        return $this->render('update',['model'=>$model]);
     }
 
     public function actionView()

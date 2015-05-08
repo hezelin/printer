@@ -17,6 +17,8 @@ echo GridView::widget([
     'layout' => "{items}\n{pager}",
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],               // 系列
+        'name',
+        'phone',
         [
             'label'=>'昵称',
             'attribute' => 'nickname',
@@ -27,6 +29,7 @@ echo GridView::widget([
             'format'=>'html',
             'value'=>function($data)
             {
+                if( isset($data->userinfo->headimgurl ))
                 return Html::a( Html::img( substr($data->userinfo->headimgurl,0,-1) .'46'),
                     $data->userinfo->headimgurl,
                     ['title'=>'查看大图','target'=>'_blank']
@@ -36,6 +39,7 @@ echo GridView::widget([
         [
             'attribute'=>'userinfo.sex',
             'value'=>function($data){
+                if( isset($data->userinfo->sex ))
                 switch($data->userinfo->sex)
                 {
                     case 1: return '男';
@@ -59,8 +63,12 @@ echo GridView::widget([
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'template' => '{unbind}',
+            'headerOptions'=>['style'=>'width:120px'],
+            'template' => '{update} &nbsp; {unbind}',
             'buttons' => [
+                'update'=>function($url,$model,$key){
+                    return Html::a('<i class="glyphicon glyphicon-edit"></i>',$url,['title'=>'修改资料']);
+                },
                 'unbind' => function($url,$model,$key){
                     return Html::a('解除绑定',$url,[
                         'data-method'=>'post',
