@@ -238,27 +238,13 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
   font-size: 20px;
 
 }
-/************   租借申请 ****************/
-.wechat-form{ margin-top: 30px;}
-.wechat-input{ width: 80%; display: block; margin: 5% auto;
+/************   自定义的  css 样式标签 ****************/
+.h-form{ margin-top: 30px;}
+.h-input{ width: 80%; display: block; margin: 5% auto;
   height: 40px; line-height: 40px; padding: 0 5px; font-size: 16px;
   color: #999999; border: 1px solid #CCCCCC;}
-.error-list{
-  color: red;
-}
-
-/************   我的机器 ****************/
-
-.hint{
-  padding: 2em 10%;
-  color: #999;
-  text-align: center;
-  font-size: 1.5em;
-  line-height: 1.5em;
-}
-
-.button{
-  background: #4684cf;
+.h-button{
+  background: @color;
   color: #fff;
   border: none;
   width: 80%;
@@ -270,3 +256,35 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
   display: block;
   .radius(4px);
 }
+.h-link{
+  height: auto;
+  color: #ffffff;
+  padding: 10px 0;
+  display: block;
+  font-size: 20px;
+  background-color: @color;
+  .radius(4px);
+  outline: none;
+  text-decoration: none;
+  width: 100%;
+  margin: 30px 0;
+  text-align: center;
+}
+.h-center-wrap{
+  margin: 15% auto 10%;
+  width: 80%;
+}
+.h-error-list{
+  color: @error-color;
+}
+
+/************   我的机器 ****************/
+
+.h-hint{
+  padding: 2em 10%;
+  color: #999;
+  text-align: center;
+  font-size: 1.5em;
+  line-height: 1.5em;
+}
+

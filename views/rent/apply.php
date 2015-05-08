@@ -2,17 +2,17 @@
     $this->title = '提交申请';
 ?>
 
-<div class="error-list">
+<div class="h-error-list">
     <?php
         echo $error? :'';
     ?>
 </div>
-<div class="wechat-form">
+<div class="h-form">
     <form method="post">
         <input name="_csrf" type="hidden" value="<?=\Yii::$app->request->csrfToken?>"/>
-        <input type="text" id="apply-name" class="wechat-input" name="TblRentApply[name]" placeholder="姓名">
-        <input type="text" id="apply-phone" class="wechat-input" name="TblRentApply[phone]" placeholder="手机">
-        <button type="submit" id="wechat-submit" class="button">提交申请</button>
+        <input type="text" id="apply-name" class="h-input" name="TblRentApply[name]" placeholder="姓名">
+        <input type="text" id="apply-phone" class="h-input" name="TblRentApply[phone]" placeholder="手机">
+        <button type="submit" id="wechat-submit" class="h-button">提交申请</button>
     </form>
 </div>
 

@@ -50,7 +50,7 @@ fade(@color, 50%);        // return @color with 50% transparency				50% 透明�
 #tree-menu .nav-pills > li.active > a:hover,
 #tree-menu .nav-pills > li > a:focus {
   color: #ffffff;
-  background-color: #337ab7;
+  background-color: #4684cf;
 }
 #tree-menu .panel-title > a {
   display: block;
@@ -58,7 +58,7 @@ fade(@color, 50%);        // return @color with 50% transparency				50% 透明�
 }
 #tree-menu .panel-title > .head-active {
   color: #ffffff;
-  background-color: #337ab7;
+  background-color: #4684cf;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;

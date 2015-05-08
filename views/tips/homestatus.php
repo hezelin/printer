@@ -9,10 +9,10 @@ $this->title = '状态提示';
  */
 ?>
 
-<div class="hint"><?=$tips?></div>
+<div class="h-hint"><?=$tips?></div>
 
 <?php
 if(isset($btnText,$btnUrl) && $btnText && $btnUrl) {
-    echo Html::a($btnText, $btnUrl, ['class' => 'button']);
+    echo Html::a($btnText, $btnUrl, ['class' => 'h-button']);
 }
 ?>
