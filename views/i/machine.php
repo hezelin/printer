@@ -29,7 +29,7 @@ $this->title = '我的机器';
                         申请中...
                     </a>
                 <?php else:?>
-                <a href="<?=Url::toRoute(['i/mapply','id'=>$row['id'],'mid'=>$row['wx_id']])?>" class="m-apply">
+                <a href="<?=Url::toRoute(['s/apply','id'=>$row['wx_id'],'mid'=>$row['id']])?>" class="m-apply">
                     维修申请
                 </a>
                 <?php endif;?>

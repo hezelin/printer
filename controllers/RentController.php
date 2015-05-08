@@ -34,7 +34,7 @@ class RentController extends \yii\web\Controller
     public function actionList($id)
     {
         $model = TblMachine::find()
-            ->select('id,brand,type,cover,monthly_rent,function')
+            ->select('id,wx_id,brand,type,cover,monthly_rent,function')
             ->where(['wx_id'=>$id,'enable'=>'Y','status'=>1])
             ->groupBy('type')
             ->asArray()

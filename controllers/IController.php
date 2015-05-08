@@ -44,12 +44,4 @@ class IController extends \yii\web\Controller
         return $this->render('service');
     }
 
-    /*
-     * 维修申请
-     */
-    public function actionMapply($id,$mid)
-    {
-        return $this->render('apply');
-    }
-
 }
