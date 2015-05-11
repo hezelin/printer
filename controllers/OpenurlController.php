@@ -2,6 +2,7 @@
 namespace app\controllers;
 
 use app\models\Curl;
+use app\models\ToolBase;
 use yii\helpers\Url;
 use app\models\WxBase;
 use Yii;
@@ -48,8 +49,7 @@ class OpenurlController extends \yii\web\Controller
 
             Yii::$app->session->set('openid',$data2['openid']);
 
-            $this->redirect( Url::toRoute([$route,['openid'=>$data2['openid'],'request_num'=>1]]));
-//            $this->redirect($route.'?openId='.$data2['openid']);
+            $this->redirect( ToolBase::url($route,['openid'=>$data2['openid'],'request_num'=>1]) );
         }
     }
 
