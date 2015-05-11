@@ -35,6 +35,8 @@ class TblUserMaintain extends \yii\db\ActiveRecord
             [['wx_id', 'openid', 'add_time'], 'required'],
             [['wx_id', 'add_time'], 'integer'],
             [['openid'], 'string', 'max' => 28],
+            [['name'], 'string', 'max' => 30],
+            [['phone'], 'string', 'max' => 11],
             [['wx_id', 'openid'], 'unique', 'targetAttribute' => ['wx_id', 'openid'], 'message' => 'The combination of 公众号id and 用户id has already been taken.']
         ];
     }
@@ -47,6 +49,8 @@ class TblUserMaintain extends \yii\db\ActiveRecord
         return [
             'wx_id' => '公众号id',
             'openid' => '用户id',
+            'name' => '名字',
+            'phone' => '手机',
             'add_time' => '添加时间',
         ];
     }
