@@ -58,4 +58,16 @@ class ConfigBase
         return isset(self::$rentStatus[$id])? self::$rentStatus[$id]:'出错';
     }
 
+    /*
+     * 故障类型列表
+     */
+    public static $faultStatus = [
+        1 => '卡纸',
+        2 => '坏晒鼓',
+        3 => '其他'
+    ];
+
+    public static function getFaultStatus($id){
+        return isset(self::$faultStatus[$id])? self::$faultStatus[$id]:'出错';
+    }
 }
