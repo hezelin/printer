@@ -12,6 +12,28 @@ use Yii;
 class ToolBase {
 
     /*
+     * url 处理函数
+     * $url 原url, $params 绑定的参数
+     */
+    public static function url($url,$arr=[])
+    {
+        if(strpos($url,'?') !== false){                     // 如果路径存在 问号 ？
+            list($baseUrl,$query) = explode('?',urldecode($url) );
+            if( $query ){
+                foreach( explode('&',$query) as $q )
+                {
+                    if(!$q) continue;                       // 空白过滤
+                    list($k,$v) = explode('=',$q);
+                    if( !isset($arr[$k]) )
+                        $arr[$k] = $v;
+                }
+            }
+            return $baseUrl . ($arr? '?'.http_build_query($arr):'');
+        }
+
+        return $url . '?' .http_build_query($arr);       //  没有问号 直接返回参数
+    }
+    /*
      * 获取随机数
      */
     public static function getSalt($len=8)
