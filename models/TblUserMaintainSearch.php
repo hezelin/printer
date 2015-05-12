@@ -13,11 +13,13 @@ use app\models\TblUserMaintain;
 class TblUserMaintainSearch extends TblUserMaintain
 {
     public $nickname;
+
     public function rules()
     {
         return [
-            [['wx_id', 'add_time'], 'integer'],
-            [['openid','nickname'], 'safe'],
+            [['wx_id', 'wait_repair_count', 'add_time'], 'integer'],
+            [['openid', 'name', 'phone','nickname'], 'safe'],
+            [['latitude', 'longitude', 'accuracy'], 'number'],
         ];
     }
 
@@ -58,11 +60,17 @@ class TblUserMaintainSearch extends TblUserMaintain
 
         $query->andFilterWhere([
             'wx_id' => $this->wx_id,
+            'wait_repair_count' => $this->wait_repair_count,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'accuracy' => $this->accuracy,
             'add_time' => $this->add_time,
         ]);
 
-        $query->andFilterWhere(['like', 'openid', $this->openid]);
-        $query->andFilterWhere(['like', 'tbl_user_wechat.nickname', $this->nickname]);
+        $query->andFilterWhere(['like', 'openid', $this->openid])
+            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'phone', $this->phone])
+            ->andFilterWhere(['like', 'tbl_user_wechat.nickname', $this->nickname]);
 
         return $dataProvider;
     }

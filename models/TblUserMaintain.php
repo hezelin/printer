@@ -9,6 +9,12 @@ use Yii;
  *
  * @property string $wx_id
  * @property string $openid
+ * @property string $name
+ * @property string $phone
+ * @property integer $wait_repair_count
+ * @property string $latitude
+ * @property string $longitude
+ * @property string $accuracy
  * @property string $add_time
  */
 class TblUserMaintain extends \yii\db\ActiveRecord
@@ -18,9 +24,6 @@ class TblUserMaintain extends \yii\db\ActiveRecord
         return $this->hasOne(TblUserWechat::className(), ['wx_id' => 'wx_id','openid'=>'openid']);
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return 'tbl_user_maintain';
@@ -33,7 +36,8 @@ class TblUserMaintain extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'openid', 'add_time'], 'required'],
-            [['wx_id', 'add_time'], 'integer'],
+            [['wx_id', 'wait_repair_count', 'add_time'], 'integer'],
+            [['latitude', 'longitude', 'accuracy'], 'number'],
             [['openid'], 'string', 'max' => 28],
             [['name'], 'string', 'max' => 30],
             [['phone'], 'string', 'max' => 11],
@@ -51,6 +55,10 @@ class TblUserMaintain extends \yii\db\ActiveRecord
             'openid' => '用户id',
             'name' => '名字',
             'phone' => '手机',
+            'wait_repair_count' => '待修',
+            'latitude' => '纬度',
+            'longitude' => '经度',
+            'accuracy' => '精确度',
             'add_time' => '添加时间',
         ];
     }
