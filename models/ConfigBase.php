@@ -70,4 +70,24 @@ class ConfigBase
     public static function getFaultStatus($id){
         return isset(self::$faultStatus[$id])? self::$faultStatus[$id]:'出错';
     }
+
+    /*
+     * 维修进度
+     */
+    public static $fixStatus = [
+        1 => '申请中',
+        2 => '任务分配中',
+        3 => '维修员已接',
+        4 => '维修员到达',
+        5 => '故障已确认',
+        6 => '申请配件中',
+        7 => '配件派送中',
+        8 => '维修中',
+        9 => '维修完成',
+        10 => '评价完成',
+    ];
+
+    public static function getFixStatus($id){
+        return isset(self::$fixStatus[$id])? self::$fixStatus[$id]:'出错';
+    }
 }
