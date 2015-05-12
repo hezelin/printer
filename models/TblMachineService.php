@@ -20,9 +20,11 @@ use Yii;
  */
 class TblMachineService extends \yii\db\ActiveRecord
 {
-    /**
-     * @inheritdoc
-     */
+    public function getMachine()
+    {
+        return $this->hasOne(TblMachine::className(), ['id' => 'machine_id']);
+    }
+
     public static function tableName()
     {
         return 'tbl_machine_service';

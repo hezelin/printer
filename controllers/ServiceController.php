@@ -2,6 +2,11 @@
 
 namespace app\controllers;
 
+use app\models\TblMachineService;
+use app\models\TblMachineServiceList;
+use app\models\TblMachineServiceSearch;
+use Yii;
+
 class ServiceController extends \yii\web\Controller
 {
     public $layout = 'console';
@@ -11,19 +16,27 @@ class ServiceController extends \yii\web\Controller
         return $this->render('add');
     }
 
-    public function actionDelete()
+    public function actionDelete($id)
     {
-        return $this->render('delete');
+        $model = TblMachineService::findOne($id)->delete();
+        $this->redirect(['index']);
+
     }
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $searchModel = new TblMachineServiceSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('index',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
     }
 
     public function actionList()
     {
-        return $this->render('list');
+        $searchModel = new TblMachineServiceList();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('list',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
     }
 
     public function actionUpdate()
