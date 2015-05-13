@@ -44,7 +44,7 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
 
 /************  租借机器列表 ***************/
 
-#rent-list{
+.h-list{
   position: relative;
   padding: 0;
   margin: 0;
@@ -90,6 +90,7 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
     width: 56%;
     margin-left: 4%;
   }
+  .li-row-small{ .h-l(24px); .left; .size(12px);.nowrap(56%); .m-l(4%);}
   .li-label{
     font-size: 12px;
     color: #999999;
@@ -257,9 +258,22 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
 .h-row{
   width: 100%;
   display: block;;
-  margin: 4% 0;
+  margin: 4% 10px;
 }
 
+.h-left-text{
+  .w(30%);
+  .left;
+  .h-l(30px);
+  .size(14px);
+}
+.h-right-text{
+  .m-l(2%);
+  .w(65%);
+  .left;
+  .h-l(30px);
+  .size(14px);
+}
 .h-label{
   width: 40%;
   .left;
@@ -339,6 +353,11 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
 .h-gray{
   .bg-c(#eee);
 }
+
+.h-tel{
+  color: @color;
+}
+
 .h-box{
   width: 100%;
   height: auto;
