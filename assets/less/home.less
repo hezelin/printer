@@ -60,6 +60,8 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
     height: 140px;
     float: left;
     width: 100%;
+    position: relative;
+    border-top: 4px solid @color;
   }
   .li-cover{
     width: 40%;
@@ -143,6 +145,19 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
   }
 }
 
+.h-top-left{
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 2px 6px;
+  .h(32px);
+  .l(28px);
+  .bg-c(@color);
+  color: #ffffff;
+  z-index: 199;
+  font-weight: 600;
+
+}
 /************  租借机器详情 **************/
 #rent-detail {
   background-color: #ffffff;
@@ -319,4 +334,89 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
 
 .h-m-b-2{
   .m-b(2%);
+}
+
+.h-gray{
+  .bg-c(#eee);
+}
+.h-box{
+  width: 100%;
+  height: auto;
+  padding: 0;
+  .m(0);
+  .left;
+  .bg-c(#fff);
+  position: relative;
+  .h-box-row{
+    display: block;
+    width: 100%;
+    height: auto;
+    .left; position: relative;
+  }
+  .h-title{
+    .h-l(40px);
+    .p(0 10px);
+    .o;
+    .w(100%);
+    .left;
+    display: block;
+    .color(#333);
+    .size(16px);
+  }
+  .h-left{
+    .w(34%);
+    .h(100px);
+    vertical-align: middle;
+    .t-c(left);
+    position: relative;
+    .left;
+    .p(2%);
+  }
+  .h-img{
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .h-right{
+    .m-l(2px);  .w(60%);  .h(100px);  .left;
+  }
+  .h-row-1{
+    .h-l(33px);
+  }
+  .h-row-2{
+    .h(66px);.l(22px); color:#999999;
+  }
+  .h-hr{
+    border-color: #eeeeee;
+    border-bottom: 1px solid #eeeeee;
+    .m-b(1px);
+  }
+}
+
+.h-process{
+  .m-l(5%);  .w(95%);
+  .b-l(1px solid #ccc);  .left;
+  li{
+    .m-l(5%);  position: relative;  .w(90%);  .p(10px);
+    .b-b(1px solid #ccc);
+    .h-icon-circle{
+      position: absolute;
+      .w(10px); .h(10px); .radius(10px);
+      .bg-c(#ccc);
+      left: -7.3%;
+      top:25%;
+    }
+  }
+  .h-active{
+    color: @color;
+    .h-icon-circle{
+      .bg-c(@color);
+      .w(12px);.h(12px); left: -7.8%;
+    }
+  }
+  .h-text{
+    .l(22px);.size(14px);
+  }
+  .h-text-2{
+    .size(12px);
+  }
 }

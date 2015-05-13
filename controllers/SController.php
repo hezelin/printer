@@ -32,16 +32,16 @@ class SController extends \yii\web\Controller
                 $model->cover = $wx->getMedia( $_POST['TblMachineService']['imgid'] );
             }
 
-
             $model->load(Yii::$app->request->post());
-
-
             if( $model->save() )
-                $this->redirect(Url::toRoute(['detail','id'=>$id,'mid'=>$mid]));
+                $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
+        $model = TblMachineService::findOne(['machine_id'=>$mid]);
+        if($model)
+            $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
 
         $openid = WxBase::openId($id);
         return $this->render('apply',['id'=>$id,'openid'=>$openid]);
@@ -49,10 +49,26 @@ class SController extends \yii\web\Controller
 
     /*
      * 故障进度
+     * @params $id 为申请表 id
      */
-    public function actionDetail($id,$mid)
+    public function actionDetail($id)
     {
-        return $this->render('detail');
+        $model = (new \yii\db\Query())
+            ->select('t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,m.id,m.cover,
+                    m.brand,m.type,m.serial_id
+            ')
+            ->from('tbl_machine_service as t')
+            ->leftJoin('tbl_machine as m','m.id=t.machine_id')
+            ->where(['t.id' => $id])
+            ->one();
+        $process = (new \yii\db\Query())
+            ->select('content,add_time')
+            ->from('tbl_service_process')
+            ->where(['service_id' => $id])
+            ->orderBy('id desc')
+            ->all();
+
+        return $this->render('detail',['model'=>$model,'process'=>$process]);
     }
     public function actionIndex()
     {
