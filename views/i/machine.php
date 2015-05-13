@@ -3,7 +3,7 @@ use yii\helpers\Url;
 $this->title = '我的机器';
 ?>
 <?php if($model):?>
-    <div id="rent-list"><ul class="m-machine">
+    <div class="h-list"><ul class="m-machine">
         <?php foreach($model as $row):?>
             <li>
                 <div class="h-top-left">编号:<?=$row['serial_id']?></div>
@@ -47,7 +47,7 @@ $this->title = '我的机器';
     </a>
 
  <?php else:?>
- <div class="hint">亲，您还没有机器，赶快去租借一台吧</div>
-<a class="button" href="<?= Url::toRoute(['/rent/list','id'=>$id])?>">租借机器</a>
+ <div class="h-hint">亲，您还没有机器，赶快去租借一台吧</div>
+<a class="h-button" href="<?= Url::toRoute(['/rent/list','id'=>$id])?>">租借机器</a>
 
 <?php endif;?>

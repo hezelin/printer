@@ -3,7 +3,7 @@ use yii\helpers\Url;
     $this->title = '机器列表';
 ?>
 
-<div id="rent-list">
+<div class="h-list">
     <?php if($model && count($model)>0):?>
         <ul>
         <?php foreach($model as $row):?>
