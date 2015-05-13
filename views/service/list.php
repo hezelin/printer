@@ -22,7 +22,9 @@ echo GridView::widget([
             'format'=>'html',
             'value'=>function($data)
             {
-                return Html::img($data->cover,['width'=>40]);
+                return Html::a(Html::img($data->cover,['width'=>40]),$data->cover,[
+                    'target'=>'_blank'
+                ]);
             }
         ],
         [

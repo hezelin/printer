@@ -3,11 +3,14 @@
 namespace app\controllers;
 
 use app\models\Cache;
+use app\models\ConfigBase;
 use app\models\TblMachineService;
 use app\models\TblMachineServiceList;
 use app\models\TblMachineServiceSearch;
+use app\models\TblRentApply;
 use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
+use app\models\WxTemplate;
 use yii\data\ActiveDataProvider;
 
 use Yii;
@@ -57,10 +60,11 @@ class ServiceController extends \yii\web\Controller
 
     /*
      * 接收分配的任务
-     * post 提交 公众号wid,  用户openid ，维修任务 id
+     * post 提交 公众号wid,  维修员openid ，维修任务 id
      * 更新 维修员 表 tbl_user_maintain 的待维修计数
      * 更新 维修记录表 tbl_machine_service`的状态 和 维修员
      * 维修进度表 tbl_service_process 插入分配任务
+     * 获取用户资料  tbl_rent_apply 为维修员发送 任务的通知
      */
     public function actionAllot()
     {
@@ -70,6 +74,7 @@ class ServiceController extends \yii\web\Controller
                 'wx_id'=>Yii::$app->request->post('wid'),
                 'openid'=>Yii::$app->request->post('openid')
             ]);
+            $name = $model->name;
             if(!$model)
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,100']) );
             $model->wait_repair_count = $model->wait_repair_count + 1;
@@ -78,6 +83,9 @@ class ServiceController extends \yii\web\Controller
 
 
             $model = TblMachineService::findOne( Yii::$app->request->post('id') );
+            $reason = ConfigBase::getFaultStatus($model->type);
+            $machine_id = $model->machine_id;
+
             if(!$model)
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,300']) );
             $model->openid = Yii::$app->request->post('openid');
@@ -91,6 +99,18 @@ class ServiceController extends \yii\web\Controller
             $model->add_time = time();
             if(!$model->save())
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,500']) );
+
+
+            // 为维修员推送消息
+            $model = TblRentApply::findOne(['machine_id'=>$machine_id,'enable'=>'Y']);
+
+            $tpl = new WxTemplate(Yii::$app->request->post('wid'));
+            $tpl->sendTask(
+                Yii::$app->request->post('id'),
+                Yii::$app->request->post('openid'),
+                $name,$reason,$model->address,
+                $model->name.','.$model->phone,$model->add_time
+            );
 
             echo json_encode(['status'=>1]);
         }
