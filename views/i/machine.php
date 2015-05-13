@@ -6,6 +6,7 @@ $this->title = '我的机器';
     <div id="rent-list"><ul class="m-machine">
         <?php foreach($model as $row):?>
             <li>
+                <div class="h-top-left">编号:<?=$row['serial_id']?></div>
                 <a href="<?=Url::toRoute(['rent/detail','id'=>$row['id'],'from'=>'machine'])?>">
                     <div class="li-cover">
                         <img class="li-cover-img" src="<?=$row['cover']?>"/>
@@ -13,11 +14,11 @@ $this->title = '我的机器';
                     <p class="li-row li-name"><?=$row['brand'],' &nbsp; ',$row['type']?></p>
                     <div class="li-row li-rent">
                         <span class="li-label">到期 : </span>
-                        <span class="li-time"><?=date('Y-m-d H:i',$row['due_time'])?></span>
+                        <span class="li-time"><?=date('Y年m月d',$row['due_time'])?></span>
                     </div>
                     <div class="li-row li-rent">
-                        <span class="li-label">编号 : </span>
-                        <span class="li-price"><?=$row['serial_id']?></span>
+                        <span class="li-label">维修次数 : </span>
+                        <span class="li-time"><?=$row['maintain_time']?></span>
                     </div>
                     <div class="li-row li-rent">
                         <span class="li-label">月租 : </span>

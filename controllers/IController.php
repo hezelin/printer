@@ -23,7 +23,7 @@ class IController extends \yii\web\Controller
         $openid = WxBase::openId($id);
 //        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
         $model = (new \yii\db\Query())
-            ->select('t.wx_id,t.due_time,t.status,t.monthly_rent,m.id,m.function,
+            ->select('t.wx_id,t.due_time,t.status,t.monthly_rent,m.id,m.function,m.maintain_time,
                 m.else_attr,m.buy_time,m.cover,m.brand,m.type,m.serial_id,m.monthly_rent as o_monthly_rent')
             ->from('tbl_rent_apply as t')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')
