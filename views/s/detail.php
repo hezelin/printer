@@ -26,7 +26,10 @@
                 <?php echo $k==0? '<li class="h-active">':'<li>';?>
                     <i class="h-icon-circle"></i>
                     <p class="h-text">
-                        <?= json_decode($p['content'],true)['text']?>
+                        <?php
+                            $content = json_decode($p['content'],true);
+                            echo \app\models\ConfigBase::getFixStatus($content['status']);
+                        ?>
                     </p>
                     <p class="h-text-2"><?=date('Y-m-d H:i',$p['add_time'])?></p>
                 </li>
@@ -42,3 +45,8 @@
     </ul>
 
 </div>
+<dib class="h-block-30">&nbsp;</dib>
+<?php
+    // 输出评价的按钮
+    echo $btn;
+?>

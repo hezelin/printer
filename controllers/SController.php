@@ -10,6 +10,7 @@ use app\models\ToolBase;
 use app\models\WxBase;
 use app\models\WxJsapi;
 use Yii;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 class SController extends \yii\web\Controller
@@ -46,6 +47,40 @@ class SController extends \yii\web\Controller
         $openid = WxBase::openId($id);
         return $this->render('apply',['id'=>$id,'openid'=>$openid]);
     }
+    /*
+     * $id 公众号id, $mid 机器id,$openid 维修员openid
+     */
+    public function actionAffirmfault($id,$mid,$openid)
+    {
+        if( Yii::$app->request->post() )
+        {
+            $model = new TblMachineService();
+            $model->machine_id = $mid;
+            $model->add_time = time();
+
+            //  如果上传图片就拉取图片
+            if( isset( $_POST['TblMachineService']['imgid'] ) && $_POST['TblMachineService']['imgid'] ){
+                $wx = new WxBase($id);
+                $model->cover = $wx->getMedia( $_POST['TblMachineService']['imgid'] );
+            }
+
+            $model->load(Yii::$app->request->post());
+            if( $model->save() )
+                $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
+            else
+                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
+        }
+
+        $model = TblMachineService::findOne(['machine_id'=>$mid]);
+        if($model)
+            $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
+
+        return $this->render('affirmfault',['id'=>$id,'openid'=>$openid]);
+    }
+
+    /*
+     * 维修员 故障确认
+     */
 
     /*
      * 故障进度
@@ -54,7 +89,7 @@ class SController extends \yii\web\Controller
     public function actionDetail($id)
     {
         $model = (new \yii\db\Query())
-            ->select('t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,m.id,m.cover,
+            ->select('t.id as fault_id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,m.id,m.cover,
                     m.brand,m.type,m.serial_id
             ')
             ->from('tbl_machine_service as t')
@@ -68,7 +103,12 @@ class SController extends \yii\web\Controller
             ->orderBy('id desc')
             ->all();
 
-        return $this->render('detail',['model'=>$model,'process'=>$process]);
+        if($model['status'] == 8)
+            $btn = Html::a('评价维修',Url::toRoute(['s/evaluate','id'=>$model['fault_id']]),[
+                'class'=>'h-fixed-bottom'
+            ]);
+        else $btn = '';
+        return $this->render('detail',['model'=>$model,'process'=>$process,'btn'=>$btn]);
     }
     public function actionIndex()
     {
