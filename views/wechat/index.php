@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Url;
 use app\components\CarouselWidget;
+use app\components\FixedmenuWidget;
 
 $this->title = $setting['store_name'];
 
@@ -8,6 +9,10 @@ $this->registerCssFile('/css/home/'.$setting['style']);
 //$this->registerJsFile('/js/iscroll5.js');
 
 ?>
+<?= FixedmenuWidget::widget(['menu'=>[
+    ['url'=>Url::toRoute(['i/help']),'name'=>'<img src="/images/plugmenu3.png"><label>微信帮助</label>'],
+    ['url'=>Url::toRoute(['i/phone']),'name'=>'<img src="/images/plugmenu1.png"><label>客服热线</label>'],
+]])?>
 
 <?= CarouselWidget::widget(['data'=>$setting['carousel']]) ?>
 <!--首页菜单-->

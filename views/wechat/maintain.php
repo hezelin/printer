@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Url;
 use app\components\CarouselWidget;
+use app\components\FixedmenuWidget;
 
 $this->title = '维修主页';
 
@@ -8,8 +9,7 @@ $this->registerCssFile('/css/home/'.$setting['style']);
 //$this->registerJsFile('/js/iscroll5.js');
 
 ?>
-
-<?= CarouselWidget::widget(['data'=>$setting['carousel']]) ?>
+<p style="width: 100%; height: 15%; float:left;">&nbsp;</p>
 <!--首页菜单-->
 <ul id="main-menu">
     <li><a href="<?= Url::toRoute(['m/position','id'=>$setting['wx_id']]) ?>" ><b><img src="/images/tb01.png" /></b><span>提交位置</span></a></li>
