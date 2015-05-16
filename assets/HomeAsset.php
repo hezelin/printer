@@ -19,8 +19,8 @@ class HomeAsset extends AssetBundle
 //        'js/home/button_menu.js'
     ];
     public $depends = [
-        'app\assets\IscrollAsset',
-        'app\assets\ZeptoAsset',
+//        'app\assets\IscrollAsset',
+//        'app\assets\ZeptoAsset',
     ];
 }
 
