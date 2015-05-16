@@ -21,10 +21,10 @@ class CodeapiController extends \yii\web\Controller
     {
         $openid = WxBase::openId($id);
 
-        if(!$this->checkMaintain($id,$openid)){             // 维修员页面跳转
-            return $this->render('machine');
-        }
+        if(!$this->checkMaintain($openid)){             // 维修员页面跳转
+            return $this->render('machine',['id'=>$id]);
 
+        }
         return $this->render('user',['id'=>$id]);
 
     }
@@ -37,8 +37,8 @@ class CodeapiController extends \yii\web\Controller
     /*
      * 检查是否维修员
      */
-    private function checkMaintain($id,$openid)
+    private function checkMaintain($openid)
     {
-        return TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$openid])? false:true;
+        return TblUserMaintain::findOne(['openid'=>$openid])? false:true;
     }
 }
