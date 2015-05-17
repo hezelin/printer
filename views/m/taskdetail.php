@@ -1,5 +1,7 @@
 <?php
+use yii\helpers\Url;
 $this->title = '维修任务';
+
 ?>
 <style>
     body{ background-color: #ffffff !important;}
@@ -38,3 +40,40 @@ $this->title = '维修任务';
     </div>
 
 </div>
+<form method="post" id="wechat-form" action="<?=Url::toRoute(['m/process','id'=>$model['id'],'openid'=>$openid])?>">
+    <input name="_csrf" type="hidden" value="<?=\Yii::$app->request->csrfToken?>"/>
+    <input name="TblServiceProcess[status]" type="hidden" value="3"/>
+    <input name="TblServiceProcess[latitude]" type="hidden" id="tbl_latitude"/>
+    <input name="TblServiceProcess[longitude]" type="hidden" id="tbl_longitude"/>
+    <input name="TblServiceProcess[accuracy]" type="hidden" id="tbl_accuracy"/>
+
+<button id="access-order" class="h-fiexd-bottom">
+    确认接单
+</button>
+</form>
+
+<?php
+\app\components\WxjsapiWidget::widget([
+    'wx_id'=>$model['wx_id'],
+    'apiList'=>['getLocation'],
+    'jsReady'=>'
+
+    var images = {
+        localId:"",
+        serverId:""
+    };
+
+    document.querySelector("#access-order").onclick = function () {
+        wx.getLocation({
+            success: function (res) {
+                document.getElementById("tbl_latitude").value = res.latitude;
+                document.getElementById("tbl_longitude").value = res.longitude;
+                document.getElementById("tbl_accuracy").value = res.accuracy;
+                document.getElementById("wechat-form").submit();
+            }
+        });
+        return false;
+    };'
+])
+
+?>

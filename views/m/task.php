@@ -24,6 +24,6 @@ $this->title = '任务列表';
             <li style="clear:both; display: none;"></li>
         </ul>
     <?php else:?>
-        <p class="blank-info">没有维修任务</p>
+        <p class="blank-info">没有新维修任务</p>
     <?php endif;?>
 </div>
