@@ -42,7 +42,7 @@ $this->title = '我的机器';
     <p style="height: 50px;">&nbsp;</p>
     <div style="clear:both; display: none;"></div>
 
-    <a class="de-fiexd-bottom" href="<?=Url::toRoute(['rent/list','id'=>$id])?>">
+    <a class="h-fixed-bottom" href="<?=Url::toRoute(['rent/list','id'=>$id])?>">
         租借机器
     </a>
 

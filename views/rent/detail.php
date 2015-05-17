@@ -44,11 +44,11 @@ use yii\helpers\Url;
     <div style="clear:both; display: none;"></div>
 
     <?php if( Yii::$app->request->get('from') == 'machine') :?>
-    <a class="de-fiexd-bottom" href="<?=Url::toRoute(['s/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
+    <a class="h-fixed-bottom" href="<?=Url::toRoute(['s/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
         维修申请
     </a>
     <?php else:?>
-    <a class="de-fiexd-bottom" href="<?=Url::toRoute(['rent/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
+    <a class="h-fixed-bottom" href="<?=Url::toRoute(['rent/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
         租借机器
     </a>
     <?php endif;?>
