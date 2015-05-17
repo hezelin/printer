@@ -10,6 +10,7 @@ use Yii;
  * @property string $id
  * @property string $service_id
  * @property string $content
+ * @property integer $process
  * @property string $add_time
  */
 class TblServiceProcess extends \yii\db\ActiveRecord
@@ -29,7 +30,7 @@ class TblServiceProcess extends \yii\db\ActiveRecord
     {
         return [
             [['service_id', 'content', 'add_time'], 'required'],
-            [['service_id', 'add_time'], 'integer'],
+            [['service_id', 'process', 'add_time'], 'integer'],
             [['content'], 'string', 'max' => 500]
         ];
     }
@@ -40,10 +41,11 @@ class TblServiceProcess extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '自增id',
-            'service_id' => '维修id',
-            'content' => '进度内容',
-            'add_time' => '时间',
+            'id' => 'ID',
+            'service_id' => 'Service ID',
+            'content' => 'Content',
+            'process' => 'Process',
+            'add_time' => 'Add Time',
         ];
     }
 }

@@ -6,12 +6,15 @@
 namespace app\controllers;
 use app\models\TblMachineService;
 use app\models\TblRentApply;
+use app\models\TblServiceEvaluate;
+use app\models\TblServiceProcess;
 use app\models\ToolBase;
 use app\models\WxBase;
 use app\models\WxJsapi;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
 
 class SController extends \yii\web\Controller
 {
@@ -110,6 +113,55 @@ class SController extends \yii\web\Controller
         else $btn = '';
         return $this->render('detail',['model'=>$model,'process'=>$process,'btn'=>$btn]);
     }
+
+    /*
+     * 客户评价维修
+     * $id 维修表id
+     */
+    public function actionEvaluate($id)
+    {
+        if(Yii::$app->request->post()){
+
+            $model = new TblServiceEvaluate();
+            $model->add_time = time();
+            if($model->load(Yii::$app->request->post()) && $model->save())
+            {
+                $model = TblMachineService::findOne($id);
+                $model->status = 9;
+                if( !$model->save())
+                    Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
+
+                $model = new TblServiceProcess();
+                $model->service_id = $id;
+                $model->process = 9;
+                $model->content = json_encode(['status'=>9]);
+                $model->add_time = time();
+                if( !$model->save())
+                    Yii::$app->end(json_encode(['status'=>0,'msg'=>'维修进度错误']));
+
+                return $this->render('//tips/homestatus',[
+                    'tips'=>'感谢您的评价',
+                    'btnText'=>'返回',
+                    'btnUrl'=>'javascript:history.go(-2)'
+                ]);
+            }
+        }
+
+        return $this->render('evaluate',['id'=>$id]);
+    }
+
+    /*
+     * 查看用户评价
+     * 评价 id
+     */
+    public function actionShowevaluate($id)
+    {
+        $model = TblServiceEvaluate::findOne(['fault_id'=>$id]);
+        if(!$model)
+            throw new BadRequestHttpException('不存在这个评价');
+        return $this->render('showevaluate',['model'=>$model]);
+    }
+
     public function actionIndex()
     {
         return $this->render('index');
