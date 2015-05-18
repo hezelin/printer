@@ -47,7 +47,7 @@ $this->title = '维修任务';
     <input name="TblServiceProcess[longitude]" type="hidden" id="tbl_longitude"/>
     <input name="TblServiceProcess[accuracy]" type="hidden" id="tbl_accuracy"/>
 
-<button id="access-order" class="h-fiexd-bottom">
+<button id="access-order" class="h-fixed-bottom">
     确认接单
 </button>
 </form>

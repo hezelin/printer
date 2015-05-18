@@ -35,7 +35,7 @@ class WxTemplate extends WxBase {
         $tpl = [
             'touser'=>$openid,
             'template_id'=>$this->newTaskId,
-            'url'=>Url::toRoute(['m/task','id'=>$id],'http'),
+            'url'=>Url::toRoute(['m/taskdetail','id'=>$id],'http'),
 //            'topcolor'=>'#FF0000',
             'data'=> [
                 'first'=>[

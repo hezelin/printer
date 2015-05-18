@@ -21,6 +21,7 @@ class SController extends \yii\web\Controller
     public $layout = 'home';
     /*
      * $id 公众号id, $mid 机器id
+     * 故障申请
      */
     public function actionApply($id,$mid)
     {
@@ -52,33 +53,39 @@ class SController extends \yii\web\Controller
     }
     /*
      * $id 公众号id, $mid 机器id,$openid 维修员openid
+     * 确认故障
      */
     public function actionAffirmfault($id,$mid,$openid)
     {
         if( Yii::$app->request->post() )
         {
-            $model = new TblMachineService();
-            $model->machine_id = $mid;
-            $model->add_time = time();
-
+            $content = [
+                'status'=>5,
+                'content'=>$_POST['TblMachineService']['desc']
+            ];
             //  如果上传图片就拉取图片
             if( isset( $_POST['TblMachineService']['imgid'] ) && $_POST['TblMachineService']['imgid'] ){
                 $wx = new WxBase($id);
-                $model->cover = $wx->getMedia( $_POST['TblMachineService']['imgid'] );
+                $content['cover'] = $wx->getMedia( $_POST['TblMachineService']['imgid'] );
             }
+//            维修进度
+            $model = new TblServiceProcess();
+            $model->service_id = $mid;
+            $model->process = 5;
+            $model->content = json_encode($content);
+            $model->add_time = time();
+            if( !$model->save())
+                Yii::$app->end(json_encode(['status'=>0,'msg'=>'维修进度错误']));
 
-            $model->load(Yii::$app->request->post());
+            $model = TblMachineService::findOne($mid);
+            $model->status = 5;
             if( $model->save() )
-                $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
+                return $this->redirect(Url::toRoute(['m/taskdetail','id'=>$mid]));
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
-        $model = TblMachineService::findOne(['machine_id'=>$mid]);
-        if($model)
-            $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
-
-        return $this->render('affirmfault',['id'=>$id,'openid'=>$openid]);
+        return $this->render('affirmfault',['id'=>$id,'mid'=>$mid,'openid'=>$openid]);
     }
 
     /*

@@ -96,7 +96,7 @@ class ConfigBase
     public static $fixMaintainStatus = [
         2 => '确认接单',
         3 => '到达签到',
-        4 => '故障确认',
+        4 => '故障确定',
         5 => '申请配件',
         6 => '配件到达',
         7 => '维修完成',
