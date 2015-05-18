@@ -89,10 +89,6 @@ class SController extends \yii\web\Controller
     }
 
     /*
-     * 维修员 故障确认
-     */
-
-    /*
      * 故障进度
      * @params $id 为申请表 id
      */

@@ -57,12 +57,6 @@ $this->title = '维修任务';
     'wx_id'=>$model['wx_id'],
     'apiList'=>['getLocation'],
     'jsReady'=>'
-
-    var images = {
-        localId:"",
-        serverId:""
-    };
-
     document.querySelector("#access-order").onclick = function () {
         wx.getLocation({
             success: function (res) {

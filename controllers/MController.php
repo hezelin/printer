@@ -284,10 +284,24 @@ class MController extends \yii\web\Controller
     }
 
     /*
-     * 维修员状态转换
+     * 提交机器位置
+     * $mid 机器id
      */
-    private function maintainStats($status)
+    public function actionMachineposition($mid)
     {
+        if(Yii::$app->request->post()){
+            $model = TblRentApply::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->one();
+            $model->load(Yii::$app->request->post());
 
+            if( $model->save() ) {
+
+                return $this->render('//tips/homestatus', [
+                    'tips' => '机器位置录入成功！',
+                    'btnUrl' => 'javascript:history.go(-1)',
+                    'btnText' => '返回扫描页',
+                ]);
+            }
+            else echo '出现未知错误！';
+        }
     }
 }

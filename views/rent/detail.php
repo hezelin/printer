@@ -43,10 +43,12 @@ use yii\helpers\Url;
     <p style="height: 50px;">&nbsp;</p>
     <div style="clear:both; display: none;"></div>
 
-    <?php if( Yii::$app->request->get('from') == 'machine') :?>
+    <?php if( Yii::$app->request->get('from') == 'machine'):?>
     <a class="h-fixed-bottom" href="<?=Url::toRoute(['s/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
         维修申请
     </a>
+    <?php elseif( Yii::$app->request->get('from') == 'scan'):?>
+
     <?php else:?>
     <a class="h-fixed-bottom" href="<?=Url::toRoute(['rent/apply','id'=>$model->wx_id,'mid'=>$model->id])?>">
         租借机器
