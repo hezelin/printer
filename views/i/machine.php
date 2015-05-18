@@ -2,6 +2,9 @@
 use yii\helpers\Url;
 $this->title = '我的机器';
 ?>
+<style>
+    body{ background-color: #ffffff !important;}
+</style>
 <?php if($model):?>
     <div class="h-list"><ul class="m-machine">
         <?php foreach($model as $row):?>
@@ -30,9 +33,14 @@ $this->title = '我的机器';
                         申请中...
                     </a>
                 <?php else:?>
-                <a href="<?=Url::toRoute(['s/apply','id'=>$row['wx_id'],'mid'=>$row['id']])?>" class="m-apply">
-                    维修申请
-                </a>
+                    <div>
+                        <a href="<?=Url::toRoute(['s/apply','id'=>$row['wx_id'],'mid'=>$row['id']])?>" class="m-apply-50 h-b-r">
+                            维修申请
+                        </a>
+                        <a href="<?=Url::toRoute(['i/service','mid'=>$row['id']])?>" class="m-apply-50">维修记录</a>
+                    </div>
+
+
                 <?php endif;?>
             </li>
         <?php endforeach;?>

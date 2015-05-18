@@ -85,6 +85,7 @@ class ServiceController extends \yii\web\Controller
             $model = TblMachineService::findOne( Yii::$app->request->post('id') );
             $reason = ConfigBase::getFaultStatus($model->type);
             $machine_id = $model->machine_id;
+            $rendId = $model->id;
 
             if(!$model)
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,300']) );
@@ -106,7 +107,7 @@ class ServiceController extends \yii\web\Controller
 
             $tpl = new WxTemplate(Yii::$app->request->post('wid'));
             $tpl->sendTask(
-                Yii::$app->request->post('id'),
+                $rendId,
                 Yii::$app->request->post('openid'),
                 $name,$reason,$model->address,
                 $model->name.','.$model->phone,$model->add_time
@@ -127,5 +128,4 @@ class ServiceController extends \yii\web\Controller
     {
         return $this->render('view');
     }
-
 }

@@ -43,7 +43,7 @@ class SController extends \yii\web\Controller
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
-        $model = TblMachineService::findOne(['machine_id'=>$mid]);
+        $model = TblMachineService::find()->where(['machine_id'=>$mid])->andWhere(['<','status',9])->one();
         if($model)
             $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\TblMachineService;
 use app\models\TblRentApply;
 use app\models\TblWechatMachine;
 use app\models\WxBase;
@@ -39,9 +40,14 @@ class IController extends \yii\web\Controller
         return $this->render('score');
     }
 
-    public function actionService()
+    /*
+     * 我的维修
+     * $mid 机器 id
+     */
+    public function actionService($mid)
     {
-        return $this->render('service');
+        $model = TblMachineService::findAll(['machine_id'=>$mid]);
+        return $this->render('service',['model'=>$model]);
     }
 
 }
