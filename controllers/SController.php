@@ -52,7 +52,7 @@ class SController extends \yii\web\Controller
         return $this->render('apply',['id'=>$id,'openid'=>$openid]);
     }
     /*
-     * $id 公众号id, $mid 机器id,$openid 维修员openid
+     * $id 公众号id, $mid 维修的 id,$openid 维修员openid
      * 确认故障
      */
     public function actionAffirmfault($id,$mid,$openid)

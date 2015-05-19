@@ -6,6 +6,9 @@ use app\models\TblMachineService;
 use app\models\TblRentApply;
 use app\models\WxBase;
 use app\models\TblUserMaintain;
+use app\models\ConfigBase;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 class CodeapiController extends \yii\web\Controller
 {
@@ -25,20 +28,97 @@ class CodeapiController extends \yii\web\Controller
         $wid = TblRentApply::find()->select('wx_id')->where(['machine_id'=>$id,'enable'=>'Y'])->scalar();
         $openid = WxBase::openId($wid);
 
-        if(!$this->checkMaintain($openid)){             // 维修员页面跳转
+        if(!$this->checkMaintain($openid)) {             // 维修员页面跳转
 //            查看维修状态
             $model = TblMachineService::find()
-                ->where(['machine_id'=>$id,'openid'=>$openid,'enable'=>'Y'])
-                ->andWhere(['<','status',9])
+                ->where(['machine_id' => $id, 'openid' => $openid, 'enable' => 'Y'])
+                ->andWhere(['<', 'status', 9])
                 ->one();
-            if(!$model){                                 // 没有维修申请，机器信息、录入机器坐标
-                return $this->render('firstmachine',['id'=>$id,'wid'=>$wid]);
-
+            if (!$model) {                                 // 没有维修申请，机器信息、录入机器坐标
+                return $this->render('firstmachine', ['id' => $id, 'wid' => $wid]);
             }
-
-
-            return $this->render('machine',['id'=>$id]);
-
+            $status = $model['status'];
+            switch ($status) {
+                case 3:
+                case 6:
+                case 7:
+                    return $this->render('machine', [
+                        'openid' => $openid,
+                        'service_id' => $model['id'],
+                        'mid' => $id,
+                        'wid' => $wid,
+                        'btnHtml' => Html::a(
+                            ConfigBase::getFixMaintainStatus($status),
+                            Url::toRoute(['m/processajax', 'id' => $model['id'], 'openid' => $openid]),
+                            [
+                                'data-ajax' => 1,
+                                'data-status' => $status + 1,
+                                'id' => 'process-btn',
+                                'class' => 'h-link-minor',
+                            ]
+                        )
+                    ]);
+                case 4:
+                    return $this->render('machine', [
+                        'openid' => $openid,
+                        'service_id' => $model['id'],
+                        'mid' => $id,
+                        'wid' => $wid,
+                        'btnHtml' => Html::a(
+                            ConfigBase::getFixMaintainStatus($status),
+                            Url::toRoute(['s/affirmfault', 'id' => $wid, 'mid' => $model['id'], 'openid' => $openid]),
+                            [
+                                'data-ajax' => 0,
+                                'data-status' => $status + 1,
+                                'id' => 'process-btn',
+                                'class' => 'h-link-minor',
+                            ]
+                        )
+                    ]);
+                case 5:
+                    return $this->render('machine', [
+                        'openid' => $openid,
+                        'service_id' => $model['id'],
+                        'mid' => $id,
+                        'wid' => $wid,
+                        'btnHtml' =>
+                            Html::a(
+                                '维修完成',
+                                Url::toRoute(['m/processajax', 'id' => $model['id'], 'openid' => $openid]),
+                                [
+                                    'data-ajax' => 1,
+                                    'data-status' => 8,
+                                    'class' => 'h-link-minor',
+                                    'id' => 'process-btn'
+                                ]) .
+                            Html::a(
+                                ConfigBase::getFixMaintainStatus($status),
+                                Url::toRoute(['s/applyparts', 'id' => $model['id'], 'openid' => $openid]),
+                                [
+                                    'data-ajax' => 0,
+                                    'data-status' => $status + 1,
+                                    'class' => 'h-link-minor',
+                                    'id' => 'process-btn'
+                                ])
+                    ]);
+                case 9:
+                    return $this->render('process', [
+                        'openid' => $openid,
+                        'service_id' => $model['id'],
+                        'mid' => $id,
+                        'wid' => $wid,
+                        'btnHtml' => Html::a(
+                            '查看评价',
+                            Url::toRoute(['s/showevaluate', 'id' => $model['id']]),
+                            [
+                                'data-ajax' => 0,
+                                'data-status' => $status + 1,
+                                'class' => 'h-link-minor',
+                                'id' => 'process-btn'
+                            ]
+                        )
+                    ]);
+            }
         }
         return $this->render('user',['id'=>$id]);
 

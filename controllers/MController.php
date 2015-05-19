@@ -126,6 +126,7 @@ class MController extends \yii\web\Controller
     }
     /*
      * 维修记录
+     * $id 为公众号id
      */
     public function actionRecord($id)
     {
