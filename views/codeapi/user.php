@@ -5,11 +5,12 @@ use yii\helpers\Url;
 
 
 <div class="h-center-wrap">
-    <a class="h-link" href="<?=Url::toRoute(['i/mapply','id'=>$id])?>">
-        维修申请
-    </a>
-    <a class="h-link" href="<?=Url::toRoute(['m/apply','id'=>$id])?>">
-        历史维修
+    <!--<a class="h-link-minor" href="<?/*=Url::toRoute(['s/apply','id'=>$id,'mid'=>$mid])*/?>">
+        维修进度
+    </a>-->
+    <?=$btnHtml;?>
+    <a class="h-link" href="<?=Url::toRoute(['s/irecord','id'=>$id,'mid'=>$mid])?>">
+        维修记录
     </a>
     <a class="h-link" href="<?=Url::toRoute(['m/apply','id'=>$id])?>">
         分享赚积分

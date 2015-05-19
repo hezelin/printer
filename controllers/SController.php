@@ -170,9 +170,22 @@ class SController extends \yii\web\Controller
         return $this->render('index');
     }
 
-    public function actionIrecord()
+    /*
+     * 机器维修记录
+     * $id ，公众号id
+     * $mid , 机器id
+     */
+    public function actionIrecord($id,$mid)
     {
-        return $this->render('irecord');
+        $openid = WxBase::openId($id);
+        $model = (new \yii\db\Query())
+            ->select('id, cover,desc,type,add_time,status')
+            ->from('tbl_machine_service as t')
+            ->where(['t.machine_id'=>$mid])
+            ->orderBy('t.status asc')
+            ->all();
+
+        return $this->render('irecord',['model'=>$model]);
     }
 
     public function actionMrecord()
