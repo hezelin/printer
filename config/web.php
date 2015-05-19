@@ -6,6 +6,7 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'zh-CN',
     'name' => '蓝标打印机',
+    'defaultRoute'=>'weixin',
     'components' => [
         'urlManager' =>[
             'enablePrettyUrl' => true,
