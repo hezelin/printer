@@ -6,7 +6,7 @@ use app\models\Cache;
 use app\models\MachineSearch;
 use Yii;
 use app\models\TblMachine;
-use app\models\WxBase;
+use app\models\WxCode;
 use yii\helpers\Url;
 use yii\filters\VerbFilter;
 
@@ -38,7 +38,7 @@ class CodeController extends \yii\web\Controller
     public function actionBinding()
     {
         $id = Cache::getWid();
-        $wx = new WxBase($id);
+        $wx = new WxCode($id);
         return $this->render('binding',[ 'qrcodeImgUrl'=>$wx->bindMaintainCode() ]);
     }
 
@@ -97,14 +97,9 @@ class CodeController extends \yii\web\Controller
      */
     public function actionScore()
     {
-        $id = Yii::$app->session['wechat']['id'];
-        $urlParams = [
-            'text' => Url::toRoute(['codeapi/score','id'=>$id],'http'),
-        ];
-
-        $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
-
-        return $this->render('score',[ 'qrcodeImgUrl'=>$qrcodeImgUrl ]);
+        $id = Cache::getWid();
+        $wx = new WxCode($id);
+        return $this->render('score',[ 'qrcodeImgUrl'=>$wx->scoreCode() ]);
     }
 
 }
