@@ -27,13 +27,13 @@ class ConsoleController extends \yii\web\Controller
         /*
          * 保存 微信id,24小时
          */
-        Cache::setValue('u:'.Yii::$app->user->id.':wid', $model['id'], 'PX', 60*60*24);
+        Cache::setValue('u:'.Yii::$app->user->id.':wid', $model['id'],60*60*24);
 
         Yii::$app->session['wechat'] = $model;
 
         // 是否选择公众号，跳转
-        if( Yii::$app->request->get('url')) $this->redirect( Yii::$app->request->get('url') );
-
+        if( Yii::$app->request->get('url'))
+            return $this->redirect( Yii::$app->request->get('url') );
         return $this->render('view');
     }
 }
