@@ -34,6 +34,7 @@ echo GridView::widget([
                 return ConfigBase::getFaultStatus($data->type);
             }
         ],
+        'desc',
         [
             'attribute'=>'machine.cover',
             'header'=>'机器',
@@ -67,9 +68,12 @@ echo GridView::widget([
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions'=>['style'=>'width:120px'],
-            'template' => '{allot} &nbsp; {delete}',
+            'headerOptions'=>['style'=>'width:80px'],
+            'template' => '{process} &nbsp; {delete}',
             'buttons' => [
+                'process'=>function($url,$model,$key){
+                    return Html::a('<i class="glyphicon glyphicon-eye-open"></i>',$url,['title'=>'查看进度']);
+                },
                 'delete'=>function($url,$model,$key){
                     return Html::a('<i class="glyphicon glyphicon-remove"></i>',$url,[
                         'title'=>'删除',

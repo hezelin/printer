@@ -34,6 +34,7 @@ echo GridView::widget([
                 return ConfigBase::getFaultStatus($data->type);
             }
         ],
+        'desc',
         [
             'attribute'=>'machine.cover',
             'header'=>'机器',

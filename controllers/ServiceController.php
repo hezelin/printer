@@ -14,6 +14,7 @@ use app\models\WxTemplate;
 use yii\data\ActiveDataProvider;
 
 use Yii;
+use yii\web\NotFoundHttpException;
 
 class ServiceController extends \yii\web\Controller
 {
@@ -127,5 +128,27 @@ class ServiceController extends \yii\web\Controller
     public function actionView()
     {
         return $this->render('view');
+    }
+
+    /*
+     * 查看维修进度
+     */
+    public function actionProcess($id)
+    {
+        if (($model = TblMachineService::find($id)->with('machine')->one() ) == null) {
+            throw new NotFoundHttpException('这个页面不存在');
+        }
+//        维修进度
+        $process = (new \yii\db\Query())
+            ->select('process,content,add_time')
+            ->from('tbl_service_process')
+            ->where(['service_id' => $id])
+            ->orderBy('id desc')
+            ->all();
+
+        return $this->render('process', [
+            'model' => $model,
+            'process'=>$process
+        ]);
     }
 }
