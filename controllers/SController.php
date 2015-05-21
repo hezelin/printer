@@ -77,6 +77,7 @@ class SController extends \yii\web\Controller
             if( !$model->save())
                 Yii::$app->end(json_encode(['status'=>0,'msg'=>'维修进度错误']));
 
+
             $model = TblMachineService::findOne($mid);
             $model->status = 5;
             if( $model->save() )

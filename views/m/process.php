@@ -44,6 +44,7 @@ $this->title = '维修任务';
 
 <script>
 <?php $this->beginBlock('JS_END') ?>
+    var ms = <?=$model['status']?>;
     var hasClick = 0;
     $(function(){
        $('#process-btn').click(function(){
