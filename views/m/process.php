@@ -63,6 +63,9 @@ $this->title = '维修任务';
                {'status':status},
                function(res){
                    if(res.status == 1){
+                       if( res.dataStatus == 9){
+                           $('.h-fixed-bottom').html('<a href="'+res.href+'">查看维修进度</a>');
+                       }else
                        $this.attr({'data-status':res.dataStatus,'href':res.href,'data-ajax':res.dataAjax}).text(res.btnText);
                    }else
                        alert(res.msg);

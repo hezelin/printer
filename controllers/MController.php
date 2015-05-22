@@ -119,6 +119,11 @@ class MController extends \yii\web\Controller
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
+            case 8:
+                $res['href'] = Url::toRoute(['s/detail','id'=>$wid]);
+                $res['dataAjax'] = 0;
+                $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
+                break;
         }
         return json_encode($res);
 
@@ -168,23 +173,39 @@ class MController extends \yii\web\Controller
      */
     public function actionTaskdetail($id)
     {
-        $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('t.id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    m.address,m.name,m.phone,m.region,m.wx_id
+                    t.machine_id as mid, m.address,m.name,m.phone,m.region,m.wx_id
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
-            ->where(['t.id' => $id,'t.openid'=>$openid])
+            ->where(['t.id' => $id])
             ->one();
         if(!$model)
             throw new BadRequestHttpException();
+
+        $openid = WxBase::openId($model['wx_id']);
         $region = DataCity::getAddress( $model['region']);
 
         $status = $model['status'];
         switch($status){
             case 2: return $this->render('taskdetail',['model'=>$model,'region'=>$region,'openid'=>$openid]);
-            case 3:
+            case 3: return $this->render('process3', [
+                        'model' => $model,
+                        'region' => $region,
+                        'openid' => $openid,
+                        'mUrl' => Url::toRoute(['codeapi/machine','id'=>$model['mid']],'http'),
+                        'btnHtml'=>Html::a(
+                            ConfigBase::getFixMaintainStatus($status),
+                            Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                            [
+                                'data-ajax'=>1,
+                                'data-status'=>$status+1,
+                                'class'=>'h-fixed-bottom',
+                                'id'=>'process-btn'
+                            ]
+                        )
+                    ]);
             case 6:
             case 7: return $this->render('process', [
                         'model' => $model,
@@ -243,6 +264,7 @@ class MController extends \yii\web\Controller
                             ['class'=>'h-fixed-bottom']
                         )
                     ]);
+            case 8:
             case 9: return $this->render('process', [
                 'model' => $model,
                 'region' => $region,
