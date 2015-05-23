@@ -29,6 +29,10 @@ class Cache
         return Yii::$app->redis->executeCommand('GET', [$key]);
     }
 
+    public static function delValue($key)
+    {
+        return Yii::$app->redis->executeCommand('DEL', [$key]);
+    }
     /*
      * 获取 微信id
      * 跳转登录
