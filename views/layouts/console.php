@@ -128,6 +128,13 @@ WeixinAsset::register($this);
                                         ['label' => '录入耗材','url' => '/item/add'],
                                     ],
                                 ],
+                                [
+                                    'label' => '积分管理',
+                                    'items' => [
+                                        ['label' => '赠送积分','url' => '/adminscore/send'],
+                                        ['label' => '积分操作记录','url' => '/adminscore/log'],
+                                    ],
+                                ],
                             ],
                         ]);
                 ?>
