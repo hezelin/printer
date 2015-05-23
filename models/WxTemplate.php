@@ -71,4 +71,59 @@ class WxTemplate extends WxBase {
         return true;
     }
 
+    /*
+     * 发送积分提醒
+     * {{first.DATA}}
+
+        {{FieldName.DATA}}:{{Account.DATA}}
+        {{change.DATA}}积分:{{CreditChange.DATA}}
+        积分余额:{{CreditTotal.DATA}}
+        {{Remark.DATA}}
+     *
+     * $type = [1,2,3,4]  /  [打印赠送]
+     */
+    public function sendScore($openid,$url,$scoreChange,$scoreTotal,$type=1)
+    {
+        $tpl = [
+            'touser'=>$openid,
+            'template_id'=>$this->scoreId,
+            'url'=>$url,
+            'data'=> [
+                'first'=>[
+                    'value'=>'您的积分账户变更如下',
+                    'color'=>'#000000',
+                ],
+                'FieldName'=>[
+                    'value'=>'变动来源',
+                    'color'=>'#000000',
+                ],
+                'Account'=>[
+                    'value'=>'打印赠送',
+                    'color'=>'#000000',
+                ],
+                'change'=>[
+                    'value'=>$scoreChange>0 ? '增加':'减少',
+                    'color'=>'#000000',
+                ],
+                'CreditChange'=>[
+                    'value'=>$scoreChange,
+                    'color'=>'#ff0000',
+                ],
+                'CreditTotal'=>[
+                    'value'=>$scoreTotal,
+                    'color'=>'#000000',
+                ],
+                'Remark'=>[
+                    'value'=>'您可以在网站或手机APP使用积分下单抵现，100积分=1元。',
+                    'color'=>'#173177',
+                ],
+            ]
+        ];
+        $curl = new Curl();
+        $res = $curl->postJson($this->sendUrl,json_encode($tpl),['access_token'=>$this->accessToken()]);
+        if( $res['errcode'] )
+            Yii::$app->end(json_encode(['status'=>0,'msg'=>$res['errmsg']]));
+        return true;
+    }
+
 } 
