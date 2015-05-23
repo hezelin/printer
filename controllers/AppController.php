@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\Cache;
 use app\models\TblUserMaintain;
 use app\models\TblUserWechat;
 use app\models\ToolBase;
@@ -57,11 +58,7 @@ class AppController extends \yii\web\Controller
             $weixin = new WxBase($id);
             $weixin->getUser($wx->msg->FromUserName,true);
         }
-
-        /*
-         * 取消关注，删除资料
-         */
-        if($wx->msg->Event == 'unsubscribe'){
+        else if($wx->msg->Event == 'unsubscribe'){
             $weixin = new WxBase($id);
             $weixin->delUser($wx->msg->FromUserName);
         }
@@ -72,7 +69,7 @@ class AppController extends \yii\web\Controller
         if( ($wx->msg->Event == 'SCAN' && $key = $wx->msg->EventKey) ||
             ($wx->msg->Event == 'subscribe' && substr($wx->msg->EventKey,0,8) == 'qrscene_' && $key = substr($wx->msg->EventKey,8,-1))
         ){
-            if($key == 1)       // 绑定维修员事件
+            if($key == 1)               // 绑定维修员事件
             {
                 $maintain = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$wx->msg->FromUserName]);
                 if($maintain)
@@ -86,6 +83,10 @@ class AppController extends \yii\web\Controller
                         return $wx->makeText('成功绑定为维修员！');
                     return $wx->makeText( ToolBase::arrayToString($maintain->errors));
                 }
+            }elseif($key ==2 )          // 扫描积分二维码
+            {
+                Cache::setValue('score:'.$id,$wx->msg->FromUserName,60*30);
+                return $wx->makeText( '等待获得积分中...');
             }
         }
 
@@ -97,9 +98,9 @@ class AppController extends \yii\web\Controller
      * 扫描事件处理
      * $key == 1,绑定维修员
      */
-    private function scan($key){
+    /*private function scan($key){
 
-    }
+    }*/
 
     public function actionCreateMenu($id)
     {
