@@ -4,34 +4,19 @@ namespace app\models;
 
 use Yii;
 
-/**
- * This is the model class for table "tbl_user_wechat".
- *
- * @property string $wx_id
- * @property string $openid
- * @property string $nickname
- * @property integer $sex
- * @property string $city
- * @property string $country
- * @property string $province
- * @property string $language
- * @property string $headimgurl
- * @property string $subscribe_time
- * @property integer $subscribe
- */
+
 class TblUserWechat extends \yii\db\ActiveRecord
 {
-    /**
-     * @inheritdoc
-     */
+    public function getCount()
+    {
+        return $this->hasOne(TblUserCount::className(), ['wx_id' => 'wx_id','openid'=>'openid']);
+    }
+
     public static function tableName()
     {
         return 'tbl_user_wechat';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
@@ -46,9 +31,6 @@ class TblUserWechat extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
