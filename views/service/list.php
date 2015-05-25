@@ -22,9 +22,12 @@ echo GridView::widget([
             'format'=>'html',
             'value'=>function($data)
             {
-                return Html::a(Html::img($data->cover,['width'=>40]),$data->cover,[
-                    'target'=>'_blank'
-                ]);
+                $covers = json_decode($data->cover,true);
+                $html = [];
+                foreach($covers as $cover){
+                    $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class' => 'fancybox']);
+                }
+                return join("\n",$html);
             }
         ],
         [
@@ -42,7 +45,7 @@ echo GridView::widget([
             'value'=>function($data)
             {
                 if( isset($data->machine->cover )  )
-                    return Html::img($data->machine->cover,['width'=>40]);
+                    return Html::a(Html::img($data->machine->cover,['width'=>40]),$data->machine->cover,['class'=>'fancybox']);
             }
         ],
 
@@ -86,6 +89,43 @@ echo GridView::widget([
         ]
 
     ],
+]);
+
+
+
+// fancybox 图片预览插件
+
+echo newerton\fancybox\FancyBox::widget([
+    'target' => '.fancybox',
+    'helpers' => true,
+    'mouse' => true,
+    'config' => [
+        'maxWidth' => '90%',
+        'maxHeight' => '90%',
+        'playSpeed' => 7000,
+        'padding' => 0,
+        'fitToView' => false,
+        'width' => '70%',
+        'height' => '70%',
+        'autoSize' => false,
+        'closeClick' => false,
+        'openEffect' => 'elastic',
+        'closeEffect' => 'elastic',
+        'prevEffect' => 'elastic',
+        'nextEffect' => 'elastic',
+        'closeBtn' => false,
+        'openOpacity' => true,
+        'helpers' => [
+            'title' => ['type' => 'float'],
+            'buttons' => [],
+            'thumbs' => ['width' => 68, 'height' => 50],
+            'overlay' => [
+                'css' => [
+                    'background' => 'rgba(0, 0, 0, 0.8)'
+                ]
+            ]
+        ],
+    ]
 ]);
 
 ?>

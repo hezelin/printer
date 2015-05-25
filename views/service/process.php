@@ -9,7 +9,7 @@ $this->title = '维修进度';
 ?>
 <?php
 function getMachine($model){
-    return Html::img($model->machine->cover,['width'=>40]) .
+    return Html::a(Html::img($model->machine->cover,['width'=>40]),$model->machine->cover,['class'=>'fancybox']) .
             ' , ' . $model->machine->brand .
             ' , ' . $model->machine->type .
             ' , ' . $model->machine->serial_id
@@ -34,6 +34,14 @@ function getProcess($model,$process)
         );
     return $html.'</ul>';
 }
+
+function getImage($covers){
+    $html = [];
+    foreach(json_decode($covers,true) as $cover)
+        $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class'=>'fancybox']);
+    return join("\n",$html);
+}
+
 ?>
 
 <?= DetailView::widget([
@@ -43,7 +51,8 @@ function getProcess($model,$process)
         [
             'format'=>'html',
             'label'=>'故障图片',
-            'value'=> Html::a(Html::img($model->cover,['width'=>40]),$model->cover)
+//            'value'=> Html::a(Html::img($model->cover,['width'=>40]),$model->cover)
+            'value'=> getImage($model->cover)
         ],
 
         [
@@ -71,5 +80,42 @@ function getProcess($model,$process)
             'value' => ConfigBase::getFixStatus($model->status),
         ],*/
     ],
-])
-    ?>
+]);
+
+// fancybox 预览图片
+
+echo newerton\fancybox\FancyBox::widget([
+    'target' => '.fancybox',
+    'helpers' => true,
+    'mouse' => true,
+    'config' => [
+        'maxWidth' => '100%',
+        'maxHeight' => '100%',
+        'playSpeed' => 7000,
+        'padding' => 0,
+        'fitToView' => false,
+        'width' => '70%',
+        'height' => '70%',
+        'autoSize' => false,
+        'closeClick' => false,
+        'openEffect' => 'elastic',
+        'closeEffect' => 'elastic',
+        'prevEffect' => 'elastic',
+        'nextEffect' => 'elastic',
+        'closeBtn' => false,
+        'openOpacity' => true,
+        'helpers' => [
+            'title' => ['type' => 'float'],
+            'buttons' => [],
+            'thumbs' => ['width' => 68, 'height' => 50],
+            'overlay' => [
+                'css' => [
+                    'background' => 'rgba(0, 0, 0, 0.8)'
+                ]
+            ]
+        ],
+    ]
+]);
+
+
+?>
