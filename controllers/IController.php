@@ -22,7 +22,6 @@ class IController extends \yii\web\Controller
     public function actionMachine($id)
     {
         $openid = WxBase::openId($id);
-//        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
         $model = (new \yii\db\Query())
             ->select('t.wx_id,t.due_time,t.status,t.monthly_rent,m.id,m.function,m.maintain_time,
                 m.else_attr,m.buy_time,m.cover,m.brand,m.type,m.serial_id,m.monthly_rent as o_monthly_rent')
@@ -47,6 +46,10 @@ class IController extends \yii\web\Controller
     public function actionService($mid)
     {
         $model = TblMachineService::findAll(['machine_id'=>$mid]);
+        foreach ($model as $i=>$m) {
+            $covers = json_decode($m['cover'],true);
+            $model[$i]['cover'] = $covers[0];
+        }
         return $this->render('service',['model'=>$model]);
     }
 

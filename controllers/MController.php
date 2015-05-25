@@ -145,6 +145,12 @@ class MController extends \yii\web\Controller
             ->where(['t.openid' => $openid])
             ->orderBy('t.id desc')
             ->all();
+
+        foreach ($model as $i=>$m) {
+            $covers = json_decode($m['fault_cover'],true);
+            $model[$i]['fault_cover'] = $covers[0];
+        }
+
         return $this->render('record',['model'=>$model]);
     }
 

@@ -97,7 +97,7 @@ class ServiceController extends \yii\web\Controller
 
             $model = new TblServiceProcess();
             $model->service_id = Yii::$app->request->post('id');
-            $model->content = json_encode(['text'=>'维修任务已分配'],JSON_UNESCAPED_UNICODE);
+            $model->content = json_encode(['status'=>2]);
             $model->add_time = time();
             if(!$model->save())
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,500']) );
