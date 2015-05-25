@@ -4,20 +4,6 @@ namespace app\models;
 
 use Yii;
 
-/**
- * This is the model class for table "tbl_machine_service".
- *
- * @property string $id
- * @property string $machine_id
- * @property string $from_openid
- * @property string $openid
- * @property integer $type
- * @property integer $status
- * @property string $cover
- * @property string $desc
- * @property string $add_time
- * @property string $enable
- */
 class TblMachineService extends \yii\db\ActiveRecord
 {
     public function getMachine()
@@ -30,9 +16,6 @@ class TblMachineService extends \yii\db\ActiveRecord
         return 'tbl_machine_service';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
@@ -40,14 +23,11 @@ class TblMachineService extends \yii\db\ActiveRecord
             [['machine_id', 'type', 'status', 'add_time'], 'integer'],
             [['enable'], 'string'],
             [['from_openid', 'openid'], 'string', 'max' => 28],
-            [['cover'], 'string', 'max' => 50],
+            [['cover'], 'string', 'max' => 500],
             [['desc'], 'string', 'max' => 1000]
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
