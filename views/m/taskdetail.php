@@ -11,7 +11,7 @@ $this->title = '维修任务';
     <div class="h-title h-gray h-hr">故障信息</div>
     <div class="h-box-row h-hr">
         <div class="h-left">
-            <img class="h-img" src="<?=$model['fault_cover']?>" />
+            <img id="previewImage" class="h-img" src="<?=$model['fault_cover']?>" />
         </div>
         <div class="h-right">
             <h4 class="h-row-1 h-hr">故障类型：<?=\app\models\ConfigBase::getFaultStatus($model['fault_type'])?></h4>
@@ -67,7 +67,14 @@ $this->title = '维修任务';
             }
         });
         return false;
-    };'
+    };
+
+    document.querySelector("#previewImage").onclick = function () {
+            wx.previewImage({
+              current: "'.$model["fault_cover"].'",
+              urls: '.json_encode($model['cover_images']).'
+            });
+      };'
 ])
 
 ?>

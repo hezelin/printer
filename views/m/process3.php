@@ -10,7 +10,7 @@ $this->title = '维修任务';
     <div class="h-title h-gray h-hr">故障信息</div>
     <div class="h-box-row h-hr">
         <div class="h-left">
-            <img class="h-img" src="<?=$model['fault_cover']?>" />
+            <img id="previewImage" class="h-img" src="<?=$model['fault_cover']?>" />
         </div>
         <div class="h-right">
             <h4 class="h-row-1 h-hr">故障类型：<?=\app\models\ConfigBase::getFaultStatus($model['fault_type'])?></h4>
@@ -87,7 +87,7 @@ $this->title = '维修任务';
 
     \app\components\WxjsapiWidget::widget([
         'wx_id'=>$model['wx_id'],
-        'apiList'=>['scanQRCode'],
+        'apiList'=>['scanQRCode','previewImage'],
         'jsReady'=>'
         document.querySelector("#process-btn").onclick = function () {
             if(isScan == 1){
@@ -99,7 +99,6 @@ $this->title = '维修任务';
                 scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
                 success: function (res) {
                 var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-//                alert( result);
                 if( mUrl === res.resultStr ){
                     isScan = 1;
                     process();
@@ -107,6 +106,13 @@ $this->title = '维修任务';
             }
             });
             return false;
-        };'
+        };
+
+        document.querySelector("#previewImage").onclick = function () {
+            wx.previewImage({
+              current: "'.$model["fault_cover"].'",
+              urls: '.json_encode($model['cover_images']).'
+            });
+      };'
     ])
 ?>

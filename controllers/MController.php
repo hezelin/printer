@@ -164,6 +164,13 @@ class MController extends \yii\web\Controller
             ->where(['t.openid' => $openid])
             ->andWhere(['<','t.status',9])
             ->all();
+
+        foreach ($model as $i=>$m) {
+            $covers = json_decode($m['fault_cover'],true);
+            $model[$i]['fault_cover'] = $covers[0];
+        }
+
+
         return $this->render('task',['model'=>$model]);
     }
 
@@ -183,6 +190,13 @@ class MController extends \yii\web\Controller
             ->one();
         if(!$model)
             throw new BadRequestHttpException();
+
+        // 图片预览 路径设置
+        $covers = json_decode($model['fault_cover'],true);
+        $model['fault_cover'] = Yii::$app->request->hostInfo.$covers[0];
+        foreach($covers as $cover)
+            $model['cover_images'][] = Yii::$app->request->hostinfo.$cover;
+
 
         $openid = WxBase::openId($model['wx_id']);
         $region = DataCity::getAddress( $model['region']);
