@@ -66,8 +66,8 @@ class SController extends \yii\web\Controller
             ];
             //  如果上传图片就拉取图片
             if( isset( $_POST['TblMachineService']['imgid'] ) && $_POST['TblMachineService']['imgid'] ){
-                $wx = new WxBase($id);
-                $content['cover'] = $wx->getMedia( $_POST['TblMachineService']['imgid'] );
+                $wx = new WxMedia($id);
+                $content['cover'] = $wx->getImages( explode('|',$_POST['TblMachineService']['imgid']) );
             }
 //            维修进度
             $model = new TblServiceProcess();
@@ -75,9 +75,10 @@ class SController extends \yii\web\Controller
             $model->process = 5;
             $model->content = json_encode($content);
             $model->add_time = time();
-            if( !$model->save())
-                Yii::$app->end(json_encode(['status'=>0,'msg'=>'维修进度错误']));
-
+            if( !$model->save()){
+                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
+                return $this->render('affirmfault',['id'=>$id,'mid'=>$mid,'openid'=>$openid]);
+            }
 
             $model = TblMachineService::findOne($mid);
             $model->status = 5;
