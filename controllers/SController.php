@@ -11,6 +11,7 @@ use app\models\TblServiceProcess;
 use app\models\ToolBase;
 use app\models\WxBase;
 use app\models\WxJsapi;
+use app\models\WxMedia;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -33,8 +34,8 @@ class SController extends \yii\web\Controller
 
             //  如果上传图片就拉取图片
             if( isset( $_POST['TblMachineService']['imgid'] ) && $_POST['TblMachineService']['imgid'] ){
-                $wx = new WxBase($id);
-                $model->cover = $wx->getMedia( $_POST['TblMachineService']['imgid'] );
+                $wx = new WxMedia($id);
+                $model->cover = json_encode( $wx->getImages( explode('|',$_POST['TblMachineService']['imgid'] ) ) );
             }
 
             $model->load(Yii::$app->request->post());
