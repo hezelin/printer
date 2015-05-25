@@ -184,30 +184,6 @@ class WxBase {
     }
 
     /*
-     * 获取资源并且保存
-     * 保存方式，images,voice
-     */
-    public function getMedia($media_id,$type = 'images')
-    {
-        $curl = new Curl();
-        $media = $curl->get('http://file.api.weixin.qq.com/cgi-bin/media/get',[
-            'access_token'=>$this->accessToken(),
-            'media_id'=>$media_id
-        ]);
-
-        $dateDir = date('Ym',time()).'/'.date('d',time());
-        if($type == 'images') {
-            $dir = ToolBase::newDir('images/' . $dateDir.'/o', Yii::getAlias('@webroot'));
-            $dirSmall = ToolBase::newDir('images/' . $dateDir.'/m', Yii::getAlias('@webroot'));
-            $file = ToolBase::getSalt(7) . uniqid() . '.jpg';
-            file_put_contents($dir . '/' . $file, $media);
-            ToolBase::mt($dir . '/' . $file,$dirSmall . '/' . $file,600,2000);
-            return '/images/' . $dateDir . '/m/' . $file;
-        }
-
-    }
-
-    /*
      * 创建菜单
      * @parmas $data 为菜单数组
      * 要求不能对中文编码 ，JSON_UNESCAPED_UNICODE
