@@ -99,7 +99,7 @@ class SController extends \yii\web\Controller
     {
         $model = (new \yii\db\Query())
             ->select('t.id as fault_id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,m.id,m.cover,
-                    m.brand,m.type,m.serial_id
+                    m.brand,m.type,m.serial_id,m.wx_id
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')

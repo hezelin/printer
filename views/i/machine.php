@@ -30,7 +30,7 @@ $this->title = '我的机器';
                 </a>
                 <?php if($row['status']==1):?>
                     <a href="javascript:void(0);" class="m-apply">
-                        申请中...
+                        租借申请中...
                     </a>
                 <?php else:?>
                     <div>

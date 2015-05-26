@@ -19,13 +19,13 @@ echo GridView::widget([
         [
             'attribute'=>'cover',
             'header'=>'故障图片',
-            'format'=>'html',
+            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($data)
             {
                 $covers = json_decode($data->cover,true);
                 $html = [];
                 foreach($covers as $cover){
-                    $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class' => 'fancybox']);
+                    $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class' => 'fancybox','rel'=>'group1']);
                 }
                 return join("\n",$html);
             }
@@ -41,11 +41,11 @@ echo GridView::widget([
         [
             'attribute'=>'machine.cover',
             'header'=>'机器',
-            'format'=>'html',
+            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($data)
             {
                 if( isset($data->machine->cover )  )
-                    return Html::a(Html::img($data->machine->cover,['width'=>40]),$data->machine->cover,['class'=>'fancybox']);
+                    return Html::a(Html::img($data->machine->cover,['width'=>40]),$data->machine->cover,['class'=>'fancybox','rel'=>'group1']);
             }
         ],
 
@@ -100,13 +100,13 @@ echo newerton\fancybox\FancyBox::widget([
     'helpers' => true,
     'mouse' => true,
     'config' => [
-        'maxWidth' => '90%',
-        'maxHeight' => '90%',
+        'maxWidth' => '100%',
+        'maxHeight' => '100%',
         'playSpeed' => 7000,
         'padding' => 0,
         'fitToView' => false,
-        'width' => '70%',
-        'height' => '70%',
+        'width' => '100%',
+        'height' => '100%',
         'autoSize' => false,
         'closeClick' => false,
         'openEffect' => 'elastic',
