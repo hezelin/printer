@@ -39,8 +39,9 @@ class SController extends \yii\web\Controller
             }
 
             $model->load(Yii::$app->request->post());
-            if( $model->save() )
+            if( $model->save() ){
                 $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
+            }
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
@@ -94,6 +95,8 @@ class SController extends \yii\web\Controller
     /*
      * 故障进度
      * @params $id 为申请表 id
+     * 微信申请发起用户的页面
+     * 1、发起评价。 2、取消维修
      */
     public function actionDetail($id)
     {

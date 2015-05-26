@@ -14,6 +14,7 @@ use app\models\WxTemplate;
 use yii\data\ActiveDataProvider;
 
 use Yii;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 class ServiceController extends \yii\web\Controller
@@ -87,6 +88,8 @@ class ServiceController extends \yii\web\Controller
             $reason = ConfigBase::getFaultStatus($model->type);
             $machine_id = $model->machine_id;
             $rendId = $model->id;
+            $fromOpenid = $model->from_openid;
+            $applyTime = $model->add_time;
 
             if(!$model)
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,300']) );
@@ -112,6 +115,14 @@ class ServiceController extends \yii\web\Controller
                 Yii::$app->request->post('openid'),
                 $name,$reason,$model->address,
                 $model->name.','.$model->phone,$model->add_time
+            );
+
+            // 为申请者推送消息
+            $tpl->sendProcess(
+                $fromOpenid,
+                Url::toRoute(['s/detail','id'=>$rendId],'http'),
+                '任务分配中',
+                $applyTime
             );
 
             echo json_encode(['status'=>1]);

@@ -19,6 +19,9 @@ class WxTemplate extends WxBase {
 //    资料审核通知
     private  $checkInfoId = 'annBT_1RFl0KWSsyj2Y_6KAjdvL48FGT2UebP84u4pI';
 
+//    维修进度通知
+    private $processId = 'ubhal9RHjr99ubhsiOooCicbpsIHvnsff7vuAysMCWk';
+
 //    https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
     private $sendUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send';
     /*
@@ -64,11 +67,8 @@ class WxTemplate extends WxBase {
                 ],
             ]
         ];
-        $curl = new Curl();
-        $res = $curl->postJson($this->sendUrl,json_encode($tpl),['access_token'=>$this->accessToken()]);
-        if( $res['errcode'] )
-            Yii::$app->end(json_encode(['status'=>0,'msg'=>$res['errmsg']]));
-        return true;
+
+        $this->sendTpl($tpl);
     }
 
     /*
@@ -119,11 +119,65 @@ class WxTemplate extends WxBase {
                 ],
             ]
         ];
+
+        $this->sendTpl($tpl);
+    }
+
+    /*
+     * 用户维修进度模板消息
+     * {{first.DATA}}
+
+服务类型：{{HandleType.DATA}}
+处理状态：{{Status.DATA}}
+提交时间：{{RowCreateDate.DATA}}
+当前进度：{{LogType.DATA}}
+{{remark.DATA}}
+     */
+    public function sendProcess($openid,$url,$process,$applyTime)
+    {
+        $tpl = [
+            'touser'=>$openid,
+            'template_id'=>$this->processId,
+            'url'=>$url,
+            'data'=> [
+                'first'=>[
+                    'value'=>'您好，您的维修申请有新的进度：',
+                    'color'=>'#000000',
+                ],
+                'HandleType'=>[
+                    'value'=>'机器维修',
+                    'color'=>'#000000',
+                ],
+                'Status'=>[
+                    'value'=>'已受理',
+                    'color'=>'#000000',
+                ],
+                'RowCreateDate'=>[
+                    'value'=> date('m月d日 H:i',$applyTime),
+                    'color'=>'#000000',
+                ],
+                'LogType'=>[
+                    'value'=>$process,
+                    'color'=>'#ff0000',
+                ],
+                'Remark'=>[
+                    'value'=>'点击“详情”查看详细处理结果，如有疑问请联系客服',
+                    'color'=>'#173177',
+                ],
+            ]
+        ];
+        return $this->sendTpl($tpl);
+    }
+
+    /*
+     * 发送模板消息
+     */
+    private function sendTpl($tpl)
+    {
         $curl = new Curl();
         $res = $curl->postJson($this->sendUrl,json_encode($tpl),['access_token'=>$this->accessToken()]);
         if( $res['errcode'] )
             Yii::$app->end(json_encode(['status'=>0,'msg'=>$res['errmsg']]));
         return true;
     }
-
 } 
