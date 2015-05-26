@@ -175,7 +175,7 @@ class SController extends \yii\web\Controller
     {
         $model = TblServiceEvaluate::findOne(['fault_id'=>$id]);
         if(!$model)
-            throw new BadRequestHttpException('不存在这个评价');
+            return $this->render('//tips/homestatus',['tips'=>'不存在这个评价']);
         return $this->render('showevaluate',['model'=>$model]);
     }
 

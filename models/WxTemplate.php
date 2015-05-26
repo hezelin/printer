@@ -18,9 +18,10 @@ class WxTemplate extends WxBase {
     private  $dueTimeId = 'VSYOyq5Sb9vO1MIJ1OT5wtBJjM8miNpXzU6vGG5T7C8';
 //    资料审核通知
     private  $checkInfoId = 'annBT_1RFl0KWSsyj2Y_6KAjdvL48FGT2UebP84u4pI';
-
 //    维修进度通知
     private $processId = 'ubhal9RHjr99ubhsiOooCicbpsIHvnsff7vuAysMCWk';
+//    待办任务提醒
+    private $waitTaskId = 'Hie4EdBKBP4fQRt6o7Gl6QM-n415QLGVuKukb1R9e2s';
 
 //    https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
     private $sendUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send';
@@ -168,7 +169,47 @@ class WxTemplate extends WxBase {
         ];
         return $this->sendTpl($tpl);
     }
+    /*
+     * 待办事项提醒
+     * 1、用户评价提醒
+     * {{first.DATA}}
+事项名称：{{keyword1.DATA}}
+发起人：{{keyword2.DATA}}
+发起时间：{{keyword3.DATA}}
+{{remark.DATA}}
+     */
+    public function sendWaiting($openid,$url,$machineTime,$applyTime)
+    {
+        $tpl = [
+            'touser'=>$openid,
+            'template_id'=>$this->waitTaskId,
+            'url'=>$url,
+            'data'=> [
+                'first'=>[
+                    'value'=>'您申请的机器维修已于['.date('m月d日 H:i',$machineTime).']维修完成,去评价一下吧！',
+                    'color'=>'#000000',
+                ],
+                'keyword1'=>[
+                    'value'=>'机器维修完成',
+                    'color'=>'#000000',
+                ],
+                'keyword2'=>[
+                    'value'=>'系统自动',
+                    'color'=>'#000000',
+                ],
+                'keyword3'=>[
+                    'value'=> date('m月d日 H:i',$applyTime),
+                    'color'=>'#000000',
+                ],
 
+                'Remark'=>[
+                    'value'=>'福利来了，评价赠送积分哦！',
+                    'color'=>'#173177',
+                ],
+            ]
+        ];
+        return $this->sendTpl($tpl);
+    }
     /*
      * 发送模板消息
      */

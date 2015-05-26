@@ -9,6 +9,7 @@ use app\models\TblRentApply;
 use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
 use app\models\WxBase;
+use app\models\WxTemplate;
 use yii\web\BadRequestHttpException;
 use yii\helpers\Url;
 use yii\helpers\Html;
@@ -96,6 +97,8 @@ class MController extends \yii\web\Controller
         if( !$model->save())
             Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
         $mid = $model->machine_id;
+        $fromOpenid = $model->from_openid;
+        $applyTime = $model->add_time;
 
         $model = new TblServiceProcess();
         $model->service_id = $id;
@@ -119,7 +122,15 @@ class MController extends \yii\web\Controller
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
-            case 8:
+            case 8:             // 维修完成，为发起维修申请的客户 推送评价提醒
+                $tpl = new WxTemplate($wid);
+                $tpl->sendWaiting(
+                    $fromOpenid,
+                    Url::toRoute(['s/evaluate','id'=>$id],'http'),
+                    time(),
+                    $applyTime
+                );
+
                 $res['href'] = Url::toRoute(['s/detail','id'=>$wid]);
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
@@ -202,7 +213,6 @@ class MController extends \yii\web\Controller
         $model['fault_cover'] = Yii::$app->request->hostInfo.$covers[0];
         foreach($covers as $cover)
             $model['cover_images'][] = Yii::$app->request->hostinfo.$cover;
-
 
         $openid = WxBase::openId($model['wx_id']);
         $region = DataCity::getAddress( $model['region']);
