@@ -242,7 +242,7 @@ class WxTemplate extends WxBase {
                 ],
                 'remark'=>[
                     'value'=>'取消原因：'.$reason.'。如有疑问请跟客服联系',
-                    'color'=>'#173177',
+                    'color'=>'#ff0000',
                 ],
             ]
         ];

@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Cache;
 use app\models\ConfigBase;
 use app\models\TblFaultCancelLog;
+use app\models\TblFaultCancelLogSearch;
 use app\models\TblMachineService;
 use app\models\TblMachineServiceList;
 use app\models\TblMachineServiceSearch;
@@ -28,15 +29,16 @@ class ServiceController extends \yii\web\Controller
     }
 
     /*
-     * post $id, $text
+     *  $id,公众号id,
+     *  $fid 维修申请id
      */
-    public function actionDelete($id)
+    public function actionDelete($id,$fid)
     {
         $type = Yii::$app->request->post('type');
         $text = Yii::$app->request->post('text');
         $openid = Yii::$app->request->post('openid');
 
-        $model = TblMachineService::findOne($id);
+        $model = TblMachineService::findOne($fid);
         $model->enable = 'N';
         $fromOpenid = $model->from_openid;
         $toOpenid = $model->openid;
@@ -52,6 +54,8 @@ class ServiceController extends \yii\web\Controller
         $model->type = $type;
         $model->add_time = time();
         $model->reason = $text;
+        $model->wx_id = $id;
+
         if(!$model->save())
             Yii::$app->end(json_encode(['status'=>0,'msg'=>'错误2']));
 
@@ -81,7 +85,8 @@ class ServiceController extends \yii\web\Controller
         return $this->render('index',[
             'dataProvider'=>$dataProvider,
             'searchModel' => $searchModel,
-            'fixProvider'=>$fixProvider
+            'fixProvider'=>$fixProvider,
+            'wid'=>Cache::getWid()
         ]);
     }
 
@@ -170,7 +175,10 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionCancellist()
     {
-        return $this->render('cancellist');
+        $searchModel = new TblFaultCancelLogSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('cancellist',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
     }
 
     /*

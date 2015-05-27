@@ -139,7 +139,7 @@ echo GridView::widget([
                 return false;
             }
             $.post(
-                '<?=Url::toRoute(['delete'])?>/'+keyId,
+                '<?=Url::toRoute(['delete','id'=>$wid])?>?fid='+keyId,
                 {'type':1,'text':text},
                 function(res){
                     if(res.status == 1){
