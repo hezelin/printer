@@ -154,6 +154,7 @@ class MController extends \yii\web\Controller
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
             ->where(['t.openid' => $openid])
+            ->andWhere(['t.enable' => 'Y'])
             ->orderBy('t.id desc')
             ->all();
 
@@ -179,6 +180,7 @@ class MController extends \yii\web\Controller
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
             ->where(['t.openid' => $openid])
+            ->andWhere(['t.enable' => 'Y'])
             ->andWhere(['<','t.status',9])
             ->all();
 
