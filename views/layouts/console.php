@@ -112,6 +112,7 @@ WeixinAsset::register($this);
                                     'items' => [
                                         ['label' => '待分配维修','url' => '/service/index'],
                                         ['label' => '维修列表','url' => '/service/list'],
+                                        ['label' => '取消列表','url' => '/service/cancellist'],
                                     ],
                                 ],
                                 [

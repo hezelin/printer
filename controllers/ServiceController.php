@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Cache;
 use app\models\ConfigBase;
+use app\models\TblFaultCancelLog;
 use app\models\TblMachineService;
 use app\models\TblMachineServiceList;
 use app\models\TblMachineServiceSearch;
@@ -26,11 +27,43 @@ class ServiceController extends \yii\web\Controller
         return $this->render('add');
     }
 
+    /*
+     * post $id, $text
+     */
     public function actionDelete($id)
     {
-        $model = TblMachineService::findOne($id)->delete();
-        $this->redirect(['index']);
+        $type = Yii::$app->request->post('type');
+        $text = Yii::$app->request->post('text');
+        $openid = Yii::$app->request->post('openid');
 
+        $model = TblMachineService::findOne($id);
+        $model->enable = 'N';
+        $fromOpenid = $model->from_openid;
+        $toOpenid = $model->openid;
+        $serviceId = $model->id;
+        $applyTime = $model->add_time;
+
+        if( !$model->save() )
+            Yii::$app->end(json_encode(['status'=>0,'msg'=>'错误1']));
+
+        $model = new TblFaultCancelLog();
+        $model->service_id = $serviceId;
+        $model->opera = $openid? $openid:'user:'.(Yii::$app->user->id);
+        $model->type = $type;
+        $model->add_time = time();
+        $model->reason = $text;
+        if(!$model->save())
+            Yii::$app->end(json_encode(['status'=>0,'msg'=>'错误2']));
+
+       // 为管理员推送消息
+        $tpl = new WxTemplate( Cache::getWid() );
+
+        $url = Url::toRoute(['cancel','id'=>$model->id]);
+
+        $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
+        $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
+
+        echo json_encode(['status'=>1]);
     }
 
     public function actionIndex()
@@ -131,14 +164,13 @@ class ServiceController extends \yii\web\Controller
             echo json_encode(['status'=>0,'msg'=>'参数错误']);
 
     }
-    public function actionUpdate()
-    {
-        return $this->render('update');
-    }
 
-    public function actionView()
+    /*
+     * 维修任务取消任务列表
+     */
+    public function actionCancellist()
     {
-        return $this->render('view');
+        return $this->render('cancellist');
     }
 
     /*
@@ -161,5 +193,14 @@ class ServiceController extends \yii\web\Controller
             'model' => $model,
             'process'=>$process
         ]);
+    }
+
+    /*
+     * 取消原因
+     * $id 取消列表的id
+     */
+    public function actionCancel($id)
+    {
+
     }
 }

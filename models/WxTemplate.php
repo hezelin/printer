@@ -22,6 +22,8 @@ class WxTemplate extends WxBase {
     private $processId = 'ubhal9RHjr99ubhsiOooCicbpsIHvnsff7vuAysMCWk';
 //    待办任务提醒
     private $waitTaskId = 'Hie4EdBKBP4fQRt6o7Gl6QM-n415QLGVuKukb1R9e2s';
+//    服务取消通知
+    private $cancelServiceId = 'H3p4ikpCCyN-v9lKY_RCfR9Yn3d1rBRXTUON0HOQiZo';
 
 //    https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
     private $sendUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send';
@@ -210,6 +212,43 @@ class WxTemplate extends WxBase {
         ];
         return $this->sendTpl($tpl);
     }
+
+    /*
+     * 服务取消通知
+     * 1、用户取消维修，给用户、维修员提醒
+     * {{first.DATA}}
+服务项目：{{keyword1.DATA}}
+服务时间：{{keyword2.DATA}}
+{{remark.DATA}}
+     */
+    public function sendCancelService($openid,$url,$name,$reason,$operaTime,$applyTime)
+    {
+        $tpl = [
+            'touser'=>$openid,
+            'template_id'=>$this->cancelServiceId,
+            'url'=>$url,
+            'data'=> [
+                'first'=>[
+                    'value'=>'您好，'.$name.'已于（'.date('Y年m月d日 H:i',$operaTime).'）取消维修',
+                    'color'=>'#000000',
+                ],
+                'keyword1'=>[
+                    'value'=>'机器维修',
+                    'color'=>'#000000',
+                ],
+                'keyword2'=>[
+                    'value'=>date('Y年m月d日 H:i',$applyTime),
+                    'color'=>'#000000',
+                ],
+                'remark'=>[
+                    'value'=>'取消原因：'.$reason.'。如有疑问请跟客服联系',
+                    'color'=>'#173177',
+                ],
+            ]
+        ];
+        return $this->sendTpl($tpl);
+    }
+
     /*
      * 发送模板消息
      */
