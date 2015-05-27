@@ -3,6 +3,8 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\models\ConfigBase;
+use yii\bootstrap\Modal;
+
 
 $this->title = '待维修列表';
 ?>
@@ -12,6 +14,7 @@ $this->title = '待维修列表';
 echo GridView::widget([
     'dataProvider'=> $dataProvider,
     'filterModel' => $searchModel,
+    'id' => 'fix-list',
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
@@ -19,6 +22,7 @@ echo GridView::widget([
         [
             'attribute'=>'cover',
             'header'=>'故障图片',
+            'headerOptions'=>['style'=>'width:160px'],
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($data)
             {
@@ -79,10 +83,9 @@ echo GridView::widget([
                 },
                 'delete'=>function($url,$model,$key){
                     return Html::a('<i class="glyphicon glyphicon-remove"></i>',$url,[
-                        'title'=>'删除',
-                        'data-method'=>'post',
-                        'data-confirm'=>'确定删除？',
-                        'data-pjax'=>0
+                        'title'=>'关闭维修申请',
+                        'class'=>'close-model',
+                        'key-id'=>$key
                     ]);
                 },
             ]
@@ -91,6 +94,26 @@ echo GridView::widget([
     ],
 ]);
 
+/*
+ * 取消任务 模态框
+ */
+Modal::begin([
+    'header' => '关闭维修申请',
+    'id' => 'my-modal-cancel',
+    'size' => 'modal-md',
+    'toggleButton' => false,
+    'footer' => '
+        <button id="cancel-btn" type="button" class="btn btn-primary">取消维修</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+    ',
+]);
+echo Html::tag('p','取消维修并且给用户和管理员发送通知',['class'=>'text-primary']);
+echo Html::tag('p','',['class'=>'text-danger','id'=>'cancel-status']);
+echo Html::beginForm('','',['class'=>'form-horizontal']);
+echo Html::input('text','service_cancel','',['placeholder'=>'取消原因','class'=>'form-control','id'=>'cancel-text']);
+echo Html::endForm();
+
+Modal::end();
 
 
 // fancybox 图片预览插件
@@ -128,4 +151,42 @@ echo newerton\fancybox\FancyBox::widget([
     ]
 ]);
 
+?>
+
+    <script>
+        <?php $this->beginBlock('JS_END') ?>
+        var allotTr;
+        var keyId;
+        $('#fix-list .close-model').click(function(){
+            keyId = $(this).attr('key-id');
+            allotTr = $(this).closest('tr');
+            $('#my-modal-cancel').modal('show');
+            return false;
+        });
+
+        $('#cancel-btn').click(function(){
+            var text = $.trim($('#cancel-text').val());
+            if(!text){
+                $('#cancel-status').text('请输入取消原因！');
+                $('#cancel-text').focus();
+                return false;
+            }
+            $.post(
+                '<?=Url::toRoute(['delete','id'=>$wid])?>?fid='+keyId,
+                {'type':1,'text':text},
+                function(res){
+                    if(res.status == 1){
+                        $('#my-modal-cancel').modal('hide');
+                        allotTr.remove();
+                    }
+                    else
+                        alert(res.msg);
+                },'json'
+            );
+        })
+
+        <?php $this->endBlock();?>
+    </script>
+<?php
+$this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 ?>

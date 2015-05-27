@@ -95,7 +95,7 @@ class ServiceController extends \yii\web\Controller
         $searchModel = new TblMachineServiceList();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('list',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
+        return $this->render('list',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'wid'=>Cache::getWid()]);
     }
 
     /*
