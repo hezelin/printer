@@ -34,6 +34,8 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionDelete($id,$fid)
     {
+        $this->layout = 'home';
+
         $type = Yii::$app->request->post('type');
         $text = Yii::$app->request->post('text');
         $openid = Yii::$app->request->post('openid');
@@ -60,14 +62,16 @@ class ServiceController extends \yii\web\Controller
             Yii::$app->end(json_encode(['status'=>0,'msg'=>'错误2']));
 
        // 为管理员推送消息
-        $tpl = new WxTemplate( Cache::getWid() );
+        $tpl = new WxTemplate($id);
 
         $url = Url::toRoute(['cancel','id'=>$model->id]);
 
         $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
         $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
 
-        echo json_encode(['status'=>1]);
+        if($type == 2)
+            return $this->render('//tips/homestatus',['tips'=>'维修申请取消成功！','btnText'=>'返回','btnUrl'=>Url::toRoute(['i/machine','id'=>$id])]);
+        return json_encode(['status'=>1]);
     }
 
     public function actionIndex()

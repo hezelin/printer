@@ -46,7 +46,7 @@ class SController extends \yii\web\Controller
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
-        $model = TblMachineService::find()->where(['machine_id'=>$mid])->andWhere(['<','status',9])->one();
+        $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->andWhere(['<','status',9])->one();
         if($model)
             $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
 
@@ -128,6 +128,12 @@ class SController extends \yii\web\Controller
             ]);
         else $btn = '';
 
+        if($model['status']== 1 || $model['status'] == 2)
+            $btn = Html::a('取消维修',Url::toRoute(['s/cancel','id'=>$model['wx_id'],'fid'=>$model['fault_id']]),[
+                'class'=>'h-fixed-bottom'
+            ]);
+
+
         return $this->render('detail',['model'=>$model,'process'=>$process,'btn'=>$btn]);
     }
 
@@ -200,6 +206,15 @@ class SController extends \yii\web\Controller
             ->all();
 
         return $this->render('irecord',['model'=>$model]);
+    }
+
+    /*
+     * 取消维修
+     * $id 公众号id,$fid 维修表id
+     */
+    public function actionCancel($id,$fid)
+    {
+        return $this->render('cancel',['id'=>$id,'fid'=>$fid,'openid'=>WxBase::openId($id)]);
     }
 
     public function actionMrecord()

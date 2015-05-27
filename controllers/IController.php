@@ -45,7 +45,7 @@ class IController extends \yii\web\Controller
      */
     public function actionService($mid)
     {
-        $model = TblMachineService::findAll(['machine_id'=>$mid]);
+        $model = TblMachineService::findAll(['machine_id'=>$mid,'enable'=>'Y']);
         foreach ($model as $i=>$m) {
             $covers = json_decode($m['cover'],true);
             $model[$i]['cover'] = $covers[0];
