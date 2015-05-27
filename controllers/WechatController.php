@@ -15,8 +15,6 @@ class WechatController extends \yii\web\Controller
     public function actionIndex($id)
     {
         $openid = WxBase::openId($id);
-//        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
-
         $setting = TblStoreSetting::find(['enable'=>'Y','wx_id'=>$id])
             ->with('carousel')->limit(5)->asArray()->one();
 

@@ -44,6 +44,7 @@ $this->title = '维修任务';
     <input name="_csrf" type="hidden" value="<?=\Yii::$app->request->csrfToken?>"/>
     <input name="TblServiceProcess[status]" type="hidden" value="3"/>
     <input name="TblServiceProcess[latitude]" type="hidden" id="tbl_latitude"/>
+    <input name="from" type="hidden" value="<?=$from?>"/>
     <input name="TblServiceProcess[longitude]" type="hidden" id="tbl_longitude"/>
     <input name="TblServiceProcess[accuracy]" type="hidden" id="tbl_accuracy"/>
 

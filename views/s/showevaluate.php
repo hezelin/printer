@@ -10,26 +10,18 @@ use yii\helpers\Html;
 if( Yii::$app->session->hasFlash('error') )
     echo Html::tag('div',Yii::$app->session->getFlash('error'),['class'=>'h-error']);
 ?>
-<?php
-    $attitude = ['糟糕','一般','满意'];
-    $speed = ['比较慢','一般','比较快'];
-    $quality = ['没修好','正常','非常好'];
-?>
+
 <div class="h-center-wrap">
 
     <div class="h-form">
         <p>&nbsp;</p>
         <div class="h-row">
-            <div class="h-label">态度</div>
-            <div class="h-label-input"><?=$attitude[ $model['attitude'] ];?></div>
+            <div class="h-label">评分</div>
+            <div class="h-label-input" style="font-size: 20px; font-weight: 600px; color: #FF0000"><?=$model['score']?>分</div>
         </div>
         <div class="h-row">
-            <div class="h-label">速度</div>
-            <div class="h-label-input"><?=$speed[ $model['speed'] ];?></div>
-        </div>
-        <div class="h-row">
-            <div class="h-label">质量</div>
-            <div class="h-label-input"><?=$quality[ $model['quality'] ];?></div>
+            <div class="h-label">时间</div>
+            <div class="h-label-input" style="width: 100%; overflow: visible"><?=date('Y年m月d日',$model['add_time'])?></div>
         </div>
     </div>
 </div>

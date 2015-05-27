@@ -55,7 +55,6 @@ class MController extends \yii\web\Controller
     public function actionProcess($id,$openid)
     {
         $post = Yii::$app->request->post('TblServiceProcess');
-
         $model = TblUserMaintain::findOne(['openid'=>$openid]);
         $model->attributes = $post;
         $wid = $model->wx_id;
@@ -64,6 +63,10 @@ class MController extends \yii\web\Controller
 
         $model = TblMachineService::findOne($id);
         $model->status = $post['status'];
+        $model->openid = $openid;
+        $rendId = $model->id;
+        $fromOpenid = $model->from_openid;
+        $applyTime = $model->add_time;
         if( !$model->save())
             throw new BadRequestHttpException('更改状态错误');
 
@@ -74,6 +77,18 @@ class MController extends \yii\web\Controller
         $model->add_time = time();
         if( !$model->save())
             throw new BadRequestHttpException('维修进度错误');
+
+        $from = Yii::$app->request->post('from');
+
+        if($from == 'initiative'){              // 主动接单，给用户发送推送
+            $tpl = new WxTemplate($wid);
+            $tpl->sendProcess(
+                $fromOpenid,
+                Url::toRoute(['s/detail','id'=>$rendId],'http'),
+                '维修员已接单',
+                $applyTime
+            );
+        }
 
         return $this->render('//tips/homestatus',[
             'tips'=>'接单成功',
@@ -179,8 +194,7 @@ class MController extends \yii\web\Controller
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
-            ->where(['t.openid' => $openid])
-            ->andWhere(['t.enable' => 'Y'])
+            ->where(['t.openid' => $openid,'t.enable' => 'Y'])
             ->andWhere(['<','t.status',9])
             ->all();
 
@@ -221,7 +235,8 @@ class MController extends \yii\web\Controller
 
         $status = $model['status'];
         switch($status){
-            case 2: return $this->render('taskdetail',['model'=>$model,'region'=>$region,'openid'=>$openid]);
+            case 1: return $this->render('taskdetail',['model'=>$model,'region'=>$region,'openid'=>$openid,'from'=>'initiative']);
+            case 2: return $this->render('taskdetail',['model'=>$model,'region'=>$region,'openid'=>$openid,'from'=>'allot']);
             case 3: return $this->render('process3', [
                         'model' => $model,
                         'region' => $region,
@@ -330,13 +345,6 @@ class MController extends \yii\web\Controller
 
 
     }
-    /*
-     * 提交位置
-     */
-    public function actionPosition()
-    {
-        echo '这里获取位置';
-    }
 
     /*
      * 提交机器位置
@@ -358,5 +366,29 @@ class MController extends \yii\web\Controller
             }
             else echo '出现未知错误！';
         }
+    }
+
+    /*
+     * 主动接单
+     * $id公众号id
+     */
+    public function actionInitiative($id)
+    {
+        $model = (new \yii\db\Query())
+            ->select('t.id, t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
+                    m.address,m.name,m.phone,m.region
+            ')
+            ->from('tbl_machine_service as t')
+            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
+            ->where(['t.enable' => 'Y','t.status' => 1])
+            ->orderBy('t.id desc')
+            ->all();
+
+        foreach ($model as $i=>$m) {
+            $covers = json_decode($m['fault_cover'],true);
+            $model[$i]['fault_cover'] = $covers[0];
+        }
+
+        return $this->render('initiative',['model'=>$model,'count'=>count($model)]);
     }
 }
