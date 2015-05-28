@@ -55,7 +55,7 @@ $this->title = '维修任务';
         hasClick = 1;
         var $this = $('#process-btn');
 
-        var href = $this.attr('href');
+        var href = $this.attr('data-href');
         var status = $this.attr('data-status');
         $this.addClass('h-loading');
         if ( $this.attr('data-ajax') == "0") {
@@ -69,7 +69,7 @@ $this->title = '维修任务';
                 if (res.status == 1) {
                     $this.attr({
                         'data-status': res.dataStatus,
-                        'href': res.href,
+                        'data-href': res.href,
                         'data-ajax': res.dataAjax
                     }).text(res.btnText);
                 } else
@@ -87,6 +87,7 @@ $this->title = '维修任务';
 
     \app\components\WxjsapiWidget::widget([
         'wx_id'=>$model['wx_id'],
+        'debug'=>true,
         'apiList'=>['scanQRCode','previewImage'],
         'jsReady'=>'
         document.querySelector("#process-btn").onclick = function () {
@@ -98,12 +99,12 @@ $this->title = '维修任务';
                 needResult: 1,  // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
                 scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
                 success: function (res) {
-                var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-                if( mUrl === res.resultStr ){
-                    isScan = 1;
-                    process();
+                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    if( mUrl === res.resultStr ){
+                        isScan = 1;
+                        process();
+                    }
                 }
-            }
             });
             return false;
         };

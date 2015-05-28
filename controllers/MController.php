@@ -244,12 +244,13 @@ class MController extends \yii\web\Controller
                         'mUrl' => Url::toRoute(['codeapi/machine','id'=>$model['mid']],'http'),
                         'btnHtml'=>Html::a(
                             ConfigBase::getFixMaintainStatus($status),
-                            Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                            '#',
                             [
                                 'data-ajax'=>1,
                                 'data-status'=>$status+1,
                                 'class'=>'h-fixed-bottom',
-                                'id'=>'process-btn'
+                                'id'=>'process-btn',
+                                'data-href'=>Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid])
                             ]
                         )
                     ]);
