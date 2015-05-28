@@ -87,7 +87,6 @@ $this->title = '维修任务';
 
     \app\components\WxjsapiWidget::widget([
         'wx_id'=>$model['wx_id'],
-        'debug'=>true,
         'apiList'=>['scanQRCode','previewImage'],
         'jsReady'=>'
         document.querySelector("#process-btn").onclick = function () {
