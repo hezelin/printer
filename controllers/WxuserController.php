@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\TblUserWechatSearch;
+use app\models\WxUser;
 use Yii;
 
 class WxuserController extends \yii\web\Controller
@@ -19,6 +20,24 @@ class WxuserController extends \yii\web\Controller
     public function actionSelect()
     {
         return $this->render('select');
+    }
+
+    /*
+     * 公众号id,用户 openid
+     */
+    public function actionUpdate($wx_id,$openid)
+    {
+        $weixin = new WxUser($wx_id);
+        $weixin->updateUser($openid);
+        return $this->redirect(['list']);
+    }
+
+    /*
+     * 拉取用户
+     */
+    public function actionPull()
+    {
+
     }
 
 }
