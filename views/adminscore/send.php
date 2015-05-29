@@ -15,10 +15,11 @@
     &nbsp;&nbsp;
     <span class="small"> <?= date('Y-m-d H:i',$model['subscribe_time'])?>关注</span>
     </p>
-    <p>用户积分：<?=$model['count']['score']?></p>
+    <p>用户积分：<?=$model['count']['score']? :0?></p>
+    <p><a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['wxuser/select','url'=>\Yii::$app->request->url])?>">重新指定用户</a></p>
     <?php else:?>
      <p>等待用户扫描</p>
-     <p>或者指定用户发送积分 <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['wechat/select','url'=>\Yii::$app->request->url])?>">指定用户</a></p>
+     <p>或者指定用户发送积分 <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['wxuser/select','url'=>\Yii::$app->request->url])?>">指定用户</a></p>
     <?php endif;?>
 </div>
 <p class="text-danger">填入负数，则表示减去相应积分</p>

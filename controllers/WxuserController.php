@@ -19,7 +19,11 @@ class WxuserController extends \yii\web\Controller
 
     public function actionSelect()
     {
-        return $this->render('select');
+        $searchModel = new TblUserWechatSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $fromUrl = Yii::$app->request->get('url');
+        return $this->render('select',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'fromUrl'=>$fromUrl]);
     }
 
     /*
