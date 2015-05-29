@@ -60,8 +60,8 @@ class WxBase {
      */
     public static function openId($id)
     {
-//        return 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
-        return 'oXMyut1RFKZqchW8qt_6h0OT8FN4';
+        return 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+//        return 'oXMyut1RFKZqchW8qt_6h0OT8FN4';
         if(isset( $_GET['openid']) && $_GET['openid'] && strlen($_GET['openid']) == 28)
             return Yii::$app->session['openid'] = $_GET['openid'];
 
@@ -109,43 +109,6 @@ class WxBase {
         return $openUrl.'?'.http_build_query($params).'#wechat_redirect';
     }
 
-    /*
-     * 根据openid 获取关注者资料
-     * 当用户关注成功之后，拉取资料
-     */
-    public function getUser($openid = false,$isSave = false)
-    {
-        $url = 'https://api.weixin.qq.com/cgi-bin/user/info';
-        $params = [
-            'access_token'=>$this->accessToken(),
-            'openid'=>$openid? (string)$openid: self::openId($this->id),
-            'lang'=>'zh_CN'
-        ];
-
-        $curl = new Curl();
-        $userinfo = $curl->getJson($url,$params);
-
-        if($isSave && isset($userinfo['subscribe']) && $userinfo['subscribe']){
-
-            $user = new TblUserWechat();
-            $user->wx_id = $this->id;
-            $user->attributes = $userinfo;
-            if(!$user->save())
-                return ToolBase::arrayToString( $user->errors );
-        }
-        return $userinfo;
-    }
-
-    /*
-     * 删除 tbl_user_wechat 用户
-     */
-    public function delUser($openid)
-    {
-        $user = TblUserWechat::findOne(['wx_id'=>$this->id,'openid'=>(string)$openid]);
-        if($user)
-            return $user->delete();
-        return true;
-    }
     /*
      * 调用微信接口 获取 access_token
      * 并且把结果缓存

@@ -3,9 +3,8 @@
 namespace app\controllers;
 use app\models\Cache;
 use app\models\TblUserMaintain;
-use app\models\TblUserWechat;
 use app\models\ToolBase;
-use app\models\WxBase;
+use app\models\WxUser;
 use app\models\WxChat;
 use Yii;
 
@@ -55,11 +54,11 @@ class AppController extends \yii\web\Controller
          * 用户关注，保存资料
          */
         if($wx->msg->Event == 'subscribe'){
-            $weixin = new WxBase($id);
+            $weixin = new WxUser($id);
             $weixin->getUser($wx->msg->FromUserName,true);
         }
         else if($wx->msg->Event == 'unsubscribe'){
-            $weixin = new WxBase($id);
+            $weixin = new WxUser($id);
             $weixin->delUser($wx->msg->FromUserName);
         }
 

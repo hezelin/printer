@@ -29,7 +29,7 @@ echo GridView::widget([
         ],
         [
             'attribute'=>'sex',
-            'filter'=>[1=>'男',2=>'女'],
+            'filter'=>['未知','男','女'],
             'value'=>function($data){
                 if( isset($data->sex ))
                     switch($data->sex)

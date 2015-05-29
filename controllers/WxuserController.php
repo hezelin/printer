@@ -37,7 +37,8 @@ class WxuserController extends \yii\web\Controller
      */
     public function actionPull()
     {
-
+        $wx = new WxUser(1);
+        $wx->pullUser();
     }
 
 }
