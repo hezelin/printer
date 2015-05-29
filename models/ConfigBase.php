@@ -106,4 +106,16 @@ class ConfigBase
         return isset(self::$fixMaintainStatus[$id])? self::$fixMaintainStatus[$id]:'出错';
     }
 
+    /*
+     * 积分来源
+     */
+    public static $scoreFromStatus = [
+        1 => '到店消费',
+        2 => '在线消费',
+        3 => '下级提成'
+    ];
+
+    public static function getScoreFromStatus($id){
+        return isset(self::$scoreFromStatus[$id])? self::$scoreFromStatus[$id]:'出错';
+    }
 }

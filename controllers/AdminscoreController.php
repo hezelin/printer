@@ -5,9 +5,9 @@ namespace app\controllers;
 use app\models\Cache;
 use app\models\TblUserCount;
 use app\models\TblUserScoreLog;
+use app\models\TblUserScoreLogSearch;
 use app\models\TblUserWechat;
 use app\models\WxTemplate;
-use yii\helpers\Html;
 use yii\helpers\Url;
 use Yii;
 use yii\web\BadRequestHttpException;
@@ -81,7 +81,10 @@ class AdminscoreController extends \yii\web\Controller
 
     public function actionLog()
     {
-        return $this->render('log');
+        $searchModel = new TblUserScoreLogSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('log',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
     }
 
     private function getSex($sex)
