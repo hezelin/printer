@@ -4,20 +4,12 @@ namespace app\models;
 
 class Curl
 {
-    private $_ch;
-    private $response;
-
-    // Default options from config.php
-    public $options = array();
-
-    // request specific options - valid only for single request
-    public $request_options = array();
-
+    public $options = [];
 
     private $_header, $_headerMap, $_error, $_status, $_info;
 
     // default config
-    private $_config = array(
+    private $_config = [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HEADER         => false,
@@ -27,51 +19,22 @@ class Curl
         CURLOPT_TIMEOUT        => 30,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
-    );
+    ];
 
     public function getOptions()
     {
-        return $this->request_options + $this->options + $this->_config;
+        return $this->options + $this->_config;
     }
 
-    public function setOption($key, $value, $default = false)
+    public function setOption($key, $value)
     {
-        if($default)
-            $this->options[$key] = $value;
-        else
-            $this->request_options[$key] = $value;
-
+        $this->options[$key] = $value;
         return $this;
     }
 
-    /**
-     * Clears Options
-     * This will clear only the request specific options. Default options cannot be cleared.
-     */
-
-    public function resetOptions()
+    public function setOptions($options)
     {
-        $this->request_options = array();
-        return $this;
-    }
-
-    /**
-     * Resets the Option to Default option
-     */
-    public function resetOption($key)
-    {
-        if(isset($this->request_options[$key]))
-            unset($this->request_options[$key]);
-        return $this;
-    }
-
-    public function setOptions($options, $default = false)
-    {
-        if($default)
-            $this->options = $options + $this->request_options;
-        else
-            $this->request_options = $options + $this->request_options;
-
+        $this->options = $options + $this->options;
         return $this;
     }
 
@@ -92,7 +55,7 @@ class Curl
         return $parsed['scheme'].'://'.$parsed['host'].$parsed['port'].$parsed['path'].$parsed['query'];
     }
 
-    public function exec($url, $options, $debug = false)
+    public function exec($url, $options)
     {
         $this->_error = null;
         $this->_header = null;
@@ -110,8 +73,6 @@ class Curl
             $this->_error = curl_error($ch);
             $this->_info = curl_getinfo($ch);
         }
-        else if($debug)
-            $this->_info = curl_getinfo($ch);
 
         if(@$options[CURLOPT_HEADER] == true){
             list($header, $output) = $this->_processHeader($output, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
@@ -127,14 +88,14 @@ class Curl
         return array(substr($response, 0, $header_size), substr($response, $header_size));
     }
 
-    public function get($url, $params = array(), $debug = false)
+    public function get($url, $params = array())
     {
         $exec_url = $this->buildUrl($url, $params);
         $options = $this->getOptions();
-        return $this->exec($exec_url,  $options, $debug = false);
+        return $this->exec($exec_url,  $options);
     }
 
-    public function post($url, $data, $params = array(), $debug = false)
+    public function post($url, $data, $params = [])
     {
         $url = $this->buildUrl($url, $params);
 
@@ -143,13 +104,43 @@ class Curl
         $options[CURLOPT_POSTFIELDS] = $data;
 
 
-        return $this->exec($url, $options, $debug);
+        return $this->exec($url, $options);
+    }
+
+    /*
+     * 并发 [CURLOPT_URL => $url]
+     *
+     */
+    public function getMulti($urls)
+    {
+        $output = [];
+        $ch = [];
+        $mh = curl_multi_init();
+
+        foreach ($urls as $i => $url) {
+            $ch[$i] = curl_init();
+            $config = [CURLOPT_URL => $url] + $this->getOptions();
+            curl_setopt_array($ch[$i], $config);
+            curl_multi_add_handle($mh, $ch[$i]);
+        }
+
+        do {
+            curl_multi_exec($mh, $active);
+        } while ($active);
+
+        foreach ($urls as $i => $url) {
+            $output[$i] = curl_multi_getcontent($ch[$i]);
+            //关闭每个句柄！！
+            curl_close($ch[$i]);
+        }
+        curl_multi_close($mh);
+        return $output;
     }
 
     /*
      * 上传文件
      */
-    public function put($url, $data = null, $params = array(), $debug = false)
+    public function put($url, $data = null, $params = array())
     {
         $url = $this->buildUrl($url, $params);
         
@@ -162,30 +153,30 @@ class Curl
         $options[CURLOPT_INFILE] = $f;
         $options[CURLOPT_INFILESIZE] = strlen($data);
 
-        return $this->exec($url, $options, $debug);
+        return $this->exec($url, $options);
     }
 
-    public function delete($url, $params = array(), $debug = false)
+    public function delete($url, $params = array())
     {
         $url = $this->buildUrl($url, $params);
         
         $options = $this->getOptions();
         $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
 
-        return $this->exec($url, $options, $debug);
+        return $this->exec($url, $options);
     }
 
     /*
      * get/post json 数据为 array
      */
-    public function getJson($url,$params = array(), $debug = false)
+    public function getJson($url,$params = [])
     {
-        return json_decode( $this->get($url, $params, $debug),true );
+        return json_decode( $this->get($url, $params),true );
     }
 
-    public function postJson($url, $data, $params = array(), $debug = false)
+    public function postJson($url, $data, $params = [])
     {
-        return json_decode( $this->post($url,$data,$params,$debug),true );
+        return json_decode( $this->post($url,$data,$params),true );
     }
 
     /**
