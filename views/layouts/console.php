@@ -136,6 +136,12 @@ WeixinAsset::register($this);
                                         ['label' => '积分操作记录','url' => '/adminscore/log'],
                                     ],
                                 ],
+                                [
+                                    'label' => '用户管理',
+                                    'items' => [
+                                        ['label' => '用户列表','url' => '/wxuser/list'],
+                                    ]
+                                ]
                             ],
                         ]);
                 ?>
