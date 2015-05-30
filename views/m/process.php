@@ -38,6 +38,12 @@ $this->title = '维修任务';
         <div class="h-right-text"><?= date('Y年m月d H:i',$model['add_time'])?></div>
     </div>
 
+    <?php if(isset($evaluate) && $evaluate):?>
+    <div class="h-row">
+        <div class="h-left-text">用户评价</div>
+        <div class="h-right-text"><?=$evaluate?> 分</div>
+    </div>
+    <?php endif;?>
 </div>
 
 <?=$btnHtml?>

@@ -314,11 +314,17 @@ class MController extends \yii\web\Controller
                     ]);
             case 8:
             case 9:
+                $evaluate = (new \yii\db\Query())
+                    ->select('score')
+                    ->from('tbl_service_evaluate')
+                    ->where(['fault_id' => $model['id']])
+                    ->scalar();
 
                 return $this->render('process', [
                 'model' => $model,
                 'region' => $region,
                 'openid' => $openid,
+                'evaluate'=>$evaluate,
                 'btnHtml'=> Html::a(
                     '查看维修过程',
                     Url::toRoute(['s/detail2','id'=>$model['id']]),
@@ -326,7 +332,7 @@ class MController extends \yii\web\Controller
                         'data-ajax'=>0,
                         'data-status'=>8,
                         'class'=>'h-fixed-bottom',
-                        'id'=>'process-btn'
+                        'id'=>'process-btn',
                 ])
             ]);
         }
