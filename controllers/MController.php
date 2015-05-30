@@ -146,7 +146,7 @@ class MController extends \yii\web\Controller
                     $applyTime
                 );
 
-                $res['href'] = Url::toRoute(['s/detail','id'=>$wid]);
+                $res['href'] = Url::toRoute(['s/detail2','id'=>$wid]);
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
@@ -313,34 +313,21 @@ class MController extends \yii\web\Controller
                         )
                     ]);
             case 8:
-            case 9: return $this->render('process', [
+            case 9:
+
+                return $this->render('process', [
                 'model' => $model,
                 'region' => $region,
                 'openid' => $openid,
-                'btnHtml'=> Html::tag(
-                        'div',
-                        Html::a(
-                            '查看维修进度',
-                            Url::toRoute(['s/detail','id'=>$model['id']]),
-                            [
-                                'data-ajax'=>0,
-                                'data-status'=>8,
-                                'class'=>'h-part h-off-60',
-                                'id'=>'process-btn'
-                        ]).
-                        Html::a(
-                            '查看评价',
-                            Url::toRoute(['s/showevaluate','id'=>$model['id']]),
-                            [
-                                'data-ajax'=>0,
-                                'data-status'=>$status+1,
-                                'class'=>'h-part h-off-40',
-                                'id'=>'process-btn'
-                            ]
-                        ),
-                        ['class'=>'h-fixed-bottom']
-                    )
-
+                'btnHtml'=> Html::a(
+                    '查看维修过程',
+                    Url::toRoute(['s/detail2','id'=>$model['id']]),
+                    [
+                        'data-ajax'=>0,
+                        'data-status'=>8,
+                        'class'=>'h-fixed-bottom',
+                        'id'=>'process-btn'
+                ])
             ]);
         }
 

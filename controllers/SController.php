@@ -138,6 +138,35 @@ class SController extends \yii\web\Controller
     }
 
     /*
+     * 维修员查看维修进度
+     */
+    public function actionDetail2($id)
+    {
+        $model = (new \yii\db\Query())
+            ->select('t.id as fault_id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,m.id,m.cover,
+                    m.brand,m.type,m.serial_id,m.wx_id
+            ')
+            ->from('tbl_machine_service as t')
+            ->leftJoin('tbl_machine as m','m.id=t.machine_id')
+            ->where(['t.id' => $id])
+            ->one();
+
+        // 图片预览 路径设置
+        $covers = json_decode($model['fault_cover'],true);
+        $model['fault_cover'] = Yii::$app->request->hostInfo.$covers[0];
+        foreach($covers as $cover)
+            $model['cover_images'][] = Yii::$app->request->hostinfo.$cover;
+
+        $process = (new \yii\db\Query())
+            ->select('content,add_time')
+            ->from('tbl_service_process')
+            ->where(['service_id' => $id])
+            ->orderBy('id desc')
+            ->all();
+
+        return $this->render('detail2',['model'=>$model,'process'=>$process]);
+    }
+    /*
      * 客户评价维修
      * $id 维修表id
      */

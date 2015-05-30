@@ -7,15 +7,6 @@ $this->title = '积分列表';
 
 <?php
 
-function fromType($data)
-{
-    $arr = [
-        1 => '管理后天',
-        2 => '直接消费',
-        3 => '下级提成'
-    ];
-    return isset($arr[$data->type])? $arr[$data->type]:'未知';
-}
 echo GridView::widget([
     'dataProvider'=> $dataProvider,
     'filterModel' => $searchModel,
@@ -23,7 +14,6 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
-        'openid',
         [
             'attribute'=>'nickname',
             'value'=>'userinfo.nickname',
