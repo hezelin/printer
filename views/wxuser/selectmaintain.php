@@ -2,20 +2,11 @@
 use yii\grid\GridView;
 use yii\helpers\Html;
 
-$this->title = '积分列表';
+$this->title = '微信用户列表';
 ?>
 
 <?php
 
-function fromType($data)
-{
-    $arr = [
-        1 => '管理后天',
-        2 => '直接消费',
-        3 => '下级提成'
-    ];
-    return isset($arr[$data->type])? $arr[$data->type]:'未知';
-}
 echo GridView::widget([
     'dataProvider'=> $dataProvider,
     'filterModel' => $searchModel,
@@ -23,43 +14,43 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
-        'openid',
-        [
-            'attribute'=>'nickname',
-            'value'=>'userinfo.nickname',
-            'header'=>'昵称',
-        ],
+        ['class' => 'yii\grid\SerialColumn'],               // 系列
+        'name',
         [
             'attribute'=>'headimgurl',
-            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'header'=>'头像',
+            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($data)
             {
                 if($data->userinfo->headimgurl)
-                return Html::a( Html::img( substr($data->userinfo->headimgurl,0,-1) .'46',['width'=>40]),
-                    $data->userinfo->headimgurl.'?.jpg',
-                    ['class'=>'fancybox','rel'=>'group1']
-                );
+                    return Html::a( Html::img( substr($data->userinfo->headimgurl,0,-1) .'46',['width'=>40]),
+                        $data->userinfo->headimgurl.'?.jpg',
+                        ['class'=>'fancybox','rel'=>'group1']
+                    );
             }
         ],
-        'score',
+        'phone',
+        'wait_repair_count',
+        'latitude',
+        'longitude',
+        'accuracy',
         [
-            'attribute'=>'type',
-            'filter'=>\app\models\ConfigBase::$scoreFromStatus,
-            'value'=>function($data)
-            {
-                return \app\models\ConfigBase::getScoreFromStatus($data->type);
-            }
-        ],
-        [
-            'attribute' => 'add_time',
-            'format'=>['date','php:Ymd H:i']
-        ],
+            'class' => 'yii\grid\ActionColumn',
+            'header' => '操作',
+            'headerOptions'=>['style'=>'width:80px'],
+            'template' => '{select}',
+            'buttons' => [
+                'select'=>function($url,$model,$key){
+                    return Html::a('选择','#',['class'=>'btn btn-success select-btn','openid'=>$key['openid']]);
+                },
+            ]
+        ]
     ],
 ]);
 
 
 // fancybox 图片预览插件
+
 echo newerton\fancybox\FancyBox::widget([
     'target' => '.fancybox',
     'helpers' => true,
@@ -93,4 +84,16 @@ echo newerton\fancybox\FancyBox::widget([
     ]
 ]);
 
+?>
+
+<script>
+<?php $this->beginBlock('JS_END') ?>
+    var fromUrl = '<?=$fromUrl?>';
+    $('.select-btn').click(function(){
+        document.location.href = fromUrl+'openid='+$(this).attr('openid');
+    });
+<?php $this->endBlock();?>
+</script>
+<?php
+    $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 ?>

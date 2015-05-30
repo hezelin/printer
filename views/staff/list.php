@@ -63,11 +63,15 @@ echo GridView::widget([
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions'=>['style'=>'width:120px'],
-            'template' => '{update} &nbsp; {unbind}',
+            'headerOptions'=>['style'=>'width:150px'],
+            'template' => '{notify} &nbsp; {update} &nbsp; {unbind}',
             'buttons' => [
                 'update'=>function($url,$model,$key){
                     return Html::a('<i class="glyphicon glyphicon-edit"></i>',$url,['title'=>'修改资料']);
+                },
+                'notify' => function($url,$model,$key){
+                    return Html::a('<i class="glyphicon glyphicon-envelope"></i>',Url::toRoute(['notify/send','openid'=>$key['openid'],'id'=>$key['wx_id']]),['title'=>'发送通知']);
+
                 },
                 'unbind' => function($url,$model,$key){
                     return Html::a('解除绑定',$url,[

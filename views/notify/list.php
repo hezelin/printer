@@ -1,21 +1,13 @@
 <?php
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
-$this->title = '积分列表';
+$this->title = '通知记录';
 ?>
 
 <?php
 
-function fromType($data)
-{
-    $arr = [
-        1 => '管理后天',
-        2 => '直接消费',
-        3 => '下级提成'
-    ];
-    return isset($arr[$data->type])? $arr[$data->type]:'未知';
-}
 echo GridView::widget([
     'dataProvider'=> $dataProvider,
     'filterModel' => $searchModel,
@@ -23,43 +15,59 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
-        'openid',
+        ['class' => 'yii\grid\SerialColumn'],               // 系列
         [
             'attribute'=>'nickname',
-            'value'=>'userinfo.nickname',
-            'header'=>'昵称',
-        ],
-        [
-            'attribute'=>'headimgurl',
+            'header'=>'接收者',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
-            'header'=>'头像',
-            'value'=>function($data)
+            'value'=> function($data)
             {
-                if($data->userinfo->headimgurl)
-                return Html::a( Html::img( substr($data->userinfo->headimgurl,0,-1) .'46',['width'=>40]),
-                    $data->userinfo->headimgurl.'?.jpg',
-                    ['class'=>'fancybox','rel'=>'group1']
-                );
+                if($data->userinfo->nickname){
+                    return $data->userinfo->nickname .'&nbsp;&nbsp;'.Html::a(
+                        Html::img( substr($data->userinfo->headimgurl,0,-1) .'46',['width'=>40]),
+                        $data->userinfo->headimgurl.'?.jpg',
+                        ['class'=>'fancybox','rel'=>'group1']
+                    );
+                }
+
             }
         ],
-        'score',
         [
-            'attribute'=>'type',
-            'filter'=>\app\models\ConfigBase::$scoreFromStatus,
+            'attribute'=>'fromname',
+            'header'=>'发布者',
+            'value'=>'fromsend.name',
+        ],
+        'text',
+        [
+            'attribute'=>'is_read',
+            'filter'=>['Y'=>'已读','N'=>'未读'],
             'value'=>function($data)
             {
-                return \app\models\ConfigBase::getScoreFromStatus($data->type);
+                return $data->is_read == 'Y'? '已读':'未读';
             }
         ],
         [
             'attribute' => 'add_time',
             'format'=>['date','php:Ymd H:i']
         ],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'header' => '操作',
+            'headerOptions'=>['style'=>'width:80px'],
+            'template' => '{delete}',
+            'buttons' => [
+                'delete' => function($url,$model,$key){
+                    return Html::a('<i class="glyphicon glyphicon-remove"></i>',$url,['title'=>'删除']);
+
+                },
+            ]
+        ]
     ],
 ]);
 
 
 // fancybox 图片预览插件
+
 echo newerton\fancybox\FancyBox::widget([
     'target' => '.fancybox',
     'helpers' => true,

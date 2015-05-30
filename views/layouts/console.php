@@ -141,6 +141,13 @@ WeixinAsset::register($this);
                                     'items' => [
                                         ['label' => '用户列表','url' => '/wxuser/list'],
                                     ]
+                                ],
+                                [
+                                    'label' => '通知管理',
+                                    'items' => [
+                                        ['label' => '发送通知','url' => '/notify/send'],
+                                        ['label' => '通知日志','url' => '/notify/list']
+                                    ]
                                 ]
                             ],
                         ]);
