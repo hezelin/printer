@@ -103,7 +103,7 @@ echo newerton\fancybox\FancyBox::widget([
 <?php $this->beginBlock('JS_END') ?>
     var fromUrl = '<?=$fromUrl?>';
     $('.select-btn').click(function(){
-        document.location.href = fromUrl+'?openid='+$(this).attr('openid');
+        document.location.href = fromUrl+'openid='+$(this).attr('openid');
     });
 <?php $this->endBlock();?>
 </script>

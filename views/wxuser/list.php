@@ -1,6 +1,7 @@
 <?php
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = '微信用户列表';
 ?>
@@ -51,8 +52,12 @@ echo GridView::widget([
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions'=>['style'=>'width:80px'],
-            'template' => '{update}',
+            'template' => '{notify} &nbsp; {update}',
             'buttons' => [
+                'notify' => function($url,$model,$key){
+                    return Html::a('<i class="glyphicon glyphicon-envelope"></i>',Url::toRoute(['notify/send','openid'=>$key['openid'],'id'=>$key['wx_id']]),['title'=>'发送通知']);
+
+                },
                 'update'=>function($url,$model,$key){
                     return Html::a('<i class="glyphicon glyphicon-refresh"></i>',$url,['title'=>'更新微信资料']);
                 },

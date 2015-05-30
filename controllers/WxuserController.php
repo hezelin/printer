@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\TblUserMaintainSearch;
 use app\models\TblUserWechatSearch;
 use app\models\WxUser;
 use Yii;
@@ -22,8 +23,19 @@ class WxuserController extends \yii\web\Controller
         $searchModel = new TblUserWechatSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $fromUrl = Yii::$app->request->get('url');
+        $fromUrl = $this->dealUrl( Yii::$app->request->get('url') );
+
         return $this->render('select',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'fromUrl'=>$fromUrl]);
+    }
+
+    public function actionSelectmaintain()
+    {
+        $searchModel = new TblUserMaintainSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $fromUrl = $this->dealUrl( Yii::$app->request->get('url') );
+
+        return $this->render('selectmaintain',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'fromUrl'=>$fromUrl]);
     }
 
     /*
@@ -43,6 +55,31 @@ class WxuserController extends \yii\web\Controller
     {
         $wx = new WxUser(1);
         $wx->pullUser();
+    }
+
+    /*
+     * 处理 url
+     */
+    private function dealUrl($url)
+    {
+        if(strpos($url,'?') !== false){                     // 如果路径存在 问号 ？
+            $arr = [];
+
+            list($baseUrl,$query) = explode('?',urldecode($url) );
+            if( $query ){
+                foreach( explode('&',$query) as $q )
+                {
+                    if(!$q) continue;                       // 空白过滤
+                    list($k,$v) = explode('=',$q);
+                    if( $k == 'openid' )
+                        continue;
+                    $arr[$k] = $v;
+                }
+            }
+            return $baseUrl . ($arr? '?'.http_build_query($arr).'&':'?');
+        }
+
+        return $url.'?';                                    //  没有问号 直接返回参数
     }
 
 }
