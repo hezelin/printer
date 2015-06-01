@@ -22,11 +22,11 @@ class MController extends \yii\web\Controller
 
     public $layout = 'home';
     /*
-     * 我的评价
+     * 查看资料
      */
-    public function actionEvaluate()
+    public function actionHelp($id)
     {
-        return $this->render('evaluate');
+        return $this->render('help',['id'=>$id]);
     }
 
     /*
