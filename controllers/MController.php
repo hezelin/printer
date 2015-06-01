@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\ConfigBase;
 use app\models\DataCity;
 use app\models\TblMachineService;
+use app\models\TblNotifyLog;
 use app\models\TblRentApply;
 use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
@@ -38,10 +39,14 @@ class MController extends \yii\web\Controller
 
     /*
      * 最新通知
+     * $id 公众号
      */
-    public function actionNotice()
+    public function actionNotice($id)
     {
-        return $this->render('notice');
+        $openid = WxBase::openId($id);
+        $model = TblNotifyLog::find()->where(['wx_id'=>$id,'openid'=>$openid,'enable'=>'Y'])->orderBy('id desc')->all();
+
+        return $this->render('notice',['model'=>$model,'count'=>count($model)]);
     }
 
     /*
@@ -146,7 +151,7 @@ class MController extends \yii\web\Controller
                     $applyTime
                 );
 
-                $res['href'] = Url::toRoute(['s/detail2','id'=>$wid]);
+                $res['href'] = Url::toRoute(['s/detail2','id'=>$id]);
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;

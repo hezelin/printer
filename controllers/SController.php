@@ -139,6 +139,7 @@ class SController extends \yii\web\Controller
 
     /*
      * 维修员查看维修进度
+     * $id 维修 id
      */
     public function actionDetail2($id)
     {
