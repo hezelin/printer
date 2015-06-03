@@ -17,25 +17,37 @@ body {background-color:#eee; }
 vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
 
 /*   首页 li 排版  ********/
-#main-menu:after { clear: both; content: " "; display: block; }
-#main-menu li{ float:left;margin-left: 2.5%;
+#home-menu{
+  display: block; width:100%;margin-bottom: 1px;
+}
+#home-menu li{
+  float:left;
   margin-top: 15px;
   margin-bottom: 2px;
-  width: 30%;  border-radius:3px; overflow:hidden;}
-#main-menu li a{ display:block;  color:#FFF;   text-align:center }
-#main-menu li a b{ display:block; height:80px;}
-#main-menu li a img{ margin: 15px auto 15px;
-  width: 50px;
-  height: 50px;}
-#main-menu li a span{ display:block; height:30px; line-height:30px;background-color:#FFF; color: #999; font-size:14px; }
-#main-menu li:nth-child(8n+1) {background-color:#36A1DB}
-#main-menu li:nth-child(8n+2) {background-color:#678ce1}
-#main-menu li:nth-child(8n+3) {background-color:#8c67df}
-#main-menu li:nth-child(8n+4) {background-color:#84d018}
-#main-menu li:nth-child(8n+5) {background-color:#14c760}
-#main-menu li:nth-child(8n+6) {background-color:#f3b613}
-#main-menu li:nth-child(8n+7) {background-color:#ff8a4a}
-#main-menu li:nth-child(8n+8) {background-color:#fc5366}
+  width: 33%;
+  overflow:hidden;
+  height: 95px;
+  text-align: center;
+  position: relative;
+}
+#home-menu li a{ width:100%; display: block;}
+#home-menu li a b{ display:block; height:64px; width: 64px; border-radius: 64px; position: relative;
+  background-color: #36A1DB; margin: 0 auto; margin-bottom: 5px; vert-align: middle;}
+#home-menu li a img{
+  margin-top: 16px;
+ }
+#home-menu li a span{ display:block; height:30px;
+  line-height:30px; color: #999; font-size:14px; }
+
+.color-1{background-color: #36a1db !important;}
+.color-2{background-color: #678ce1 !important;}
+.color-3{background-color: #8c67df !important;}
+.color-4{background-color: #84d018 !important;}
+.color-5{background-color: #14c760 !important;}
+.color-6{background-color: #f3b613 !important;}
+.icon-count{font-style: normal;position: absolute; right: 0; top: 0; padding: 0 2px;min-width: 11px;
+  font-size: 10px; background-color: #FF0000; color: #FFFFFF; height: 15px; line-height: 15px; border-radius: 15px;}
+
 /**********   首页排版结束  ************/
 
 .copyright{
@@ -490,6 +502,7 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
   display: block; padding: 50px 0; text-align: center; color: #FFFFFF;
   position: relative;
   font-size: 20px;
+  font-weight: 600;
 }
 .icon-go-right{
   width: 20px;height: 20px;position: absolute;top: 50px; right: 15px;
