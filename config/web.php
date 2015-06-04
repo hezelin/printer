@@ -7,6 +7,11 @@ $config = [
     'language' => 'zh-CN',
     'name' => '蓝标打印机',
     'defaultRoute'=>'weixin',
+    'modules' => [
+        'shop' => [
+            'class' => 'app\modules\shop\Module',
+        ],
+    ],
     'components' => [
         'urlManager' =>[
             'enablePrettyUrl' => true,

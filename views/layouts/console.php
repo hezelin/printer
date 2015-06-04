@@ -123,10 +123,10 @@ WeixinAsset::register($this);
                                     ],
                                 ],
                                 [
-                                    'label' => '耗材管理',
+                                    'label' => '商城管理',
                                     'items' => [
-                                        ['label' => '耗材列表','url' => '/item/list'],
-                                        ['label' => '录入耗材','url' => '/item/add'],
+                                        ['label' => '耗材列表','url' => '/shop/backend/list'],
+                                        ['label' => '录入耗材','url' => '/shop/backend/add'],
                                     ],
                                 ],
                                 [
