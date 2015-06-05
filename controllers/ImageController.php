@@ -13,7 +13,7 @@ class ImageController extends \yii\web\Controller
     public function actionMachine()
     {
         //收集图片 每一个月份为一个文件夹
-        $dir='/uploads/marchine/'.date('Ym').'/'.date('d').'/';
+        $dir='/uploads/machine/'.date('ym').'/'.date('d').'/';
 
         // 新建路径
          $imgdir['o'] = ToolBase::newDir($dir.'o/', Yii::getAlias('@webroot') );

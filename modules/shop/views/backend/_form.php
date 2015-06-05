@@ -22,7 +22,9 @@ use app\components\MoreattrWidget;
     <?= $form->field($model, 'market_price')?>
     <?= $form->field($model, 'price')?>
     <?= $form->field($model, 'category_id')?>
-    <?= $form->field($model, 'cover_images')->widget(\app\components\UploadimageWidget::className(),['imageLimit'=>5])?>
+    <?= $form->field($model, 'cover_images')->widget(\app\components\UploadimageWidget::className(),[
+        'imageLimit'=>5,'serverUrl'=>Url::toRoute(['/image/product'])
+    ])?>
 
 
     <?= $form->field($model, 'add_attr')->textInput(['placeholder'=>'属性名，属性值一一对应']) ?>

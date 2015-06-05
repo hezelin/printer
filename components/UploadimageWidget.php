@@ -8,10 +8,7 @@ namespace app\components;
 
 use Yii;
 use app\assets\UploadimageAsset;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\helpers\Json;
 use yii\web\View;
 use yii\widgets\InputWidget;
 
@@ -21,14 +18,28 @@ class UploadimageWidget extends InputWidget
      * 上传图片的数量，默认为1个
      */
     public $imageLimit = 1;
+
+    /*
+     * 图片上传服务器 url
+     */
+    public $serverUrl;
     /*
      * 表单对应的id
      */
-    public $inputId;
+    private  $inputId;
+    private $hasUploadImages = 0;
 
     public function init()
     {
         $this->inputId = Html::getInputId($this->model, $this->attribute);          // 查看源码，activeForm 生成规则
+        if($this->model[$this->attribute]) {
+            if( $this->imageLimit == 1 )
+                $this->hasUploadImages = 1;
+            else{
+                $srcs = json_decode($this->model[$this->attribute], true);
+                $this->hasUploadImages = count($srcs);
+            }
+        }
         parent::init();
     }
 
@@ -39,7 +50,7 @@ class UploadimageWidget extends InputWidget
         if ($this->hasModel()) {
             return Html::activeTextInput($this->model, $this->attribute, ['id' => $this->inputId,'class'=>'hidden']).$this->renderHtml();
         } else {
-            return Html::textInput($this->id, $this->value, ['id' => $this->inputId,'class'=>'hidden']).'========';
+            return Html::textInput($this->id, $this->value, ['id' => $this->inputId,'class'=>'hidden']);
         }
     }
 
@@ -48,8 +59,20 @@ class UploadimageWidget extends InputWidget
      */
     public function renderHtml()
     {
-        return Html::tag('div','',['id'=>'image-show-'.$this->id]).Html::tag('div','上传图片',['id'=>'image-upload-'.$this->id,'class'=>'upload-image-btn']);
+        $params = $this->hasUploadImages == $this->imageLimit? ['id'=>'image-upload-'.$this->id, 'class'=>'upload-image-btn','style'=>'display: none;']:['id'=>'image-upload-'.$this->id, 'class'=>'upload-image-btn'];
+        $value = '';
+        if($this->model[$this->attribute]){
+            if($this->imageLimit == 1){
+                $value = '<div class="upload-image-btn"><img src="'.$this->model[$this->attribute].'"/><i class="delete-img glyphicon glyphicon-remove-circle"></i></div>';
+            }
+            else{
+                $srcs = json_decode($this->model[$this->attribute],true);
+                foreach($srcs as $src)
+                    $value .= '<div class="upload-image-btn"><img src="'.$src.'"/><i class="delete-img glyphicon glyphicon-remove-circle"></i></div>';
+            }
 
+        }
+        return Html::tag('div',$value,['id'=>'image-show-'.$this->id]).Html::tag('div','上传图片',$params);
     }
 
     /*
@@ -95,12 +118,11 @@ MODEL_CSS;
     protected function registerClientScript()
     {
         UploadimageAsset::register($this->view);
-        $action = Url::toRoute(['/image/product']);
         $script =<<<MODEL_JS
 var uploadImage = $('#image-upload-{$this->id}');
 var uploadImageWrap = $('#image-show-{$this->id}');
 var uploadImageNum = {$this->imageLimit};
-var hasUploadImage = 0;
+var hasUploadImage = {$this->hasUploadImages};
 var uploadDisable = 0;
 function resetImageVal(){
     var imgs = [];
@@ -129,7 +151,7 @@ function resetImageVal(){
 
 
 var Ajax = new AjaxUpload('#image-upload-{$this->id}', {
-    action: '{$action}',
+    action: '{$this->serverUrl}',
     name: 'uploadfile',
     onSubmit: function(file, ext){
         if(hasUploadImage >= uploadImageNum){
@@ -153,6 +175,7 @@ var Ajax = new AjaxUpload('#image-upload-{$this->id}', {
     }
 });
 
+resetImageVal();
 $('#image-show-{$this->id}').on('click','.delete-img',function(){
     $(this).closest('.upload-image-btn').remove();
     resetImageVal();
