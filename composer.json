@@ -21,6 +21,7 @@
         "yiisoft/yii2-swiftmailer": "*",
         "linslin/yii2-curl": "*",
         "2amigos/yii2-file-upload-widget": "*",
+        "kucha/ueditor": "*",
         "yiisoft/yii2-redis": "~2.0.0"
     },
     "require-dev": {
