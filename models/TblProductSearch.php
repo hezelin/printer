@@ -42,7 +42,7 @@ class TblProductSearch extends TblProduct
      */
     public function search($params)
     {
-        $query = TblProduct::find(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
+        $query = TblProduct::find()->where(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -86,4 +86,26 @@ class BackendController extends Controller
             throw new NotFoundHttpException('页面不存在');
         return $this->render('view',['model'=>$model]);
     }
+
+    /*
+     * 商品删除
+     */
+    public function actionDelete($id)
+    {
+        $model = TblProduct::findOne($id);
+        $model->enable = 'N';
+        $model->save();
+        return $this->redirect('list');
+    }
+
+    /*
+     * 商品上下架
+     */
+    public function actionStatus($id,$status)
+    {
+        $model = TblProduct::findOne($id);
+        $model->status = $status == 1? 2:1;
+        $model->save();
+        return $this->redirect('list');
+    }
 }
