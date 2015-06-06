@@ -84,8 +84,6 @@ class BackendController extends Controller
         $model = TblProduct::findOne($id);
         if(!$model)
             throw new NotFoundHttpException('页面不存在');
-
-        
         return $this->render('view',['model'=>$model]);
     }
 }

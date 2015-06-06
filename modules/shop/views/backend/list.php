@@ -67,15 +67,16 @@ $this->title = '商品列表';
             'buttons' => [
                 'status' => function($url,$model,$key){
                     $icon = $model->status == 1? 'glyphicon glyphicon-arrow-down':'glyphicon glyphicon-arrow-up';
-                    return Html::a('<i class="'.$icon.'"></i>',$url,[
+                    return Html::a('<i class="'.$icon.'"></i>',Url::toRoute(['status','id'=>$key,'status'=>$model->status]),[
                         'title' => $model->status == 1? '下架':'上架'
                     ]);
                 },
                 'delete'=>function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-remove"></i>',$url,[
-                        'title'=>'关闭维修申请',
-                        'class'=>'close-model',
-                        'key-id'=>$key
+                    return Html::a('<i class="glyphicon glyphicon-trash"></i>',$url,[
+                        'title'=>'删除商品',
+                        'data-method'=>'post',
+                        'data-pjax'=>0,
+                        'data-confirm'=>'确定删除这个商品？'
                     ]);
                 },
             ]
