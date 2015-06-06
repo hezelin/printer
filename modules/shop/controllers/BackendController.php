@@ -52,7 +52,7 @@ class BackendController extends Controller
                     'btnText'=>'返回继续发布',
                     'btnUrl'=>Url::toRoute(['add']),
                     'btnText2'=>'查看商品',
-                    'btnUrl2'=>Url::toRoute(['detail','id'=>$model->id])
+                    'btnUrl2'=>Url::toRoute(['view','id'=>$model->id])
                 ]);
             }else
                 Yii::$app->session->setFlash('error',\app\models\ToolBase::arrayToString($model->errors) );
@@ -70,9 +70,13 @@ class BackendController extends Controller
     {
         $searchModel = new TblProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $category = TblCategory::findAll(['wx_id'=>Cache::getWid()]);
+        $category = $category? ArrayHelper::map($category,'id','name'):[];
         return $this->render('list', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'category'=>$category
         ]);
     }
 
@@ -107,5 +111,35 @@ class BackendController extends Controller
         $model->status = $status == 1? 2:1;
         $model->save();
         return $this->redirect('list');
+    }
+
+    /*
+     * 修改商品
+     */
+    public function actionUpdate($id)
+    {
+        $model = TblProduct::findOne($id);
+
+        if ($model->load(Yii::$app->request->post())) {
+            $wx_id = Cache::getWid();
+            $model->wx_id = $wx_id;
+            $model->add_time = time();
+            $images = json_decode($model->cover_images,true);
+            $model->cover = $images[0];
+            if($model->save()){
+                return $this->render('//tips/success',[
+                    'tips'=>'编辑商品成功',
+                    'btnText'=>'返回继续操作',
+                    'btnUrl'=>Url::toRoute(['list']),
+                    'btnText2'=>'查看商品',
+                    'btnUrl2'=>Url::toRoute(['view','id'=>$model->id])
+                ]);
+            }else
+                Yii::$app->session->setFlash('error',\app\models\ToolBase::arrayToString($model->errors) );
+        }
+
+        $category = TblCategory::findAll(['wx_id'=>Cache::getWid()]);
+        $category = $category? ArrayHelper::map($category,'id','name'):[];
+        return $this->render('update', ['model' => $model,'category'=>$category]);
     }
 }

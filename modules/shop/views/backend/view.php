@@ -31,7 +31,7 @@ function getCover($str)
 
     $html = [];
     foreach($covers as $cover){
-        $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class' => 'fancybox','rel'=>'group']);
+        $html[] = Html::a(Html::img($cover,['width'=>40]),str_replace('/s/','/m/',$cover),['class' => 'fancybox','rel'=>'group']);
     }
     return join("\n",$html);
 }

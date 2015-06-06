@@ -3,8 +3,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
-use app\models\ConfigBase;
 $this->title = '商品列表';
+
 ?>
 
 
@@ -24,7 +24,7 @@ $this->title = '商品列表';
                 $covers = json_decode($data->cover_images,true);
                 $html = [];
                 foreach($covers as $cover){
-                    $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class' => 'fancybox','rel'=>'group1']);
+                    $html[] = Html::a(Html::img($cover,['width'=>40]),str_replace('/s/','/m/',$cover),['class' => 'fancybox','rel'=>'group1']);
                 }
                 return join("\n",$html);
             }
@@ -47,6 +47,11 @@ $this->title = '商品列表';
             }
         ],
         [
+            'attribute'=>'category_id',
+            'headerOptions'=>['style'=>'width:80px'],
+            'filter' => $category,
+        ],
+        [
             'attribute'=>'status',
             'headerOptions'=>['style'=>'width:80px'],
             'filter' => [1=>'上架中',2=>'下架中'],
@@ -62,8 +67,8 @@ $this->title = '商品列表';
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions'=>['style'=>'width:80px'],
-            'template' => '{view} &nbsp; {status} &nbsp; {delete}',
+            'headerOptions'=>['style'=>'width:120px'],
+            'template' => '{view} &nbsp; {status} &nbsp; {update} &nbsp; {delete}',
             'buttons' => [
                 'status' => function($url,$model,$key){
                     $icon = $model->status == 1? 'glyphicon glyphicon-arrow-down':'glyphicon glyphicon-arrow-up';
