@@ -49,7 +49,10 @@ $this->title = '商品列表';
         [
             'attribute'=>'category_id',
             'headerOptions'=>['style'=>'width:80px'],
-            'filter' => $category,
+            'filter' => \app\modules\shop\models\Shop::getCategory(),
+            'value' => function($data){
+                return \app\modules\shop\models\Shop::getCategory($data->category_id);
+            }
         ],
         [
             'attribute'=>'status',

@@ -18,6 +18,6 @@ if( Yii::$app->session->hasFlash('error') )
 
     <?= $this->render('_form', [
         'model' => $model,
-        'category' => $category
+        'category' => \app\modules\shop\models\Shop::getCategory()
     ]) ?>
 

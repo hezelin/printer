@@ -58,9 +58,7 @@ class BackendController extends Controller
                 Yii::$app->session->setFlash('error',\app\models\ToolBase::arrayToString($model->errors) );
         }
 
-        $category = TblCategory::findAll(['wx_id'=>Cache::getWid()]);
-        $category = $category? ArrayHelper::map($category,'id','name'):[];
-        return $this->render('add', ['model' => $model,'category'=>$category]);
+        return $this->render('add', ['model' => $model]);
     }
 
     /*
@@ -71,12 +69,9 @@ class BackendController extends Controller
         $searchModel = new TblProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $category = TblCategory::findAll(['wx_id'=>Cache::getWid()]);
-        $category = $category? ArrayHelper::map($category,'id','name'):[];
         return $this->render('list', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'category'=>$category
         ]);
     }
 
