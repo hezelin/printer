@@ -14,7 +14,10 @@ if( Yii::$app->session->hasFlash('error') )
         'body' => Yii::$app->session->getFlash('error'),
     ]);
 ?>
+
+
     <?= $this->render('_form', [
         'model' => $model,
+        'category' => $category
     ]) ?>
 

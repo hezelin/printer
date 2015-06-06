@@ -116,13 +116,6 @@ WeixinAsset::register($this);
                                     ],
                                 ],
                                 [
-                                    'label' => '维修员管理',
-                                    'items' => [
-                                        ['label' => '工作报表','url' => '/staff/index'],
-                                        ['label' => '维修员列表','url' => '/staff/list'],
-                                    ],
-                                ],
-                                [
                                     'label' => '商城管理',
                                     'items' => [
                                         ['label' => '耗材列表','url' => '/shop/backend/list'],
@@ -140,6 +133,7 @@ WeixinAsset::register($this);
                                     'label' => '用户管理',
                                     'items' => [
                                         ['label' => '用户列表','url' => '/wxuser/list'],
+                                        ['label' => '维修员列表','url' => '/staff/list'],
                                     ]
                                 ],
                                 [

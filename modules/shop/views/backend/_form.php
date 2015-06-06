@@ -4,10 +4,21 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use app\components\MoreattrWidget;
+use yii\bootstrap\Alert;
 
 ?>
 
 <div class="row">
+
+    <?php
+    if( Yii::$app->session->hasFlash('error') )
+        echo Alert::widget([
+            'options' => [
+                'class' => 'alert-danger',
+            ],
+            'body' => Yii::$app->session->getFlash('error'),
+        ]);
+    ?>
 
     <?php $form = ActiveForm::begin([
         'id' => 'add-form',
@@ -22,7 +33,7 @@ use app\components\MoreattrWidget;
     <?= $form->field($model, 'market_price')?>
     <?= $form->field($model, 'price')?>
     <?= $form->field($model, 'category_id')->widget(\kartik\select2\Select2::classname(), [
-        'data' => [],
+        'data' => $category,
         'language' => 'zh-CN',
         'options' => ['placeholder' => '选择类目 ...'],
         'pluginOptions' => [
