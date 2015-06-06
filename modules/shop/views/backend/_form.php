@@ -21,7 +21,24 @@ use app\components\MoreattrWidget;
     <?= $form->field($model, 'name')->textInput(['placeholder'=>'商品名称']) ?>
     <?= $form->field($model, 'market_price')?>
     <?= $form->field($model, 'price')?>
-    <?= $form->field($model, 'category_id')?>
+    <?= $form->field($model, 'category_id')->widget(\kartik\select2\Select2::classname(), [
+        'data' => [],
+        'language' => 'zh-CN',
+        'options' => ['placeholder' => '选择类目 ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+        'addon' => [
+            'append' => [
+                'content' => Html::a('<i class="glyphicon glyphicon-plus"></i>',Url::toRoute(['category/add','url'=>Yii::$app->request->url]),[
+                    'class' => 'btn btn-success',
+                    'title' => '添加类目',
+                    'style' => 'padding-bottom:7px;'
+                ]),
+                'asButton' => true
+            ]
+        ]
+    ]);?>
     <?= $form->field($model, 'cover_images')->widget(\app\components\UploadimageWidget::className(),[
         'imageLimit'=>5,'serverUrl'=>Url::toRoute(['/image/product'])
     ])?>
@@ -43,8 +60,10 @@ use app\components\MoreattrWidget;
                         'insertorderedlist', 'insertunorderedlist',
                         '|','searchreplace','link','horizontal','insertimage','preview'
                     ],
-                ]
-    ]]);?>
+                ],
+            ],
+            'id'=>'TblProduct-describe--22'
+    ]);?>
 
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
