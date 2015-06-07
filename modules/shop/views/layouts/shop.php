@@ -1,6 +1,5 @@
 <?php
 use yii\helpers\Html;
-use yii\helpers\Url;
 use app\modules\shop\assets\ShopAsset;
 
 ShopAsset::register($this);
