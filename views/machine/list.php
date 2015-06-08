@@ -18,25 +18,29 @@ $this->title = '机器列表';
         'tableOptions' => ['class' => 'table table-striped'],
         'filterModel' => $searchModel,
         'columns' => [
-//            ['class' => 'yii\grid\SerialColumn'],
-
-//            'id',
-//            'wx_id',
-            'serial_id',
-            'type',
-            'brand',
-             'rent_time',
-             'maintain_time',
-             [
-                 'attribute'=>'status',
-                 'headerOptions' => ['style'=>'width:110px'],
-                 'format' => 'html',
-                 'filter' => ConfigBase::$mxStatus,
-                 'value' => function($data){
-                     return $data->status == 1? Html::a(ConfigBase::getMxStatus($data->status),Url::toRoute(['rent/add','id'=>$data->id]),['class'=>'green']): ConfigBase::getMxStatus($data->status) ;
-                 }
-             ],
-             'function',
+            'series_id',
+            'buy_date',
+            'buy_price',
+            'maintain_count',
+            'rent_count',
+            [
+                'attribute'=>'type',
+                'value'=>'machineModel.type',
+                'header'=>'型号'
+            ],
+            [
+                'attribute'=>'add_time',
+                'format'=>['date','php:Y-m-d H:i'],
+            ],
+            [
+                'attribute'=>'status',
+                'headerOptions' => ['style'=>'width:110px'],
+                'format' => 'html',
+                'filter' => ConfigBase::$mxStatus,
+                'value' => function($data){
+                    return $data->status == 1? Html::a(ConfigBase::getMxStatus($data->status),Url::toRoute(['rent/add','id'=>$data->id]),['class'=>'green']): ConfigBase::getMxStatus($data->status) ;
+                }
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',

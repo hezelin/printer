@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 use app\models\Cache;
+use app\models\TblMachineSearch;
 use Yii;
 use app\models\TblMachine;
-use app\models\MachineSearch;
 use app\models\ToolBase;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -80,7 +80,7 @@ class MachineController extends \yii\web\Controller
 
     public function actionList()
     {
-        $searchModel = new MachineSearch();
+        $searchModel = new TblMachineSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('list', [
