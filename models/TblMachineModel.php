@@ -6,6 +6,10 @@ use Yii;
 
 class TblMachineModel extends \yii\db\ActiveRecord
 {
+    public function getBrand()
+    {
+        return $this->hasOne(TblBrand::className(), ['id' => 'brand_id']);
+    }
     public static function tableName()
     {
         return 'tbl_machine_model';

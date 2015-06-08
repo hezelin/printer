@@ -48,6 +48,7 @@ function getCover($str)
             'attribute'=>'brand_id',
             'value'=>ConfigBase::getMachineBrand($model->brand_id)
         ],
+        'machine_count',
         'function',
         [
             'attribute'=>'else_attr',

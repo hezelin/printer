@@ -45,6 +45,7 @@ echo GridView::widget([
                 return ConfigBase::getMachineBrand($data->brand_id);
             }
         ],
+        'machine_count',
         'function',
         [
             'attribute'=>'else_attr',
@@ -72,8 +73,11 @@ echo GridView::widget([
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions'=>['style'=>'width:120px'],
-            'template' => '{view} &nbsp; {update} &nbsp; {delete}',
+            'template' => '{view} &nbsp; {add} &nbsp; {update} &nbsp; {delete}',
             'buttons' => [
+                'add' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-plus"></span>',Url::toRoute(['machine/add','model_id'=>$key]),['title'=>'添加机器']);
+                },
                 'update' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::toRoute(['update','id'=>$key,'url'=>Yii::$app->request->get('url')]),['title'=>'修改']);
                 },

@@ -130,4 +130,26 @@ class ConfigBase
         $brand = $brand? ArrayHelper::map($brand,'id','name'):[];
         return $id? $brand[$id]:$brand;
     }
+
+    /*
+     * 获取机器型号资料
+     */
+    public static function getMachineModel($id='')
+    {
+        $model = (new \yii\db\Query())
+            ->select('t.id, p.name, t.type')
+            ->from('tbl_machine_model as t')
+            ->leftJoin('tbl_brand as p','p.id=t.brand_id')
+            ->where('t.enable="Y" and t.wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->all();
+        $tmp = [];
+        if($model){
+            foreach($model as $m)
+            {
+                $tmp[ $m['id'] ] = '( '.$m['name'].' ) ' . $m['type'];
+            }
+        }
+
+        return ( $id && isset($tmp[$id]) )? $tmp[$id]:$tmp;
+    }
 }
