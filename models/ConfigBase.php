@@ -41,6 +41,7 @@ class ConfigBase
     public static $mxStatus = [
         1 => '闲置中',
         2 => '已租借',
+        3 => '已报废',
     ];
 
     public static function getMxStatus($id){

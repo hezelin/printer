@@ -7,6 +7,8 @@ use app\models\TblMachine;
 use app\models\MachineSearch;
 use app\models\ToolBase;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
+use yii\web\NotFoundHttpException;
 
 
 class MachineController extends \yii\web\Controller
@@ -31,21 +33,14 @@ class MachineController extends \yii\web\Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $wx_id = Cache::getWid();
-            $serialId = $model->serial_id? :(Yii::$app->session['wechat']['machine_count'] + 1);
-
-            $initSerialId = $model->serial_id;                      // multisave 用到
-            $model->serial_id = (string)$serialId;
-            $model->wx_id = $wx_id;
+            $model->wx_id = Cache::getWid();
             $model->add_time = time();
 
             if( !$model->validate() ){                              // 验证数据是否完整
-                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors) );
                 return $this->render('add', ['model' => $model ]);
             }
 
             if( $model->amount == 1 ){
-
                 if( $model->save() ){
                     $model->updateCount();                          // 更新计数
                     return $this->redirect(['view', 'id' => $model->id]);
@@ -53,12 +48,19 @@ class MachineController extends \yii\web\Controller
                 else
                     Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors) );
             }else{
-                $model->serial_id = $initSerialId;
                 $row =$model->multiSave();                          // 批量插入，并且自动更新统计
-                return $this->render('//tips/success',['tips'=>'成功添加 '.$row.' 个机器！']);
+                if($row)
+                    return $this->render('//tips/success',[
+                        'tips'=>'成功添加 '.$row.' 个机器！',
+                        'btnText'=>'继续添加',
+                        'btnUrl'=>Url::toRoute(['add'])
+                    ]);
             }
 
         }
+
+        if(Yii::$app->request->get('model_id'))
+            $model->model_id = Yii::$app->request->get('model_id');
 
         return $this->render('add', ['model' => $model]);
 
@@ -115,7 +117,7 @@ class MachineController extends \yii\web\Controller
         if (($model = TblMachine::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException();
         }
     }
 

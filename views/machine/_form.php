@@ -11,6 +11,21 @@ use app\components\MoreattrWidget;
 /* @var $model app\models\TblMachine */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+<style>
+    #ui-datepicker-div{
+        z-index: 999 !important;
+    }
+</style>
+
+<?php
+if( Yii::$app->session->hasFlash('error') )
+    echo Alert::widget([
+        'options' => [
+            'class' => 'alert-danger',
+        ],
+        'body' => Yii::$app->session->getFlash('error'),
+    ]);
+?>
 
 <div class="row">
 
@@ -23,25 +38,37 @@ use app\components\MoreattrWidget;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'serial_id')->textInput(['maxlength' => 10,'placeholder'=>'不填则自动生成']) ?>
-    <?= $form->field($model, 'brand')->textInput(['maxlength' => 50]) ?>
+    <?= $form->field($model, 'series_id')->textInput(['placeholder'=>'多个编号逗号","隔开']) ?>
+    <?= $form->field($model, 'model_id')->widget(\kartik\select2\Select2::classname(), [
+        'data' => app\models\ConfigBase::getMachineModel(),
+        'language' => 'zh-CN',
+        'options' => ['placeholder' => '选择机型 ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+        'addon' => [
+            'append' => [
+                'content' => Html::a('<i class="glyphicon glyphicon-plus"></i>',Url::toRoute(['model/add','url'=>Yii::$app->request->url]),[
+                    'class' => 'btn btn-success',
+                    'title' => '添加模型',
+                    'style' => 'padding-bottom:7px;'
+                ]),
+                'asButton' => true
+            ]
+        ]
+    ]);?>
 
-    <?= $form->field($model, 'type')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'price')->textInput() ?>
-    <?= $form->field($model, 'monthly_rent')->textInput() ?>
-    <?= $form->field($model, 'function')->textInput(['placeholder'=>'例如：双面复印，网络打印']) ?>
-    <?= $form->field($model, 'buy_time')->widget(\yii\jui\DatePicker::classname(), [
+    <?= $form->field($model, 'buy_price')->textInput() ?>
+    <?= $form->field($model, 'buy_date')->widget(\yii\jui\DatePicker::classname(), [
         'dateFormat' => 'yyyy-MM-dd',
         'options' => [
             'class' => 'form-control',
         ]
     ]) ?>
-    <?= $form->field($model, 'cover')->widget(\app\components\UploadimageWidget::className(),['serverUrl'=>Url::toRoute(['image/machine'])])?>
 
     <?php
         if( $model->isNewRecord )
-           echo  $form->field($model, 'amount')->textInput(['value'=>1]);
+           echo  $form->field($model, 'amount')->textInput(['placeholder'=>1]);
     ?>
 
     <?= $form->field($model, 'else_attr')->textInput(['placeholder'=>'属性名，属性值一一对应']) ?>

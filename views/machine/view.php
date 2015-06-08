@@ -58,26 +58,19 @@ $this->title = '机器详情';
         'options' => ['class' => 'table table-striped detail-view'],
         'attributes' => [
             'id',
-            'wx_id',
-            'serial_id',
-            'brand',
-            'type',
+            'series_id',
+            'model_id',
             [
-                'attribute'=>'price',
-                'value' => formatPrice($model->price),
+                'attribute'=>'buy_price',
+                'value' => formatPrice($model->buy_price),
             ],
-            [
-                'attribute'=>'monthly_rent',
-                'value' => formatPrice($model->monthly_rent),
-            ],
-            'buy_time',
+            'buy_date',
             [
                 'attribute'=>'add_time',
                 'value' => date("Y-m-d H:i:s",$model->add_time),
                 ],
-            'rent_time',
-            'maintain_time',
-            'function',
+            'rent_count',
+            'maintain_count',
             [
                 'attribute' => 'status',
                 'format' => 'html',
@@ -87,11 +80,6 @@ $this->title = '机器详情';
                 'attribute' => 'else_attr',
                 'format' => 'html',
                 'value' =>elseAttr($model),
-            ],
-            [
-                'attribute' => 'cover',
-                'format' => 'html',
-                'value' => formatImage($model),
             ]
         ],
     ]) ?>
