@@ -3,6 +3,8 @@ namespace app\models;
 /*
  * 配置的公共类
  */
+use yii\helpers\ArrayHelper;
+
 class ConfigBase
 {
     /*
@@ -117,5 +119,15 @@ class ConfigBase
 
     public static function getScoreFromStatus($id){
         return isset(self::$scoreFromStatus[$id])? self::$scoreFromStatus[$id]:'出错';
+    }
+
+    /*
+     *  获取机器品牌
+     */
+    public static function getMachineBrand($id='')
+    {
+        $brand = TblBrand::findAll(['wx_id'=>Cache::getWid()]);
+        $brand = $brand? ArrayHelper::map($brand,'id','name'):[];
+        return $id? $brand[$id]:$brand;
     }
 }
