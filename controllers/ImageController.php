@@ -18,6 +18,7 @@ class ImageController extends \yii\web\Controller
         // 新建路径
          $imgdir['o'] = ToolBase::newDir($dir.'o/', Yii::getAlias('@webroot') );
          $imgdir['m'] = ToolBase::newDir($dir.'m/', Yii::getAlias('@webroot') );
+         $imgdir['s'] = ToolBase::newDir($dir.'s/', Yii::getAlias('@webroot') );
 
         $path=pathinfo($_FILES['uploadfile']['name']);
         $type=strtolower($path['extension']);														//文件 扩展名
@@ -36,7 +37,8 @@ class ImageController extends \yii\web\Controller
 
         if(move_uploaded_file($_FILES['uploadfile']['tmp_name'], $imgdir['o'].$filename)){
             ToolBase::mt($imgdir['o'].$filename, $imgdir['m'].$filename,600,9000);
-            echo json_encode( ['status'=>1,'url'=>$dir.'m/'.$filename] );
+            ToolBase::mt($imgdir['o'].$filename, $imgdir['s'].$filename,150,1000);
+            echo json_encode( ['status'=>1,'url'=>$dir.'s/'.$filename] );
         }
     }
 
