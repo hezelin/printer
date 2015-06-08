@@ -146,6 +146,11 @@ class TreeMenuWidget extends Widget{
         foreach($items as $item)
         {
             $option = ['role'=>'presentation'];
+
+            if( isset($item['route']) && strpos($this->route,ltrim($item['route'],'/')) !== false ){
+                $option['class'] = 'active';
+            }
+
             if( strpos(ltrim($item['url'],'/'),$this->route ) !== false ){
                 $option['class'] = 'active';
             }
@@ -158,13 +163,19 @@ class TreeMenuWidget extends Widget{
 
     /*
      * return false / in / head-active
+     * 增加 route 标识选择
      */
     public function isItemActive($item)
     {
         if(isset($item['items']) && is_array($item['items'])) {
-            foreach ($item['items'] as $row)
+            foreach ($item['items'] as $row){
+                // 增加 route 标识
+                if(isset($row['route']) && strpos( $this->route,ltrim($row['route'], '/')) !== false )
+                    return 'in';
+
                 if (strpos(ltrim($row['url'], '/'), $this->route) !== false)
                     return 'in';
+            }
         }
 
         if (isset($item['route'])  && (strpos(ltrim($item['route'],'/'),$this->route ) !== false) )
