@@ -25,8 +25,17 @@ $this->title = '机器列表';
             'rent_count',
             [
                 'attribute'=>'type',
-                'value'=>'machineModel.type',
+                'format'=>'html',
+                'value'=>function($data){
+                    return Html::a($data->machineModel->type,Url::toRoute(['model/view','id'=>$data->model_id]));
+                },
+//                'value'=>'machineModel.type',
                 'header'=>'型号'
+            ],
+            [
+                'attribute'=>'name',
+                'value'=>'machineModel.brand.name',
+                'header'=>'品牌'
             ],
             [
                 'attribute'=>'add_time',

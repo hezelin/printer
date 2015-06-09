@@ -23,6 +23,7 @@
         "2amigos/yii2-file-upload-widget": "*",
         "kucha/ueditor": "*",
         "kartik-v/yii2-widget-select2": "*",
+        "kartik-v/yii2-widget-switchinput": "*",
         "yiisoft/yii2-redis": "~2.0.0"
     },
     "require-dev": {

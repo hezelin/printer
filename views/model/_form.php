@@ -56,7 +56,7 @@ if( Yii::$app->session->hasFlash('error') )
 ]) ?>
 <?= $form->field($model, 'type')->textInput(['maxlength' => 50]) ?>
 <?= $form->field($model, 'function')->textInput(['placeholder'=>'例如：双面复印，网络打印']) ?>
-<?= $form->field($model, 'is_color')->radioList(['1'=>'黑白','2'=>'彩色'])?>
+<?= $form->field($model, 'is_color')->radioList(['1'=>'黑白','2'=>'彩色（包含黑白）'])?>
 
 <?= $form->field($model, 'cover_images')->widget(\app\components\UploadimageWidget::className(),[
     'serverUrl'=>Url::toRoute(['image/machine']),'imageLimit'=>5

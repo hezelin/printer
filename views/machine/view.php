@@ -52,6 +52,11 @@ $this->title = '机器详情';
 
             return $html;
         }
+
+        function getModel($id)
+        {
+            return Html::a(ConfigBase::getMachineModel($id),Url::toRoute(['model/view','id'=>$id]));
+        }
     ?>
     <?= DetailView::widget([
         'model' => $model,
@@ -59,7 +64,11 @@ $this->title = '机器详情';
         'attributes' => [
             'id',
             'series_id',
-            'model_id',
+            [
+                'attribute'=>'model_id',
+                'format'=>'html',
+                'value'=>getModel($model->model_id),
+            ],
             [
                 'attribute'=>'buy_price',
                 'value' => formatPrice($model->buy_price),

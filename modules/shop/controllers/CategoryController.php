@@ -38,7 +38,7 @@ class CategoryController extends Controller
     public function actionList()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => TblCategory::find(),
+            'query' => TblCategory::find()->where(['wx_id'=>Cache::getWid()]),
             'pagination' => [
                 'pageSize' => 15,
             ],

@@ -77,7 +77,7 @@ class CodeController extends \yii\web\Controller
     }
 
     /*
-     * 生成单个机器码
+     * 生成单个机器码,$id 位机器的id
      */
     public function actionMachine($id)
     {

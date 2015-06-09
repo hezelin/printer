@@ -4,7 +4,7 @@
 
 <div class="col-md-3 col-md-offset-1 bg-info">
     <h3>机器编号(<?= $model->id ?>)</h3>
-    <h1><?= $model->serial_id ?></h1>
+    <h1><?= $model->series_id ?></h1>
     <h3><?= Yii::$app->session['wechat']['name']?></h3>
     <p>销售、租售、维护</p>
     <p>彩色（黑色）复印件、一体机、打印机、传真机</p>

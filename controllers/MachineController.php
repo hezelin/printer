@@ -70,7 +70,7 @@ class MachineController extends \yii\web\Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['list']);
     }
 
     public function actionIndex()

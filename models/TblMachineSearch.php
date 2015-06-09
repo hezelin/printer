@@ -12,14 +12,14 @@ use app\models\TblMachine;
  */
 class TblMachineSearch extends TblMachine
 {
-    public $brand;
+    public $name;
     public $type;
 
     public function rules()
     {
         return [
             [['id', 'wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'add_time'], 'integer'],
-            [['series_id', 'buy_date', 'else_attr', 'enable','brand','type'], 'safe'],
+            [['series_id', 'buy_date', 'else_attr', 'enable','name','type'], 'safe'],
             [['buy_price'], 'number'],
         ];
     }
@@ -43,20 +43,29 @@ class TblMachineSearch extends TblMachine
     public function search($params)
     {
         $query = TblMachine::find()
-            ->where(['tbl_machine.wx_id'=>Cache::getWid(),'tbl_machine.enable'=>'Y'])
-            ->joinWith('machineModel');
-            /*->select('tbl_machine.id,tbl_machine.buy_date,series_id,buy_price,maintain_count,rent_count,
-                tbl_machine.status,tbl_machine.add_time,tbl_machine_model.type,
-                tbl_brand.name')
-            ->joinWith('machineModel');
-            ->leftJoin('tbl_machine_model','tbl_machine_model.id=tbl_machine.model_id')
-            ->leftJoin('tbl_brand','tbl_machine_model.brand_id=tbl_brand.id');*/
+            ->joinWith([
+                'machineModel'=>function($query){
+                    $query->joinWith(['brand']);  // 如果还有继续下去
+                }
+            ])
+            ->where(['tbl_machine.wx_id'=>Cache::getWid(),'tbl_machine.enable'=>'Y']);
+
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 15,
             ],
+/*            'sort'=>[
+                'attributes'=>[
+                    'type'=>[
+                        'asc'=>['machineModel.type'=>SORT_ASC],
+                        'desc'=>['machineModel.type'=>SORT_DESC],
+                        'label'=>'品牌',
+                    ]
+                ]
+            ],*/
         ]);
 
         $this->load($params);
@@ -82,7 +91,8 @@ class TblMachineSearch extends TblMachine
         $query->andFilterWhere(['like', 'series_id', $this->series_id])
             ->andFilterWhere(['like', 'else_attr', $this->else_attr])
             ->andFilterWhere(['like', 'enable', $this->enable])
-            ->andFilterWhere(['like', '`tbl_machine_model`.`type`', $this->type]);
+            ->andFilterWhere(['like', 'tbl_machine_model.type', $this->type])
+            ->andFilterWhere(['like', 'tbl_brand.name', $this->name]);
 
         return $dataProvider;
     }
