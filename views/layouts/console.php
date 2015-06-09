@@ -86,6 +86,7 @@ WeixinAsset::register($this);
                                 [
                                     'label' => '机器管理',
                                     'items' => [
+                                        ['label' => '租借方案', 'url' => '/rentproject/list','route'=>'/rentproject'],
                                         ['label' => '机型资料', 'url' => '/model/list','route'=>'/model'],
                                         ['label' => '机器列表', 'url' => '/machine/list'],
                                         ['label' => '添加机器', 'url' => '/machine/add'],
