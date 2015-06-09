@@ -68,7 +68,9 @@ class MachineController extends \yii\web\Controller
 
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if($model->delete())
+            $model->updateCount('dec');
 
         return $this->redirect(['list']);
     }
