@@ -60,6 +60,7 @@ use yii\bootstrap\Alert;
     <?= $form->field($model, 'describe')->widget('kucha\ueditor\UEditor',[
             'clientOptions' => [
                 'zIndex'=>1029,
+                'initialFrameHeight'=>'240',
                 'toolbars' => [
                     [
                         'fullscreen', 'source', 'undo', 'redo',
@@ -69,11 +70,10 @@ use yii\bootstrap\Alert;
                         '|', 'forecolor', 'backcolor',
                         '|', 'lineheight', 'indent', 'justifyleft', 'justifyright', 'justifycenter', 'justifyjustify',
                         'insertorderedlist', 'insertunorderedlist',
-                        '|','searchreplace','link','horizontal','insertimage','preview'
+                        '|','searchreplace','link','horizontal','insertimage','insertvideo','preview'
                     ],
                 ],
             ],
-            'id'=>'TblProduct-describe--22'
     ]);?>
 
     <div class="form-group">
