@@ -18,14 +18,32 @@ $this->title = '生成机器码';
         [
             'class' => CheckboxColumn::className(),
             'checkboxOptions' => function($model, $key, $index, $column) {
-                return ['value'=> $model->id . '|' . $model->serial_id ];
+                return ['value'=> $model->id . '|' . $model->series_id ];
             }
         ],
-        'serial_id',
-        'type',
-        'brand',
-        'rent_time',
-        'maintain_time',
+        'series_id',
+        'buy_date',
+        'buy_price',
+        'maintain_count',
+        'rent_count',
+        [
+            'attribute'=>'type',
+            'format'=>'html',
+            'value'=>function($data){
+                return Html::a($data->machineModel->type,Url::toRoute(['model/view','id'=>$data->model_id]));
+            },
+//                'value'=>'machineModel.type',
+            'header'=>'型号'
+        ],
+        [
+            'attribute'=>'name',
+            'value'=>'machineModel.brand.name',
+            'header'=>'品牌'
+        ],
+        [
+            'attribute'=>'add_time',
+            'format'=>['date','php:Y-m-d H:i'],
+        ],
         [
             'attribute'=>'status',
             'headerOptions' => ['style'=>'width:110px'],

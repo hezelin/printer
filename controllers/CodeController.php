@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Cache;
 use app\models\MachineSearch;
+use app\models\TblMachineSearch;
 use Yii;
 use app\models\TblMachine;
 use app\models\WxCode;
@@ -47,7 +48,7 @@ class CodeController extends \yii\web\Controller
      */
     public function actionIndex()
     {
-        $searchModel = new MachineSearch();
+        $searchModel = new TblMachineSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
