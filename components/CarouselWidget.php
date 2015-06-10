@@ -19,6 +19,8 @@ class CarouselWidget extends Widget{
     public $carousel = 'carousel';
     public $iscroll = 'carousel-iscroll';
     public $nav = 'carousel-nav';
+    public $align = 'right';
+    public $backgroundColor = '#444';
 
     /*
      * 以下一个参数默认为 class
@@ -47,7 +49,7 @@ class CarouselWidget extends Widget{
     public function renderHtml()
     {
         $content = <<< MODEL_CONTENT
-<div id="{$this->wrap}">
+<div id="{$this->wrap}" style="background-color:{$this->backgroundColor};">
     <div id="{$this->carousel}">
         <div id="{$this->iscroll}">
               {$this->renderItem()}
@@ -69,16 +71,21 @@ MODEL_CONTENT;
                 <img src="/uploads/201504/1427946118_390.jpg" style="width: 100%;" />
             </a>
        </div>
+        =====================================================
+     * 标题 p 标签可省略， a 标签可省略
      */
     public function renderItem()
     {
         $items =[];
         foreach($this->data as $d){
-            if( !is_file($d['imgurl']) )
-                continue;
-            $p = Html::tag('p',$d['title'],['class'=>'carousel-title']);
-            $a = Html::a(Html::img('/'.$d['imgurl']),$d['link']? : 'javascript:void(0)');
-            $items[] = Html::tag('div',$p.$a,['class'=>$this->itemClass]);
+            if(isset($d['imgurl']) && is_file($d['imgurl']) ){
+                $p = Html::tag('p',$d['title'],['class'=>'carousel-title']);
+                $a = (isset($d['link']) && $d['link'])? Html::a(Html::img('/'.$d['imgurl']),$d['link']):Html::img('/'.$d['imgurl']);
+                $items[] = Html::tag('div',$p.$a,['class'=>$this->itemClass]);
+            }else if( is_string($d) ){
+                $img = Html::img($d);
+                $items[] = Html::tag('div',$img,['class'=>$this->itemClass]);
+            }
         }
         return implode("\n",$items);
     }
@@ -99,6 +106,12 @@ MODEL_CONTENT;
                 myScroll.next();
         }, 5000);':'';
 
+        switch($this->align){
+            case 'right': $left = 'document.body.clientWidth-count*24+4'; break;
+            case 'center': $left = 'document.body.clientWidth/2-count*12+4'; break;
+            default: $left = 4; break;
+        }
+
         $script = <<<MODEL_JS
     var myScroll;
     function {$jsName} () {
@@ -111,7 +124,7 @@ MODEL_CONTENT;
         }
         document.getElementById("{$this->iscroll}").style.cssText = " width:"+document.body.clientWidth*count+"px";
         document.getElementById("{$this->carousel}").style.cssText = " width:"+document.body.clientWidth+"px;height:"+document.body.clientWidth/2+"px";
-        document.getElementById('{$this->nav}').style.cssText = "width:"+(count*30-10)+"px;top:"+(document.body.clientWidth/2-35)+"px";
+        document.getElementById('{$this->nav}').style.cssText = "width:"+(count*24-8)+"px;left:"+({$left})+"px;top:"+(document.body.clientWidth/2-32)+"px";
         myScroll = new IScroll('#{$this->carousel}', {
             scrollX: true,
             scrollY: false,
