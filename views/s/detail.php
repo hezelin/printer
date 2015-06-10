@@ -51,7 +51,7 @@
     echo $btn;
 
 \app\components\WxjsapiWidget::widget([
-    'wx_id'=>$model['wx_id'],
+    'wx_id'=>$id,
     'apiList'=>['previewImage'],
     'jsReady'=>'
          document.querySelector("#previewImage").onclick = function () {

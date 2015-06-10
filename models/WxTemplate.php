@@ -223,6 +223,7 @@ class WxTemplate extends WxBase {
      */
     public function sendCancelService($openid,$url,$name,$reason,$operaTime,$applyTime)
     {
+        if(!$openid) return false;
         $tpl = [
             'touser'=>$openid,
             'template_id'=>$this->cancelServiceId,

@@ -40,7 +40,7 @@ class SController extends \yii\web\Controller
 
             $model->load(Yii::$app->request->post());
             if( $model->save() ){
-                $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
+                $this->redirect(Url::toRoute(['detail','id'=>$id,'fault_id'=>$model->id]));
             }
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
@@ -48,7 +48,7 @@ class SController extends \yii\web\Controller
 
         $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->andWhere(['<','status',9])->one();
         if($model)
-            $this->redirect(Url::toRoute(['detail','id'=>$model->id]));
+            $this->redirect(Url::toRoute(['detail','id'=>$id,'fault_id'=>$model->id]));
 
         $openid = WxBase::openId($id);
         return $this->render('apply',['id'=>$id,'openid'=>$openid]);
@@ -94,19 +94,22 @@ class SController extends \yii\web\Controller
 
     /*
      * 故障进度
-     * @params $id 为申请表 id
+     * $id,公众号id,fault_id,故障id
      * 微信申请发起用户的页面
      * 1、发起评价。 2、取消维修
      */
-    public function actionDetail($id)
+    public function actionDetail($id,$fault_id)
     {
         $model = (new \yii\db\Query())
-            ->select('t.id as fault_id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,m.id,m.cover,
-                    m.brand,m.type,m.serial_id,m.wx_id
+            ->select('t.id as fault_id,t.cover as fault_cover,t.desc,t.type as fault_type,
+                    t.add_time,t.status,m.id,p.cover,
+                    b.name as brand,p.type,m.series_id
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')
-            ->where(['t.id' => $id])
+            ->leftJoin('tbl_machine_model as p','m.model_id=p.id')
+            ->leftJoin('tbl_brand as b','p.brand_id=b.id')
+            ->where(['t.id' => $fault_id])
             ->one();
 
         // 图片预览 路径设置
@@ -118,7 +121,7 @@ class SController extends \yii\web\Controller
         $process = (new \yii\db\Query())
             ->select('content,add_time')
             ->from('tbl_service_process')
-            ->where(['service_id' => $id])
+            ->where(['service_id' => $fault_id])
             ->orderBy('id desc')
             ->all();
 
@@ -129,12 +132,12 @@ class SController extends \yii\web\Controller
         else $btn = '';
 
         if($model['status']== 1 || $model['status'] == 2)
-            $btn = Html::a('取消维修',Url::toRoute(['s/cancel','id'=>$model['wx_id'],'fid'=>$model['fault_id']]),[
+            $btn = Html::a('取消维修',Url::toRoute(['s/cancel','id'=>$id,'fid'=>$model['fault_id']]),[
                 'class'=>'h-fixed-bottom'
             ]);
 
 
-        return $this->render('detail',['model'=>$model,'process'=>$process,'btn'=>$btn]);
+        return $this->render('detail',['model'=>$model,'id'=>$id,'process'=>$process,'btn'=>$btn]);
     }
 
     /*

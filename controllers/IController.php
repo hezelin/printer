@@ -18,15 +18,17 @@ class IController extends \yii\web\Controller
 
     /*
      * 我的机器
+     * $id 为公众号id
      */
     public function actionMachine($id)
     {
         $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
-            ->select('t.wx_id,t.due_time,t.status,t.monthly_rent,m.id,m.function,m.maintain_time,
-                m.else_attr,m.buy_time,m.cover,m.brand,m.type,m.serial_id,m.monthly_rent as o_monthly_rent')
+            ->select('t.wx_id,t.project_id,t.due_time,t.status,t.monthly_rent,m.id,p.function,m.maintain_count,
+                m.else_attr,m.buy_date,p.cover,p.type,m.series_id')
             ->from('tbl_rent_apply as t')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')
+            ->leftJoin('tbl_machine_model as p','m.model_id=p.id')
             ->where(['t.wx_id' => $id, 't.openid' => $openid,'t.enable'=>'Y'])
             ->orderBy('t.status')
             ->all();
@@ -43,7 +45,7 @@ class IController extends \yii\web\Controller
      * 我的维修
      * $mid 机器 id
      */
-    public function actionService($mid)
+    public function actionService($id,$mid)
     {
         $model = TblMachineService::findAll(['machine_id'=>$mid,'enable'=>'Y']);
         foreach ($model as $i=>$m) {
