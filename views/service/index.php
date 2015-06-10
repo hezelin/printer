@@ -41,20 +41,20 @@ echo GridView::widget([
         ],
         'desc',
         [
-            'attribute'=>'machine.cover',
+            'attribute'=>'machine.machineModel.cover',
             'header'=>'机器',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($data)
             {
-                if( isset($data->machine->cover )  )
-                    return Html::a(Html::img($data->machine->cover,['width'=>40]),$data->machine->cover,['class'=>'fancybox','rel'=>'group1']);
+                if( isset($data->machine->machineModel->cover )  )
+                    return Html::a(Html::img($data->machine->machineModel->cover,['width'=>40]),str_replace('/s/','/m/',$data->machine->machineModel->cover),['class'=>'fancybox','rel'=>'group1']);
             }
         ],
 
-        'machine.brand',
-        'machine.type',
-        'machine.serial_id',
-        'machine.maintain_time',
+        'machine.machineModel.brand.name',
+        'machine.machineModel.type',
+        'machine.series_id',
+        'machine.maintain_count',
         [
             'attribute' => 'add_time',
             'header'=>'申请时间',

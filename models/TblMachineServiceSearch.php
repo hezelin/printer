@@ -41,7 +41,14 @@ class TblMachineServiceSearch extends TblMachineService
      */
     public function search($params)
     {
-        $query = TblMachineService::find()->joinWith('machine')->where([
+        $query = TblMachineService::find()->joinWith([
+            'machine'=>function($query){
+                $query->joinWith([
+                    'machineModel'=>function($query){
+                        $query->joinWith('brand');
+                    }
+                ]);
+        }])->where([
             'tbl_machine_service.enable'=>'Y',
             'tbl_machine_service.status'=>1
         ]);
