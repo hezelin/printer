@@ -3,11 +3,9 @@
 ?>
 
 <div class="h-error-list">
-    <?php
-        echo $error? :'';
-    ?>
+    <?=$error?>
 </div>
-<div class="h-form">
+<div class="h-form-wrap">
     <form method="post">
         <input name="_csrf" type="hidden" value="<?=\Yii::$app->request->csrfToken?>"/>
         <input type="text" id="apply-name" class="h-input" name="TblRentApply[name]" placeholder="姓名">

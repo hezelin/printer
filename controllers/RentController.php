@@ -80,9 +80,8 @@ class RentController extends \yii\web\Controller
 
         $error = false;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            $this->refresh();
             return $this->render('//tips/homestatus',[
-                'tips'=>'感谢您的申请，我们会在1~2个工作日跟你联系！',
+                'tips'=>'感谢您的申请，我们会在1~2个工作日处理！',
                 'btnText'=>'返回',
 //                'btnUrl'=>Url::toRoute(['rent/list','id'=>$id])
                 'btnUrl'=>'javascript:history.go(-2)'
