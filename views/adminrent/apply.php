@@ -19,23 +19,23 @@ echo GridView::widget([
         [
             'label'=>'昵称',
             'attribute' => 'nickname',
-            'value' => 'userinfo.nickname'
+            'value' => 'userInfo.nickname'
         ],
         [
-            'attribute'=>'userinfo.headimgurl',
+            'attribute'=>'userInfo.headimgurl',
             'format'=>'html',
             'value'=>function($data)
             {
-                return Html::a( Html::img( substr($data->userinfo->headimgurl,0,-1) .'46'),
-                    $data->userinfo->headimgurl,
+                return Html::a( Html::img( substr($data->userInfo->headimgurl,0,-1) .'46'),
+                    $data->userInfo->headimgurl,
                     ['title'=>'查看大图','target'=>'_blank']
                 );
             }
         ],
         [
-            'attribute'=>'userinfo.sex',
+            'attribute'=>'userInfo.sex',
             'value'=>function($data){
-                switch($data->userinfo->sex)
+                switch($data->userInfo->sex)
                 {
                     case 1: return '男';
                     case 2: return '女';
@@ -43,9 +43,6 @@ echo GridView::widget([
                 }
             }
         ],
-        'userinfo.city',
-        'userinfo.province',
-        'userinfo.country',
         [
             'attribute' => 'add_time',
             'format' => ['date', 'php:Y-m-d H:i'],
@@ -54,10 +51,13 @@ echo GridView::widget([
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions' => ['style'=>'width:100px'],
-            'template' => '{check}',
+            'template' => '{pass} &nbsp; {unpass}',
             'buttons' => [
-                'check' => function($url,$model,$key){
-                    return Html::a('处理申请',$url);
+                'pass' => function($url,$model,$key){
+                    return Html::a('<i class="glyphicon glyphicon-ok"></i>',$url,['title'=>'租借通过']);
+                },
+                'unpass' => function($url,$model,$key){
+                    return Html::a('<i class="glyphicon glyphicon-remove"></i>',$url,['title'=>'不通过']);
                 }
             ]
         ]

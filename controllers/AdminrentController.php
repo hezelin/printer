@@ -44,23 +44,24 @@ class AdminrentController extends \yii\web\Controller
 
     /*
      * 租借申请审核，资料录入
+     * rent_id 租借id
      */
-    public function actionCheck($id)
+    public function actionPass($id)
     {
-        $model = TblRentApply::findOne($id);
+        $model = TblRentApply::find()
+            ->where(['tbl_rent_apply.id'=>$id])
+            ->joinWith('machineProject')
+            ->one();
 
         if($model->load( Yii::$app->request->post()))
         {
             $model->due_time = $model->due_time? strtotime($model->due_time):0;
+            $model->status = 2;
 
             if($model->save()) {
                 // 如果是审核通过，改版机器的状态 和 出租次数
-                if ( $model->status == 2) {
-                    $machine = TblMachine::findOne($model->machine_id);
-                    $machine->rent_time = (int)$machine->rent_time + 1;
-                    $machine->status = 2;
-                    $machine->save();
-                }
+                $model->updateMachineStatus();
+
                 return $this->render('//tips/success', [
                     'tips' => '审核成功，并且资料录入',
                     'btnText' => '返回',
@@ -69,17 +70,15 @@ class AdminrentController extends \yii\web\Controller
             }
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
+
+            return $this->render('pass',['model'=>$model]);
         }
 
-        if( $model->region )
-            $model->areaText = DataCity::getAddress($model->region);
-
-        return $this->render('check',[
-            'model'=>$model,
-            'province'=>DataCity::$province,
-            'city' => DataCity::$city,
-            'region' => DataCity::$region,
-        ]);
+        $model->black_white = $model->machineProject->black_white;
+        $model->colours = $model->machineProject->colours;
+        $model->monthly_rent = $model->machineProject->lowest_expense;
+        $model->machine_id = '';
+        return $this->render('pass',['model'=>$model]);
     }
 
     /*

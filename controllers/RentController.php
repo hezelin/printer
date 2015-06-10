@@ -67,14 +67,14 @@ class RentController extends \yii\web\Controller
 
     /*
      * 租借申请
-     * $id 为公众号id,$mid 为机器id
+     * $id 为公众号id,$mid 为机租借方案 project_id
      */
     public function actionApply($id,$mid)
     {
         $model = new TblRentApply();
         $model->wx_id = $id;
         $model->openid = WxBase::openId($id);
-        $model->machine_id = $mid;
+        $model->project_id = $mid;
         $model->add_time = time();
         $model->due_time = time();
 

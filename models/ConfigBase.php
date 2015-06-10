@@ -153,4 +153,27 @@ class ConfigBase
 
         return ( $id && isset($tmp[$id]) )? $tmp[$id]:$tmp;
     }
+
+    /*
+     * 获取机器资料，品牌/型号/系列号
+     */
+    public static function getMachineInfo($id='')
+    {
+        $model = (new \yii\db\Query())
+            ->select('m.id,m.series_id, p.name, t.type')
+            ->from('tbl_machine as m')
+            ->leftJoin('tbl_machine_model as t','m.model_id=t.id')
+            ->leftJoin('tbl_brand as p','p.id=t.brand_id')
+            ->where('t.enable="Y" and t.wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->all();
+        $tmp = [];
+        if($model){
+            foreach($model as $m)
+            {
+                $tmp[ $m['id'] ] = $m['name'].' / '.$m['type'].' / '.$m['series_id'];
+            }
+        }
+
+        return ( $id && isset($tmp[$id]) )? $tmp[$id]:$tmp;
+    }
 }
