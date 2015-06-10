@@ -26,10 +26,6 @@ $this->title = '维修任务';
         <div class="h-right-text"><?= $model['name'],',<a class="h-tel" href="tel:',$model['phone'],'">',$model['phone']?></a></div>
     </div>
     <div class="h-row">
-        <div class="h-left-text">客户地区</div>
-        <div class="h-right-text"><?= $region?></div>
-    </div>
-    <div class="h-row">
         <div class="h-left-text">客户地址</div>
         <div class="h-right-text"><?= $model['address']?></div>
     </div>

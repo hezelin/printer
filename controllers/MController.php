@@ -169,7 +169,7 @@ class MController extends \yii\web\Controller
         $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('t.id, t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    m.address,m.name,m.phone,m.region
+                    m.address,m.name,m.phone
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
@@ -195,7 +195,7 @@ class MController extends \yii\web\Controller
         $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('t.id, t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    m.address,m.name,m.phone,m.region
+                    m.address,m.name,m.phone
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
@@ -220,7 +220,7 @@ class MController extends \yii\web\Controller
     {
         $model = (new \yii\db\Query())
             ->select('t.id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    t.machine_id as mid, m.address,m.name,m.phone,m.region,m.wx_id
+                    t.machine_id as mid, m.address,m.name,m.phone,m.wx_id
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
@@ -236,15 +236,13 @@ class MController extends \yii\web\Controller
             $model['cover_images'][] = Yii::$app->request->hostinfo.$cover;
 
         $openid = WxBase::openId($model['wx_id']);
-        $region = DataCity::getAddress( $model['region']);
 
         $status = $model['status'];
         switch($status){
-            case 1: return $this->render('taskdetail',['model'=>$model,'region'=>$region,'openid'=>$openid,'from'=>'initiative']);
-            case 2: return $this->render('taskdetail',['model'=>$model,'region'=>$region,'openid'=>$openid,'from'=>'allot']);
+            case 1: return $this->render('taskdetail',['model'=>$model,'openid'=>$openid,'from'=>'initiative']);
+            case 2: return $this->render('taskdetail',['model'=>$model,'openid'=>$openid,'from'=>'allot']);
             case 3: return $this->render('process3', [
                         'model' => $model,
-                        'region' => $region,
                         'openid' => $openid,
                         'mUrl' => Url::toRoute(['codeapi/machine','id'=>$model['mid']],'http'),
                         'btnHtml'=>Html::a(
@@ -262,7 +260,6 @@ class MController extends \yii\web\Controller
             case 6:
             case 7: return $this->render('process', [
                         'model' => $model,
-                        'region' => $region,
                         'openid' => $openid,
                         'btnHtml'=>Html::a(
                             ConfigBase::getFixMaintainStatus($status),
@@ -277,7 +274,6 @@ class MController extends \yii\web\Controller
                     ]);
             case 4: return $this->render('process', [
                         'model' => $model,
-                        'region' => $region,
                         'openid' => $openid,
                         'btnHtml'=>Html::a(
                             ConfigBase::getFixMaintainStatus($status),
@@ -292,7 +288,6 @@ class MController extends \yii\web\Controller
                     ]);
             case 5: return $this->render('process', [
                         'model' => $model,
-                        'region' => $region,
                         'openid' => $openid,
                         'btnHtml'=>Html::tag(
                             'div',
@@ -327,7 +322,6 @@ class MController extends \yii\web\Controller
 
                 return $this->render('process', [
                 'model' => $model,
-                'region' => $region,
                 'openid' => $openid,
                 'evaluate'=>$evaluate,
                 'btnHtml'=> Html::a(
@@ -375,7 +369,7 @@ class MController extends \yii\web\Controller
     {
         $model = (new \yii\db\Query())
             ->select('t.id, t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    m.address,m.name,m.phone,m.region
+                    m.address,m.name,m.phone
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
