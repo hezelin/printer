@@ -9,10 +9,10 @@ $this->title = '维修进度';
 ?>
 <?php
 function getMachine($model){
-    return Html::a(Html::img($model->machine->cover,['width'=>40]),$model->machine->cover,['class'=>'fancybox','rel'=>'group']) .
-            ' , ' . $model->machine->brand .
-            ' , ' . $model->machine->type .
-            ' , ' . $model->machine->serial_id
+    return Html::a(Html::img($model->machine->machineModel->cover,['width'=>40]),str_replace('/s/','/m/',$model->machine->machineModel->cover),['class'=>'fancybox','rel'=>'group']) .
+//            ' , ' . $model->machine->brand .
+            ' , ' . $model->machine->machineModel->type .
+            ' , ' . $model->machine->series_id
         ;
 }
 
@@ -38,7 +38,7 @@ function getProcess($model,$process)
 function getImage($covers){
     $html = [];
     foreach(json_decode($covers,true) as $cover)
-        $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class'=>'fancybox','rel'=>'group']);
+        $html[] = Html::a(Html::img($cover,['width'=>40]),str_replace('/s/','/m/',$cover),['class'=>'fancybox','rel'=>'group']);
     return join("\n",$html);
 }
 
