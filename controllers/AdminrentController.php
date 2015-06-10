@@ -103,14 +103,8 @@ class AdminrentController extends \yii\web\Controller
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
-        if( $model->region )
-            $model->areaText = DataCity::getAddress($model->region);
-
-        return $this->render('check',[
+        return $this->render('pass',[
             'model'=>$model,
-            'province'=>DataCity::$province,
-            'city' => DataCity::$city,
-            'region' => DataCity::$region,
         ]);
     }
 

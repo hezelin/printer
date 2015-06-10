@@ -15,16 +15,15 @@ class TblRentApplyList extends TblRentApply
     /*
      * 关联查询 机器的 品牌、型号、编号3个属性
      */
-    public $brand;
     public $type;
-    public $serial_id;
+    public $series_id;
 
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'machine_id', 'region', 'due_time', 'status', 'add_time'], 'integer'],
-            [['openid', 'phone', 'name', 'address', 'enable', 'apply_word','brand','type','serial_id'], 'safe'],
-            [['monthly_rent'], 'number'],
+            [['id', 'wx_id', 'project_id', 'machine_id', 'due_time', 'status', 'add_time'], 'integer'],
+            [['openid', 'phone', 'name', 'address', 'apply_word', 'enable','type','series_id'], 'safe'],
+            [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
         ];
     }
 
@@ -50,7 +49,15 @@ class TblRentApplyList extends TblRentApply
             'tbl_rent_apply.wx_id'=>Cache::getWid(),
             'tbl_rent_apply.status'=>2,
             'tbl_rent_apply.enable'=>'Y'
-        ])->joinWith('machine');
+        ])->joinWith([
+            'machine'=>function($query){
+                $query->joinWith([
+                    'machineModel'=>function($query){
+                        $query->joinWith('brand');
+                    }
+                ]);
+            }
+        ]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -70,23 +77,27 @@ class TblRentApplyList extends TblRentApply
         $query->andFilterWhere([
             'id' => $this->id,
             'wx_id' => $this->wx_id,
+            'project_id' => $this->project_id,
             'machine_id' => $this->machine_id,
-            'region' => $this->region,
+            'monthly_rent' => $this->monthly_rent,
+            'black_white' => $this->black_white,
+            'colours' => $this->colours,
             'due_time' => $this->due_time,
             'status' => $this->status,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'accuracy' => $this->accuracy,
             'add_time' => $this->add_time,
-            'monthly_rent' => $this->monthly_rent,
         ]);
 
         $query->andFilterWhere(['like', 'openid', $this->openid])
             ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'enable', $this->enable])
             ->andFilterWhere(['like', 'apply_word', $this->apply_word])
-            ->andFilterWhere(['like', 'brand', $this->brand])
-            ->andFilterWhere(['like', 'type', $this->type])
-            ->andFilterWhere(['like', 'serial_id', $this->serial_id]);
+            ->andFilterWhere(['like', 'enable', $this->enable])
+            ->andFilterWhere(['like', 'tbl_machine_model.type', $this->type])
+            ->andFilterWhere(['like', 'tbl_machine.series_id', $this->series_id]);
 
         return $dataProvider;
     }

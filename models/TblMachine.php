@@ -8,6 +8,10 @@ use yii\web\NotFoundHttpException;
 
 class TblMachine extends \yii\db\ActiveRecord
 {
+    // 添加数量，支持批量插入
+    public $amount;
+    public $seriesLists = [];
+
     /*
      * 关联机器模型
      */
@@ -16,14 +20,11 @@ class TblMachine extends \yii\db\ActiveRecord
         return $this->hasOne(TblMachineModel::className(), ['id' => 'model_id']);
     }
 
-    // 添加数量，支持批量插入
-    public $amount;
-    public $seriesLists = [];
-
     public static function tableName()
     {
         return 'tbl_machine';
     }
+
 
     public function rules()
     {

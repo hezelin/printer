@@ -33,15 +33,18 @@ if( Yii::$app->session->hasFlash('error') )
         ],
     ])
     ?>
+<?php
 
-    <?= $form->field($model, 'machine_id')->widget(\kartik\select2\Select2::classname(), [
+if( $model->isNewRecord )
+    echo $form->field($model, 'machine_id')->widget(\kartik\select2\Select2::classname(), [
         'data' => app\models\ConfigBase::getMachineInfo(),
         'language' => 'zh-CN',
         'options' => ['placeholder' => '输入 机器品牌/机器型号/机器系列号'],
         'pluginOptions' => [
             'allowClear' => true
         ]
-    ]);?>
+    ]);
+?>
 
     <?= $form->field($model, 'monthly_rent') ?>
     <?= $form->field($model, 'black_white') ?>
