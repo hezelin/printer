@@ -93,4 +93,23 @@ function createCode()
         alert("请选择机器");
     }
 }
+this.options = $.extend({}, $.fn.bootstrapSwitch.defaults, {
+    state: this.$element.is(":checked"),
+    size: this.$element.data("size"),
+    animate: this.$element.data("animate"),
+    disabled: this.$element.is(":disabled"),
+    readonly: this.$element.is("[readonly]"),
+    indeterminate: this.$element.data("indeterminate"),
+    inverse: this.$element.data("inverse"),
+    radioAllOff: this.$element.data("radio-all-off"),
+    onColor: this.$element.data("on-color"),
+    offColor: this.$element.data("off-color"),
+    onText: this.$element.data("on-text"),
+    offText: this.$element.data("off-text"),
+    labelText: this.$element.data("label-text"),
+    handleWidth: this.$element.data("handle-width"),
+    labelWidth: this.$element.data("label-width"),
+    baseClass: this.$element.data("base-class"),
+    wrapperClass: this.$element.data("wrapper-class")
+}, options);
 </script>

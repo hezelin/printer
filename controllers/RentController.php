@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\TblMachine;
+use app\models\TblMachineRentProject;
 use app\models\TblRentApply;
 use app\models\ToolBase;
 use app\models\WxBase;
@@ -30,26 +31,38 @@ class RentController extends \yii\web\Controller
 
     /*
      * 租借机器列表
+     * 读取租借方案的数据 tbl_machine_rent_project
      */
     public function actionList($id)
     {
-        $model = TblMachine::find()
-            ->select('id,wx_id,brand,type,cover,monthly_rent,function')
-            ->where(['wx_id'=>$id,'enable'=>'Y','status'=>1])
-            ->groupBy('type')
-            ->asArray()
+        $model = (new \yii\db\Query())
+            ->select('t.id,lowest_expense,p.type,p.cover,p.function,b.name')
+            ->from('tbl_machine_rent_project as t')
+            ->leftJoin('tbl_machine_model as p','p.id=t.machine_model_id')
+            ->leftJoin('tbl_brand as b','b.id=p.brand_id')
+            ->where(['t.wx_id'=>$id,'t.is_show'=>1])
             ->all();
-
-        return $this->render('list',['model'=>$model]);
+        return $this->render('list',['model'=>$model,'id'=>$id]);
     }
 
     /*
-     * 机器详情 detail
+     * 租机方案详情
      */
-    public function actionDetail($id)
+    public function actionDetail($id,$project_id)
     {
-        $model = TblMachine::findOne($id);
-        return $this->render('detail',['model'=>$model]);
+        $model = (new \yii\db\Query())
+            ->select('t.id,lowest_expense,p.type,p.cover,p.function,b.name,t.black_white,t.colours,
+                t.else_attr as project_attr,p.else_attr,p.cover_images,p.is_color,p.describe
+            ')
+            ->from('tbl_machine_rent_project as t')
+            ->leftJoin('tbl_machine_model as p','p.id=t.machine_model_id')
+            ->leftJoin('tbl_brand as b','b.id=p.brand_id')
+            ->where(['t.id'=>$project_id])
+            ->one();
+
+        $model['cover_images'] = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
+        $model['else_attr'] = array_merge(json_decode($model['else_attr'],true),json_decode($model['project_attr'],true));
+        return $this->render('detail',['model'=>$model,'id'=>$id]);
     }
 
     /*

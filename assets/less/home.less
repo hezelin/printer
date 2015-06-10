@@ -11,7 +11,7 @@ a { color:#000000; text-decoration: none; }
 .clr { display:block; clear:both; height:0; overflow:hidden; }
 h2 { font-size:16px; }
 
-body {background-color:#eee; }
+body {background-color:#eee;}
 
 .blank-info{ background-color: #ffffff; width: 100%; height: 200px; line-height: 200px;
 vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
@@ -51,7 +51,9 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
 /**********   首页排版结束  ************/
 
 .copyright{
-   padding:18px 0 8px 0; text-align:center; font-size:14px; color:#999;
+  text-align:center; font-size:14px; color:#999999; text-shadow: 0px 2px 2px #ffffff;
+  display: block;  width: 100%; height: 70px; line-height: 70px;
+
 }
 
 /************  租借机器列表 ***************/
@@ -68,12 +70,11 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
   ul >li{
     background-color: #fff;
     padding: 5px;
-    margin-bottom: 10px;;
     height: 140px;
     float: left;
     width: 100%;
     position: relative;
-    border-top: 4px solid @color;
+    border: 1px dashed #EEEEEE;
   }
   .li-cover{
     width: 40%;
@@ -91,7 +92,7 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
     .nowrap(56%);
     margin-top: 4px;
     font-family: "microsoft yahei";
-    color: #000;
+    color: #4e6fad;
     font-size: 16px;
     font-weight: 600;
   }
@@ -468,14 +469,23 @@ vertical-align: middle; text-align:center; color: #999999; font-size: 20px;}
 }
 
 .h-fixed-bottom {
-  .h-l(50px);  .bg-c(#4684cf); .w(100%); .size(20px); .t-c;
-  color: #ffffff;
+  .h-l(50px);  .w(100%); .size(18px); .t-c;
+  .bg-c(#fff);
+  .b-t(1px solid #ccc);
+  box-shadow: 0 -2px 2px #eee;
   right: 0;
   bottom: 0;
   position: fixed;
   z-index: 40;
-  a:active{color: #ffffff}
+  a{
+    .bg-c(@color); color: #fff;
+    .m-t(2px);
+    .p(5px 20px);
+    border-radius: 4px;
+  }
+  a:active,a:visited,a:hover,a:link{color: #ffffff}
 }
+
 .h-part{ display: block; .left; .m;.p;.t-c; color: #ffffff; .size(18px);
   a:active{color: #ffffff}
 }
