@@ -2,12 +2,13 @@
 
 namespace app\controllers;
 
-use app\models\DataCity;
-use app\models\TblMachine;
+use app\models\Cache;
 use app\models\TblRentApply;
 use app\models\TblRentApplySearch;
 use app\models\TblRentApplyList;
+use app\models\TblRentApplyWithMachine;
 use app\models\ToolBase;
+use app\models\WxTemplate;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -48,7 +49,7 @@ class AdminrentController extends \yii\web\Controller
      */
     public function actionPass($id)
     {
-        $model = TblRentApply::find()
+        $model = TblRentApplyWithMachine::find()
             ->where(['tbl_rent_apply.id'=>$id])
             ->joinWith('machineProject')
             ->one();
@@ -71,14 +72,38 @@ class AdminrentController extends \yii\web\Controller
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
 
-            return $this->render('pass',['model'=>$model]);
+            return $this->render('pass',['model'=>$model,'type'=>'update']);
         }
 
         $model->black_white = $model->machineProject->black_white;
         $model->colours = $model->machineProject->colours;
         $model->monthly_rent = $model->machineProject->lowest_expense;
         $model->machine_id = '';
-        return $this->render('pass',['model'=>$model]);
+
+        return $this->render('pass',['model'=>$model,'type'=>'allot']);
+    }
+
+    /*
+     * 不通过
+     */
+    public function actionNopass($rent_id)
+    {
+        $model = TblRentApply::findOne($rent_id);
+        $model->enable = 'N';
+        if(!$model->save())
+            Yii::$app->end(json_encode(['status'=>0,'msg'=>'入库失败']));
+
+        $wx_id = Cache::getWid();
+        // 为管理员推送消息
+        $tpl = new WxTemplate($wx_id);
+        $text = Yii::$app->request->post('text');
+        $url = '';
+
+        $tpl->sendCancelService($model['penid'],$url,$type==2? '您':'系统',$text,time(),$applyTime);
+
+        if($type == 2)
+            return $this->render('//tips/homestatus',['tips'=>'维修申请取消成功！','btnText'=>'返回','btnUrl'=>Url::toRoute(['i/machine','id'=>$id])]);
+        return json_encode(['status'=>1]);
     }
 
     /*
@@ -105,6 +130,7 @@ class AdminrentController extends \yii\web\Controller
 
         return $this->render('pass',[
             'model'=>$model,
+            'type'=>'update'
         ]);
     }
 

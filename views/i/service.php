@@ -2,6 +2,7 @@
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '任务记录';
+
 ?>
 
 <div class="h-list">
@@ -9,13 +10,14 @@ $this->title = '任务记录';
         <ul>
             <?php foreach($model as $row):?>
                 <li>
-                    <a href="<?=Url::toRoute(['s/detail','id'=>$row['id']])?>">
+                    <a href="<?=Url::toRoute(['s/detail','id'=>$id,'fault_id'=>$row['id']])?>">
                         <div class="li-cover">
                             <img class="li-cover-img" src="<?=$row['cover']?>"/>
                         </div>
                         <p class="li-row li-name">故障：<?=ConfigBase::getFaultStatus($row['type'])?></p>
                         <p class="li-row">描述：<?=$row['desc']?></p>
-                        <p class="li-rowl">状态：<span style="color: red"><?=ConfigBase::getFixStatus($row['status'])?></span></p>
+                        <p class="li-row">时间：<?=date('Y-m-d H:i',$row['add_time'])?></span></p>
+                        <p class="li-row">状态：<span style="color: red"><?=ConfigBase::getFixStatus($row['status'])?></span></p>
                     </a>
                 </li>
             <?php endforeach;?>

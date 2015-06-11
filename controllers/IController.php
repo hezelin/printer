@@ -52,7 +52,7 @@ class IController extends \yii\web\Controller
             $covers = json_decode($m['cover'],true);
             $model[$i]['cover'] = $covers[0];
         }
-        return $this->render('service',['model'=>$model]);
+        return $this->render('service',['model'=>$model,'id'=>$id]);
     }
 
 }

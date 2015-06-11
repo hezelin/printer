@@ -164,7 +164,7 @@ class ConfigBase
             ->from('tbl_machine as m')
             ->leftJoin('tbl_machine_model as t','m.model_id=t.id')
             ->leftJoin('tbl_brand as p','p.id=t.brand_id')
-            ->where('t.enable="Y" and t.wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->where('t.enable="Y" and m.status=1 and t.wx_id=:wid',[':wid'=>Cache::getWid()])
             ->all();
         $tmp = [];
         if($model){

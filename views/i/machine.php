@@ -1,10 +1,9 @@
 <?php
 use yii\helpers\Url;
 $this->title = '我的机器';
+Yii::$app->params['layoutBottomHeight'] = 40;
+
 ?>
-<style>
-    body{ background-color: #ffffff !important;}
-</style>
 <?php if($model):?>
     <div class="h-list"><ul class="m-machine">
         <?php foreach($model as $row):?>
@@ -39,8 +38,6 @@ $this->title = '我的机器';
                         </a>
                         <a href="<?=Url::toRoute(['i/service','id'=>$id,'mid'=>$row['id']])?>" class="m-apply-50">维修记录</a>
                     </div>
-
-
                 <?php endif;?>
             </li>
         <?php endforeach;?>

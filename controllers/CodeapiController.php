@@ -130,11 +130,11 @@ class CodeapiController extends \yii\web\Controller
             ->scalar();
         if($status){
             if($status ==8)
-                $btnHtml = Html::a('评价维修',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'h-link-minor']);
+                $btnHtml = Html::a('评价维修',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link-minor']);
             else
-                $btnHtml = Html::a('维修进度',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'h-link-minor']);
+                $btnHtml = Html::a('维修进度',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link-minor']);
         }else
-            $btnHtml = Html::a('申请维修',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'h-link']);
+            $btnHtml = Html::a('申请维修',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link']);
 
         return $this->render('user',['id'=>$wid,'mid'=>$id,'btnHtml'=>$btnHtml]);
 

@@ -35,7 +35,7 @@ if( Yii::$app->session->hasFlash('error') )
     ?>
 <?php
 
-if( $model->isNewRecord )
+if( $type =='allot' )
     echo $form->field($model, 'machine_id')->widget(\kartik\select2\Select2::classname(), [
         'data' => app\models\ConfigBase::getMachineInfo(),
         'language' => 'zh-CN',

@@ -251,6 +251,18 @@ class WxTemplate extends WxBase {
     }
 
     /*
+     * 会员资料审核提醒
+     * {{first.DATA}}
+审核结果：{{keyword1.DATA}}
+原因：{{keyword2.DATA}}
+{{remark.DATA}}
+     */
+    public function sendCheck()
+    {
+
+    }
+
+    /*
      * 发送模板消息
      */
     private function sendTpl($tpl)

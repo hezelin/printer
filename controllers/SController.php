@@ -232,15 +232,12 @@ class SController extends \yii\web\Controller
      */
     public function actionIrecord($id,$mid)
     {
-        $openid = WxBase::openId($id);
-        $model = (new \yii\db\Query())
-            ->select('id, cover,desc,type,add_time,status')
-            ->from('tbl_machine_service as t')
-            ->where(['t.machine_id'=>$mid])
-            ->orderBy('t.status asc')
-            ->all();
-
-        return $this->render('irecord',['model'=>$model]);
+        $model = TblMachineService::findAll(['machine_id'=>$mid,'enable'=>'Y']);
+        foreach ($model as $i=>$m) {
+            $covers = json_decode($m['cover'],true);
+            $model[$i]['cover'] = $covers[0];
+        }
+        return $this->render('irecord',['model'=>$model,'id'=>$id]);
     }
 
     /*
