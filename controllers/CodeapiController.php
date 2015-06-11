@@ -25,7 +25,9 @@ class CodeapiController extends \yii\web\Controller
      */
     public function actionMachine($id)
     {
-        $wid = TblRentApply::find()->select('wx_id')->where(['machine_id'=>$id,'enable'=>'Y'])->scalar();
+        $rent= TblRentApply::find()->select('wx_id,project_id')->where(['machine_id'=>$id,'enable'=>'Y'])->one();
+        $wid = $rent['wx_id'];
+
         $openid = WxBase::openId($wid);
 
         if(!$this->checkMaintain($openid)) {             // 维修员页面跳转
@@ -35,7 +37,7 @@ class CodeapiController extends \yii\web\Controller
                 ->andWhere(['<', 'status', 9])
                 ->one();
             if (!$model) {                                 // 没有维修申请，机器信息、录入机器坐标
-                return $this->render('firstmachine', ['id' => $id, 'wid' => $wid]);
+                return $this->render('firstmachine', ['id' => $id, 'wid' => $wid,'project_id'=>$rent['project_id'] ]);
             }
             $status = $model['status'];
             switch ($status) {
@@ -66,7 +68,7 @@ class CodeapiController extends \yii\web\Controller
                         'wid' => $wid,
                         'btnHtml' => Html::a(
                             ConfigBase::getFixMaintainStatus($status),
-                            Url::toRoute(['s/affirmfault', 'id' => $wid, 'mid' => $model['id'], 'openid' => $openid]),
+                            Url::toRoute(['s/affirmfault', 'id' => $wid, 'fault_id' => $model['id'], 'openid' => $openid]),
                             [
                                 'data-ajax' => 0,
                                 'data-status' => $status + 1,

@@ -16,8 +16,8 @@ $this->title = '任务记录';
                         </div>
                         <p class="li-row li-name">故障：<?=ConfigBase::getFaultStatus($row['fault_type'])?></p>
                         <p class="li-row-small">描述：<?=$row['desc']?></p>
-                        <p class="li-row-small">客户信息：<?=$row['name'],',',$row['phone']?></p>
-                        <p class="li-row-small">客户地址：<?=$row['address']?></p>
+                        <p class="li-row-small"><?=$row['name'],',',$row['phone']?></p>
+                        <p class="li-row-small"><?=$row['address']?></p>
                         <p class="li-row-small">发起时间：<?=date('m月d日 H:i',$row['add_time'])?></p>
                     </a>
                 </li>

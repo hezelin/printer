@@ -3,7 +3,9 @@ use yii\helpers\Url;
 $this->title = '机器页面';
 ?>
 
+<style>
 
+</style>
 <form method="post" id="wechat-form" action="<?=Url::toRoute(['m/machineposition','mid'=>$id])?>">
 
 <div class="h-center-wrap">
@@ -12,10 +14,10 @@ $this->title = '机器页面';
     <input name="TblRentApply[longitude]" type="hidden" id="tbl_longitude"/>
     <input name="TblRentApply[accuracy]" type="hidden" id="tbl_accuracy"/>
 
-    <button id="access-order" class="h-link" href="<?=Url::toRoute(['m/apply','id'=>$id])?>">
+    <button type="button" id="access-order" class="a-no-link h-link" href="<?=Url::toRoute(['m/apply','id'=>$id])?>">
         录入机器坐标
     </button>
-    <a class="h-link" href="<?=Url::toRoute(['rent/detail','id'=>$id,'from'=>'scan'])?>">
+    <a class="a-no-link h-link" href="<?=Url::toRoute(['rent/detail','id'=>$wid,'project_id'=>$project_id,'from'=>'scan'])?>">
         机器信息
     </a>
 </div>

@@ -277,7 +277,7 @@ class MController extends \yii\web\Controller
                         'openid' => $openid,
                         'btnHtml'=>Html::a(
                             ConfigBase::getFixMaintainStatus($status),
-                            Url::toRoute(['s/affirmfault','id'=>$model['wx_id'],'mid'=>$model['id'],'openid'=>$openid]),
+                            Url::toRoute(['s/affirmfault','id'=>$model['wx_id'],'fault_id'=>$model['id'],'openid'=>$openid]),
                             [
                                 'data-ajax'=>0,
                                 'data-status'=>$status+1,

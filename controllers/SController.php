@@ -57,7 +57,7 @@ class SController extends \yii\web\Controller
      * $id 公众号id, $mid 维修的 id,$openid 维修员openid
      * 确认故障
      */
-    public function actionAffirmfault($id,$mid,$openid)
+    public function actionAffirmfault($id,$fault_id,$openid)
     {
         if( Yii::$app->request->post() )
         {
@@ -72,24 +72,24 @@ class SController extends \yii\web\Controller
             }
 //            维修进度
             $model = new TblServiceProcess();
-            $model->service_id = $mid;
+            $model->service_id = $fault_id;
             $model->process = 5;
             $model->content = json_encode($content);
             $model->add_time = time();
             if( !$model->save()){
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
-                return $this->render('affirmfault',['id'=>$id,'mid'=>$mid,'openid'=>$openid]);
+                return $this->render('affirmfault',['id'=>$id,'fault_id'=>$fault_id,'openid'=>$openid]);
             }
 
-            $model = TblMachineService::findOne($mid);
+            $model = TblMachineService::findOne($fault_id);
             $model->status = 5;
             if( $model->save() )
-                return $this->redirect(Url::toRoute(['m/taskdetail','id'=>$mid]));
+                return $this->redirect(Url::toRoute(['m/taskdetail','id'=>$fault_id]));
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
-        return $this->render('affirmfault',['id'=>$id,'mid'=>$mid,'openid'=>$openid]);
+        return $this->render('affirmfault',['id'=>$id,'fault_id'=>$fault_id,'openid'=>$openid]);
     }
 
     /*
@@ -147,11 +147,13 @@ class SController extends \yii\web\Controller
     public function actionDetail2($id)
     {
         $model = (new \yii\db\Query())
-            ->select('t.id as fault_id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,m.id,m.cover,
-                    m.brand,m.type,m.serial_id,m.wx_id
+            ->select('t.id as fault_id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,m.id,p.cover,
+                    b.name as brand,p.type,m.series_id,m.wx_id
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')
+            ->leftJoin('tbl_machine_model as p','p.id=m.model_id')
+            ->leftJoin('tbl_brand as b','b.id=p.brand_id')
             ->where(['t.id' => $id])
             ->one();
 
