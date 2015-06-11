@@ -223,7 +223,6 @@ class WxTemplate extends WxBase {
      */
     public function sendCancelService($openid,$url,$name,$reason,$operaTime,$applyTime)
     {
-        if(!$openid) return false;
         $tpl = [
             'touser'=>$openid,
             'template_id'=>$this->cancelServiceId,
@@ -253,13 +252,36 @@ class WxTemplate extends WxBase {
     /*
      * 会员资料审核提醒
      * {{first.DATA}}
-审核结果：{{keyword1.DATA}}
-原因：{{keyword2.DATA}}
-{{remark.DATA}}
+        审核结果：{{keyword1.DATA}}
+        原因：{{keyword2.DATA}}
+        {{remark.DATA}}
      */
-    public function sendCheck()
+    public function sendCheck($openid,$url,$first,$key1,$key2,$remark)
     {
-
+        $tpl = [
+            'touser'=>$openid,
+            'template_id'=>$this->checkInfoId,
+            'url'=>$url,
+            'data'=> [
+                'first'=>[
+                    'value'=>$first,
+                    'color'=>'#000000',
+                ],
+                'keyword1'=>[
+                    'value'=>$key1,
+                    'color'=>'#000000',
+                ],
+                'keyword2'=>[
+                    'value'=>$key2,
+                    'color'=>'#000000',
+                ],
+                'remark'=>[
+                    'value'=>$remark,
+                    'color'=>'#ff0000',
+                ],
+            ]
+        ];
+        return $this->sendTpl($tpl);
     }
 
     /*
@@ -267,6 +289,8 @@ class WxTemplate extends WxBase {
      */
     private function sendTpl($tpl)
     {
+        if(!$tpl['touser']) return false;
+
         $curl = new Curl();
         $res = $curl->postJson($this->sendUrl,json_encode($tpl),['access_token'=>$this->accessToken()]);
         if( $res['errcode'] )

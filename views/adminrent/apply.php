@@ -60,7 +60,11 @@ echo GridView::widget([
                     return Html::a('<i class="glyphicon glyphicon-ok"></i>',$url,['title'=>'租借通过']);
                 },
                 'unpass' => function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-remove"></i>',$url,['title'=>'不通过','class'=>'close-model']);
+                    return Html::a('<i class="glyphicon glyphicon-remove"></i>',$url,[
+                        'title'=>'不通过',
+                        'class'=>'close-model',
+                        'key-id'=>$key,
+                    ]);
                 }
             ]
         ]

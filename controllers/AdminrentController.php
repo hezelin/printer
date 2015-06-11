@@ -85,6 +85,7 @@ class AdminrentController extends \yii\web\Controller
 
     /*
      * 不通过
+     * $openid,$url,$first,$key1,$key2,$remark
      */
     public function actionNopass($rent_id)
     {
@@ -97,13 +98,8 @@ class AdminrentController extends \yii\web\Controller
         // 为管理员推送消息
         $tpl = new WxTemplate($wx_id);
         $text = Yii::$app->request->post('text');
-        $url = '';
-
-        $tpl->sendCancelService($model['penid'],$url,$type==2? '您':'系统',$text,time(),$applyTime);
-
-        if($type == 2)
-            return $this->render('//tips/homestatus',['tips'=>'维修申请取消成功！','btnText'=>'返回','btnUrl'=>Url::toRoute(['i/machine','id'=>$id])]);
-        return json_encode(['status'=>1]);
+        $tpl->sendCheck($model['openid'],'','您提交的租借机器申请已完成审核。','不通过',$text,'请您补充并修改资料后重新提交，谢谢。');
+        echo json_encode(['status'=>1]);
     }
 
     /*
