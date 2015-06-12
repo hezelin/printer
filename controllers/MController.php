@@ -117,6 +117,7 @@ class MController extends \yii\web\Controller
         if( !$model->save())
             Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
         $mid = $model->machine_id;
+        $fault_id = $model->id;
         $fromOpenid = $model->from_openid;
         $applyTime = $model->add_time;
 
@@ -133,12 +134,12 @@ class MController extends \yii\web\Controller
         $res = ['status'=>1,'dataStatus'=>$status+1];
         switch($status){
             case 4:
-                $res['href'] = Url::toRoute(['s/affirmfault','id'=>$wid,'mid'=>$mid,'openid'=>$openid]);
+                $res['href'] = Url::toRoute(['s/affirmfault','id'=>$wid,'fault_id'=>$fault_id,'openid'=>$openid]);
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
             case 5:
-                $res['href'] = Url::toRoute(['s/affirmfault','id'=>$wid,'mid'=>$mid,'openid'=>$openid]);
+                $res['href'] = Url::toRoute(['s/affirmfault','id'=>$wid,'fault_id'=>$fault_id,'openid'=>$openid]);
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
@@ -292,24 +293,28 @@ class MController extends \yii\web\Controller
                         'openid' => $openid,
                         'btnHtml'=>Html::tag(
                             'div',
-                            Html::a(
-                                '维修完成',
-                                Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
-                                [
-                                    'data-ajax'=>1,
-                                    'data-status'=>8,
-                                    'class'=>'h-part h-off-60',
-                                    'id'=>'process-btn'
-                            ]).
-                            Html::a(
-                                ConfigBase::getFixMaintainStatus($status),
-                                Url::toRoute(['s/applyparts','id'=>$model['id'],'openid'=>$openid]),
-                                [
-                                    'data-ajax'=>0,
-                                    'data-status'=>$status+1,
-                                    'class'=>'h-part h-off-40',
-                                    'id'=>'process-btn'
-                            ]),
+                            Html::tag('div',
+                                Html::a(
+                                    '维修完成',
+                                    Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                                    [
+                                        'data-ajax'=>1,
+                                        'data-status'=>8,
+                                        'id'=>'process-btn'
+                                ]),
+                                ['class'=>'h-off-50']
+                            ).
+                            Html::tag('div',
+                                Html::a(
+                                    ConfigBase::getFixMaintainStatus($status),
+                                    Url::toRoute(['s/applyparts','id'=>$model['id'],'openid'=>$openid]),
+                                    [
+                                        'data-ajax'=>0,
+                                        'data-status'=>$status+1,
+                                        'id'=>'process-btn'
+                                    ]),
+                                ['class'=>'h-off-50']
+                            ),
                             ['class'=>'h-fixed-bottom']
                         )
                     ]);

@@ -56,7 +56,7 @@ $this->title = '维修任务';
 <?php
 \app\components\WxjsapiWidget::widget([
     'wx_id'=>$model['wx_id'],
-    'apiList'=>['getLocation','openLocation，'],
+    'apiList'=>['getLocation','openLocation','previewImage'],
     'jsReady'=>'
     document.querySelector("#access-order").onclick = function () {
         wx.getLocation({
