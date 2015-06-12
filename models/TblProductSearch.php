@@ -18,7 +18,7 @@ class TblProductSearch extends TblProduct
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'category_id', 'add_time', 'status'], 'integer'],
+            [['id', 'wx_id', 'category_id', 'amount', 'add_time', 'status'], 'integer'],
             [['name', 'cover', 'cover_images', 'describe', 'add_attr', 'enable'], 'safe'],
             [['market_price', 'price'], 'number'],
         ];
@@ -62,6 +62,7 @@ class TblProductSearch extends TblProduct
             'category_id' => $this->category_id,
             'market_price' => $this->market_price,
             'price' => $this->price,
+            'amount' => $this->amount,
             'add_time' => $this->add_time,
             'status' => $this->status,
         ]);

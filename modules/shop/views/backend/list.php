@@ -32,6 +32,7 @@ $this->title = '商品列表';
         'name',
         'market_price',
         'price',
+        'amount',
         [
             'attribute'=>'add_attr',
             'headerOptions'=>['style'=>'width:160px'],
