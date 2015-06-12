@@ -34,6 +34,10 @@ $this->title = '维修任务';
         <div class="h-left-text">申请时间</div>
         <div class="h-right-text"><?= date('Y年m月d H:i',$model['add_time'])?></div>
     </div>
+    <div class="h-row">
+        <div class="h-left-text">地址坐标</div>
+        <div class="h-right-text" id="map-btn" style="color: #5c72ff; font-weight: 600;">点击导航</div>
+    </div>
 
 </div>
 <form method="post" id="wechat-form" action="<?=Url::toRoute(['m/process','id'=>$model['id'],'openid'=>$openid])?>">
@@ -52,7 +56,7 @@ $this->title = '维修任务';
 <?php
 \app\components\WxjsapiWidget::widget([
     'wx_id'=>$model['wx_id'],
-    'apiList'=>['getLocation'],
+    'apiList'=>['getLocation','openLocation，'],
     'jsReady'=>'
     document.querySelector("#access-order").onclick = function () {
         wx.getLocation({
@@ -75,7 +79,18 @@ $this->title = '维修任务';
               current: "'.$model["fault_cover"].'",
               urls: '.json_encode($model['cover_images']).'
             });
-      };'
+      };
+
+    document.querySelector("#map-btn").onclick = function () {
+            wx.openLocation({
+                latitude: '.$model["latitude"].',
+                longitude: '.$model["longitude"].',
+                name: "维修地点",
+                address: "'.$model["address"].'",
+                scale: 16,
+                infoUrl: ""
+            });
+        };'
 ])
 
 ?>

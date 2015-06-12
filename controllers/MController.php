@@ -220,7 +220,8 @@ class MController extends \yii\web\Controller
     {
         $model = (new \yii\db\Query())
             ->select('t.id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    t.machine_id as mid, m.address,m.name,m.phone,m.wx_id
+                    t.machine_id as mid, m.address,m.name,m.phone,m.wx_id,
+                    m.latitude,m.longitude
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')

@@ -33,6 +33,10 @@ $this->title = '维修任务';
         <div class="h-left-text">申请时间</div>
         <div class="h-right-text"><?= date('Y年m月d H:i',$model['add_time'])?></div>
     </div>
+    <div class="h-row">
+        <div class="h-left-text">地址坐标</div>
+        <div class="h-right-text" id="map-btn" style="color: #5c72ff; font-weight: 600;">点击导航</div>
+    </div>
 
 </div>
 
@@ -83,7 +87,7 @@ $this->title = '维修任务';
 
     \app\components\WxjsapiWidget::widget([
         'wx_id'=>$model['wx_id'],
-        'apiList'=>['scanQRCode','previewImage'],
+        'apiList'=>['scanQRCode','previewImage','openLocation'],
         'jsReady'=>'
         document.querySelector("#process-btn").onclick = function () {
             if(isScan == 1){
@@ -109,6 +113,17 @@ $this->title = '维修任务';
               current: "'.$model["fault_cover"].'",
               urls: '.json_encode($model['cover_images']).'
             });
-      };'
+        };
+
+        document.querySelector("#map-btn").onclick = function () {
+            wx.openLocation({
+                latitude: '.$model["latitude"].',
+                longitude: '.$model["longitude"].',
+                name: "维修地点",
+                address: "'.$model["address"].'",
+                scale: 16,
+                infoUrl: ""
+            });
+        };'
     ])
 ?>
