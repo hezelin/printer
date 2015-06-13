@@ -1,5 +1,5 @@
 @import "common.less";
-
+@import "iscroll.less";             // 轮播图
 html, body { color:#222; font-family:Microsoft YaHei, Helvitica, Verdana, Tohoma, Arial, san-serif; margin:0; padding: 0; text-decoration: none; }
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td { margin:0; padding:0; }
 img { border:0; }
@@ -10,8 +10,113 @@ h2 { font-size:16px; }
 
 body {background-color:#fff; }
 
-
+/*************  布局 *********************/
+#wechat-content-123,#wechat-footer{  float: left;width: 100%}
 .copyright{
-   padding:18px 0 8px 0; text-align:center; font-size:12px; color:#ccc;
-  font-family: "Arial Black", arial-black;
+  text-align:center; font-size:14px; color:#999999; text-shadow: 0px 2px 2px #ffffff;
+  display: block;  width: 100%; height: 70px; line-height: 70px;
 }
+
+/************  租借机器详情 **************/
+#rent-detail {
+  background-color: #ffffff;
+  .de-cover {
+    width: 100%;
+    height: 240px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .de-cover-img {
+    max-width: 100%;
+    max-height: 240px;
+  }
+  .de-line {
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-bottom: 1px solid #CCCCCC;
+  }
+  .de-line-row {
+    padding: 0 5%;
+    height: 1px;
+    padding: 0;
+    border: none;
+    border-bottom: 1px solid #CCCCCC;
+    /*background-color: #CCCCCC;*/
+    margin: 2% 0 0 5%;
+    width: 90%;
+  }
+  .de-row {
+    padding: 0 5%;
+    display: block;
+  }
+  .de-row-b-2 {
+    margin-bottom: 2%;
+    display: block;
+    padding: 0 5%;
+  }
+  .de-func {
+    line-height: 30px;
+    font-size: 19px;
+    color: #333333;
+    margin: 8px 0;
+    font-weight: 600;
+  }
+
+  .de-label {
+    width: 24%;
+    color: #999999;
+    float: left;
+    font-size: 14px;
+    line-height: 30px;
+  }
+  .de-yan {
+    vertical-align: middle;
+    color: #c40000;
+    font-size: 18px;
+    font-family: Arial;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+  .de-price {
+    vertical-align: middle;
+    color: #c40000;
+    font-weight: bolder;
+    font-family: Arial;
+    font-size: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .de-box {
+    margin: 2% 0;
+  }
+
+  .de-value {
+    font-size: 16px;
+    line-height: 30px;
+  }
+
+}
+/*************** 浮动按钮 ************/
+.h-fixed-bottom {
+  .h-l(50px);  .w(100%); .size(18px); .t-c;
+  .bg-c(#fff);
+  .b-t(1px solid #ccc);
+  box-shadow: 0 -2px 2px #eee;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  z-index: 40;
+  a{
+    .bg-c(@color); color: #fff;
+    .m-t(2px);
+    .p(5px 20px);
+    border-radius: 4px;
+  }
+  a:active,a:visited,a:hover,a:link{color: #ffffff}
+}
+.h-off-60{ .w(60%); .left; }
+.h-off-40{ .w(40%); .left; }
+.h-off-50{.w(50%); .left; }
+/**********************************/

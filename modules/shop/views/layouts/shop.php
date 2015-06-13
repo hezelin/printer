@@ -20,13 +20,15 @@ ShopAsset::register($this);
 <body>
 
 <?php $this->beginBody() ?>
+<div id="wechat-content-123">
 <!--网页内容-->
 <?= $content ?>
-
-<div class="copyright">
-    技术支持：<?= Yii::$app->name ?>
 </div>
 
+<div id="wechat-footer">
+    <div class="copyright">技术支持：<?= Yii::$app->name ?></div>
+    <div style="width: 100%;display: block;line-height:<?=Yii::$app->params['layoutBottomHeight']?>px;height:<?=Yii::$app->params['layoutBottomHeight']?>px;">&nbsp;</div>
+</div>
 <?php $this->endBody() ?>
 
 </body>
