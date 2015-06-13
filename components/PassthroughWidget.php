@@ -80,6 +80,7 @@ MODEL_CONTENT;
     var myScroll{$this->getId()};
     var q='',key='';
     var startId ={$this->startId};
+    var action = '{$this->action}';
     function getHtml(d){
         var html = [];
 
@@ -89,50 +90,11 @@ MODEL_CONTENT;
         html.push('<p class="mtm_p"><b>￥'+d.price+'</b>'+d.category+'</p></span></a>');
         return html.join('');
     }
-    $(function(){
-
-        myScroll{$this->getId()} = new IScroll('#wrapper-passthrough', {
-            eventPassthrough: true,
-            scrollX: true,
-            scrollY: false,
-            preventDefault: false
-        });
-
-        // 点击类目
-        $('#wrapper-passthrough').on('click','a',function(){
-
-            $(this).addClass('has-click').siblings('a').removeClass('has-click');
-            var key = $(this).attr('key');
-            $.ajax({
+    function getData(action,key,startId,q,type)
+    {
+        $.ajax({
                 type:'get',
-                url:'{$this->action}',
-                data:{'key':key,'format':'json'},
-                dataType:'json',
-                success:function(resp){
-                    if(resp.status==1){
-                        var d = resp.data;
-                        startId = resp.startId;
-                        var html = [];
-                        for(var i in d){
-                            html.push( getHtml(d[i]) );
-                        }
-                        $('#item-list-wrap').html( html.join('') );
-                        if( resp.len < 10 )
-                             $('#item-more').addClass('item-more-end').text('没有数据了');
-                        else
-                             $('#item-more').removeClass('item-more-end').text('查看更多');
-
-                    }else
-                        $('#item-more').addClass('item-more-end').text('没有数据了');
-                }
-            });
-        });
-        // 点击加载更多
-        $('#item-more').click(function(){
-            if( $(this).hasClass('item-more-end') ) return false;
-            $.ajax({
-                type:'get',
-                url:'{$this->action}',
+                url: action,
                 data:{'key':key,'q':q,'startId':startId,'format':'json'},
                 dataType:'json',
                 success:function(resp){
@@ -144,15 +106,65 @@ MODEL_CONTENT;
                         for(var i in d){
                             html.push( getHtml(d[i]) );
                         }
-                        $('#item-list-wrap').append( html.join('') );
+                        if(type === 'append')
+                            $('#item-list-wrap').append( html.join('') );
+                        else
+                            $('#item-list-wrap').html( html.join('') );
+
                         if( resp.len < 10 )
                              $('#item-more').addClass('item-more-end').text('没有数据了');
                          else
                              $('#item-more').removeClass('item-more-end').text('查看更多');
-                    }else
+                    }else{
                         $('#item-more').addClass('item-more-end').text('没有数据了');
+                        if(type === 'html')
+                            $('#item-list-wrap').html('');
+                    }
                 }
             });
+    }
+
+    $(function(){
+
+        myScroll{$this->getId()} = new IScroll('#wrapper-passthrough', {
+            eventPassthrough: true,
+            scrollX: true,
+            scrollY: false,
+            preventDefault: false
+        });
+
+        // 点击类目
+        $('#wrapper-passthrough').on('click','a',function(){
+            $(this).addClass('has-click').siblings('a').removeClass('has-click');
+            key = $(this).attr('key');
+            getData(action,key,'','','html');
+        });
+        // 点击加载更多
+        $('#item-more').click(function(){
+            if( $(this).hasClass('item-more-end') ) return false;
+            getData(action,key,startId,q,'append');
+        });
+
+        // 搜索按钮
+        $('#s-open').click(function(){
+            $('#search-input').show();
+        });
+
+        $('#s-close').click(function(){
+            $('#search-show').hide();
+            q='';
+            getData(action,key,'',q,'html');
+        });
+
+        $('#search-input .s-button').click(function(){
+            if( $('#search-input .s-input').val() ){
+                q = $('#search-input .s-input').val();
+                getData(action,key,'',q,'html');
+                $('#search-show').show();
+                $('#search-show .s-text').text(q);
+            }
+            $('#search-input').hide();
+
         });
     });
 MODEL_JS;
@@ -177,30 +189,29 @@ MODEL_JS;
 
 #wrapper-passthrough .has-click{
     border-color: #83cf53;
-    border-bottom:2px solid #83cf53;
+    border-bottom:1px solid #83cf53;
     color:#83cf53;
     text-shadow: 2px 2px 4px #ffffff;
 }
 
 #wrapper-passthrough {
-	position: relative;
+	position: fixed;
 	z-index: 1;
-	height: 54px;
+	height: 45px;
 	width: 100%;
 	background: #ccc;
 	overflow: hidden;
 	-ms-touch-action: none;
+	margin-bottom:2px;
+	box-shadow: 0px 2px 2px #eee;
 
 }
 #scroller-passthrough {
 	position: absolute;
 	z-index: 1;
-	height: 46px;
+	height: 45px;
 	width:500px;
-	border-bottom:2px solid #ccc;
-/*	background-image: -moz-linear-gradient(top, #ffffff,#e1e1e1);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1,#e1e1e1));
-	background-image: -o-linear-gradient(top,  #ffffff,#e1e1e1); */
+	border-bottom:1px solid #ccc;
 }
 MODEL_CSS;
         $this->view->registerCss($css);
