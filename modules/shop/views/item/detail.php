@@ -1,6 +1,6 @@
 <?php
 use yii\helpers\Url;
-    $this->title = '商品详情';
+$this->title = '商品详情';
 Yii::$app->params['layoutBottomHeight'] = 40;
 ?>
 
@@ -24,28 +24,20 @@ Yii::$app->params['layoutBottomHeight'] = 40;
     <hr class="de-line-row">
     <ul class="de-box">
         <li class="de-row">
-            <span class="de-label">市场价格</span>
-            <span class="de-value">¥<?=$model['market_price']?>元</span>
-        </li>
-        <li class="de-row">
             <span class="de-label">类目</span>
             <span class="de-value"><?=$model['category']?></span>
         </li>
-    </ul>
+        <?php if($model['else_attr']):?>
+            <?php foreach($model['else_attr'] as $row):?>
+                <li class="de-row">
+                    <span class="de-label"><?=$row['name']?></span>
+                    <span class="de-value"><?=$row['value']?></span>
+                </li>
+            <?php endforeach;?>
 
-    <hr class="de-line-row">
-    <?php if($model['else_attr']):?>
-    <ul class="de-box">
-        <li class="de-row">
-        <?php foreach($model['else_attr'] as $row):?>
-        <li class="de-row">
-            <span class="de-label"><?=$row['name']?></span>
-            <span class="de-value"><?=$row['value']?></span>
-        </li>
-        <?php endforeach;?>
+        <?php endif;?>
     </ul>
     <hr class="de-line-row">
-    <?php endif;?>
     <div class="de-row" style="padding-top: 5%;position: relative;width: 100%;">
         <?=$model['describe']?>
     </div>

@@ -9,7 +9,7 @@ $this->title = '查看资料';
         租机方案
         <b class="icon-go-right"></b>
     </a>
-    <a class="color-row" style="background-color: #b4db68" href="<?= Url::toRoute(['m/initiative','id'=>$id]) ?>" >
+    <a class="color-row" style="background-color: #b4db68" href="<?= Url::toRoute(['/shop/parts/list','id'=>$id]) ?>" >
         配件查看
         <b class="icon-go-right"></b>
 

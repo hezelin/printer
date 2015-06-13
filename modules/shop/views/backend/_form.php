@@ -30,7 +30,7 @@ use yii\bootstrap\Alert;
     ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['placeholder'=>'商品名称']) ?>
-    <?= $form->field($model, 'market_price')->textInput(['placeholder'=>'原价'])?>
+    <?= $form->field($model, 'market_price')->textInput(['placeholder'=>'成本价格'])?>
     <?= $form->field($model, 'price')->textInput(['placeholder'=>'销售价格'])?>
     <?= $form->field($model, 'amount')->textInput(['placeholder'=>'库存数量'])?>
     <?= $form->field($model, 'category_id')->widget(\kartik\select2\Select2::classname(), [

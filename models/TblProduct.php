@@ -34,7 +34,7 @@ class TblProduct extends \yii\db\ActiveRecord
             'name' => '名称',
             'cover' => '封面图片',
             'cover_images' => '封面图片',
-            'market_price' => '市场价格',
+            'market_price' => '成本价格',
             'price' => '销售价格',
             'amount' => '商品数量',
             'describe' => '产品描述',
