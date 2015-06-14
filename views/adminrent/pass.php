@@ -9,7 +9,7 @@ use yii\bootstrap\Alert;
 ?>
 
 <div class="alert alert-info" role="alert">
-    1、租借成功,请填写真实的用户资料<br/>
+    <?=$tips?>
 </div>
 
 <?php

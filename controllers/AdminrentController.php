@@ -80,7 +80,11 @@ class AdminrentController extends \yii\web\Controller
         $model->monthly_rent = $model->machineProject->lowest_expense;
         $model->machine_id = '';
 
-        return $this->render('pass',['model'=>$model,'type'=>'allot']);
+        return $this->render('pass',[
+            'model'=>$model,
+            'type'=>'allot',
+            'tips'=>'补充资料录入，完成租借记录'
+        ]);
     }
 
     /*
@@ -126,7 +130,8 @@ class AdminrentController extends \yii\web\Controller
 
         return $this->render('pass',[
             'model'=>$model,
-            'type'=>'update'
+            'type'=>'update',
+            'tips'=>'修改租借资料',
         ]);
     }
 
@@ -150,6 +155,45 @@ class AdminrentController extends \yii\web\Controller
     {
         TblRentApply::findOne($id)->delete();
         return $this->redirect(['list']);
+    }
+
+    /*
+     * 为机器 和 用户 绑定 租赁关系，第一次资料录入
+     */
+    public function actionBings($machine_id,$openid)
+    {
+        $model = new TblRentApply();
+
+        if($model->load( Yii::$app->request->post()))
+        {
+            $model->openid = $openid;
+            $model->machine_id = $machine_id;
+            $model->project_id = 0;
+            $model->add_time = time();
+            $model->wx_id = Cache::getWid();
+            $model->status = 2;
+
+            $model->due_time = $model->due_time? strtotime($model->due_time):0;
+
+            if($model->save()) {
+                $model->updateMachineStatus();
+                return $this->render('//tips/success', [
+                    'tips' => '机器绑定租借成功',
+                    'btnText' => '返回机器列表',
+                    'btnUrl' => Url::toRoute(['machine/list'])
+                ]);
+            }
+            else
+                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
+        }
+
+
+
+        return $this->render('pass',[
+            'model'=>$model,
+            'type'=>'update',
+            'tips'=>'绑定用户租借关系，录入租借资料'
+        ]);
     }
 
 }

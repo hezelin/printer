@@ -47,7 +47,14 @@ $this->title = '机器列表';
                 'format' => 'html',
                 'filter' => ConfigBase::$mxStatus,
                 'value' => function($data){
-                    return $data->status == 1? Html::a(ConfigBase::getMxStatus($data->status),Url::toRoute(['rent/add','id'=>$data->id]),['class'=>'green']): ConfigBase::getMxStatus($data->status) ;
+                    switch($data->status){
+                        case 1: return Html::a(ConfigBase::getMxStatus($data->status),
+                            Url::toRoute(['wxuser/select','url'=>Url::toRoute(['adminrent/bings','machine_id'=>$data->id])]),
+                            ['class'=>'btn btn-info btn-sm','title'=>'分配租赁用户']);
+                        case 3: return Html::tag('span',ConfigBase::getMxStatus($data->status),['class'=>'btn btn-waring btn-sm']);
+                        default : return ConfigBase::getMxStatus($data->status);
+
+                    }
                 }
             ],
             [
@@ -57,7 +64,7 @@ $this->title = '机器列表';
                 'template' => '{view} &nbsp; {update} &nbsp; {delete} &nbsp; {qrcode}',
                 'buttons' => [
                     'qrcode' => function($url,$model,$key){
-                        return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::to(['code/machine','id'=>$model->id]) ,['title'=>'机器码']);
+                        return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['code/machine','id'=>$model->id]) ,['title'=>'机器码']);
                     }
                 ],
             ],

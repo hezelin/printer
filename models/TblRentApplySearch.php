@@ -41,7 +41,18 @@ class TblRentApplySearch extends TblRentApply
      */
     public function search($params)
     {
-        $query = TblRentApply::find()->where(['tbl_rent_apply.wx_id'=>Cache::getWid(),'tbl_rent_apply.status'=>1,'tbl_rent_apply.enable'=>'Y'])->joinWith('userInfo');
+        /*$query = TblRentApply::find()
+            ->where(['tbl_rent_apply.wx_id'=>Cache::getWid(),'tbl_rent_apply.status'=>1,'tbl_rent_apply.enable'=>'Y'])
+            ->joinWith('userInfo');*/
+        $query = (new \yii\db\Query())
+            ->select('t.id,t.name,t.phone,t.add_time,u.nickname,u.headimgurl,u.sex,
+                p.lowest_expense,p.black_white,p.colours,p.else_attr,m.type,m.cover_images,m.is_color')
+            ->from('tbl_rent_apply as t')
+            ->where('t.wx_id=:wid and t.status=1 and t.enable="Y"',[':wid'=>Cache::getWid()])
+            ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
+            ->leftJoin('tbl_machine_rent_project as p','p.id=t.project_id')
+            ->leftJoin('tbl_machine_model as m','p.machine_model_id=m.id');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [

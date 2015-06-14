@@ -11,43 +11,68 @@ $this->title = '租借申请';
 
 echo GridView::widget([
     'dataProvider'=> $dataProvider,
-    'filterModel' => $searchModel,
+//    'filterModel' => $searchModel,
     'id'=>'apply-list',
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],               // 系列
-        'name',
-        'phone',
         [
-            'label'=>'昵称',
-            'attribute' => 'nickname',
-            'value' => 'userInfo.nickname'
+            'attribute'=>'name',
+            'header'=>'姓名',
         ],
         [
-            'attribute'=>'userInfo.headimgurl',
-            'format'=>'html',
-            'value'=>function($data)
-            {
-                return Html::a( Html::img( substr($data->userInfo->headimgurl,0,-1) .'46'),
-                    $data->userInfo->headimgurl,
-                    ['title'=>'查看大图','target'=>'_blank']
-                );
+            'attribute'=>'phone',
+            'header'=>'手机',
+        ],
+        [
+            'label'=>'微信资料',
+            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
+            'value' => function($model){
+                $sex=[1=>'男',2=>'女','3'=>'未知'];
+                return Html::tag('span',$model['nickname'].'&nbsp;,&nbsp;').
+                       Html::tag('span',$sex[ $model['sex']].'&nbsp;,&nbsp;').
+                       Html::a(Html::img( substr($model['headimgurl'],0,-1).'46',['style'=>'width:40px']),$model['headimgurl'].'?.jpg',
+                           ['rel'=>'group1','class' => 'fancybox']);
             }
         ],
         [
-            'attribute'=>'userInfo.sex',
-            'value'=>function($data){
-                switch($data->userInfo->sex)
-                {
-                    case 1: return '男';
-                    case 2: return '女';
-                    default:return '未知';
+            'attribute'=>'cover_images',
+            'label'=>'机型图片',
+            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
+            'value'=>function($model){
+                $covers = json_decode($model['cover_images'],true);
+                $html = [];
+                foreach($covers as $cover){
+                    $html[] = Html::a(Html::img($cover,['width'=>40]),str_replace('/s/','/m/',$cover),['class' => 'fancybox','rel'=>'group1']);
                 }
+                return join("\n",$html);
+            }
+        ],
+        [
+            'attribute'=>'type',
+            'label'=>'机器型号',
+        ],
+        [
+            'attribute'=>'project_id',
+            'label'=>'租赁方案',
+            'format'=>'html',
+            'value'=>function($model)
+            {
+                $row[] = Html::tag('div','最低消费：'.$model['lowest_expense'].'元');
+                $row[] = Html::tag('div','黑白：'.$model['black_white'].'元/张');
+                if($model['is_color'] == 2)
+                    $row[] = Html::tag('div','彩色：'.$model['colours'].'元/张');
+                if($model['else_attr'] && $attr = json_decode($model['else_attr'],true)){
+                    foreach($attr as $a)
+                        $row[] = Html::tag('div',$a['name'].'：'.$a['value']);
+                }
+                return join("\n",$row);
             }
         ],
         [
             'attribute' => 'add_time',
+            'header'=>'申请时间',
             'format' => ['date', 'php:Y-m-d H:i'],
         ],
         [
@@ -57,10 +82,10 @@ echo GridView::widget([
             'template' => '{pass} &nbsp; {unpass}',
             'buttons' => [
                 'pass' => function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-ok"></i>',$url,['title'=>'租借通过']);
+                    return Html::a('<i class="glyphicon glyphicon-ok"></i>',Url::toRoute(['pass','id'=>$model['id']]),['title'=>'租借通过']);
                 },
                 'unpass' => function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-remove"></i>',$url,[
+                    return Html::a('<i class="glyphicon glyphicon-remove"></i>',Url::toRoute(['unpass','id'=>$model['id']]),[
                         'title'=>'不通过',
                         'class'=>'close-model',
                         'key-id'=>$key,
@@ -132,4 +157,39 @@ Modal::end();
     </script>
 <?php
 $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
+
+
+// fancybox 图片预览插件
+echo newerton\fancybox\FancyBox::widget([
+    'target' => '.fancybox',
+    'helpers' => true,
+    'mouse' => true,
+    'config' => [
+        'maxWidth' => '100%',
+        'maxHeight' => '100%',
+        'playSpeed' => 7000,
+        'padding' => 0,
+        'fitToView' => false,
+        'width' => '100%',
+        'height' => '100%',
+        'autoSize' => false,
+        'closeClick' => false,
+        'openEffect' => 'elastic',
+        'closeEffect' => 'elastic',
+        'prevEffect' => 'elastic',
+        'nextEffect' => 'elastic',
+        'closeBtn' => false,
+        'openOpacity' => true,
+        'helpers' => [
+            'title' => ['type' => 'float'],
+            'buttons' => [],
+            'thumbs' => ['width' => 68, 'height' => 50],
+            'overlay' => [
+                'css' => [
+                    'background' => 'rgba(0, 0, 0, 0.8)'
+                ]
+            ]
+        ],
+    ]
+]);
 ?>
