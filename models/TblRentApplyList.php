@@ -92,7 +92,7 @@ class TblRentApplyList extends TblRentApply
 
         $query->andFilterWhere(['like', 'openid', $this->openid])
             ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'tbl_rent_apply.name', $this->name])
             ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'apply_word', $this->apply_word])
             ->andFilterWhere(['like', 'enable', $this->enable])

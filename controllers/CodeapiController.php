@@ -95,7 +95,7 @@ class CodeapiController extends \yii\web\Controller
                                 ]) .
                             Html::a(
                                 ConfigBase::getFixMaintainStatus($status),
-                                Url::toRoute(['s/applyparts', 'id' => $model['id'], 'openid' => $openid]),
+                                Url::toRoute(['/shop/parts/list', 'id' => $wid, 'fault_id'=>$model['id'],'openid' => $openid]),
                                 [
                                     'data-ajax' => 0,
                                     'data-status' => $status + 1,
@@ -123,14 +123,17 @@ class CodeapiController extends \yii\web\Controller
             }
         }
 
-        $status = TblMachineService::find()
-            ->select('status')
+        $data= TblMachineService::find()
+            ->select('status,id')
             ->where(['machine_id' => $id, 'enable' => 'Y'])
             ->andWhere(['<', 'status', 9])
-            ->scalar();
+            ->asArray()
+            ->one();
+        $status = $data['status'];
+
         if($status){
             if($status ==8)
-                $btnHtml = Html::a('评价维修',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link-minor']);
+                $btnHtml = Html::a('评价维修',Url::toRoute(['s/evaluate','id'=>$data['id']]),['class'=>'a-no-link h-link-minor']);
             else
                 $btnHtml = Html::a('维修进度',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link-minor']);
         }else

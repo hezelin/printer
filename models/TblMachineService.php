@@ -43,4 +43,21 @@ class TblMachineService extends \yii\db\ActiveRecord
             'enable' => '是否使用',
         ];
     }
+
+    /*
+     * 更改机器维修数量
+     */
+    public function updateMachineCount($type='complete')
+    {
+        $machine = TblMachine::findOne($this->machine_id);
+
+        if($type == 'complete'){
+            $machine->maintain_count = $machine->maintain_count + 1;
+            $machine->status = 2;
+        }else{
+            $machine->maintain_count = $machine->maintain_count - 1;
+            $machine->status = 1;
+        }
+        return $machine->save();
+    }
 }

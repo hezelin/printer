@@ -188,7 +188,7 @@ class SController extends \yii\web\Controller
                 $model->status = 9;
                 if( !$model->save())
                     Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
-
+                $model->updateMachineCount();
                 $model = new TblServiceProcess();
                 $model->service_id = $id;
                 $model->process = 9;

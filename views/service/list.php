@@ -55,7 +55,16 @@ echo GridView::widget([
 
         'machine.machineModel.brand.name',
         'machine.machineModel.type',
-        'machine.series_id',
+        [
+            'attribute'=>'series_id',
+            'format'=>'html',
+            'header'=>'系列号',
+            'headerOptions'=>['style'=>'width:100px'],
+            'value'=>function($model){
+                return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
+                Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
+            }
+        ],
         'machine.maintain_count',
         [
             'attribute'=>'status',

@@ -22,6 +22,7 @@ echo GridView::widget([
             'format'=>['html', ['Attr.AllowedRel' => 'group']],
             'value'=>function($data)
             {
+                if( !isset($data->fault->cover) ) return;
                 $covers = json_decode($data->fault->cover,true);
                 $html = [];
                 foreach($covers as $cover){
@@ -37,6 +38,7 @@ echo GridView::widget([
             'filter'=>ConfigBase::$faultStatus,
             'value'=>function($data)
             {
+                if( !isset($data->fault->type) ) return;
                 return ConfigBase::getFaultStatus($data->fault->type);
             }
         ],
@@ -52,6 +54,7 @@ echo GridView::widget([
             'filter'=>ConfigBase::$fixStatus,
             'value'=>function($data)
             {
+                if( !isset($data->fault->status) ) return;
                 return ConfigBase::getFixStatus($data->fault->status);
             }
         ],

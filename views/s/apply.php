@@ -14,7 +14,7 @@ if( Yii::$app->session->hasFlash('error') )
                 <input name="_csrf" type="hidden" value="<?=\Yii::$app->request->csrfToken?>"/>
                 <input type="hidden" id="service-imgid" class="h-input" name="TblMachineService[imgid]" />
                 <input type="hidden" name="TblMachineService[from_openid]" value="<?=$openid?>" />
-                <textarea id="service-desc" class="h-area h-m-b-2" placeholder="故障描述" name="TblMachineService[desc]"></textarea>
+                <textarea id="service-desc" class="h-area h-m-b-2" placeholder="故障描述、给我们留言" name="TblMachineService[desc]"></textarea>
                 <div class="h-title">故障图片</div>
                 <div class="h-row-left">
                     <div id="img-show-wrap"></div>

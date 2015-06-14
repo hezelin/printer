@@ -22,7 +22,12 @@ echo GridView::widget([
         [
             'attribute'=>'series_id',
             'header'=>'编号',
-            'value'=>'machine.series_id',
+            'format'=>'html',
+            'value'=>function($model) {
+//                'machine.series_id'
+                return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
+                        Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
+            }
         ],
         'monthly_rent',
         'black_white',
