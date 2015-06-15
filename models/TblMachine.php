@@ -30,7 +30,7 @@ class TblMachine extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'model_id', 'series_id', 'buy_date', 'buy_price', 'add_time'], 'required'],
-            [['wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'add_time'], 'integer'],
+            [['wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'come_from', 'add_time'], 'integer'],
             [['buy_date'], 'safe'],
             [['buy_price','amount'], 'number'],
             [['amount'],'default','value'=>1],
@@ -77,6 +77,7 @@ class TblMachine extends \yii\db\ActiveRecord
             'status' => '状态',
             'maintain_count' => '维修次数',
             'rent_count' => '租借次数',
+            'come_from' => '自家机器',
             'add_time' => '添加时间',
             'enable' => '是否有效',
             'amount' => '机器数量',

@@ -22,11 +22,20 @@ echo GridView::widget([
         [
             'attribute'=>'series_id',
             'header'=>'编号',
+            'headerOptions'=>['style'=>'width:100px'],
             'format'=>'html',
             'value'=>function($model) {
 //                'machine.series_id'
                 return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
                         Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
+            }
+        ],
+        [
+            'attribute'=>'come_from',
+            'header'=>'租借关系',
+            'filter'=>[0=>'自有机器',1=>'租借机器'],
+            'value'=>function($model){
+                return $model->machine->come_from? '租借机器':'自有机器';
             }
         ],
         'monthly_rent',

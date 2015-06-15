@@ -42,6 +42,10 @@ $this->title = '机器详情';
                 ConfigBase::getMxStatus($model->status) ;
         }
 
+        function getFrom($model){
+            return $model->come_from? '自家':'非自家';
+        }
+
         function formatImage($model){
             return '<img src="'.$model->cover.'" width=100 >';
         }
@@ -87,6 +91,11 @@ $this->title = '机器详情';
                 'attribute' => 'status',
                 'format' => 'html',
                 'value' => getStatus($model),
+            ],
+            [
+                'attribute' => 'come_from',
+                'label'=>'机器来源',
+                'value' => getFrom($model),
             ],
             [
                 'attribute' => 'else_attr',

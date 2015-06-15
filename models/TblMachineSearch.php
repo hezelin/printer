@@ -18,7 +18,7 @@ class TblMachineSearch extends TblMachine
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'add_time'], 'integer'],
+            [['id', 'wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'come_from', 'add_time'], 'integer'],
             [['series_id', 'buy_date', 'else_attr', 'enable','name','type'], 'safe'],
             [['buy_price'], 'number'],
         ];
@@ -85,6 +85,7 @@ class TblMachineSearch extends TblMachine
             'status' => $this->status,
             'maintain_count' => $this->maintain_count,
             'rent_count' => $this->rent_count,
+            'come_from' => $this->come_from,
             'add_time' => $this->add_time,
         ]);
 

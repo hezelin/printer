@@ -157,15 +157,19 @@ class ConfigBase
     /*
      * 获取机器资料，品牌/型号/系列号
      */
-    public static function getMachineInfo($id='')
+    public static function getMachineInfo($id='',$is_from='')
     {
         $model = (new \yii\db\Query())
             ->select('m.id,m.series_id, p.name, t.type')
             ->from('tbl_machine as m')
             ->leftJoin('tbl_machine_model as t','m.model_id=t.id')
             ->leftJoin('tbl_brand as p','p.id=t.brand_id')
-            ->where('t.enable="Y" and m.status=1 and t.wx_id=:wid',[':wid'=>Cache::getWid()])
-            ->all();
+            ->where('t.enable="Y" and m.status=1 and t.wx_id=:wid',[':wid'=>Cache::getWid()]);
+        if($is_from)
+            $model->andWhere('t.come_from=:from',[':from'=>$is_from]);
+
+        $model = $model->all();
+
         $tmp = [];
         if($model){
             foreach($model as $m)

@@ -58,6 +58,15 @@ $this->title = '机器列表';
                 }
             ],
             [
+                'attribute'=>'come_from',
+                'label'=>'机器来源',
+                'format'=>'html',
+                'filter'=>['非自家','自家'],
+                'value'=>function($data){
+                    return $data->come_from? '自家':Html::tag('span','非自家',['class'=>'btn btn-warning btn-sm']);
+                }
+            ],
+            [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
                 'headerOptions' => ['style'=>'width:120px'],

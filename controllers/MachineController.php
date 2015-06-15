@@ -62,6 +62,7 @@ class MachineController extends \yii\web\Controller
         if(Yii::$app->request->get('model_id'))
             $model->model_id = Yii::$app->request->get('model_id');
 
+        $model->come_from = 1;
         return $this->render('add', ['model' => $model]);
 
     }

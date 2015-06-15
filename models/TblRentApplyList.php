@@ -17,12 +17,13 @@ class TblRentApplyList extends TblRentApply
      */
     public $type;
     public $series_id;
+    public $come_from;
 
     public function rules()
     {
         return [
             [['id', 'wx_id', 'project_id', 'machine_id', 'due_time', 'status', 'add_time'], 'integer'],
-            [['openid', 'phone', 'name', 'address', 'apply_word', 'enable','type','series_id'], 'safe'],
+            [['openid', 'phone', 'name', 'address', 'apply_word', 'enable','type','series_id','come_from'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
         ];
     }
@@ -88,6 +89,7 @@ class TblRentApplyList extends TblRentApply
             'longitude' => $this->longitude,
             'accuracy' => $this->accuracy,
             'add_time' => $this->add_time,
+            'tbl_machine.come_from' => $this->come_from,
         ]);
 
         $query->andFilterWhere(['like', 'openid', $this->openid])

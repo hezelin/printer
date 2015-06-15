@@ -66,6 +66,17 @@ if( Yii::$app->session->hasFlash('error') )
         ]
     ]) ?>
 
+    <?= $form->field($model, 'come_from')->widget(\kartik\switchinput\SwitchInput::className(),[
+        'type' => 1,
+        'pluginOptions'=>[
+            'onText'=>'是',
+            'offText'=>'否'
+        ],
+        'options'=>[
+            'style'=>'margin-left:100px',
+        ]
+    ])?>
+
     <?php
         if( $model->isNewRecord )
            echo  $form->field($model, 'amount')->textInput(['placeholder'=>1]);
