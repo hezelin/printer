@@ -77,7 +77,7 @@ class TblRentApply extends \yii\db\ActiveRecord
             $machine->rent_count = $machine->rent_count + 1;
             $machine->status = 2;
         }else{
-            $machine->rent_count = $machine->rent_count - 1;
+//            $machine->rent_count = $machine->rent_count - 1;
             $machine->status = 1;
         }
         return $machine->save();

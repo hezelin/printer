@@ -153,7 +153,11 @@ class AdminrentController extends \yii\web\Controller
      */
     public function actionDelete($id)
     {
-        TblRentApply::findOne($id)->delete();
+        $model = TblRentApply::findOne($id);
+        $model->enable = 'N';
+        if($model->save())
+            $model->updateMachineStatus('delete');
+
         return $this->redirect(['list']);
     }
 
