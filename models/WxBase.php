@@ -60,7 +60,7 @@ class WxBase {
      */
     public static function openId($id)
     {
-//        return 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+//        return 'oXMyutx3Nd4fhViJozPKbqV6N3xA';
 //        return 'oXMyut1RFKZqchW8qt_6h0OT8FN4';
         if(isset( $_GET['openid']) && $_GET['openid'] && strlen($_GET['openid']) == 28)
             return Yii::$app->session['openid'] = $_GET['openid'];

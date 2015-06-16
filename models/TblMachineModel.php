@@ -24,7 +24,8 @@ class TblMachineModel extends \yii\db\ActiveRecord
             [['describe', 'enable'], 'string'],
             [['type', 'cover'], 'string', 'max' => 52],
             [['cover_images', 'function'], 'string', 'max' => 300],
-            [['else_attr'], 'string', 'max' => 1000]
+            [['else_attr'], 'string', 'max' => 1000],
+            [['else_attr'], 'default', 'value' => '[]']
         ];
     }
 

@@ -46,7 +46,7 @@ class RentController extends \yii\web\Controller
     }
 
     /*
-     * 租机方案详情
+     * 租机方案详情，这里主要是租借展示案例
      */
     public function actionDetail($id,$project_id)
     {
@@ -63,6 +63,27 @@ class RentController extends \yii\web\Controller
         $model['cover_images'] = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
         $model['else_attr'] = array_merge(json_decode($model['else_attr'],true),json_decode($model['project_attr'],true));
         return $this->render('detail',['model'=>$model,'id'=>$id]);
+    }
+
+    /*
+     * 租借机器详情，这里是租借的内容展示，与租借方案无关
+     */
+    public function actionMachinedetail($id,$rent_id)
+    {
+        $model = (new \yii\db\Query())
+            ->select('t.id,t.monthly_rent,t.black_white,t.colours,t.add_time,m.series_id,m.else_attr,m.come_from,
+                p.type as model,p.cover_images,p.function,p.else_attr as model_attr,p.is_color,p.describe,b.name
+            ')
+            ->from('tbl_rent_apply as t')
+            ->leftJoin('tbl_machine as m','m.id=t.machine_id')
+            ->leftJoin('tbl_machine_model as p','p.id=m.model_id')
+            ->leftJoin('tbl_brand as b','b.id=p.brand_id')
+            ->where(['t.id'=>$rent_id])
+            ->one();
+
+        $model['cover_images'] = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
+        $model['else_attr'] = array_merge(json_decode($model['else_attr'],true),json_decode($model['model_attr'],true));
+        return $this->render('machinedetail',['model'=>$model,'id'=>$id]);
     }
 
     /*

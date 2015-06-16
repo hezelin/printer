@@ -16,6 +16,10 @@ class TblRentApply extends \yii\db\ActiveRecord
         return $this->hasOne(TblMachine::className(),['id'=>'machine_id']);
     }
 
+    public function getMachineFault()
+    {
+        return $this->hasOne(TblMachineService::className(),['machine_id'=>'machine_id'])->onCondition(['tbl_machine_service.enable' => 'Y']);
+    }
     public function getMachineProject()
     {
         return $this->hasOne(TblMachineRentProject::className(),['id'=>'project_id']);
@@ -33,6 +37,7 @@ class TblRentApply extends \yii\db\ActiveRecord
             [['wx_id', 'project_id', 'machine_id', 'status', 'add_time'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
             [['enable'], 'string'],
+            [['colours'], 'default','value'=>0],
             [['openid'], 'string', 'max' => 28],
             [['phone'], 'string', 'max' => 11],
             [['name'], 'string', 'max' => 30],
@@ -54,7 +59,7 @@ class TblRentApply extends \yii\db\ActiveRecord
             'colours' => '彩色价格',
             'due_time' => '过期时间',
             'phone' => '手机',
-            'name' => '姓名',
+            'name' => '姓名/公司名',
             'address' => '用户地址',
             'status' => '状态',
             'apply_word' => '备注',

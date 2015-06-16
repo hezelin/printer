@@ -17,7 +17,7 @@ $this->title = '机器页面';
     <button type="button" id="access-order" class="a-no-link h-link" href="<?=Url::toRoute(['m/apply','id'=>$id])?>">
         录入机器坐标
     </button>
-    <a class="a-no-link h-link" href="<?=Url::toRoute(['rent/detail','id'=>$wid,'project_id'=>$project_id,'from'=>'scan'])?>">
+    <a class="a-no-link h-link" href="<?=Url::toRoute(['rent/machinedetail','id'=>$wid,'rent_id'=>$rent_id,'from'=>'scan'])?>">
         机器信息
     </a>
 </div>

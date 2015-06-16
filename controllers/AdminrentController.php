@@ -3,13 +3,17 @@
 namespace app\controllers;
 
 use app\models\Cache;
+use app\models\TblMachineService;
 use app\models\TblRentApply;
 use app\models\TblRentApplySearch;
 use app\models\TblRentApplyList;
 use app\models\TblRentApplyWithMachine;
+use app\models\TblServiceProcess;
+use app\models\TblUserMaintain;
 use app\models\ToolBase;
 use app\models\WxTemplate;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 
@@ -145,7 +149,19 @@ class AdminrentController extends \yii\web\Controller
         $searchModel = new TblRentApplyList();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('list',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
+        $fixProvider = new ActiveDataProvider([
+            'query' => TblUserMaintain::find(['wx_id'=>Cache::getWid()]),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('list',[
+            'dataProvider'=>$dataProvider,
+            'searchModel' => $searchModel,
+            'fixProvider'=>$fixProvider,
+            'wid'=>Cache::getWid()
+        ]);
     }
 
     /*
@@ -200,4 +216,74 @@ class AdminrentController extends \yii\web\Controller
         ]);
     }
 
+    /*
+     * 分配维修，电话维修录入并且分配
+     *
+     * 更新 维修员 表 tbl_user_maintain 的待维修计数
+     * 更新 维修记录表 tbl_machine_service`的状态 和 维修员
+     * 维修进度表 tbl_service_process 插入分配任务
+     * 获取用户资料  tbl_rent_apply 为维修员发送 任务的通知
+     */
+
+    public function actionPhonefault($machine_id,$from_openid)
+    {
+        if(Yii::$app->request->post('openid') && Yii::$app->request->post('fault_text')){
+
+            $model = new TblMachineService();
+            $model->machine_id = $machine_id;
+            $model->from_openid = $from_openid;
+            $model->openid = Yii::$app->request->post('openid');
+            $model->add_time = time();
+            $model->status = 2;
+            $model->cover = json_encode(['/images/call_maintain.png']);
+            $model->desc = Yii::$app->request->post('fault_text');
+            $model->type = Yii::$app->request->post('fault_type');
+            if(!$model->save())
+                exit(json_encode(['status'=>0,'msg'=>'错误100']));
+
+            $fault_id = $model->id;
+            $applyTime = $model->add_time;
+
+            $model = new TblServiceProcess();
+            $model->service_id = $fault_id;
+            $model->content = json_encode(['status'=>2]);
+            $model->add_time = time();
+            if(!$model->save())
+                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,200']) );
+
+
+            $model = TblUserMaintain::findOne([
+                'wx_id'=>Yii::$app->request->post('wx_id'),
+                'openid'=>Yii::$app->request->post('openid')
+            ]);
+            $name = $model->name;
+            if(!$model)
+                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,300']) );
+            $model->wait_repair_count = $model->wait_repair_count + 1;
+            if( !$model->save() )
+                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,400']) );
+
+
+            // 为维修员推送消息
+            $model = TblRentApply::findOne(['machine_id'=>$machine_id,'enable'=>'Y']);
+            $tpl = new WxTemplate(Yii::$app->request->post('wx_id'));
+            $tpl->sendTask(
+                $fault_id,
+                Yii::$app->request->post('openid'),
+                $name,Yii::$app->request->post('fault_text'),$model->address,
+                $model->name.','.$model->phone,$model->add_time
+            );
+
+            // 为申请者推送消息
+            $tpl->sendProcess(
+                $from_openid,
+                Url::toRoute(['s/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$fault_id],'http'),
+                '任务已分配',
+                $applyTime
+            );
+            echo json_encode(['status'=>1]);
+        }
+        else
+            echo json_encode(['status'=>0,'msg'=>'参数错误']);
+    }
 }

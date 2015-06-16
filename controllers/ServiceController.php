@@ -50,6 +50,7 @@ class ServiceController extends \yii\web\Controller
         if( !$model->save() )
             Yii::$app->end(json_encode(['status'=>0,'msg'=>'错误1']));
 
+        $faultStatus = $model->status;          // 维修进度状态
         $model = new TblFaultCancelLog();
         $model->service_id = $serviceId;
         $model->opera = $openid? $openid:'user:'.(Yii::$app->user->id);
@@ -61,13 +62,21 @@ class ServiceController extends \yii\web\Controller
         if(!$model->save())
             Yii::$app->end(json_encode(['status'=>0,'msg'=>'错误2']));
 
-       // 为管理员推送消息
-        $tpl = new WxTemplate($id);
+        if($faultStatus < 8)   {
+            // 为管理员推送消息
+            $tpl = new WxTemplate($id);
+            $url = Url::toRoute(['cancel','id'=>$model->id]);
+            $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
+            $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
+            // 用户待修计数 减一
+            $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid]);
+            if(!$model)
+                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,300']) );
+            $model->wait_repair_count = $model->wait_repair_count - 1;
+            if( !$model->save() )
+                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,400']) );
+        }
 
-        $url = Url::toRoute(['cancel','id'=>$model->id]);
-
-        $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
-        $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
 
         if($type == 2)
             return $this->render('//tips/homestatus',['tips'=>'维修申请取消成功！','btnText'=>'返回','btnUrl'=>Url::toRoute(['i/machine','id'=>$id])]);
@@ -162,7 +171,7 @@ class ServiceController extends \yii\web\Controller
             // 为申请者推送消息
             $tpl->sendProcess(
                 $fromOpenid,
-                Url::toRoute(['s/detail','id'=>$rendId],'http'),
+                Url::toRoute(['s/detail','id'=>Yii::$app->request->post('wid'),'fault_id'=>$rendId],'http'),
                 '任务分配中',
                 $applyTime
             );

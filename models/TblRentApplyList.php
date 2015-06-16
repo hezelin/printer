@@ -49,15 +49,16 @@ class TblRentApplyList extends TblRentApply
         $query = TblRentApply::find()->where([
             'tbl_rent_apply.wx_id'=>Cache::getWid(),
             'tbl_rent_apply.status'=>2,
-            'tbl_rent_apply.enable'=>'Y'
+            'tbl_rent_apply.enable'=>'Y',
         ])->joinWith([
             'machine'=>function($query){
                 $query->joinWith([
                     'machineModel'=>function($query){
                         $query->joinWith('brand');
-                    }
+                    },
                 ]);
-            }
+            },
+            'machineFault'
         ]);
 
         $dataProvider = new ActiveDataProvider([

@@ -20,6 +20,13 @@ class TblMachine extends \yii\db\ActiveRecord
         return $this->hasOne(TblMachineModel::className(), ['id' => 'model_id']);
     }
 
+    /*
+     * 查询机器维修状态
+     */
+    public function getMachineFault()
+    {
+        return $this->hasOne(TblMachineService::className(),['machine_id' => 'id']);
+    }
     public static function tableName()
     {
         return 'tbl_machine';
@@ -36,6 +43,7 @@ class TblMachine extends \yii\db\ActiveRecord
             [['amount'],'default','value'=>1],
             [['enable'], 'string'],
             [['else_attr'], 'string', 'max' => 1000],
+            [['else_attr'], 'default', 'value' => '[]'],
             [['series_id'],'checkNum'],
             [['wx_id', 'series_id'], 'unique', 'targetAttribute' => ['wx_id', 'series_id'], 'message' => '编号已经存在.']
         ];

@@ -17,7 +17,8 @@ class TblMachineRentProject extends \yii\db\ActiveRecord
             [['wx_id', 'machine_model_id', 'lowest_expense', 'black_white', 'add_time'], 'required'],
             [['wx_id', 'machine_model_id', 'is_show', 'add_time'], 'integer'],
             [['lowest_expense', 'black_white', 'colours'], 'number'],
-            [['else_attr'], 'string', 'max' => 1000]
+            [['else_attr'], 'string', 'max' => 1000],
+            [['else_attr'], 'default', 'value' => '[]']
         ];
     }
 

@@ -25,7 +25,7 @@ class CodeapiController extends \yii\web\Controller
      */
     public function actionMachine($id)
     {
-        $rent= TblRentApply::find()->select('wx_id,project_id')->where(['machine_id'=>$id,'enable'=>'Y'])->one();
+        $rent= TblRentApply::find()->select('id,wx_id,project_id')->where(['machine_id'=>$id,'enable'=>'Y'])->one();
         $wid = $rent['wx_id'];
 
         $openid = WxBase::openId($wid);
@@ -37,7 +37,7 @@ class CodeapiController extends \yii\web\Controller
                 ->andWhere(['<', 'status', 9])
                 ->one();
             if (!$model) {                                 // 没有维修申请，机器信息、录入机器坐标
-                return $this->render('firstmachine', ['id' => $id, 'wid' => $wid,'project_id'=>$rent['project_id'] ]);
+                return $this->render('firstmachine', ['id' => $id, 'wid' => $wid,'rent_id'=>$rent['id'] ]);
             }
             $status = $model['status'];
             switch ($status) {

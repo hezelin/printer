@@ -8,7 +8,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
     <div class="h-list"><ul class="m-machine">
         <?php foreach($model as $row):?>
             <li>
-                <a href="<?=Url::toRoute(['rent/detail','id'=>$id,'project_id'=>$row['project_id'],'from'=>'machine'])?>">
+                <a href="<?=Url::toRoute(['rent/machinedetail','id'=>$id,'rent_id'=>$row['rent_id'],'from'=>'machine'])?>">
                     <div class="li-cover">
                         <img class="li-cover-img" src="<?=$row['cover']?>"/>
                     </div>
