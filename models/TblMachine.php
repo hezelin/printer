@@ -78,7 +78,7 @@ class TblMachine extends \yii\db\ActiveRecord
             'id' => '系统id',
             'wx_id' => '公众号id',
             'model_id' => '选择机型',
-            'series_id' => '系列号',
+            'series_id' => '机身序列号',
             'buy_date' => '购买日期',
             'buy_price' => '购买价格',
             'else_attr' => '补充属性',

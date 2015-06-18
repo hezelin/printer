@@ -38,7 +38,7 @@ if( Yii::$app->session->hasFlash('error') )
         ],
     ]); ?>
 
-    <?= $form->field($model, 'series_id')->textInput(['placeholder'=>'多个编号逗号","隔开']) ?>
+    <?= $form->field($model, 'series_id')->textInput(['placeholder'=>'多个序列号用逗号","隔开']) ?>
     <?= $form->field($model, 'model_id')->widget(\kartik\select2\Select2::classname(), [
         'data' => app\models\ConfigBase::getMachineModel(),
         'language' => 'zh-CN',

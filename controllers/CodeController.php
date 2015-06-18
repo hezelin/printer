@@ -5,6 +5,8 @@ namespace app\controllers;
 use app\models\Cache;
 use app\models\MachineSearch;
 use app\models\TblMachineSearch;
+use app\models\TblQrcodeSetting;
+use app\models\ToolBase;
 use Yii;
 use app\models\TblMachine;
 use app\models\WxCode;
@@ -79,19 +81,157 @@ class CodeController extends \yii\web\Controller
 
     /*
      * 生成单个机器码,$id 位机器的id
+     * 根据id 大小切割 文件夹
+     * 图片文件不存在则下载
+     */
+    public function actionSetting($id)
+    {
+        $model = TblMachine::findOne($id);
+
+        $index = (int)($id/500);
+        $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
+        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.jpg') ){
+            $urlParams = [
+                'text' => Url::toRoute(['codeapi/machine','id'=>$id],'http'),
+            ];
+            $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+
+            $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
+            file_put_contents($dir.'/'.$id.'.jpg',file_get_contents($qrcodeImgUrl));
+        }
+
+        $setting = TblQrcodeSetting::findOne(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
+
+        $data = [
+            'series'=>'',
+            'code'=>'',
+            'seriesNum'=>$model->series_id,
+            'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.jpg',
+            'img'=> [
+                'width'=>'',
+                'img'=>'/images/qrcode-bgimg-test.jpg',
+                'style'=>'width:700px',
+                'bgWidth'=>'700'
+            ],
+            'seriesCss'=>[
+                'top'=>65,
+                'left'=>50,
+                'color'=>'#FF4500',
+                'font-size'=>'55',
+            ],
+            'codeCss'=>[
+                'top'=>22,
+                'left'=>330,
+                'width'=>120
+            ],
+
+        ];
+
+        if($setting){
+            if($series = json_decode($setting['bg_img'],true) ){
+                $data['img']['style'] = isset($series['width'])? 'width:'.$series['width'].';':'100%;';
+                $data['img']['width'] = isset($series['width'])? ' width="'.$series['width'].'"':'';
+                $data['img']['bgWidth'] = isset($series['width'])? (int)$series['width']:700;
+                $data['img']['img'] = isset($series['img'])? $series['img']:'';
+            }
+
+            if($series = json_decode($setting['series'],true) ){
+                foreach($series as $k=>$v){
+                    $data['series'] .= "$k:$v;";
+
+                    $data['seriesCss'][$k]= $k=='color'? $v:(int)$v;
+                }
+            }
+            if($series = json_decode($setting['code'],true) ){
+                foreach($series as $k=>$v){
+                    $data['code'] .= "$k:$v;";
+                    $data['codeCss'][$k]= (int)$v;
+                }
+            }
+            unset($setting);
+        }
+
+        unset($model);
+        return $this->render('setting',['data'=>$data]);
+    }
+
+    /*
+     * 生成单个机器码,$id 位机器的id
+     * 根据id 大小切割 文件夹
+     * 图片文件不存在则下载
      */
     public function actionMachine($id)
     {
         $model = TblMachine::findOne($id);
-        $urlParams = [
-            'text' => Url::toRoute(['codeapi/machine','id'=>$id],'http'),
+
+        $index = (int)($id/500);
+        $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
+        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.jpg') ){
+            $urlParams = [
+                'text' => Url::toRoute(['codeapi/machine','id'=>$id],'http'),
+            ];
+            $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+            $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
+            file_put_contents($dir.'/'.$id.'.jpg',file_get_contents($qrcodeImgUrl));
+        }
+        $setting = TblQrcodeSetting::findOne(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
+
+        $data = [
+            'img'=> [
+                'width'=>'',
+                'img'=>'/images/qrcode-bgimg-test.jpg',
+                'style'=>'',
+                'bgWidth'=>'',
+            ],
+            'series'=>'',
+            'code'=>'',
+            'seriesNum'=>$model->series_id,
+            'machineId'=>$model->id,
+            'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.jpg'
         ];
 
-        $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+        if($setting){
+            if($series = json_decode($setting['bg_img'],true) ){
+                $data['img']['style'] = isset($series['width'])? 'width:'.$series['width'].';':'100%;';
+                $data['img']['width'] = isset($series['width'])? ' width="'.$series['width'].'"':'';
+                $data['img']['img'] = isset($series['img'])? $series['img']:'';
+            }
 
-        return $this->render('machine',['model'=>$model,'qrcodeImgUrl'=>$qrcodeImgUrl]);
+            if($series = json_decode($setting['series'],true) ){
+                foreach($series as $k=>$v)
+                    $data['series'] .= "$k:$v;";
+            }
+            if($series = json_decode($setting['code'],true) ){
+                foreach($series as $k=>$v)
+                    $data['code'] .= "$k:$v;";
+            }
+            unset($setting);
+        }
+        unset($model);
+        return $this->render('machine',['data'=>$data]);
     }
 
+    /*
+     * 机器二维码 配置保存
+     */
+    public function actionConfig()
+    {
+        if( Yii::$app->request->isAjax ){
+            $setting = TblQrcodeSetting::findOne(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
+            if(!$setting){
+                $setting = new TblQrcodeSetting();
+                $setting->wx_id = Cache::getWid();
+            }
+
+            $setting->bg_img = json_encode(Yii::$app->request->post('bgImg'));
+            $setting->series = json_encode(Yii::$app->request->post('series'));
+            $setting->code = json_encode(Yii::$app->request->post('code'));
+            $setting->add_time = time();
+            if($setting->save())
+                echo json_encode(['status'=>1]);
+            else echo json_encode(['status'=>0,'msg'=>'保存数据失败，出现未知错误！'.ToolBase::arrayToString($setting->errors)]);
+        }
+    }
 
     /*
      * 生成积分二维码 url
