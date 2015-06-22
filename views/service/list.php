@@ -26,6 +26,7 @@ echo GridView::widget([
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($data)
             {
+                if(!$data->cover) return '没有图片';
                 $covers = json_decode($data->cover,true);
                 $html = [];
                 foreach($covers as $cover){

@@ -38,6 +38,10 @@ $this->title = '维修任务';
         <div class="h-left-text">地址坐标</div>
         <div class="h-right-text" id="map-btn" style="color: #5c72ff; font-weight: 600;">点击导航</div>
     </div>
+    <div class="h-row">
+        <div class="h-left-text">历史维修</div>
+        <a href="<?=Url::toRoute(['s/irecord','id'=>$model['wx_id'],'mid'=>$model['mid']])?>" class="h-right-text" style="color: #5c72ff; font-weight: 600;">点击查看</a>
+    </div>
 
 </div>
 <form method="post" id="wechat-form" action="<?=Url::toRoute(['m/process','id'=>$model['id'],'openid'=>$openid])?>">

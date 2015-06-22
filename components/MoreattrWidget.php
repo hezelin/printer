@@ -16,7 +16,7 @@ class MoreattrWidget extends Widget{
     public $modelId = '#Moreattr-model';
     public $formId = '#my-form';
     public $targetId = '#add';
-    public $headName = '补充属性';
+    public $headName = '补充属性（属性名、属性值 一一对应）';
     public $saveButtonName = '保存属性';
 
     public function init(){

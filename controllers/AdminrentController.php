@@ -81,6 +81,7 @@ class AdminrentController extends \yii\web\Controller
 
         $model->black_white = $model->machineProject->black_white;
         $model->colours = $model->machineProject->colours;
+        $model->first_rent_time = $model->first_rent_time? :'';
         $model->monthly_rent = $model->machineProject->lowest_expense;
         $model->machine_id = '';
 
@@ -120,6 +121,7 @@ class AdminrentController extends \yii\web\Controller
         if($model->load( Yii::$app->request->post()))
         {
             $model->due_time = $model->due_time? strtotime($model->due_time):0;
+            $model->first_rent_time = $model->first_rent_time? strtotime($model->first_rent_time):0;
 
             if($model->save()) {
                 return $this->render('//tips/success', [

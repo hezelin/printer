@@ -143,6 +143,7 @@ class ConfigBase
             ->leftJoin('tbl_brand as p','p.id=t.brand_id')
             ->where('t.enable="Y" and t.wx_id=:wid',[':wid'=>Cache::getWid()])
             ->all();
+
         $tmp = [];
         if($model){
             foreach($model as $m)
@@ -150,8 +151,9 @@ class ConfigBase
                 $tmp[ $m['id'] ] = '( '.$m['name'].' ) ' . $m['type'];
             }
         }
-
-        return ( $id && isset($tmp[$id]) )? $tmp[$id]:$tmp;
+        if($id)
+            return isset($tmp[$id])? $tmp[$id]:'机型不存在';
+        return $tmp;
     }
 
     /*

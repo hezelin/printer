@@ -62,7 +62,24 @@ if( Yii::$app->session->hasFlash('error') )
     ]
 ])?>
 
-<?= $form->field($model, 'else_attr')->textInput(['placeholder'=>'属性名，属性值一一对应,是否赠送纸张']) ?>
+<?= $form->field($model, 'describe')->widget('kucha\ueditor\UEditor',[
+    'clientOptions' => [
+        'zIndex'=>1029,
+        'initialFrameHeight'=>'240',
+        'toolbars' => [
+            [
+                'fullscreen', 'source', 'undo', 'redo',
+                '|', 'fontsize',
+                'bold', 'italic', 'underline', 'strikethrough', 'removeformat',
+                'formatmatch', 'autotypeset', 'blockquote',
+                '|', 'forecolor', 'backcolor',
+                '|', 'lineheight', 'indent', 'justifyleft', 'justifyright', 'justifycenter', 'justifyjustify',
+                'insertorderedlist', 'insertunorderedlist',
+                '|','searchreplace','link','horizontal','insertimage','insertvideo','preview'
+            ],
+        ],
+    ],
+]);?>
 
 <div class="form-group">
     <div class="col-lg-offset-1 col-lg-11">
@@ -75,5 +92,3 @@ if( Yii::$app->session->hasFlash('error') )
 <?php ActiveForm::end(); ?>
 
 </div>
-
-<?=\app\components\MoreattrWidget::widget(['targetId'=>'#tblmachinerentproject-else_attr','data'=>$model->else_attr])?>

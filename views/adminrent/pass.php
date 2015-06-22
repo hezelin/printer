@@ -52,13 +52,20 @@ if( $type =='allot' )
     <?= $form->field($model, 'colours') ?>
     <?= $form->field($model, 'name') ?>
     <?= $form->field($model, 'phone') ?>
-    <?= $form->field($model, 'address')->textarea() ?>
     <?= $form->field($model, 'due_time')->widget(\yii\jui\DatePicker::classname(), [
         'dateFormat' => 'yyyy-MM-dd',
         'options' => [
             'class' => 'form-control',
         ]
     ]) ?>
+    <?= $form->field($model, 'first_rent_time')->widget(\yii\jui\DatePicker::classname(), [
+        'dateFormat' => 'yyyy-MM-dd',
+        'options' => [
+            'class' => 'form-control',
+        ]
+    ]) ?>
+    <?= $form->field($model,'rent_period')->dropDownList([1=>'1个月',3=>'3个月','6'=>'半年','12'=>'1年'])?>
+    <?= $form->field($model, 'address')->textarea() ?>
     <?= $form->field($model, 'apply_word')?>
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">

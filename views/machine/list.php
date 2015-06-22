@@ -18,6 +18,7 @@ $this->title = '机器列表';
         'tableOptions' => ['class' => 'table table-striped'],
         'filterModel' => $searchModel,
         'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],               // 系列
             'series_id',
             'buy_date',
             'buy_price',

@@ -17,7 +17,7 @@ class TblRentApplySearch extends TblRentApply
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'project_id', 'machine_id', 'due_time', 'status', 'add_time'], 'integer'],
+            [['id', 'wx_id', 'project_id', 'machine_id', 'due_time', 'status', 'add_time','first_rent_time', 'rent_period'], 'integer'],
             [['openid', 'phone', 'name', 'address', 'apply_word', 'enable'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
         ];
@@ -46,7 +46,7 @@ class TblRentApplySearch extends TblRentApply
             ->joinWith('userInfo');*/
         $query = (new \yii\db\Query())
             ->select('t.id,t.name,t.phone,t.add_time,u.nickname,u.headimgurl,u.sex,
-                p.lowest_expense,p.black_white,p.colours,p.else_attr,m.type,m.cover_images,m.is_color')
+                p.lowest_expense,p.black_white,p.colours,m.type,m.cover_images,m.is_color')
             ->from('tbl_rent_apply as t')
             ->where('t.wx_id=:wid and t.status=1 and t.enable="Y"',[':wid'=>Cache::getWid()])
             ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
@@ -77,6 +77,8 @@ class TblRentApplySearch extends TblRentApply
             'black_white' => $this->black_white,
             'colours' => $this->colours,
             'due_time' => $this->due_time,
+            'first_rent_time' => $this->first_rent_time,
+            'rent_period' => $this->rent_period,
             'status' => $this->status,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,

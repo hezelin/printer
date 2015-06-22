@@ -20,7 +20,7 @@ class TblMachineRentProjectSearch extends TblMachineRentProject
         return [
             [['id', 'wx_id', 'machine_model_id', 'is_show', 'add_time'], 'integer'],
             [['lowest_expense', 'black_white', 'colours'], 'number'],
-            [['else_attr'], 'safe'],
+            [['describe'], 'safe'],
         ];
     }
 
@@ -67,7 +67,7 @@ class TblMachineRentProjectSearch extends TblMachineRentProject
             'add_time' => $this->add_time,
         ]);
 
-        $query->andFilterWhere(['like', 'else_attr', $this->else_attr]);
+        $query->andFilterWhere(['like', 'describe', $this->describe]);
 
         return $dataProvider;
     }

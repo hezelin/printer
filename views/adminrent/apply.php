@@ -29,7 +29,7 @@ echo GridView::widget([
             'label'=>'微信资料',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value' => function($model){
-                $sex=[1=>'男',2=>'女','3'=>'未知'];
+                $sex=[1=>'男',2=>'女','0'=>'未知'];
                 return Html::tag('span',$model['nickname'].'&nbsp;,&nbsp;').
                        Html::tag('span',$sex[ $model['sex']].'&nbsp;,&nbsp;').
                        Html::a(Html::img( substr($model['headimgurl'],0,-1).'46',['style'=>'width:40px']),$model['headimgurl'].'?.jpg',
@@ -63,10 +63,6 @@ echo GridView::widget([
                 $row[] = Html::tag('div','黑白：'.$model['black_white'].'元/张');
                 if($model['is_color'] == 2)
                     $row[] = Html::tag('div','彩色：'.$model['colours'].'元/张');
-                if($model['else_attr'] && $attr = json_decode($model['else_attr'],true)){
-                    foreach($attr as $a)
-                        $row[] = Html::tag('div',$a['name'].'：'.$a['value']);
-                }
                 return join("\n",$row);
             }
         ],

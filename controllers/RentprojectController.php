@@ -19,6 +19,23 @@ class RentprojectController extends Controller
 {
     public $layout = '/console';
     /*
+     * 配置 ueditor 图片上传路径
+     */
+    public function actions()
+    {
+        return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+                'config' => [
+                    "imageUrlPrefix"  => Yii::$app->request->hostInfo,//图片访问路径前缀
+                    "imagePathFormat" => "/uploads/model/{yy}{mm}/{dd}/{time}{rand:6}",//上传保存路径
+                    "imageCompressBorder" => 640,
+                ],
+            ]
+        ];
+    }
+
+    /*
      * 添加模型
      */
     public function actionAdd()
@@ -60,6 +77,16 @@ class RentprojectController extends Controller
         ]);
     }
 
+    /*
+     * 自己方案详情
+     */
+    public function actionView($id)
+    {
+        $model = TblMachineRentProject::findOne($id);
+        if(!$model)
+            throw new NotFoundHttpException('页面不存在');
+        return $this->render('view',['model'=>$model]);
+    }
     /*
      * 模型更新
      */

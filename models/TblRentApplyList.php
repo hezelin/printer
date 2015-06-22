@@ -22,7 +22,7 @@ class TblRentApplyList extends TblRentApply
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'project_id', 'machine_id', 'due_time', 'status', 'add_time'], 'integer'],
+            [['id', 'wx_id', 'project_id', 'machine_id', 'due_time', 'status', 'add_time','first_rent_time', 'rent_period'], 'integer'],
             [['openid', 'phone', 'name', 'address', 'apply_word', 'enable','type','series_id','come_from'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
         ];

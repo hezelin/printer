@@ -26,13 +26,13 @@ echo GridView::widget([
         ],
         [
             'attribute'=>'userinfo.headimgurl',
-            'format'=>'html',
+            'format'=>['html', ['Attr.AllowedRel' => 'group']],
             'value'=>function($data)
             {
                 if( isset($data->userinfo->headimgurl ))
                 return Html::a( Html::img( substr($data->userinfo->headimgurl,0,-1) .'46'),
-                    $data->userinfo->headimgurl,
-                    ['title'=>'查看大图','target'=>'_blank']
+                    $data->userinfo->headimgurl.'?.jpg',
+                    ['rel'=>'group','class'=>'fancybox']
                 );
             }
         ],
@@ -86,4 +86,38 @@ echo GridView::widget([
     ],
 ]);
 
+// fancybox 图片预览插件
+
+echo newerton\fancybox\FancyBox::widget([
+    'target' => '.fancybox',
+    'helpers' => true,
+    'mouse' => true,
+    'config' => [
+        'maxWidth' => '100%',
+        'maxHeight' => '100%',
+        'playSpeed' => 7000,
+        'padding' => 0,
+        'fitToView' => false,
+        'width' => '100%',
+        'height' => '100%',
+        'autoSize' => false,
+        'closeClick' => false,
+        'openEffect' => 'elastic',
+        'closeEffect' => 'elastic',
+        'prevEffect' => 'elastic',
+        'nextEffect' => 'elastic',
+        'closeBtn' => false,
+        'openOpacity' => true,
+        'helpers' => [
+            'title' => ['type' => 'float'],
+            'buttons' => [],
+            'thumbs' => ['width' => 68, 'height' => 50],
+            'overlay' => [
+                'css' => [
+                    'background' => 'rgba(0, 0, 0, 0.8)'
+                ]
+            ]
+        ],
+    ]
+]);
 ?>

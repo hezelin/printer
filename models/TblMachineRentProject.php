@@ -17,8 +17,7 @@ class TblMachineRentProject extends \yii\db\ActiveRecord
             [['wx_id', 'machine_model_id', 'lowest_expense', 'black_white', 'add_time'], 'required'],
             [['wx_id', 'machine_model_id', 'is_show', 'add_time'], 'integer'],
             [['lowest_expense', 'black_white', 'colours'], 'number'],
-            [['else_attr'], 'string', 'max' => 1000],
-            [['else_attr'], 'default', 'value' => '[]']
+            [['describe'], 'string']
         ];
     }
 
@@ -32,7 +31,7 @@ class TblMachineRentProject extends \yii\db\ActiveRecord
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
             'is_show' => '是否显示',
-            'else_attr' => '更多属性',
+            'describe' => '方案描述',
             'add_time' => '添加时间',
         ];
     }

@@ -21,6 +21,7 @@ $this->title = '生成机器码';
                 return ['value'=> $model->id . '|' . $model->series_id ];
             }
         ],
+        ['class' => 'yii\grid\SerialColumn'],               // 系列
         'series_id',
         'buy_date',
         'buy_price',

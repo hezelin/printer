@@ -9,7 +9,7 @@ $this->title = '机器维修记录';
         <ul>
             <?php foreach($model as $row):?>
                 <li>
-                    <a href="<?=Url::toRoute(['s/detail','id'=>$row['id']])?>">
+                    <a href="<?=Url::toRoute(['s/detail','id'=>$id,'fault_id'=>$row['id']])?>">
                         <div class="li-cover">
                             <img class="li-cover-img" src="<?=$row['cover']?>"/>
                         </div>

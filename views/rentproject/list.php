@@ -27,7 +27,11 @@ echo GridView::widget([
             'format'=> 'html',
             'value'=>function($data)
             {
-                return Html::a(ConfigBase::getMachineModel($data->machine_model_id),Url::toRoute(['model/view','id'=>$data->machine_model_id]) );
+                return Html::a(
+                    ConfigBase::getMachineModel($data->machine_model_id),
+                    Url::toRoute(['model/view','id'=>$data->machine_model_id]),
+                    ['title'=>'查看机型']
+                );
             }
         ],
         'lowest_expense',
@@ -42,21 +46,6 @@ echo GridView::widget([
             }
         ],
         [
-            'attribute'=>'else_attr',
-            'headerOptions'=>['style'=>'width:160px'],
-            'format' => 'html',
-            'value'=>function($data)
-            {
-                $attr = json_decode($data->else_attr,true);
-                $html = [];
-                foreach($attr as $row){
-                    $html[] = Html::tag('div',$row['name'].' : '.$row['value']);
-                }
-                return join("\n",$html);
-            }
-        ],
-
-        [
             'attribute'=>'add_time',
             'format'=>['date','php:Y-m-d H:i'],
         ],
@@ -64,7 +53,7 @@ echo GridView::widget([
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions'=>['style'=>'width:120px'],
-            'template' => '{update} &nbsp; {delete}',
+            'template' => '{view} &nbsp; {update} &nbsp; {delete}',
             'buttons' => [
                 'update' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::toRoute(['update','id'=>$key,'url'=>Yii::$app->request->get('url')]),['title'=>'修改']);

@@ -18,6 +18,7 @@ function getMachine($model){
 function getAttr($str)
 {
     $attr = json_decode($str,true);
+    if(!$attr) return '无';
     $html = [];
     foreach($attr as $row){
         $html[] = Html::tag('div',$row['name'].' : '.$row['value']);

@@ -29,7 +29,7 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['wx_id', 'openid', 'project_id', 'due_time', 'phone', 'name', 'add_time','machine_id'], 'required'],
+            [['wx_id', 'openid', 'project_id', 'due_time', 'phone', 'name', 'add_time','machine_id','first_rent_time', 'rent_period'], 'required'],
             [['wx_id', 'project_id', 'machine_id', 'status', 'add_time'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
             [['enable'], 'string'],
@@ -52,7 +52,9 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
             'monthly_rent' => '月租',
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
-            'due_time' => '过期时间',
+            'due_time' => '合同到期时间',
+            'first_rent_time' => '首次收租时间',
+            'rent_period' => '收租周期',
             'phone' => '手机',
             'name' => '姓名',
             'address' => '用户地址',

@@ -51,8 +51,8 @@ class RentController extends \yii\web\Controller
     public function actionDetail($id,$project_id)
     {
         $model = (new \yii\db\Query())
-            ->select('t.id,lowest_expense,p.type,p.cover,p.function,b.name,t.black_white,t.colours,
-                t.else_attr as project_attr,p.else_attr,p.cover_images,p.is_color,p.describe
+            ->select('t.id,lowest_expense,t.describe,p.type,p.cover,p.function,b.name,t.black_white,t.colours,
+               p.else_attr,p.cover_images,p.is_color
             ')
             ->from('tbl_machine_rent_project as t')
             ->leftJoin('tbl_machine_model as p','p.id=t.machine_model_id')
@@ -61,7 +61,7 @@ class RentController extends \yii\web\Controller
             ->one();
 
         $model['cover_images'] = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
-        $model['else_attr'] = array_merge(json_decode($model['else_attr'],true),json_decode($model['project_attr'],true));
+        $model['else_attr'] = json_decode($model['else_attr'],true);
         return $this->render('detail',['model'=>$model,'id'=>$id]);
     }
 

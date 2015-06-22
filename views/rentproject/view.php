@@ -3,10 +3,19 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\helpers\Url;
 use app\models\ConfigBase;
-$this->title = '机器型号详情';
+$this->title = '租借方案详情';
 ?>
 <?php
 
+
+function getModel($model_id)
+{
+    return Html::a(
+        ConfigBase::getMachineModel($model_id),
+        Url::toRoute(['model/view','id'=>$model_id]),
+        ['title'=>'查看机型']
+    );
+}
 function getMachine($model){
     return Html::a(Html::img($model->machine->cover,['width'=>40]),$model->machine->cover,['class'=>'fancybox','rel'=>'group']) .
     ' , ' . $model->machine->brand .
@@ -43,27 +52,18 @@ function getCover($str)
     'options' => ['class' => 'table table-striped detail-view'],
     'attributes' => [
         'id',
-        'type',
         [
-            'attribute'=>'brand_id',
-            'value'=>ConfigBase::getMachineBrand($model->brand_id)
+            'attribute'=>'machine_model_id',
+            'format'=> 'html',
+            'value'=>getModel($model->machine_model_id)
+
         ],
-        'machine_count',
-        'function',
+        'lowest_expense',
+        'black_white',
+        'colours',
         [
-            'attribute'=>'else_attr',
-            'headerOptions'=>['style'=>'width:160px'],
-            'format' => 'html',
-            'value'=>getAttr($model->else_attr)
-        ],
-        [
-            'attribute'=>'cover_images',
-            'format'=>['html', ['Attr.AllowedRel' => 'group']],
-            'value'=> getCover($model->cover_images)
-        ],
-        [
-            'attribute'=>'buy_date',
-            'format'=>['date','php:Y-m-d'],
+            'attribute'=>'is_show',
+            'value'=>$model->is_show==1? '显示':'不显示',
         ],
         [
             'attribute'=>'add_time',
