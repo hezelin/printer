@@ -66,16 +66,61 @@ class CodeController extends \yii\web\Controller
      */
     public function actionMachineall()
     {
-        $this->layout = 'blank';
+//        $this->layout = 'blank';
+        $list = [];
         if(Yii::$app->request->post('list')){
 
             $data = explode(',',Yii::$app->request->post('list'));
-            foreach( $data as $index => $row){
-                list($list[$index]['id'] , $list[$index]['serial']) = explode('|',$row);
-                $urlParams = [ 'text' => Url::toRoute(['codeapi/machine','id'=>$list[$index]['id'] ],'http'), ];
-                $list[$index]['url'] = $this->qrcodeApiUrl . http_build_query($urlParams);
+
+            foreach( $data as $i => $row){
+                list($list[$i]['machineId'] , $list[$i]['seriesNum']) = explode('|',$row);
+
+                $index = (int)($list[$i]['machineId']/500);
+                $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
+
+                if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$list[$i]['machineId'].'.jpg') ){
+                    $urlParams = [
+                        'text' => Url::toRoute(['codeapi/machine','id'=>$list[$i]['machineId']],'http'),
+                    ];
+                    $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+                    $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
+                    file_put_contents($dir.'/'.$list[$i]['machineId'].'.jpg',file_get_contents($qrcodeImgUrl));
+                }
+                $list[$i]['qrcodeImgUrl'] = $imgUrl.'/'.$list[$i]['machineId'].'.jpg';
             }
-            return $this->render('machineall',['list'=>$list]);
+            $setting = TblQrcodeSetting::findOne(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
+            $data = [
+                'img'=> [
+                    'width'=>'',
+                    'img'=>'/images/qrcode-bgimg-test.jpg',
+                    'style'=>'',
+                    'bgWidth'=>'',
+                ],
+                'series'=>'',
+                'code'=>'',
+                'list'=>$list,
+            ];
+
+            if($setting){
+                if($series = json_decode($setting['bg_img'],true) ){
+                    $data['img']['style'] = isset($series['width'])? 'width:'.$series['width'].';':'100%;';
+                    $data['img']['width'] = isset($series['width'])? ' width="'.$series['width'].'"':'';
+                    $data['img']['img'] = isset($series['img'])? $series['img']:'';
+                }
+
+                if($series = json_decode($setting['series'],true) ){
+                    foreach($series as $k=>$v)
+                        $data['series'] .= "$k:$v;";
+                }
+                if($series = json_decode($setting['code'],true) ){
+                    foreach($series as $k=>$v)
+                        $data['code'] .= "$k:$v;";
+                }
+                unset($setting);
+            }
+            unset($model);
+            unset($list);
+            return $this->render('machineall',['data'=>$data]);
         }
     }
 
