@@ -18,6 +18,8 @@ use yii\helpers\Html;
 
     <?= $form->field($model, 'name') ?>
     <?= $form->field($model, 'phone') ?>
+    <?= $form->field($model, 'identity_card') ?>
+    <?= $form->field($model, 'address') ?>
 
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">

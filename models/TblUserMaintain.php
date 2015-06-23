@@ -4,19 +4,6 @@ namespace app\models;
 
 use Yii;
 
-/**
- * This is the model class for table "tbl_user_maintain".
- *
- * @property string $wx_id
- * @property string $openid
- * @property string $name
- * @property string $phone
- * @property integer $wait_repair_count
- * @property string $latitude
- * @property string $longitude
- * @property string $accuracy
- * @property string $add_time
- */
 class TblUserMaintain extends \yii\db\ActiveRecord
 {
     public function getUserinfo()
@@ -29,9 +16,6 @@ class TblUserMaintain extends \yii\db\ActiveRecord
         return 'tbl_user_maintain';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
@@ -41,13 +25,12 @@ class TblUserMaintain extends \yii\db\ActiveRecord
             [['openid'], 'string', 'max' => 28],
             [['name'], 'string', 'max' => 30],
             [['phone'], 'string', 'max' => 11],
+            [['identity_card'], 'string', 'max' => 18],
+            [['address'], 'string', 'max' => 250],
             [['wx_id', 'openid'], 'unique', 'targetAttribute' => ['wx_id', 'openid'], 'message' => 'The combination of 公众号id and 用户id has already been taken.']
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
@@ -55,6 +38,8 @@ class TblUserMaintain extends \yii\db\ActiveRecord
             'openid' => '用户id',
             'name' => '名字',
             'phone' => '手机',
+            'identity_card' => '身份证号码',
+            'address' => '维修员地址',
             'wait_repair_count' => '待修',
             'latitude' => '纬度',
             'longitude' => '经度',

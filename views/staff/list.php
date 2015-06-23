@@ -19,41 +19,21 @@ echo GridView::widget([
         ['class' => 'yii\grid\SerialColumn'],               // 系列
         'name',
         'phone',
+        'identity_card',
+        'address',
         [
-            'label'=>'昵称',
-            'attribute' => 'nickname',
-            'value' => 'userinfo.nickname'
-        ],
-        [
-            'attribute'=>'userinfo.headimgurl',
-            'format'=>['html', ['Attr.AllowedRel' => 'group']],
-            'value'=>function($data)
-            {
-                if( isset($data->userinfo->headimgurl ))
-                return Html::a( Html::img( substr($data->userinfo->headimgurl,0,-1) .'46'),
-                    $data->userinfo->headimgurl.'?.jpg',
-                    ['rel'=>'group','class'=>'fancybox']
-                );
+            'label'=>'微信资料',
+            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
+            'headerOptions'=>['style'=>'width:250px'],
+            'value' => function($data){
+                $sex=[1=>'男',2=>'女','0'=>'未知'];
+                return  Html::a(
+                    Html::img( substr($data->userinfo->headimgurl,0,-1).'46',['style'=>'width:40px']),
+                    $data->userinfo->headimgurl.'?.jpg', ['rel'=>'group1','class' => 'fancybox']).
+                Html::tag('span','&nbsp;&nbsp;,'.$data->userinfo->nickname.'&nbsp;,&nbsp;').
+                Html::tag('span',$sex[ $data->userinfo->sex].'&nbsp;,&nbsp;').
+                Html::tag('span',$data->userinfo->province.$data->userinfo->city);
             }
-        ],
-        [
-            'attribute'=>'userinfo.sex',
-            'value'=>function($data){
-                if( isset($data->userinfo->sex ))
-                switch($data->userinfo->sex)
-                {
-                    case 1: return '男';
-                    case 2: return '女';
-                    default:return '未知';
-                }
-            }
-        ],
-        'userinfo.city',
-        'userinfo.province',
-        'userinfo.country',
-        [
-            'attribute' => 'userinfo.subscribe_time',
-            'format'=>['date','php:Y-md H:i']
         ],
         [
             'attribute' => 'add_time',

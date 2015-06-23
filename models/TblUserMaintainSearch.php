@@ -18,7 +18,7 @@ class TblUserMaintainSearch extends TblUserMaintain
     {
         return [
             [['wx_id', 'wait_repair_count', 'add_time'], 'integer'],
-            [['openid', 'name', 'phone','nickname'], 'safe'],
+            [['openid', 'name', 'phone','nickname', 'identity_card', 'address'], 'safe'],
             [['latitude', 'longitude', 'accuracy'], 'number'],
         ];
     }
@@ -70,6 +70,8 @@ class TblUserMaintainSearch extends TblUserMaintain
         $query->andFilterWhere(['like', 'openid', $this->openid])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'phone', $this->phone])
+            ->andFilterWhere(['like', 'identity_card', $this->identity_card])
+            ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'tbl_user_wechat.nickname', $this->nickname]);
 
         return $dataProvider;
