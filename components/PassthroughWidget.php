@@ -20,6 +20,7 @@ class PassthroughWidget extends Widget{
     public $startId = 0;
     public $method = 'get';
     public $backgroundColor = '#fff';
+    public $linkClick;
 
 
     public function init(){
@@ -75,7 +76,7 @@ MODEL_CONTENT;
      */
     private  function registerScript()
     {
-
+        $data = $this->linkClick? 'data-':'';
         $script = <<<MODEL_JS
     var myScroll{$this->getId()};
     var q='',key='';
@@ -84,7 +85,7 @@ MODEL_CONTENT;
     function getHtml(d){
         var html = [];
 
-        html.push('<a class="item-list" href="detail?id='+d.wx_id+'&item_id='+d.id+'">');
+        html.push('<a class="item-list" {$data}href="detail?id='+d.wx_id+'&item_id='+d.id+'">');
         html.push('<img src="'+d.cover+'">');
         html.push('<span><h5>'+d.name+'</h5>');
         html.push('<p class="mtm_p"><b>￥'+d.price+'</b>'+d.category+'</p></span></a>');
@@ -164,8 +165,8 @@ MODEL_CONTENT;
                 $('#search-show .s-text').text(q);
             }
             $('#search-input').hide();
-
         });
+        {$this->linkClick}
     });
 MODEL_JS;
         $this->view->registerJs($script,\yii\web\View::POS_END);

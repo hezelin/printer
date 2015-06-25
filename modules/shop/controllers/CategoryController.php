@@ -3,7 +3,7 @@
 namespace app\modules\shop\controllers;
 
 use app\models\Cache;
-use app\models\TblCategory;
+use app\modules\shop\models\TblCategory;
 use app\models\ToolBase;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;

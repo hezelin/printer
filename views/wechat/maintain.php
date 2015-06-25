@@ -29,10 +29,10 @@ $this->registerCssFile('/css/home/'.$setting['style']);
     <li><a href="<?= Url::toRoute(['m/task','id'=>$setting['wx_id']]) ?>" ><b class="color-2">
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB40lEQVRYR7WXjVECMRCFSQVaAh0oFQgdYAVCB1qBdqAdiBVoBx4d0AFYgVrB+R5ubkLIfy6ZuQlzt5t8t7tvw6mJZ/R9f41H77imYrLDzOtNKdX5/HLvq5ADIFZ4/uqwIcADQAhUNYIAXDkA8YPHi1qIKEBriCSACESHKCxK85AMIBBPmB8dmzEVRYWpkOMlnD9S3wD2zP2FZU9lsGCzBwH28GIY1ynesP+G3aVlu4P/LMXftiFALzc3MQiY+lIwgW9WOjWICcB7XoiAHI9r1QCwmVwZoTmDiG0O3y0A5qUp2MDxznIeILA5q56hD42qIiT5p2N1VjuHXXAukFlpRzwWDt6yw3RTEkLxWQOAkcweGoAnHyFsfecsWAQxSEeO31qIqJTtNzrRrkC8VKaDXZXR0DUUjKKzeQCEhbnCxdRoiW7x+4CLgLzv+p+gN6O0eT5EIYq6lxTuPebnwOsl/V8oBhAIVr7dQ0wmQjAd3sOuCkAgWLgxCXsVMgYAGxUhzHbuyoxTIdUAEoUpZhZerI+cKWQUAIFIbWYnChkNQCAo3ZA8dWoGhYwKkChPE+J2dIBEeWqIQxOADHl+tQSIyfMXoPNmABF5/m+Ob8umAB55DpvzeXMAgVhi5inKwQ+h4av6D6M6zURT1ORnAAAAAElFTkSuQmCC"/>
             </b>
-            <span>维修中...</span></a></li>
-    <li><a href="<?= Url::toRoute(['m/record','id'=>$setting['wx_id']]) ?>" ><b class="color-3">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAApElEQVRYR+2WwQ6AIAxD2ZerXz7h4MUEms6aGTOuTPbsaIO15GXJ/dsUwN33DrdNAA8zG/uP1wrAV6d3AIl61v+UaoTqWUkKIF+B2czQrGWXcAGQa0P2NkfrJV6ONh/fyQCiyakEoALtUg3akJX37g7oJlRQAK8rwDZQJ6fSBaHklAFElfwuQDTZWCXqTQijmI1WegQoiv8PoE42egT1JmQlU9efS3iV8R26gMsAAAAASUVORK5CYII=" />
-    </b><span>历史维修</span></a></li>
+            <span>维修任务</span></a></li>
+    <li><a href="<?= Url::toRoute(['/shop/parts/my','id'=>$setting['wx_id']]) ?>" ><b class="color-3">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABHElEQVRYR+1XgREBMRCUDpRCBXRACVSCSiiBDqiAUnQQe5nLTz78fNydieHNGJN/e9nf3N3eu1Hlj0v3995PsF7gO+/gdcb1k3Pu9uq+BN8QAHiFoPtCQdYgccjIi/CBADO/Fm4e/zaNSmjwkcAWUTcc+enp4o6ZSjsQIBw9gBgfCdDZzigYgrbyIlcFm3m+RrmwZAJivIbABQRCsoKThEDADwT+WoGQxFYKVCnDtAqohYsamYkCXIqqViyu48wPSAlqTvQ7zprYHWsysWNqZmYK5B2zdP1bBMTzgKaXdzhl3wk0jmtyBBbzgKoKas0DWjs2bcViBa1yYCBQRQHToVTs5+yEYvx3vJho/NykFSdB3vZzk3mgzzk+ef8B8r/RMNTXNLsAAAAASUVORK5CYII=" />
+    </b><span>配件列表</span></a></li>
     <li><a href="<?= Url::toRoute(['m/help','id'=>$setting['wx_id']]) ?>" ><b class="color-4">
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABRklEQVRYR+2X7Q2CMBCG7QYyiTKBOoE6gbiBbqATqBOIExg2cATcwA1kA3zPtKSRtMcJNf6ApKHpvbRP7yPh1EA/ZVkOMb1iTM3al+8C3x0xTkopmnsfZQHcMJ9wHwjsD2iXgMh939gApRZGTchdm8KTZh+SkAe22C916WsAEFdrgttWUgvggsWVNqxdEMEA6CKA2QDg4IMICkAHAyLB6+yCCA6gIYwnKCdmdmL+BEBDUCJSTlB1xCbRgwEwCbwHwI40IQCo7kcMQAGAKAgAV7qmTE25d+6BHqD3QOceQNY2KSvXuTmyPbaN4ipoCXAHwLgVAOdSqV3sAekBnF4M0DIEfQ7UIiIOARdTqV0M0OeA1MWcXhwCbkOp/f8BcKNWrZnPI7oBfr7/BXUHFrI59bFkOH/x+VNK7XmKMZfGVajPoE9MX/ACSq80MMSAiw8AAAAASUVORK5CYII="/>
     </b><span>查看资料</span></a></li>

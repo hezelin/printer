@@ -1,7 +1,6 @@
 <?php
 namespace app\modules\shop\models;
 
-use app\models\TblCategory;
 use yii\helpers\ArrayHelper;
 use app\models\Cache;
 /**
@@ -38,5 +37,26 @@ class Shop {
             }
         }
         return $tmp;
+    }
+
+    /*
+     * 获取 携带配件状态
+     */
+    public static function getBringParts($id='')
+    {
+        $data = [1=>'申请中',2=>'携带中',3=>'已分配',4=>'已归还'];
+        if($id)
+            return isset($data[$id])? $data[$id]:'出错';
+        return $data;
+    }
+    /*
+     * 获取维修配件状态
+     */
+    public static function getFaultParts($id='')
+    {
+        $data = [1=>'申请中',2=>'已发送',3=>'已到达',4=>'已归还'];
+        if($id)
+            return isset($data[$id])? $data[$id]:'出错';
+        return $data;
     }
 } 

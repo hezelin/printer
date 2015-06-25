@@ -42,7 +42,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
         <?=$model['describe']?>
     </div>
     <div class="h-fixed-bottom">
-        <a  href="<?=Url::toRoute(['/shop/parts/apply','id'=>$id,'item_id'=>$model['id']])?>">
+        <a  href="<?=Url::toRoute(['/shop/parts/apply','id'=>$id,'item_id'=>$model['id'],'fault_id'=>Yii::$app->request->get('fault_id')])?>">
             申请这个配件
         </a>
     </div>

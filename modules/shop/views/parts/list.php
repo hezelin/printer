@@ -9,6 +9,11 @@ $this->title = '配件列表';
         'data'=>$category,
         'startId'=>$startId,
         'action'=>Url::toRoute(['/shop/parts/list','id'=>$id]),
+        'linkClick'=>'
+            $("#item-list-wrap").on("click",".item-list",function(){
+                location = $(this).attr("data-href")+"&fault_id='.$fault_id.'";
+            });
+        '
     ]);
 
 ?>
@@ -137,7 +142,7 @@ $this->registerCss($this->blocks['CSS']);
 <div id="item-list-wrap">
     <?php if($model):?>
         <?php foreach($model as $row):?>
-   <a class="item-list" href="<?=Url::toRoute(['detail','id'=>$row['wx_id'],'item_id'=>$row['id']])?>">
+   <a class="item-list" <?=$fault_id? 'data-':''?>href="<?=Url::toRoute(['detail','id'=>$row['wx_id'],'item_id'=>$row['id']])?>">
        <img src="<?=$row['cover']?>">
        <span>
            <h5><?=$row['name']?></h5>

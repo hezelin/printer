@@ -2,6 +2,8 @@
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '任务列表';
+Yii::$app->params['layoutBottomHeight'] = 40;
+
 ?>
 
 <div class="h-list">
@@ -27,3 +29,7 @@ $this->title = '任务列表';
         <p class="blank-info">没有新维修任务</p>
     <?php endif;?>
 </div>
+
+    <a class="h-fixed-bottom" href="<?=Url::toRoute(['m/record','id'=>$id])?>">
+        历史维修
+    </a>

@@ -1,47 +1,45 @@
 <?php
-    $this->title = '维修进度';
+use yii\helpers\Url;
+    $this->title = '申请配件';
 ?>
-<style>
-    body{ background-color: #ffffff !important;}
-</style>
-
-<div class="h-box">
-    <div class="h-title h-gray h-hr">故障信息</div>
-    <div class="h-box-row h-hr">
-        <div class="h-left">
-            <img class="h-img" src="<?=$model['fault_cover']?>" />
-        </div>
-        <div class="h-right">
-            <h4 class="h-row-1 h-hr">故障类型：<?=\app\models\ConfigBase::getFaultStatus($model['fault_type'])?></h4>
-            <p class="h-row-2"><?=$model['desc']?></p>
-        </div>
-    </div>
+<div class="h-center-wrap">
+    <a class="h-link" href="<?=Url::toRoute(['shop/parts/list','id'=>$id,'fault_id'=>$fault_id])?>">
+        申请配件
+    </a>
+    <a id="process-btn" class="h-link" href="javascript:void()">
+        扫描配件绑定
+    </a>
 </div>
 
-<div class="h-box">
-    <div class="h-title h-gray h-hr">维修进度</div>
-    <ul class="h-process">
-        <?php if($process):?>
-            <?php foreach($process as $k=>$p):?>
-                <?php echo $k==0? '<li class="h-active">':'<li>';?>
-                    <i class="h-icon-circle"></i>
-                    <p class="h-text">
-                        <?php
-                            $content = json_decode($p['content'],true);
-                            echo \app\models\ConfigBase::getFixStatus($content['status']);
-                        ?>
-                    </p>
-                    <p class="h-text-2"><?=date('Y-m-d H:i',$p['add_time'])?></p>
-                </li>
-            <?php endforeach;?>
-            <li>
-        <?php else:?>
-            <li class="h-active">
-        <?php endif;?>
-            <i class="h-icon-circle"></i>
-            <p class="h-text">发起维修申请</p>
-            <p class="h-text-2"><?=date('Y-m-d H:i',$model['add_time'])?></p>
-        </li>
-    </ul>
+<script>
+    <?php $this->beginBlock('JS_END') ?>
+    var mUrl = '<?=$mUrl?>';
+    <?php $this->endBlock();?>
+</script>
 
-</div>
+<?php
+\app\assets\ZeptoAsset::register($this);
+$this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
+
+\app\components\WxjsapiWidget::widget([
+    'wx_id'=>$id,
+    'apiList'=>['scanQRCode','previewImage','openLocation'],
+    'jsReady'=>'
+        document.querySelector("#process-btn").onclick = function () {
+            wx.scanQRCode({
+                needResult: 1,  // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    if( result.indexOf(mUrl) >= 0 ){
+                        var machine_id = result.substr( result.lastIndexOf("/") + 1);
+                        alert( " 等待开发中（配件和机器绑定）");
+                    }else{
+                        alert("二维码不符合！");
+                    }
+                }
+            });
+            return false;
+        };'
+])
+?>

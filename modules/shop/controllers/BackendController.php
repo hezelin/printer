@@ -2,9 +2,9 @@
 
 namespace app\modules\shop\controllers;
 
-use app\models\TblCategory;
-use app\models\TblProduct;
-use app\models\TblProductSearch;
+use app\modules\shop\models\TblCategory;
+use app\modules\shop\models\TblProduct;
+use app\modules\shop\models\TblProductSearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;

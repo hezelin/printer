@@ -255,4 +255,17 @@ class SController extends \yii\web\Controller
         return $this->render('mrecord');
     }
 
+    /*
+     * 维修进度申请配件
+     *
+     */
+    public function actionApplyparts($id,$fault_id)
+    {
+        return $this->render('applyparts',[
+            'id'=>$id,
+            'fault_id'=>$fault_id,
+            'mUrl' => Url::toRoute(['codeapi/machine'],'http'),
+        ]);
+    }
+
 }

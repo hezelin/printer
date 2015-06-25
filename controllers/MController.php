@@ -210,7 +210,7 @@ class MController extends \yii\web\Controller
         }
 
 
-        return $this->render('task',['model'=>$model]);
+        return $this->render('task',['model'=>$model,'id'=>$id]);
     }
 
     /*
@@ -307,7 +307,7 @@ class MController extends \yii\web\Controller
                             Html::tag('div',
                                 Html::a(
                                     ConfigBase::getFixMaintainStatus($status),
-                                    Url::toRoute(['s/applyparts','id'=>$model['id'],'openid'=>$openid]),
+                                    Url::toRoute(['s/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
                                     [
                                         'data-ajax'=>0,
                                         'data-status'=>$status+1,
