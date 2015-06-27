@@ -114,6 +114,8 @@ WeixinAsset::register($this);
                                         ['label' => '待分配维修','url' => '/service/index'],
                                         ['label' => '维修列表','url' => '/service/list'],
                                         ['label' => '取消列表','url' => '/service/cancellist'],
+                                        ['label' => '维修配件管理', 'url' => '/shop/adminparts/list','route'=>'/shop/adminparts'],
+
                                     ],
                                 ],
                                 [
