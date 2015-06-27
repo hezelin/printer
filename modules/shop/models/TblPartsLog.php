@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\modules\shop\models;
 
 use Yii;
 
@@ -14,17 +14,19 @@ class TblPartsLog extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['parts_id', 'remark', 'add_time'], 'required'],
-            [['parts_id', 'add_time'], 'integer'],
-            [['remark'], 'string', 'max' => 250]
+            [['parts_id', 'content', 'status', 'add_time'], 'required'],
+            [['parts_id', 'status', 'add_time'], 'integer'],
+            [['content'], 'string', 'max' => 300]
         ];
     }
 
     public function attributeLabels()
     {
         return [
+            'id' => '自增id',
             'parts_id' => '配件id',
-            'remark' => '标记内容',
+            'content' => '内容',
+            'status' => '状态',
             'add_time' => '添加时间',
         ];
     }

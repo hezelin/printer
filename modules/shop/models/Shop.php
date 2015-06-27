@@ -42,19 +42,9 @@ class Shop {
     /*
      * 获取 携带配件状态
      */
-    public static function getBringParts($id='')
+    public static function getParts($id='')
     {
-        $data = [1=>'申请中',2=>'携带中',3=>'已分配',4=>'已归还'];
-        if($id)
-            return isset($data[$id])? $data[$id]:'出错';
-        return $data;
-    }
-    /*
-     * 获取维修配件状态
-     */
-    public static function getFaultParts($id='')
-    {
-        $data = [1=>'申请中',2=>'已发送',3=>'已到达',4=>'已归还'];
+        $data = [1=>'申请中',2=>'携带中',3=>'发送中',4=>'已到达',10=>'已绑定',11=>'已取消',12=>'已回收'];
         if($id)
             return isset($data[$id])? $data[$id]:'出错';
         return $data;
