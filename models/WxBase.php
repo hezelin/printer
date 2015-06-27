@@ -58,21 +58,21 @@ class WxBase {
      * 获取用户 openId
      * @params $id 公众号id
      */
-    public static function openId($id)
+    public static function openId($id,$isCache=true,$route=false)
     {
 //        return 'oXMyutx3Nd4fhViJozPKbqV6N3xA';
 //        return 'oXMyut1RFKZqchW8qt_6h0OT8FN4';
-        if(isset( $_GET['openid']) && $_GET['openid'] && strlen($_GET['openid']) == 28)
+        if($isCache && isset( $_GET['openid']) && $_GET['openid'] && strlen($_GET['openid']) == 28)
             return Yii::$app->session['openid'] = $_GET['openid'];
 
-        if(isset( Yii::$app->session['openid']) )
+        if($isCache && isset( Yii::$app->session['openid']) )
             return Yii::$app->session['openid'];
         /*
          * 这里可以加入判断 是否微信来源
          * 如果是 请求下面的链接
          * 如果否 跳转到登录页面
          */
-        return Yii::$app->getResponse()->redirect( self::webOpenId($id));
+        return Yii::$app->getResponse()->redirect( self::webOpenId($id,'base',$route));
     }
 
     /*
@@ -81,9 +81,9 @@ class WxBase {
      * 然后判断数据库是否保存了 用户资料
      * 最后拉取授权
      */
-    public static function webUser($id)
+    public static function webUser($id,$route=false)
     {
-        return Yii::$app->getResponse()->redirect( self::webOpenId($id,'userinfo'));
+        return Yii::$app->getResponse()->redirect( self::webOpenId($id,'userinfo',$route));
     }
 
     /*
@@ -92,10 +92,10 @@ class WxBase {
      * 回调redirect_uri 为  /openUrl/route?route=当前url
      * $type = base / userinfo
      */
-    public static function webOpenId($id,$type='base')
+    public static function webOpenId($id,$type='base',$route=false)
     {
         $openUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize';
-        $url = Url::toRoute(['openurl/route','route'=>Yii::$app->request->url,'id'=>$id],true);
+        $url = Url::toRoute(['openurl/route','route'=>$route? :Yii::$app->request->url,'id'=>$id],true);
         $state = $type;
 
         $params = [

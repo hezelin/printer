@@ -18,9 +18,9 @@ class ToolBase {
     public static function url($url,$arr=[])
     {
         if(strpos($url,'?') !== false){                     // 如果路径存在 问号 ？
-            list($baseUrl,$query) = explode('?',urldecode($url) );
-            if( $query ){
-                foreach( explode('&',$query) as $q )
+            list($baseUrl,$query) = explode('?',urldecode($url),2);
+            if( $query && $params = explode('&',$query) ){
+                foreach( $params as $q )
                 {
                     if(!$q) continue;                       // 空白过滤
                     list($k,$v) = explode('=',$q);
