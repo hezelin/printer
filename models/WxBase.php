@@ -62,7 +62,7 @@ class WxBase {
     {
 //        return 'oXMyutx3Nd4fhViJozPKbqV6N3xA';
 //        return 'oXMyut1RFKZqchW8qt_6h0OT8FN4';
-        if($isCache && isset( $_GET['openid']) && $_GET['openid'] && strlen($_GET['openid']) == 28)
+        if(isset( $_GET['openid']) && $_GET['openid'] && strlen($_GET['openid']) == 28)
             return Yii::$app->session['openid'] = $_GET['openid'];
 
         if($isCache && isset( Yii::$app->session['openid']) )
@@ -92,14 +92,14 @@ class WxBase {
      * 回调redirect_uri 为  /openUrl/route?route=当前url
      * $type = base / userinfo
      */
-    public static function webOpenId($id,$type='base',$route=false)
+    public static function webOpenId($wx_id,$type='base',$route=false)
     {
         $openUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize';
-        $url = Url::toRoute(['openurl/route','route'=>$route? :Yii::$app->request->url,'id'=>$id],true);
+        $url = Url::toRoute(['/openurl/route','route'=>$route? :Yii::$app->request->url,'wx_id'=>$wx_id],true);
         $state = $type;
 
         $params = [
-            'appid'=>self::appId($id),
+            'appid'=>self::appId($wx_id),
             'redirect_uri'=>$url,
             'response_type'=>'code',
             'scope'=>'snsapi_' . $type,

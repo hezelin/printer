@@ -14,7 +14,7 @@ class OpenurlController extends \yii\web\Controller
      * 可获取到 openid ，并且跳转会 route 参数的来源 url
      * 防死循环，增加一个参数 request_num = 1;
      */
-    public function actionRoute($id)
+    public function actionRoute($wx_id)
     {
         if(isset($_GET['request_num']) && $_GET['request_num'] >= 1 )
             throw new BadRequestHttpException('不合法请求');
@@ -24,8 +24,8 @@ class OpenurlController extends \yii\web\Controller
             $route = $_GET['route'];
 
             $param2 = array(
-                'appid'=>WxBase::appId($id),
-                'secret'=>WxBase::appSecret($id),
+                'appid'=>WxBase::appId($wx_id),
+                'secret'=>WxBase::appSecret($wx_id),
                 'grant_type'=>'authorization_code',
                 'code'=>$_GET['code'],
             );
