@@ -14,6 +14,7 @@ use yii\helpers\Url;
 <script>
     <?php $this->beginBlock('JS_END') ?>
     var mUrl = '<?=$mUrl?>';
+    var fault_id = fault_id || <?=$fault_id?>;
     <?php $this->endBlock();?>
 </script>
 
@@ -23,7 +24,7 @@ $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
 
 \app\components\WxjsapiWidget::widget([
     'wx_id'=>$id,
-    'apiList'=>['scanQRCode','previewImage','openLocation'],
+    'apiList'=>['scanQRCode'],
     'jsReady'=>'
         document.querySelector("#process-btn").onclick = function () {
             wx.scanQRCode({
@@ -32,8 +33,7 @@ $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
                 success: function (res) {
                     var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
                     if( result.indexOf(mUrl) >= 0 ){
-                        var machine_id = result.substr( result.lastIndexOf("/") + 1);
-                        alert( " 等待开发中（配件和机器绑定）");
+                        location = result+"&fault_id="+fault_id;
                     }else{
                         alert("二维码不符合！");
                     }

@@ -264,7 +264,7 @@ class SController extends \yii\web\Controller
         return $this->render('applyparts',[
             'id'=>$id,
             'fault_id'=>$fault_id,
-            'mUrl' => Url::toRoute(['codeapi/machine'],'http'),
+            'mUrl' => Url::toRoute(['/shop/codeapi/parts'],'http'),
         ]);
     }
 

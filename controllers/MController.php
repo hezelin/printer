@@ -114,6 +114,8 @@ class MController extends \yii\web\Controller
 
         $model = TblMachineService::findOne($id);
         $model->status = $status;
+        if($status == 8)    $model->complete_time = time();     // 维修完成时间
+
         if( !$model->save())
             Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
         $mid = $model->machine_id;
@@ -221,7 +223,7 @@ class MController extends \yii\web\Controller
     {
         $model = (new \yii\db\Query())
             ->select('t.id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    t.machine_id as mid, m.address,m.name,m.phone,m.wx_id,
+                    t.machine_id as mid,t.unfinished_parts_num, m.address,m.name,m.phone,m.wx_id,
                     m.latitude,m.longitude
             ')
             ->from('tbl_machine_service as t')
@@ -256,21 +258,6 @@ class MController extends \yii\web\Controller
                                 'class'=>'h-fixed-bottom',
                                 'id'=>'process-btn',
                                 'data-href'=>Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid])
-                            ]
-                        )
-                    ]);
-            case 6:
-            case 7: return $this->render('process', [
-                        'model' => $model,
-                        'openid' => $openid,
-                        'btnHtml'=>Html::a(
-                            ConfigBase::getFixMaintainStatus($status),
-                            Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
-                            [
-                                'data-ajax'=>1,
-                                'data-status'=>$status+1,
-                                'class'=>'h-fixed-bottom',
-                                'id'=>'process-btn'
                             ]
                         )
                     ]);
@@ -318,6 +305,64 @@ class MController extends \yii\web\Controller
                             ['class'=>'h-fixed-bottom']
                         )
                     ]);
+            case 6:
+                if($model['unfinished_parts_num'] <= 0){
+                    return $this->render('process', [
+                        'model' => $model,
+                        'openid' => $openid,
+                        'btnHtml'=>Html::tag(
+                            'div',
+                            Html::tag('div',
+                                Html::a(
+                                    '维修完成',
+                                    Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                                    [
+                                        'data-ajax'=>1,
+                                        'data-status'=>8,
+                                        'id'=>'process-btn'
+                                    ]),
+                                ['class'=>'h-off-50']
+                            ).
+                            Html::tag('div',
+                                Html::a(
+                                    '申请配件',
+                                    Url::toRoute(['s/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
+                                    [
+                                        'data-ajax'=>0,
+                                        'data-status'=>$status+1,
+                                        'id'=>'process-btn'
+                                    ]),
+                                ['class'=>'h-off-50']
+                            ),
+                            ['class'=>'h-fixed-bottom']
+                        )
+                    ]);
+                }
+                return $this->render('process', [
+                    'model' => $model,
+                    'openid' => $openid,
+                    'btnHtml'=> Html::tag('div',
+                            Html::a(
+                                '配件进度',
+                                Url::toRoute(['/shop/parts/process','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
+                                ['data-ajax'=>0,'id'=>'process-btn']
+                            ),
+                        ['class'=>'h-fixed-bottom'] )
+                    ]);
+            case 7: return $this->render('process', [
+                'model' => $model,
+                'openid' => $openid,
+                'btnHtml'=>Html::a(
+                    ConfigBase::getFixMaintainStatus($status),
+                    Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                    [
+                        'data-ajax'=>1,
+                        'data-status'=>$status+1,
+                        'class'=>'h-fixed-bottom',
+                        'id'=>'process-btn'
+                    ]
+                )
+            ]);
             case 8:
             case 9:
                 $evaluate = (new \yii\db\Query())
@@ -341,8 +386,6 @@ class MController extends \yii\web\Controller
                 ])
             ]);
         }
-
-
     }
 
     /*

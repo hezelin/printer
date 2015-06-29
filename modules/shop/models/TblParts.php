@@ -41,7 +41,7 @@ class TblParts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['wx_id', 'item_id', 'openid', 'status'], 'required'],
+            [['wx_id', 'item_id', 'openid'], 'required'],
             [['wx_id', 'item_id', 'fault_id', 'status', 'apply_time', 'bing_time'], 'integer'],
             [['enable'], 'string'],
             [['openid'], 'string', 'max' => 28],

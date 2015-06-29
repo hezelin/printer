@@ -37,6 +37,7 @@ echo GridView::widget([
         ],
         [
             'attribute'=>'type',
+            'filter'=>ConfigBase::$faultStatus,
             'value'=>function($data)
             {
                 return ConfigBase::getFaultStatus($data->type);

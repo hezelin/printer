@@ -66,7 +66,7 @@ class TblFaultCancelLogSearch extends TblFaultCancelLog
             'wx_id' => $this->wx_id,
             'service_id' => $this->service_id,
             'type' => $this->type,
-            'add_time' => $this->add_time,
+            'tbl_fault_cancel_log.add_time' => $this->add_time,
         ]);
 
         $query->andFilterWhere(['like', 'opera', $this->opera])

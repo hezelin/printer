@@ -130,3 +130,27 @@ body {background-color:#fff; }
   margin: 0.5em auto;  height: 2.5em;  line-height: 2.5em;  font-size: 1.5em;
   text-align: center;  display: block;  .radius(4px);
 }
+
+/*************   居中 按钮 *************/
+.h-center-wrap{
+  margin: 15% auto 10%;  width: 80%;
+  .h-button{
+    .w(100%);
+  }
+}
+.h-link{
+  height: auto;  color: #ffffff;  .p(10px 0);
+  display: block;  .size(20px);  .bg-c(@color);
+  .radius(4px);
+  outline: none;  text-decoration: none;
+  .w(100%); .m(30px 0); .t-c;
+}
+
+/**************   表单 *****************/
+.h-input{ width: 80%; display: block; margin: 5% auto;
+  .h-l(40px); .p(0 5px); .size(16px);
+  color: #999999; border: 1px solid #CCCCCC;}
+.h-area{
+  .h-input;
+  .h(120px); .l(24px); text-align: left; .p(5px);
+}
