@@ -45,14 +45,9 @@ $this->title = '店铺设置';
         ['class' => 'form-group']) ?>
     <?= $form->field($model, 'store_name')->textInput(['value'=>$model->store_name?$model->store_name:Yii::$app->session['wechat']['name']]) ?>
     <?= $form->field($model, 'menu_name')->textInput() ?>
-    <?= $form->field($model, 'style')->dropDownList(['1'=>'home-default.css'],['prompt'=>'请选择']) ?>
-    <?php
-        switch($model->style){
-            case '1': $cssimg = 'home-default.jpg'; break;
-            default : $cssimg = 'home-default.jpg';
-        }
-    ?>
-    <img id="cssimg" class="col-lg-offset-3" src="/images/<?= $cssimg ?>" style="border:1px solid #ccc;max-width:250px">
+    <?= $form->field($model, 'phone')->textInput() ?>
+    <?= $form->field($model, 'address')->textInput() ?>
+    <?= $form->field($model, 'style')->dropDownList(['home-default.css'=>'默认']) ?>
 
     <div class="form-group">
         <div class="h3 col-lg-offset-2 col-lg-9">
