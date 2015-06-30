@@ -127,8 +127,10 @@ echo GridView::widget([
         ],
         [
             'attribute'=>'bing_time',
-            'label'=>'申请时间',
-            'format'=>['date','php:Y-m-d H:i'],
+            'label'=>'绑定时间',
+            'value'=>function($model){
+                return $model->bing_time? date('Y-m-d H:i',$model->bing_time):'无';
+            }
         ],
         [
             'class' => 'yii\grid\ActionColumn',

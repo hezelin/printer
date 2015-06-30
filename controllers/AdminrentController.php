@@ -120,8 +120,8 @@ class AdminrentController extends \yii\web\Controller
 
         if($model->load( Yii::$app->request->post()))
         {
-            $model->due_time = $model->due_time? strtotime($model->due_time):0;
-            $model->first_rent_time = $model->first_rent_time? strtotime($model->first_rent_time):0;
+            $model->first_rent_time = ($model->first_rent_time && $model->first_rent_time != '1970-01-01')? strtotime($model->first_rent_time):0;
+            $model->due_time = ($model->due_time && $model->due_time != '1970-01-01')? strtotime($model->due_time):0;
 
             if($model->save()) {
                 return $this->render('//tips/success', [
@@ -195,7 +195,9 @@ class AdminrentController extends \yii\web\Controller
             $model->wx_id = Cache::getWid();
             $model->status = 2;
 
-            $model->due_time = $model->due_time? strtotime($model->due_time):0;
+            $model->first_rent_time = ($model->first_rent_time && $model->first_rent_time != '1970-01-01')? strtotime($model->first_rent_time):0;
+            $model->due_time = ($model->due_time && $model->due_time != '1970-01-01')? strtotime($model->due_time):0;
+
 
             if($model->save()) {
                 $model->updateMachineStatus();
