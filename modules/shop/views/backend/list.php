@@ -71,14 +71,17 @@ $this->title = '商品列表';
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions'=>['style'=>'width:120px'],
-            'template' => '{view} &nbsp; {status} &nbsp; {update} &nbsp; {delete}',
+            'headerOptions'=>['style'=>'width:140px'],
+            'template' => '{view} &nbsp; {status} &nbsp; {update} &nbsp; {qrcode} &nbsp; {delete}',
             'buttons' => [
                 'status' => function($url,$model,$key){
                     $icon = $model->status == 1? 'glyphicon glyphicon-arrow-down':'glyphicon glyphicon-arrow-up';
                     return Html::a('<i class="'.$icon.'"></i>',Url::toRoute(['status','id'=>$key,'status'=>$model->status]),[
                         'title' => $model->status == 1? '下架':'上架'
                     ]);
+                },
+                'qrcode' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['code/item','id'=>$key,'wx_id'=>$model->wx_id]),['title'=>'配件二维码']);
                 },
                 'delete'=>function($url,$model,$key){
                     return Html::a('<i class="glyphicon glyphicon-trash"></i>',$url,[

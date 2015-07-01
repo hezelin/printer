@@ -31,6 +31,7 @@ class WxBase {
             $model = TblWeixin::find()
                 ->where(['id'=>$id,'enable'=>'Y'])
                 ->one();
+
             Yii::$app->redis->hmset('wx:'.$id, 'appid',$model->app_id,'appsecret',$model->app_secret);
             Yii::$app->redis->expire('wx:'.$id, self::$redisTimeout);
             return $model->app_id;

@@ -227,7 +227,7 @@ class MController extends \yii\web\Controller
                     m.latitude,m.longitude
             ')
             ->from('tbl_machine_service as t')
-            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
+            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id')
             ->where(['t.id' => $id])
             ->one();
         if(!$model)

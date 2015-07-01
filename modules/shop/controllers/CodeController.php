@@ -32,4 +32,20 @@ class CodeController extends \yii\web\Controller
 
         return $this->render('parts',['qrcodeImgUrl'=>$imgUrl.'/'.$id.'.jpg']);
     }
+
+    public function actionItem($id,$wx_id)
+    {
+        $index = (int)($id/500);
+        $imgUrl = '/images/item/'.(int)($index/500).'/'.$index;
+        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.jpg') ){
+            $urlParams = [
+                'text' => Url::toRoute(['/shop/item/detail','id'=>$wx_id,'item_id'=>$id],'http'),
+            ];
+            $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+            $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
+            file_put_contents($dir.'/'.$id.'.jpg',file_get_contents($qrcodeImgUrl));
+        }
+
+        return $this->render('item',['qrcodeImgUrl'=>$imgUrl.'/'.$id.'.jpg']);
+    }
 }
