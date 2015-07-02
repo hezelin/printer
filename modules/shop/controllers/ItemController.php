@@ -5,6 +5,7 @@
 
 namespace app\modules\shop\controllers;
 
+use app\models\WxBase;
 use yii\web\Controller;
 use Yii;
 
@@ -60,6 +61,9 @@ class ItemController extends Controller
      */
     public function actionDetail($id,$item_id)
     {
+//        $openid = WxBase::openId($id);
+        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+
         $model = (new \yii\db\Query())
             ->select('t.id,t.wx_id,c.name as category,t.name,t.cover_images,t.price,t.market_price,t.describe,t.add_attr')
             ->from('tbl_product as t')
@@ -69,7 +73,7 @@ class ItemController extends Controller
         $model['cover_images'] = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
         $model['else_attr'] = json_decode($model['add_attr'],true);
 
-        return $this->render('detail',['model'=>$model,'id'=>$id]);
+        return $this->render('detail',['model'=>$model,'id'=>$id,'openid'=>$openid]);
     }
 
     /*
