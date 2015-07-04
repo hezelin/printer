@@ -33,6 +33,8 @@ $this->title = '商品列表';
         'market_price',
         'price',
         'amount',
+        'use_score',
+        'give_score',
         [
             'attribute'=>'add_attr',
             'headerOptions'=>['style'=>'width:160px'],

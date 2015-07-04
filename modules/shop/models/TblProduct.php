@@ -15,7 +15,7 @@ class TblProduct extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'category_id', 'name', 'cover', 'cover_images', 'market_price', 'price', 'amount', 'describe', 'add_attr', 'add_time'], 'required'],
-            [['wx_id', 'category_id', 'amount', 'add_time', 'status'], 'integer'],
+            [['wx_id', 'category_id', 'amount', 'use_score', 'give_score', 'add_time', 'status'], 'integer'],
             [['market_price', 'price'], 'number'],
             [['describe', 'enable'], 'string'],
             [['name'], 'string', 'max' => 120],
@@ -34,9 +34,11 @@ class TblProduct extends \yii\db\ActiveRecord
             'name' => '名称',
             'cover' => '封面图片',
             'cover_images' => '封面图片',
-            'market_price' => '成本价格',
+            'market_price' => '进货价格',
             'price' => '销售价格',
             'amount' => '商品数量',
+            'use_score' => '可使用积分',
+            'give_score' => '赠送积分',
             'describe' => '产品描述',
             'add_attr' => '商品规格',
             'add_time' => '添加时间',

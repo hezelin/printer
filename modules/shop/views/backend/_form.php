@@ -33,6 +33,8 @@ use yii\bootstrap\Alert;
     <?= $form->field($model, 'market_price')->textInput(['placeholder'=>'成本价格'])?>
     <?= $form->field($model, 'price')->textInput(['placeholder'=>'销售价格'])?>
     <?= $form->field($model, 'amount')->textInput(['placeholder'=>'库存数量'])?>
+    <?= $form->field($model, 'use_score')->textInput(['placeholder'=>'默认为0'])?>
+    <?= $form->field($model, 'give_score')->textInput(['placeholder'=>'默认为0'])?>
     <?= $form->field($model, 'category_id')->widget(\kartik\select2\Select2::classname(), [
         'data' => $category,
         'language' => 'zh-CN',

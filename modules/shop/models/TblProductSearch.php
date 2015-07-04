@@ -5,10 +5,11 @@ namespace app\modules\shop\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use app\modules\shop\models\TblProduct;
 use app\models\Cache;
 
 /**
- * TblProductSearch represents the model behind the search form about `app\models\TblProduct`.
+ * TblProductSearch represents the model behind the search form about `app\modules\shop\models\TblProduct`.
  */
 class TblProductSearch extends TblProduct
 {
@@ -18,7 +19,7 @@ class TblProductSearch extends TblProduct
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'category_id', 'amount', 'add_time', 'status'], 'integer'],
+            [['id', 'wx_id', 'category_id', 'amount', 'use_score', 'give_score', 'add_time', 'status'], 'integer'],
             [['name', 'cover', 'cover_images', 'describe', 'add_attr', 'enable'], 'safe'],
             [['market_price', 'price'], 'number'],
         ];
@@ -63,6 +64,8 @@ class TblProductSearch extends TblProduct
             'market_price' => $this->market_price,
             'price' => $this->price,
             'amount' => $this->amount,
+            'use_score' => $this->use_score,
+            'give_score' => $this->give_score,
             'add_time' => $this->add_time,
             'status' => $this->status,
         ]);
