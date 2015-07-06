@@ -46,8 +46,8 @@ class CartController extends Controller
      */
     public function actionList($id)
     {
-        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
-//        $openid = WxBase::openId($id);
+//        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+        $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('t.id,t.item_nums,p.cover,p.price,p.name')
             ->from('tbl_shop_cart as t')

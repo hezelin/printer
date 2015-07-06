@@ -49,4 +49,26 @@ class Shop {
             return isset($data[$id])? $data[$id]:'出错';
         return $data;
     }
+
+    /*
+     * 获取 付款方式
+     */
+    public static function getPayStatus($id='')
+    {
+        $data = [1=>'货到付款',2=>'上门自取',3=>'在线支付',4=>'付款完成'];
+        if($id)
+            return isset($data[$id])? $data[$id]:'出错';
+        return $data;
+    }
+
+    /*
+     * 获取 订单状态
+     */
+    public static function getOrderStatus($id='')
+    {
+        $data = [ 1=>'审核中', 2=>'审核失败', 3=>'等待付款', 4=>'等待发货', 5=>'已发货', 6=>'订单完成', 7=>'订单已取消', 8=>'订单已取消(系统)'];
+        if($id)
+            return isset($data[$id])? $data[$id]:'出错';
+        return $data;
+    }
 } 

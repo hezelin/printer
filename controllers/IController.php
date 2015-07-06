@@ -3,6 +3,7 @@
 namespace app\controllers;
 use app\models\TblMachineService;
 use app\models\TblRentApply;
+use app\models\TblUserWechat;
 use app\models\TblWechatMachine;
 use app\models\WxBase;
 use yii\web\NotFoundHttpException;
@@ -11,9 +12,11 @@ class IController extends \yii\web\Controller
 {
     public  $layout = 'home';  //使用home布局
 
-    public function actionIndex()
+    public function actionIndex($id)
     {
-        return $this->render('index');
+        $openid = WxBase::openId($id);
+        $model = TblUserWechat::find()->select('nickname,headimgurl,province,city')->where(['openid'=>$openid,'wx_id'=>$id])->one();
+        return $this->render('index',['model'=>$model,'id'=>$id]);
     }
 
     /*
@@ -36,6 +39,9 @@ class IController extends \yii\web\Controller
         return $this->render('machine',['model'=>$model,'id'=>$id]);
     }
 
+    /*
+     * 我的积分
+     */
     public function actionScore()
     {
         return $this->render('score');

@@ -28,7 +28,7 @@ echo GridView::widget([
             {
                 if(!$data->cover) return '没有图片';
                 $covers = json_decode($data->cover,true);
-                $html = [];
+                if(is_array($covers) )
                 foreach($covers as $cover){
                     $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class' => 'fancybox','rel'=>'group1']);
                 }

@@ -37,7 +37,7 @@ class SController extends \yii\web\Controller
                 $wx = new WxMedia($id);
                 $model->cover = json_encode( $wx->getImages( explode('|',$_POST['TblMachineService']['imgid'] ) ) );
             }else
-                $model->cover = json_encode('/images/default_image.png');
+                $model->cover = json_encode(['/images/default_image.png']);
 
             $model->load(Yii::$app->request->post());
             if( $model->save() ){

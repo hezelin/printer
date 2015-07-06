@@ -110,9 +110,9 @@ $this->title = '商品二维码';
             共 <span id="cart-count"><?php echo $total;?></span> 件
             <b class="cart-money">￥<span id="cart-money"><?php echo $totalPrice;?></span></b>
     </div>
-    <button type="button" class="h-button">立即结算</button>
+    <a href="<?=\yii\helpers\Url::toRoute(['/shop/order/put','id'=>$id])?>" class="h-button">立即结算</a>
     <br/>
-    <a type="button" class="h-button-default">继续添加</a>
+    <a href="<?=\yii\helpers\Url::toRoute(['/shop/item/list','id'=>$id])?>" type="button" class="h-button-default">继续添加</a>
 </div>
 
 
