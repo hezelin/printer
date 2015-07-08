@@ -94,7 +94,10 @@ class OrderController extends Controller
                 echo $e;
                 return $this->render('//tips/homestatus',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
             }
-            return $this->render('//tips/homestatus',['tips'=>'订单提交成功','btnText'=>'返回我的订单','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
+
+            return $this->render('pay',['id'=>$id,'order_id'=>$model->order_id,'price'=>$model->total_price,'payStatus'=>$model->pay_status]);
+
+//            return $this->render('//tips/homestatus',['tips'=>'订单提交成功','btnText'=>'返回我的订单','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
         }
 
         $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
@@ -150,7 +153,13 @@ class OrderController extends Controller
      */
     public function actionPay($id,$order_id)
     {
-        echo '这里是订单付款页面';
+        $model = TblShopOrder::findOne($order_id);
+        if(!$model)
+            return $this->render('//tips/homestatus',['tips'=>'订单不存在!','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1)']);
+        $price = $model->total_price;
+        $payStatus = $model->pay_status;
+        unset($model);
+        return $this->render('pay',['id'=>$id,'order_id'=>$order_id,'price'=>$price,'payStatus'=>$payStatus]);
     }
 
     /*
