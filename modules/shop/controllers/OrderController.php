@@ -30,6 +30,9 @@ class OrderController extends Controller
             $model->add_time = time();
             $model->wx_id = $id;
             $model->order_id = date('YmdHis',time()).rand(1000,9999);
+            if($model->pay_status == 3)         // 在线支付，更改为等待付款
+                $model->order_status = 3;
+
             $openid = $model['openid'];
             $items = (new \yii\db\Query())
                 ->select('t.item_id,t.item_nums,p.name,p.cover,p.price')
@@ -94,8 +97,8 @@ class OrderController extends Controller
             return $this->render('//tips/homestatus',['tips'=>'订单提交成功','btnText'=>'返回我的订单','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
         }
 
-//        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
-        $openid = WxBase::openId($id);
+        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+//        $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('t.id,t.item_nums,p.cover,p.price,p.name,p.use_score,p.give_score')
             ->from('tbl_shop_cart as t')
@@ -140,5 +143,42 @@ class OrderController extends Controller
         $item = json_decode($model['order_data'],true);
 
         return $this->render('detail',['model'=>$model,'id'=>$id,'item'=>$item]);
+    }
+
+    /*
+     * 订单付款
+     */
+    public function actionPay($id,$order_id)
+    {
+        echo '这里是订单付款页面';
+    }
+
+    /*
+     * 更改订单状态，删除、取消
+     */
+    public function actionStatus($id,$order_id)
+    {
+        if( $status = Yii::$app->request->post('status')){
+            $model = TblShopOrder::findOne($order_id);
+            if( $status == 'cancel'){
+                $model->order_status = 8;
+            }elseif($status == 'delete')
+                $model->enable = 'N';
+            else
+                return json_encode(['status'=>0,'msg'=>'参数错误!']);
+            if($model->save())
+                return json_encode(['status'=>1]);
+            else
+                return json_encode(['status'=>0,'msg'=>'入库失败!']);
+        }
+        return json_encode(['status'=>1]);
+    }
+
+    /*
+     * 订单 物流状态
+     */
+    public function actionExpress($id,$order_id)
+    {
+        echo '这里是订单物流状态';
     }
 }

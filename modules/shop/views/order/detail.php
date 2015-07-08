@@ -103,6 +103,10 @@ $this->title = '订单详情';
     }
     .order-btn-left{ border-right: 1px solid #EEEEEE;}
     .btn-failure{ color: #cccccc;}
+    .test{
+        padding: 10px 0;
+        border-radius: 2px;
+    }
 </style>
 
 <div id="order-detail">
@@ -111,12 +115,14 @@ $this->title = '订单详情';
         <p>订单编号：<span><?=$model['order_id']?></span></p>
         <p>下单时间：<span><?=date('Y-m-d H:i',$model['add_time'])?></span></p>
         <p>付款方式：<span><?=Shop::getPayStatus($model['pay_status'])?></span></p>
-        <?php if($model['check_word']):?>
+        <?php if($model['order_status']==2):?>
         <p class="check-word">审核失败：<span><?=$model['check_word']?></span></p>
         <?php endif;?>
+        <?php if($model['order_status']==9):?>
+            <p class="check-word">取消原因：<span><?=$model['check_word']?></span></p>
+        <?php endif;?>
         <div class="order-btn-group">
-            <a class="order-btn order-btn-left"><?=Shop::getOrderStatus($model['order_status'])?></a>
-            <a class="order-btn btn-failure">查看物流</a>
+        <?= Shop::getOrderBtn($model['order_status'],$model['order_id'],$id) ?>
         </div>
     </div>
     <div class="order-title">收件人信息</div>
@@ -154,7 +160,38 @@ $this->title = '订单详情';
 <script>
     <?php $this->beginBlock('JS_END') ?>
     $(function(){
-
+        // ajax 操作，取消、删除订单
+        var hasClick =0;
+        $('.order-btn-ajax').click(function(){
+            if(hasClick == 1) return false;
+            hasClick = 1;
+            var type = $(this).attr('data-type');
+            var orderId = $(this).attr('data-order');
+            var $this = $(this);
+            $.post(
+                '<?=Url::toRoute(['/shop/order/status','id'=>$id])?>&order_id='+orderId,
+                {status:type},
+                function(resp){
+                    if(resp.status == 1)
+                    {
+                        if(type == 'delete'){
+                            if($this.closest('li').length > 0){
+                                $this.closest('li').remove();
+                            } else
+                                $this.text('已删除').addClass('btn-failure');
+                        }else{
+                            $this.attr('data-type','delete').text('删除订单');
+                            $this.prev('a').text('已取消').addClass('btn-failure');
+                        }
+                    }else alert(resp.msg);
+                    hasClick = 0;
+                },'json'
+            );
+        });
+        // 取消订单
+        $('.order-btn-cancel').click(function(){
+            return false;
+        });
     });
     <?php $this->endBlock();?>
 </script>

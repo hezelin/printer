@@ -2,6 +2,7 @@
 namespace app\modules\shop\models;
 
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use app\models\Cache;
 /**
  * 商城状态类
@@ -63,12 +64,56 @@ class Shop {
 
     /*
      * 获取 订单状态
+     * （等待付款 or 审核中） -> (审核失败 | 等待发货 | 等待取货） -> ( 已发货 ， 订单完成 ）->  ( 订单完成 )
      */
     public static function getOrderStatus($id='')
     {
-        $data = [ 1=>'审核中', 2=>'审核失败', 3=>'等待付款', 4=>'等待发货', 5=>'已发货', 6=>'订单完成', 7=>'订单已取消', 8=>'订单已取消(系统)'];
+        $data = [ 1=>'审核中', 2=>'审核失败', 3=>'等待付款', 4=>'等待取货',5=>'等待发货', 6=>'已发货', 7=>'订单完成', 8=>'订单已取消', 9=>'订单已取消(系统)'];
+        if(!empty($id))
+            return isset($data[$id])? $data[$id]:'出错';
+        return $data;
+    }
+
+    /*
+     * 快递列表
+     */
+    public static function getExpress($id='')
+    {
+        $data = ['业务员派送','顺丰','邮政','申通','韵达','圆通','中通','汇通'];
         if($id)
             return isset($data[$id])? $data[$id]:'出错';
         return $data;
+    }
+    /*
+     * 根据订单状态，返回订单按钮
+     */
+    public static function getOrderBtn($order_status,$order_id,$wx_id)
+    {
+        switch($order_status){
+            case 1:
+            case 2:
+                return '<a class="order-btn order-btn-left btn-failure">'.self::getOrderStatus($order_status).'</a>
+                                <a data-order="'.$order_id.'" data-type="delete" class="order-btn order-btn-ajax">删除订单</a>';
+                
+            case 3:
+                return '<a href="'.Url::toRoute(['/shop/order/pay','id'=>$wx_id,'order_id'=>$order_id]).'" class="order-btn order-btn-left">'.self::getOrderStatus($order_status).'</a>
+                      <a data-order="'.$order_id.'" data-type="cancel" class="order-btn order-btn-ajax">取消订单</a>';
+                
+            case 4:
+            case 5:
+                return '<a class="order-btn order-btn-left btn-failure">'.self::getOrderStatus($order_status).'</a>
+                                    <a data-order="'.$order_id.'" data-type="cancel" class="order-btn order-btn-ajax">取消订单</a>';
+                
+            case 6:
+                return '<a class="order-btn order-btn-left btn-failure">'.self::getOrderStatus($order_status).'</a>
+                                    <a href="'.Url::toRoute(['/shop/order/express','id'=>$wx_id,'order_id'=>$order_id]).'" class="order-btn">查看物流</a>';
+                
+            case 7:
+            case 8:
+            case 9:
+                return '<a class="order-btn order-btn-left btn-failure">'.self::getOrderStatus($order_status).'</a>
+                                    <a data-order="'.$order_id.'" data-type="delete" class="order-btn order-btn-ajax">删除订单</a>';
+                
+        }
     }
 } 

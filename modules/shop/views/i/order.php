@@ -58,10 +58,49 @@ use app\modules\shop\models\Shop;
                     </p>
                 </a>
                 <div class="order-btn-group">
-                    <a class="order-btn order-btn-left"><?=Shop::getOrderStatus($m['order_status'])?></a>
-                    <a class="order-btn btn-failure">查看物流</a>
+                    <?= Shop::getOrderBtn($m['order_status'],$m['order_id'],$id) ?>
                 </div>
             </li>
         <?php endforeach;?>
     </ul>
 </div>
+
+    <script>
+        <?php $this->beginBlock('JS_END') ?>
+        $(function(){
+            // ajax 操作，取消、删除订单
+            var hasClick =0;
+            $('.order-btn-ajax').click(function(){
+                if(hasClick == 1) return false;
+                hasClick = 1;
+                var type = $(this).attr('data-type');
+                var orderId = $(this).attr('data-order');
+                var $this = $(this);
+                $.post(
+                    '<?=Url::toRoute(['/shop/order/status','id'=>$id])?>&order_id='+orderId,
+                    {status:type},
+                    function(resp){
+                        if(resp.status == 1)
+                        {
+                            if(type == 'delete'){
+                                $this.text('已删除').addClass('btn-failure').closest('li').remove();
+                            }else{
+                                $this.attr('data-type','delete').text('删除订单');
+                                $this.prev('a').text('已取消').addClass('btn-failure');
+                            }
+                        }else alert(resp.msg);
+                        hasClick = 0;
+                    },'json'
+                );
+            });
+            // 取消订单
+            $('.order-btn-cancel').click(function(){
+                return false;
+            });
+        });
+        <?php $this->endBlock();?>
+    </script>
+<?php
+    \app\assets\ZeptoAsset::register($this);
+    $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
+?>

@@ -218,7 +218,7 @@ $this->title = '订单结算';
 
 
     <input type="hidden" name="TblShopOrder[address_id]" id="form-address" value="<?=$address['id']?>">
-    <input type="hidden" name="TblShopOrder[order_status]"  id="form-status" value="1">
+    <input type="hidden" name="TblShopOrder[pay_status]"  id="form-status" value="1">
     <input type="hidden" name="TblShopOrder[total_price]"  id="form-money">
     <input type="hidden" name="TblShopOrder[pay_score]"  id="form-score" value="0">
     <input type="hidden" name="TblShopOrder[openid]" value="<?=$openid?>">
