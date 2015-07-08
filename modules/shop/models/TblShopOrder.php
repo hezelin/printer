@@ -2,10 +2,27 @@
 
 namespace app\modules\shop\models;
 
+use app\models\TblUserWechat;
 use Yii;
 
 class TblShopOrder extends \yii\db\ActiveRecord
 {
+    /*
+     * 关联用户资料
+     */
+    public function getUser()
+    {
+        return $this->hasOne(TblUserWechat::className(), ['wx_id' => 'wx_id','openid'=>'openid']);
+    }
+
+    /*
+     * 关联收件地址
+     */
+    public function getAddress()
+    {
+        return $this->hasOne(TblShopAddress::className(),['id'=>'address_id']);
+    }
+
     public static function tableName()
     {
         return 'tbl_shop_order';

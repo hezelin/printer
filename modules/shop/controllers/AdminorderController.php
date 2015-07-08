@@ -4,6 +4,11 @@
  */
 namespace app\modules\shop\controllers;
 
+use app\models\Cache;
+use app\modules\shop\models\TblShopOrder;
+use app\modules\shop\models\TblShopOrderSearch;
+use app\modules\shop\models\TblShopOrderCheck;
+use app\modules\shop\models\TblShopOrderSend;
 use Yii;
 use yii\web\Controller;
 
@@ -16,16 +21,13 @@ class AdminorderController extends Controller
      */
     public function actionCheck()
     {
-        if( Yii::$app->user->isGuest ) $this->redirect(array('auth/login','url'=>'/storeOrder/check'));
-        $id = WebBase::storeId();
+        $searchModel = new TblShopOrderCheck();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $model=new TblOrder('search');
-        $model->unsetAttributes();
-        if(isset($_GET['TblOrder'])){
-            $model->attributes=$_GET['TblOrder'];
-        }
-        $model->dbCriteria->addCondition("store_id=$id and order_status=1 and LENGTH(open_id)<34");
-        $this->render('check',array('model'=>$model));
+        return $this->render('check', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /*
@@ -47,43 +49,56 @@ class AdminorderController extends Controller
     /*
      * 审核不通过 + 留言
      */
-    public function actionEditable()
+    public function actionUnpass()
     {
-        if( Yii::$app->user->isGuest ) {
-            header('HTTP/1.1 403');
-            Yii::$app->end('请重新登录');
-        }
-        $id = WebBase::storeId();
-
-        if( $r = Yii::$app->getRequest() ){
-            $model = TblOrder::model()->findByPk($r->getParam('pk'));
-            if($model->store_id != $id){
-                header('HTTP/1.1 403');
-                Yii::$app->end('没有权限');
-            }
-            $name = $r->getParam('name');
-            // 发货状态
-            if( $r->getParam('name') == 'express_num' )
-                $model->order_status = 5;
-
-            $model->$name = $r->getParam('value');
-            if( !$model->save() )
-                print_r( $model->errors );
+        if(Yii::$app->request->post('data')){
+            $wx_id = Cache::getWid();
+            $row = TblShopOrder::updateAll(['order_status'=>2,'check_word'=>Yii::$app->request->post('text')],['wx_id'=>$wx_id,'order_id'=>Yii::$app->request->post('data')]);
+            if($row)
+                echo json_encode(['status'=>1]);
+            else echo json_encode(['status'=>0,'msg'=>'系统错误!']);
+        }else{
+            echo json_encode(['status'=>0,'msg'=>'提交参数错误！']);
         }
     }
 
+    /*
+     * 审核通过,$send 等待发货，$wait ,等待取货
+     */
+    public function actionPass()
+    {
+        if($data = Yii::$app->request->post('data')){
+            $wx_id = Cache::getWid();
+
+            $send = $wait = [];
+            foreach($data as $v){
+                list($orderId,$status) = explode('|',$v);
+                if($status == 2)
+                    $wait[] = $orderId;
+                else
+                    $send[] = $orderId;
+            }
+
+            $row = TblShopOrder::updateAll(['order_status'=>5],['wx_id'=>$wx_id,'order_id'=>$send]);
+            $row = TblShopOrder::updateAll(['order_status'=>4],['wx_id'=>$wx_id,'order_id'=>$wait]);
+            if(!$row)
+                return json_encode(['status'=>0,'msg'=>'系统错误!']);
+            return json_encode(['status'=>1]);
+        }else
+            return json_encode(['status'=>0,'msg'=>'参数错误']);
+    }
+    /*
+     * 管理后台订单列表
+     */
     public function actionList()
     {
-        if( Yii::$app->user->isGuest ) $this->redirect(array('auth/login','url'=>'/storeOrder/list'));
-        $id = WebBase::storeId();
+        $searchModel = new TblShopOrderSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $model=new TblOrder('search');
-        $model->unsetAttributes();
-        if(isset($_GET['TblOrder'])){
-            $model->attributes=$_GET['TblOrder'];
-        }
-        $model->dbCriteria->addCondition("store_id=$id and LENGTH(open_id)<34");
-        $this->render('list',array('model'=>$model));
+        return $this->render('list', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /*
@@ -91,15 +106,70 @@ class AdminorderController extends Controller
      */
     public function actionSend()
     {
-        if( Yii::$app->user->isGuest ) $this->redirect(array('auth/login','url'=>'/storeOrder/send'));
-        $id = WebBase::storeId();
+        $searchModel = new TblShopOrderSend();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $model=new TblOrder('search');
-        $model->unsetAttributes();
-        if(isset($_GET['TblOrder'])){
-            $model->attributes=$_GET['TblOrder'];
+        return $this->render('send', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /*
+     * 发货 ajax 页面
+     */
+    public function actionAjax($order_id)
+    {
+        if(Yii::$app->request->isAjax){
+            $type = Yii::$app->request->post('type');
+            $no = Yii::$app->request->post('no');
+            $model = TblShopOrder::findOne($order_id);
+            if(!$model)
+                return json_encode(['status'=>0,'msg'=>'订单不存在!']);
+            $model->order_status = 6;
+            $model->express = $type;
+            if($type != 0)
+                $model->express_num = $no;
+            if($model->save())
+                return json_encode(['status'=>1]);
+            else
+                return json_encode(['status'=>0,'msg'=>'入库失败!']);
+        }else
+            return json_encode(['status'=>0,'msg'=>'参数错误!']);
+    }
+
+    /*
+     * 查看订单物流
+     */
+    public function actionExpress($type,$no)
+    {
+        if($no){
+            $com = ['0','shunfeng','ems','shentong','yunda','yuantong','zhongtong','huitongkuaidi'];
+            $apiUrl = 'http://api.kuaidi100.com/api?id=7152fcbc25d814f0&';
+            $parmas = [
+                'com'=>$com[$type],
+                'nu'=>$no,
+                'show'=>2
+            ];
+
+            $html = file_get_contents($apiUrl.join('&',$parmas));
+            return $this->render('express',['html'=>$html]);
         }
-        $model->dbCriteria->addCondition("store_id=$id and order_status=4 and LENGTH(open_id)<34");
-        $this->render('send',array('model'=>$model));
+    }
+
+    /*
+     * 订单取消（系统执行)
+     */
+    public function actionCancel()
+    {
+        if(Yii::$app->request->post('data')){
+            $wx_id = Cache::getWid();
+            $row = TblShopOrder::updateAll(['order_status'=>9,'check_word'=>Yii::$app->request->post('text')],['wx_id'=>$wx_id,'order_id'=>Yii::$app->request->post('data')]);
+            if($row)
+                echo json_encode(['status'=>1]);
+            else echo json_encode(['status'=>0,'msg'=>'系统错误!']);
+        }else{
+            echo json_encode(['status'=>0,'msg'=>'提交参数错误！']);
+        }
     }
 }

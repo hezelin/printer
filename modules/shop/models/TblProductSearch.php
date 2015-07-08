@@ -7,7 +7,6 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\shop\models\TblProduct;
 use app\models\Cache;
-
 /**
  * TblProductSearch represents the model behind the search form about `app\modules\shop\models\TblProduct`.
  */
