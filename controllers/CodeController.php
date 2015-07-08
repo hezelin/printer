@@ -131,6 +131,7 @@ class CodeController extends \yii\web\Controller
      */
     public function actionSetting($id)
     {
+        set_time_limit(0);
         $model = TblMachine::findOne($id);
 
         $index = (int)($id/500);
@@ -207,6 +208,7 @@ class CodeController extends \yii\web\Controller
      */
     public function actionMachine($id)
     {
+        set_time_limit(0);
         $model = TblMachine::findOne($id);
 
         $index = (int)($id/500);
