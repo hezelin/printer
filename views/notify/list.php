@@ -17,19 +17,17 @@ echo GridView::widget([
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],               // 系列
         [
-            'attribute'=>'nickname',
             'header'=>'接收者',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=> function($data)
             {
-                if($data->userinfo->nickname){
-                    return $data->userinfo->nickname .'&nbsp;&nbsp;'.Html::a(
-                        Html::img( substr($data->userinfo->headimgurl,0,-1) .'46',['width'=>40]),
-                        $data->userinfo->headimgurl.'?.jpg',
+                if($data->userinfo['nickname']){
+                    return $data->userinfo['nickname'] .'&nbsp;&nbsp;'.Html::a(
+                        Html::img( substr($data->userinfo['headimgurl'],0,-1) .'46',['width'=>40]),
+                        $data->userinfo['headimgurl'].'?.jpg',
                         ['class'=>'fancybox','rel'=>'group1']
                     );
                 }
-
             }
         ],
         [

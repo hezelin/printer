@@ -13,13 +13,12 @@ use app\models\TblNotifyLog;
  */
 class TblNotifyLogSearch extends TblNotifyLog
 {
-    public $nickname;
     public $fromname;
     public function rules()
     {
         return [
             [['id', 'wx_id', 'from_id', 'add_time'], 'integer'],
-            [['openid', 'text', 'is_read', 'enable','nickname','fromname'], 'safe'],
+            [['openid', 'text', 'is_read', 'enable','fromname'], 'safe'],
         ];
     }
 
@@ -66,7 +65,6 @@ class TblNotifyLogSearch extends TblNotifyLog
             ->andFilterWhere(['like', 'text', $this->text])
             ->andFilterWhere(['like', 'is_read', $this->is_read])
             ->andFilterWhere(['like', 'enable', $this->enable])
-            ->andFilterWhere(['like', 'tbl_user_wechat.nickname', $this->nickname])
             ->andFilterWhere(['like', 'tbl_user_base.name', $this->fromname]);
 
         return $dataProvider;
