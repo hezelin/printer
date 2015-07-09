@@ -30,13 +30,16 @@ class IController extends Controller
      */
     public function actionOrder($id)
     {
-//        $openid = WxBase::openId($id);
-        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+        $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('order_id,order_data,total_price,pay_score,order_status,pay_status,add_time')
             ->from('tbl_shop_order')
             ->where('openid=:openid and wx_id=:wid and enable="Y"',[':openid'=>$openid,':wid'=>$id])
             ->all();
+        if(!$model)
+            return $this->render('//tips/homestatus',['tips'=>'还没有订单！',
+                'btnText'=>'去商城购物','btnUrl'=>Url::toRoute(['/shop/item/list','id'=>$id])]);
+
         foreach($model as $k=>&$r){
             $tmp = json_decode($r['order_data'],true);
             if(is_array($tmp) && isset($tmp[0])){

@@ -41,7 +41,7 @@ $this->title = '订单管理';
 </style>
 <div >
     <ul class="nav nav-tabs" >
-        <li><a href="<?=Url::toRoute(['list'])?>" >订单列表</a></li>
+        <li><a href="<?=Url::toRoute(['list'])?>" >所有订单</a></li>
         <li class="active"><a href="javascript:void(0)" >待审核订单</a></li>
         <li><a href="<?=Url::toRoute(['send'])?>" >待发货订单</a></li>
     </ul>

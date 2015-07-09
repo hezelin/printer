@@ -100,8 +100,8 @@ class OrderController extends Controller
 //            return $this->render('//tips/homestatus',['tips'=>'订单提交成功','btnText'=>'返回我的订单','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
         }
 
-        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
-//        $openid = WxBase::openId($id);
+//        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+        $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('t.id,t.item_nums,p.cover,p.price,p.name,p.use_score,p.give_score')
             ->from('tbl_shop_cart as t')

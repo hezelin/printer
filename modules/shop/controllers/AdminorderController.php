@@ -79,8 +79,10 @@ class AdminorderController extends Controller
                     $send[] = $orderId;
             }
 
-            $row = TblShopOrder::updateAll(['order_status'=>5],['wx_id'=>$wx_id,'order_id'=>$send]);
-            $row = TblShopOrder::updateAll(['order_status'=>4],['wx_id'=>$wx_id,'order_id'=>$wait]);
+            if($send)
+                $row = TblShopOrder::updateAll(['order_status'=>5],['wx_id'=>$wx_id,'order_id'=>$send]);
+            if($wait)
+                $row = TblShopOrder::updateAll(['order_status'=>4],['wx_id'=>$wx_id,'order_id'=>$wait]);
             if(!$row)
                 return json_encode(['status'=>0,'msg'=>'系统错误!']);
             return json_encode(['status'=>1]);

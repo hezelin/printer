@@ -27,7 +27,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
     <div class="pd_scar2">
         <p class="pd_scar_a">商品已经成功加入购物车！</p>
         <p class="pd_scar_b">
-            <a class="pd-hide" href="javascript:void(0)">继续逛逛</a>
+            <a href="<?=Url::toRoute(['/shop/item/list','id'=>$id])?>">继续逛逛</a>
             <a href="<?=Url::toRoute(['/shop/cart/list','id'=>$id])?>">去购物车结算</a>
         </p>
     </div>

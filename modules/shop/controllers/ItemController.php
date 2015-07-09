@@ -61,8 +61,8 @@ class ItemController extends Controller
      */
     public function actionDetail($id,$item_id)
     {
-//        $openid = WxBase::openId($id);
-        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
+        $openid = WxBase::openId($id);
+//        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
 
         $model = (new \yii\db\Query())
             ->select('t.id,t.wx_id,c.name as category,t.name,t.cover_images,t.price,t.market_price,t.describe,t.add_attr')
