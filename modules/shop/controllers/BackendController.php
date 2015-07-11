@@ -93,6 +93,7 @@ class BackendController extends Controller
     {
         $model = TblProduct::findOne($id);
         $model->enable = 'N';
+        $model->opera_time = time();
         $model->save();
         return $this->redirect('list');
     }
