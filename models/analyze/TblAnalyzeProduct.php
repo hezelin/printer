@@ -2,6 +2,7 @@
 
 namespace app\models\analyze;
 
+use app\models\Cache;
 use Yii;
 
 class TblAnalyzeProduct
@@ -18,28 +19,15 @@ class TblAnalyzeProduct
     public function addData()
     {
         $data = (new \yii\db\Query())
-            ->select('wx_id,sum(amount) as item_count,sum(market_price*amount) as cost_price,sum(price*amount) as sell_price')
+            ->select('wx_id,sum(amount) as item_count,count(id) as cate_count,sum(market_price*amount) as cost_price,sum(price*amount) as sell_price')
             ->from('tbl_product')
             ->where(['enable'=>'Y'])
-            ->andWhere(['between','add_time',$this->startTime,$this->endTime])
+            ->andWhere(['<','add_time',$this->endTime])
             ->groupBy('wx_id')
             ->all();
         return $data;
     }
-    /*
-     * 获取 某天删除的数据
-     */
-    public function delData()
-    {
-        $data = (new \yii\db\Query())
-            ->select('add_time,wx_id,sum(amount) as item_count,sum(market_price*amount) as cost_price,sum(price*amount) as sell_price')
-            ->from('tbl_product')
-            ->where(['enable'=>'N'])
-            ->andWhere(['between','opera_time',$this->startTime,$this->endTime])
-            ->groupBy('wx_id')
-            ->all();
-        return $data;
-    }
+
 
     /*
      * 处理数据为 sql,准备入库
@@ -50,32 +38,14 @@ class TblAnalyzeProduct
 
         $str='';
         foreach($data as $d){
-            $str .= ",({$this->startTime},{$d['wx_id']},{$d['item_count']},{$d['cost_price']},{$d['sell_price']})";
+            $str .= ",({$this->startTime},{$d['wx_id']},{$d['item_count']},{$d['cate_count']},{$d['cost_price']},{$d['sell_price']})";
         }
         $str = substr($str,1);
-        return "insert into tbl_analyze_product (date_time,wx_id,item_count,cost_price,sell_price) values {$str}
-          ON DUPLICATE KEY UPDATE item_count=values(item_count),cost_price=values(cost_price),sell_price=values(sell_price); ";
+        return "insert into tbl_analyze_product (date_time,wx_id,item_count,cate_count,cost_price,sell_price) values {$str}
+          ON DUPLICATE KEY UPDATE item_count=values(item_count),cate_count=values(cate_count),cost_price=values(cost_price),sell_price=values(sell_price); ";
     }
 
 
-    /*
-     * 处理 删除的 sql,准备更新数据库
-     * 重复执行？
-     */
-    public function delSql()
-    {
-        if( !$data = $this->delData() ) return false;
-
-        $str='';
-        foreach($data as $d){
-            $addTime = strtotime(date('Y-m-d',$d['add_time']));
-            $str .= ",({$addTime},{$d['wx_id']},{$d['item_count']},{$d['cost_price']},{$d['sell_price']})";
-        }
-        $str = substr($str,1);
-        return "insert into tbl_analyze_product (date_time,wx_id,item_count,cost_price,sell_price) values {$str}
-          ON DUPLICATE KEY UPDATE item_count=item_count-values(item_count),cost_price=cost_price-values(cost_price),sell_price=sell_price-values(sell_price); ";
-
-    }
     /*
      * 入库处理
      */
@@ -83,18 +53,14 @@ class TblAnalyzeProduct
     {
         if( $sql = $this->addSql() )
             Yii::$app->db->createCommand($sql)->execute();
-        if( $this->delCmd && ($del = $this->delSql()) )
-            Yii::$app->db->createCommand($del)->execute();
-
         return $this->status;
     }
 
     /*
      * 执行当天的统计,当天临时 到  即时时间
      */
-    public function today($delCmd = false)
+    public function today()
     {
-        $this->delCmd = $delCmd;
         $this->startTime = strtotime(date('Y-m-d',time()));
         $this->endTime = time() - 1;
         return $this->saveSql();
@@ -103,9 +69,8 @@ class TblAnalyzeProduct
     /*
      * 执行昨天的统计，crontab 跑这个
      */
-    public function yesterday($delCmd = false)
+    public function yesterday()
     {
-        $this->delCmd = $delCmd;
         $this->startTime = strtotime(date('Y-m-d',strtotime('-1 day')));
         $this->endTime = strtotime(date('Y-m-d',time())) - 1;
         return $this->saveSql();
@@ -116,10 +81,9 @@ class TblAnalyzeProduct
      * $start，$end 为 负数，例如  -3，0
      * 0 表示当天，-3 表示前3天
      */
-    public function historyDay($start,$end,$delCmd = false)
+    public function historyDay($start,$end)
     {
         if($start > $end) return false;
-        $this->delCmd = $delCmd;
         for($i=$start;$i <= $end;$i++){
             $this->startTime = strtotime(date('Y-m-d',strtotime($i.' day')));
             $this->endTime = strtotime(date('Y-m-d',strtotime(($i+1).' day'))) - 1;
@@ -127,5 +91,63 @@ class TblAnalyzeProduct
                 $this->error[] = date('Y-m-d',strtotime($i.' day'));
         }
         return $this->status;
+    }
+
+    /*
+     * 返回 图表的数据
+     */
+    public function getCharts()
+    {
+        if(Yii::$app->request->get('start') && Yii::$app->request->get('end') ){
+            $start = strtotime( Yii::$app->request->get('start') );
+            $end = strtotime( Yii::$app->request->get('end') );
+        }else{
+            $start = strtotime(date('Y-m-d',strtotime('-10 day')));
+            $end = strtotime(date('Y-m-d',strtotime('-1 day')));
+        }
+
+        $data = (new \yii\db\Query())
+            ->select('date_time,cost_price,sell_price,item_count,cate_count')
+            ->from('tbl_analyze_product')
+            ->where(['between','date_time',$start,$end])
+            ->andWhere('wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->all();
+        $chart['start'] = date('Y-m-d',$start);
+        $chart['end'] = date('Y-m-d',$end);
+        $tmp = [];
+        if($data){
+            foreach($data as $d){
+                $chart['cate'][] = date('Y-m-d',$d['date_time']);
+                $tmp['cost'][] = (float)$d['cost_price'];
+                $tmp['sell'][] = (float)$d['sell_price'];
+                $tmp['item'][] = (int)$d['item_count'];
+                $tmp['cate'][] = (int)$d['cate_count'];
+            }
+        }else
+            $chart['cate'] = [];
+
+        $chart['series'] = [
+            [
+                'name'=>'预售价',
+                'tooltip'=>['valueSuffix'=>'元'],
+                'data'=> isset($tmp['sell'])? $tmp['sell']:[],
+            ],[
+                'name'=>'成本价',
+                'tooltip'=>['valueSuffix'=>'元'],
+                'data'=> isset($tmp['cost'])? $tmp['cost']:[]
+            ],[
+                'name'=>'商品数量',
+                'tooltip'=>['valueSuffix'=>'个'],
+                'data'=> isset($tmp['item'])? $tmp['item']:[]
+            ],[
+                'name'=>'商品种类',
+                'tooltip'=>['valueSuffix'=>'个'],
+                'data'=> isset($tmp['cate'])? $tmp['cate']:[]
+            ],
+        ];
+
+        unset($data);
+        unset($tmp);
+        return $chart;
     }
 }
