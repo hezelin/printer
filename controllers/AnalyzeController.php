@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\analyze\TblAnalyzeMachine;
 use app\models\analyze\TblAnalyzeProduct;
 
 class AnalyzeController extends \yii\web\Controller
@@ -26,7 +27,18 @@ class AnalyzeController extends \yii\web\Controller
     public function actionProduct()
     {
         $ana = new TblAnalyzeProduct();
-        return $ana->today(true);
+//        return $ana->historyDay(-3,0);
+        return $ana->today();
+    }
+
+    /*
+     * 机器统计
+     */
+    public function actionMachine()
+    {
+        $ana = new TblAnalyzeMachine();
+        return $ana->historyDay(-3,0);
+//        return $ana->today();
     }
 
     public function actionRent()
