@@ -20,7 +20,7 @@ class TblMachineService extends \yii\db\ActiveRecord
     {
         return [
             [['machine_id', 'from_openid', 'desc', 'add_time'], 'required'],
-            [['machine_id', 'type', 'status', 'unfinished_parts_num', 'add_time', 'parts_apply_time', 'parts_arrive_time', 'complete_time'], 'integer'],
+            [['machine_id', 'type', 'status', 'unfinished_parts_num', 'add_time', 'opera_time', 'parts_apply_time', 'parts_arrive_time', 'complete_time'], 'integer'],
             [['enable'], 'string'],
             [['from_openid', 'openid'], 'string', 'max' => 28],
             [['cover'], 'string', 'max' => 500],
@@ -41,6 +41,7 @@ class TblMachineService extends \yii\db\ActiveRecord
             'desc' => '故障描述',
             'unfinished_parts_num' => '未完成配件数量',
             'add_time' => '添加时间',
+            'opera_time' => '操作时间',
             'parts_apply_time' => '配件申请时间',
             'parts_arrive_time' => '配件到达时间',
             'complete_time' => '维修完成时间',

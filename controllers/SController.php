@@ -30,6 +30,7 @@ class SController extends \yii\web\Controller
         {
             $model = new TblMachineService();
             $model->machine_id = $mid;
+            $model->weixin_id = $id;
             $model->add_time = time();
 
             //  如果上传图片就拉取图片

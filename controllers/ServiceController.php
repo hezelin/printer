@@ -42,6 +42,7 @@ class ServiceController extends \yii\web\Controller
 
         $model = TblMachineService::findOne($fid);
         $model->enable = 'N';
+        $model->opera_time = time();
         $fromOpenid = $model->from_openid;
         $toOpenid = $model->openid;
         $serviceId = $model->id;

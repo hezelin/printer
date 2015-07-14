@@ -18,7 +18,7 @@ class TblMachineServiceList extends TblMachineService
     public function rules()
     {
         return [
-            [['id', 'machine_id', 'type', 'status', 'unfinished_parts_num', 'add_time', 'parts_apply_time', 'parts_arrive_time', 'complete_time'], 'integer'],
+            [['id', 'machine_id', 'type', 'status', 'unfinished_parts_num', 'add_time', 'opera_time', 'parts_apply_time', 'parts_arrive_time', 'complete_time'], 'integer'],
             [['from_openid', 'openid', 'cover', 'desc', 'enable'], 'safe'],
         ];
     }
@@ -70,9 +70,14 @@ class TblMachineServiceList extends TblMachineService
         $query->andFilterWhere([
             'id' => $this->id,
             'machine_id' => $this->machine_id,
+            'unfinished_parts_num' => $this->unfinished_parts_num,
+            'parts_apply_time' => $this->parts_apply_time,
+            'parts_arrive_time' => $this->parts_arrive_time,
+            'complete_time' => $this->complete_time,
             'tbl_machine_service.type' => $this->type,
             'tbl_machine_service.status' => $this->status,
             'tbl_machine_service.add_time' => $this->add_time,
+            'opera_time' => $this->opera_time
         ]);
 
         $query->andFilterWhere(['like', 'from_openid', $this->from_openid])

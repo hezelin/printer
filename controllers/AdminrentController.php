@@ -235,6 +235,7 @@ class AdminrentController extends \yii\web\Controller
 
             $model = new TblMachineService();
             $model->machine_id = $machine_id;
+            $model->weixin_id = Cache::getWid();
             $model->from_openid = $from_openid;
             $model->openid = Yii::$app->request->post('openid');
             $model->add_time = time();
