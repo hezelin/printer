@@ -72,9 +72,14 @@ WeixinAsset::register($this);
                         [
                             'items' => [
                                 [
-                                    'label' => '实例详情',
-                                    'url' => [ Url::toRoute( ['console/view','id'=>Yii::$app->session['wechat']['id'] ]) ],
+                                    'label' => '工作报表',
+                                    'url' => [ Url::toRoute( ['/console/view','id'=>\app\models\Cache::getWid() ]) ],
                                     'route' => '/console/view',
+                                ],
+                                [
+                                    'label' => '数据统计',
+                                    'url' => [ Url::toRoute( ['/console/analyze','id'=>\app\models\Cache::getWid() ]) ],
+                                    'route' => '/console/analyze',
                                 ],
                                 [
                                     'label' => '微官网',

@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\jui\DatePicker;
-    $this->title='商城库存数据';
+    $this->title='维修统计数据';
 ?>
 <style>
     .input-group-addon{
@@ -15,7 +15,7 @@ use yii\jui\DatePicker;
 <div class="row">
 
 <?php
-    echo Html::beginForm('/charts/item','get',['class'=>'form-inline']);
+    echo Html::beginForm('/charts/fault','get',['class'=>'form-inline']);
     echo Html::beginTag('div',['class'=>'input-group','style'=>'margin-left:30px']);
     echo DatePicker::widget([
         'name'  => 'start',
@@ -40,11 +40,8 @@ use yii\jui\DatePicker;
     <script>
         <?php $this->beginBlock('JS_END') ?>
         $('#container').highcharts({
-            /*chart: {
-                type: 'area'
-            },*/
             title: {
-                text: '商城库存数据'
+                text: '维修统计'
             },
             xAxis: {
                 categories: <?=json_encode($charts['cate'])?>,
@@ -55,12 +52,12 @@ use yii\jui\DatePicker;
             },
             yAxis: {
                 title: {
-                    text: '数量/价格'
+                    text: '数量'
                 }
             },
             tooltip: {
-                shared: true
-//                valueSuffix: ' 台/元'
+                shared: true,
+                valueSuffix: '次'
             },
             plotOptions: {
                 area: {

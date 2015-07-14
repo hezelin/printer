@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\analyze\TblAnalyzeFault;
 use app\models\Cache;
 use app\models\TblWeixin;
 use yii\web\NotFoundHttpException;
@@ -12,7 +13,7 @@ class ConsoleController extends \yii\web\Controller
     public $layout = 'console';
 
     /*
-     * behaviors 验证用户登录
+     * 工作报表
      */
     public function actionView($id)
     {
@@ -35,5 +36,30 @@ class ConsoleController extends \yii\web\Controller
         if( Yii::$app->request->get('url'))
             return $this->redirect( Yii::$app->request->get('url') );
         return $this->render('view');
+    }
+
+    /*
+     * 数据统计
+     */
+    public function actionAnalyze()
+    {
+        $item = (new \yii\db\Query())
+            ->select('cost_price,sell_price,item_count,cate_count')
+            ->from('tbl_analyze_product')
+            ->where('wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->orderBy('date_time desc')
+            ->limit(1)
+            ->one();
+        $machine = (new \yii\db\Query())
+            ->select('free_count,rent_count,scrap_count')
+            ->from('tbl_analyze_machine')
+            ->where('wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->orderBy('date_time desc')
+            ->limit(1)
+            ->one();
+
+        $fault = new TblAnalyzeFault();
+
+        return $this->render('analyze',['item'=>$item,'machine'=>$machine,'fault'=>$fault->getCharts()]);
     }
 }

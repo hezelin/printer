@@ -2,14 +2,19 @@
 
 namespace app\controllers;
 
+use app\models\analyze\TblAnalyzeFault;
 use app\models\analyze\TblAnalyzeMachine;
 use app\models\analyze\TblAnalyzeProduct;
 
 class AnalyzeController extends \yii\web\Controller
 {
+    /*
+     * 维修统计
+     */
     public function actionFault()
     {
-        return $this->render('fault');
+        $ana = new TblAnalyzeFault();
+        return $ana->historyDay(-30,0);
     }
 
     public function actionMaintainer()
@@ -37,8 +42,8 @@ class AnalyzeController extends \yii\web\Controller
     public function actionMachine()
     {
         $ana = new TblAnalyzeMachine();
-        return $ana->historyDay(-3,0);
-//        return $ana->today();
+//        return $ana->historyDay(-3,0);
+        return $ana->today();
     }
 
     public function actionRent()

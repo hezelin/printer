@@ -18,7 +18,7 @@ class TblProductSearch extends TblProduct
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'category_id', 'amount', 'use_score', 'give_score', 'add_time', 'status'], 'integer'],
+            [['id', 'wx_id', 'category_id', 'amount', 'use_score', 'give_score', 'add_time', 'opera_time', 'status'], 'integer'],
             [['name', 'cover', 'cover_images', 'describe', 'add_attr', 'enable'], 'safe'],
             [['market_price', 'price'], 'number'],
         ];

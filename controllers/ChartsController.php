@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\analyze\TblAnalyzeMachine;
 use app\models\analyze\TblAnalyzeProduct;
+use app\models\analyze\TblAnalyzeFault;
 use Yii;
 
 class ChartsController extends \yii\web\Controller
@@ -23,5 +24,14 @@ class ChartsController extends \yii\web\Controller
     {
         $ana = new TblAnalyzeMachine();
         return $this->render('machine',['charts'=>$ana->getCharts()]);
+    }
+
+    /*
+     * 维修统计
+     */
+    public function actionFault()
+    {
+        $ana = new TblAnalyzeFault();
+        return $this->render('fault',['charts'=>$ana->getCharts()]);
     }
 }
