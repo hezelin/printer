@@ -132,35 +132,42 @@ class ServiceController extends \yii\web\Controller
             if(!$model)
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,100']) );
             $model->wait_repair_count = $model->wait_repair_count + 1;
-            if( !$model->save() )
-                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,200']) );
 
 
-            $model = TblMachineService::findOne( Yii::$app->request->post('id') );
-            $reason = ConfigBase::getFaultStatus($model->type);
-            $machine_id = $model->machine_id;
-            $rendId = $model->id;
-            $fromOpenid = $model->from_openid;
-            $applyTime = $model->add_time;
+            $connection = Yii::$app->db;
+            $transaction = $connection->beginTransaction();
 
-            if(!$model)
-                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,300']) );
-            $model->openid = Yii::$app->request->post('openid');
-            $model->status = 2;
-            if( !$model->save() )
-                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,400']) );
+            try {
+                $model->save();                 // 维修员计算 加一
 
-            $model = new TblServiceProcess();
-            $model->service_id = Yii::$app->request->post('id');
-            $model->content = json_encode(['status'=>2]);
-            $model->add_time = time();
-            if(!$model->save())
-                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,500']) );
+                $fault = TblMachineService::findOne( Yii::$app->request->post('id') );
+                $reason = ConfigBase::getFaultStatus($fault->type);
+                $machine_id = $fault->machine_id;
+                $rendId = $fault->id;
+                $fromOpenid = $fault->from_openid;
+                $applyTime = $fault->add_time;
 
+
+                $fault->openid = Yii::$app->request->post('openid');
+                $fault->status = 2;
+                $fault->save();
+
+                $process = new TblServiceProcess();
+                $process->service_id = Yii::$app->request->post('id');
+                $process->content = json_encode(['status'=>2]);
+                $process->add_time = time();
+                $process->save();
+
+                $transaction->commit();
+            }catch(\Exception $e) {
+                $transaction->rollBack();
+//                echo $e;
+                echo json_encode(['status'=>0,'msg'=>'参数错误']);
+                exit;
+            }
 
             // 为维修员推送消息
             $model = TblRentApply::findOne(['machine_id'=>$machine_id,'enable'=>'Y']);
-
             $tpl = new WxTemplate(Yii::$app->request->post('wid'));
             $tpl->sendTask(
                 $rendId,
@@ -176,7 +183,6 @@ class ServiceController extends \yii\web\Controller
                 '任务分配中',
                 $applyTime
             );
-
             echo json_encode(['status'=>1]);
         }
         else

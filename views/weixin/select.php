@@ -71,7 +71,7 @@ echo GridView::widget([
             'header' => '操作',
             'format' => 'html',
             'value'=> function($data) {
-                return Html::a('选择', Url::to(['console/view','id'=>$data->id,'url'=>Yii::$app->request->get('url')]));
+                return Html::a('选择', Url::to(['console/view','wx_id'=>$data->id,'url'=>Yii::$app->request->get('url')]));
             }
         ]
     ],

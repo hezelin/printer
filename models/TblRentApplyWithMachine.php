@@ -35,6 +35,7 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
             [['enable'], 'string'],
             [['openid'], 'string', 'max' => 28],
             [['phone'], 'string', 'max' => 11],
+            [['colours'], 'default', 'value' => 0],
             [['name'], 'string', 'max' => 30],
             [['address'], 'string', 'max' => 500],
             [['apply_word'], 'string', 'max' => 200]
@@ -53,7 +54,7 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
             'due_time' => '合同到期时间',
-            'first_rent_time' => '首次收租时间',
+            'first_rent_time' => '下次收租时间',
             'rent_period' => '收租周期',
             'phone' => '手机',
             'name' => '姓名',

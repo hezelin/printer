@@ -72,13 +72,13 @@ WeixinAsset::register($this);
                         [
                             'items' => [
                                 [
-                                    'label' => '工作报表',
-                                    'url' => [ Url::toRoute( ['/console/view','id'=>\app\models\Cache::getWid() ]) ],
+                                    'label' => '工作任务',
+                                    'url' => ['/console/view'],
                                     'route' => '/console/view',
                                 ],
                                 [
                                     'label' => '数据统计',
-                                    'url' => [ Url::toRoute( ['/console/analyze','id'=>\app\models\Cache::getWid() ]) ],
+                                    'url' => ['/console/analyze'],
                                     'route' => '/console/analyze',
                                 ],
                                 [
@@ -108,7 +108,6 @@ WeixinAsset::register($this);
                                 [
                                     'label' => '租借管理',
                                     'items' => [
-                                        ['label' => '租借统计','url' => '/adminrent/index'],
                                         ['label' => '租借列表','url' => '/adminrent/list'],
                                         ['label' => '租借申请','url' => '/adminrent/apply'],
                                     ],

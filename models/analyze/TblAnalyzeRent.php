@@ -6,7 +6,7 @@ use app\models\Cache;
 use Yii;
 use yii\helpers\ArrayHelper;
 
-class TblAnalyzeMachine
+class TblAnalyzeRent
 {
     public $startTime;
     public $endTime;
@@ -19,25 +19,58 @@ class TblAnalyzeMachine
      */
     public function addData()
     {
-        $data = (new \yii\db\Query())
-            ->select('wx_id,status,count(id) as machine_count')
-            ->from('tbl_machine')
-            ->where(['enable'=>'Y'])
+        $all = (new \yii\db\Query())
+            ->select('wx_id,count(id) as total_count')
+            ->from('tbl_rent_apply')
+            ->where(['enable'=>'Y','status'=>'2'])
             ->andWhere(['<','add_time',$this->endTime])
-            ->groupBy('wx_id,status')
+            ->groupBy('wx_id')
             ->all();
+
+        $add = (new \yii\db\Query())
+            ->select('wx_id,count(id) as add_count')
+            ->from('tbl_rent_apply')
+            ->where(['enable'=>'Y'])
+            ->andWhere(['between','add_time',$this->startTime,$this->endTime])
+            ->groupBy('wx_id')
+            ->all();
+
+        $expire = (new \yii\db\Query())
+                ->select('wx_id,count(id) as expire_count')
+                ->from('tbl_rent_apply')
+                ->where(['enable'=>'Y'])
+                ->andWhere(['>','due_time',$this->endTime-86400*3])
+                ->groupBy('wx_id')
+                ->all();
+        $collect = (new \yii\db\Query())
+            ->select('wx_id,count(id) as collect_count')
+            ->from('tbl_rent_apply')
+            ->where(['enable'=>'Y'])
+            ->andWhere(['>','first_rent_time',$this->endTime-86400*3])
+            ->groupBy('wx_id')
+            ->all();
+
         $tmp = [];
-        if($data){
-            foreach($data as $d){
-                if($d['status'] == 1)
-                    $tmp[ $d['wx_id'] ]['free_count'] = $d['machine_count'];
-                elseif($d['status'] == 2 )
-                    $tmp[ $d['wx_id'] ]['rent_count'] = $d['machine_count'];
-                else
-                    $tmp[ $d['wx_id'] ]['scrap_count'] = $d['machine_count'];
+        if($all){
+            foreach($all as $d){
+                $tmp[$d['wx_id']]['total_count'] = $d['total_count'];
             }
         }
-
+        if($add){
+            foreach($add as $d){
+                $tmp[$d['wx_id']]['add_count'] = $d['add_count'];
+            }
+        }
+        if($expire){
+            foreach($expire as $d){
+                $tmp[$d['wx_id']]['expire_count'] = $d['expire_count'];
+            }
+        }
+        if($collect){
+            foreach($collect as $d){
+                $tmp[$d['wx_id']]['collect_count'] = $d['collect_count'];
+            }
+        }
         unset($data);
         return $tmp;
     }
@@ -52,14 +85,14 @@ class TblAnalyzeMachine
 
         $str='';
         foreach($data as $wid=>$d){
-            $free = isset($d['free_count'])? $d['free_count']:0;
-            $rent = isset($d['rent_count'])? $d['rent_count']:0;
-            $scrap = isset($d['scrap_count'])? $d['scrap_count']:0;
-            $str .= ",({$this->startTime},{$wid},{$rent},{$free},{$scrap})";
+            $add = isset($d['add_count'])? $d['add_count']:0;
+            $expire = isset($d['expire_count'])? $d['expire_count']:0;
+            $collect = isset($d['collect_count'])? $d['collect_count']:0;
+            $str .= ",({$this->startTime},{$wid},{$d['total_count']},{$add},{$expire},{$collect})";
         }
         $str = substr($str,1);
-        return "insert into tbl_analyze_machine (date_time,wx_id,rent_count,free_count,scrap_count) values {$str}
-          ON DUPLICATE KEY UPDATE rent_count=values(rent_count),free_count=values(free_count),scrap_count=values(scrap_count); ";
+        return "insert into tbl_analyze_rent (date_time,wx_id,total_count,add_count,expire_count,collect_count) values {$str}
+          ON DUPLICATE KEY UPDATE total_count=values(total_count),add_count=values(add_count),expire_count=values(expire_count),collect_count=values(collect_count); ";
     }
 
 
@@ -124,8 +157,8 @@ class TblAnalyzeMachine
         }
 
         $data = (new \yii\db\Query())
-            ->select('date_time,free_count,rent_count,scrap_count')
-            ->from('tbl_analyze_machine')
+            ->select('date_time,total_count,add_count,collect_count,expire_count')
+            ->from('tbl_analyze_rent')
             ->where(['between','date_time',$start,$end])
             ->andWhere('wx_id=:wid',[':wid'=>Cache::getWid()])
             ->all();
@@ -135,31 +168,27 @@ class TblAnalyzeMachine
         if($data){
             foreach($data as $d){
                 $chart['cate'][] = date('Y-m-d',$d['date_time']);
-                $tmp['free'][] = (int)$d['free_count'];
-                $tmp['rent'][] = (int)$d['rent_count'];
-                $tmp['scrap'][] = (int)$d['scrap_count'];
-//                $tmp['total'][] = $d['free_count'] + $d['rent_count'] + $d['scrap_count'];
+                $tmp['add'][] = (int)$d['add_count'];
+                $tmp['collect'][] = (int)$d['collect_count'];
+                $tmp['expire'][] = (int)$d['expire_count'];
+                $tmp['total'][] = $d['total_count'];
             }
         }else
             $chart['cate'] = [];
 
         $chart['series'] = [
-            /*[
-                'name'=>'总数量',
+            [
+                'name'=>'累计租借',
                 'data'=> isset($tmp['total'])? $tmp['total']:[]
-            ],*/[
-                'name'=>'租赁数量',
-//                'color'=>'#b10000',
-                'data'=> isset($tmp['rent'])? $tmp['rent']:[]
             ],[
-                'name'=>'闲置数量',
-                'color'=>'rgb(144, 237, 125)',
-
-                'data'=> isset($tmp['free'])? $tmp['free']:[]
+                'name'=>'新增租借',
+                'data'=> isset($tmp['add'])? $tmp['add']:[]
             ],[
-                'name'=>'报废数量',
-                'color'=>'rgb(255, 188, 117)',
-                'data'=> isset($tmp['scrap'])? $tmp['scrap']:[]
+                'name'=>'快过期',
+                'data'=> isset($tmp['expire'])? $tmp['expire']:[]
+            ],[
+                'name'=>'待收租',
+                'data'=> isset($tmp['collect'])? $tmp['collect']:[]
             ],
         ];
 

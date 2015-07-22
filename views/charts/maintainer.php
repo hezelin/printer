@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\jui\DatePicker;
-    $this->title='机器库存数据';
+    $this->title='维修员业绩统计';
 ?>
 <style>
     .input-group-addon{
@@ -15,22 +15,23 @@ use yii\jui\DatePicker;
 <div class="row">
 
 <?php
-    echo Html::beginForm('/charts/machine','get',['class'=>'form-inline']);
+    echo Html::beginForm('/charts/maintainer','get',['class'=>'form-inline','id'=>'line-form']);
     echo Html::beginTag('div',['class'=>'input-group','style'=>'margin-left:30px']);
     echo DatePicker::widget([
         'name'  => 'start',
         'value'  => $charts['start'],
-        'dateFormat' => 'yyyy-MM-dd',
+        'dateFormat' => 'yyyyMMdd',
         'options'=>['class'=>'form-control date-input']
     ]);
     echo Html::tag('div','到',['class'=>'input-group-addon']);
     echo DatePicker::widget([
         'name'  => 'end',
         'value'  => $charts['end'],
-        'dateFormat' => 'yyyy-MM-dd',
+        'dateFormat' => 'yyyyMMdd',
         'options'=>['class'=>'form-control date-input']
     ]);
     echo Html::endTag('div');
+    echo Html::dropDownList('line',$charts['line'],['fault_count'=>'维修次数','resp'=>'反应速度','score'=>'平均分','time'=>'维修时长'],['id'=>'line-type','class'=>'form-control','style'=>'margin-left:15px']);
     echo Html::submitButton('筛选',['class'=>'btn btn-info','style'=>'margin-left:15px']);
     echo Html::endForm();
 ?>
@@ -40,49 +41,41 @@ use yii\jui\DatePicker;
     <script>
         <?php $this->beginBlock('JS_END') ?>
         $('#container').highcharts({
-            chart: {
-                type: 'column'
-            },
             title: {
-                text: '机器库存数据'
+                text: '<?=$charts['tips']['title']?>'
             },
             xAxis: {
                 categories: <?=json_encode($charts['cate'])?>,
                 tickmarkPlacement: 'on',
                 title: {
-                    'text':'日期'
+                    'text':'月份'
                 }
             },
             yAxis: {
                 title: {
-                    text: '数量'
-                },
-                stackLabels: {
-                    enabled: true,
-                    style: {
-                        fontWeight: 'bold',
-                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                    }
+                    text: '<?=$charts['tips']['y']?>'
                 }
             },
             tooltip: {
-                pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
-                shared: true,
-                valueSuffix: ' 台'
+                shared: true
             },
             plotOptions: {
-                column: {
+                area: {
                     stacking: 'normal',
-                    dataLabels: {
-                        enabled: true,
-                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
-                        style: {
-                            textShadow: '0 0 3px black'
-                        }
+                    lineColor: '#666666',
+                    lineWidth: 1,
+                    marker: {
+                        lineWidth: 1,
+                        lineColor: '#666666'
                     }
                 }
             },
             series: <?=json_encode($charts['series'])?>
+        });
+
+        // 自动筛选
+        $('#line-type').change(function(){
+           $('#line-form').submit();
         });
         <?php $this->endBlock();?>
     </script>
@@ -90,3 +83,4 @@ use yii\jui\DatePicker;
 \app\assets\HightchartsAsset::register($this);
 $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 ?>
+

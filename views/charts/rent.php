@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\jui\DatePicker;
-    $this->title='机器库存数据';
+    $this->title='租借统计数据';
 ?>
 <style>
     .input-group-addon{
@@ -15,7 +15,7 @@ use yii\jui\DatePicker;
 <div class="row">
 
 <?php
-    echo Html::beginForm('/charts/machine','get',['class'=>'form-inline']);
+    echo Html::beginForm('/charts/rent','get',['class'=>'form-inline']);
     echo Html::beginTag('div',['class'=>'input-group','style'=>'margin-left:30px']);
     echo DatePicker::widget([
         'name'  => 'start',
@@ -44,7 +44,7 @@ use yii\jui\DatePicker;
                 type: 'column'
             },
             title: {
-                text: '机器库存数据'
+                text: '租借统计'
             },
             xAxis: {
                 categories: <?=json_encode($charts['cate'])?>,
@@ -56,29 +56,20 @@ use yii\jui\DatePicker;
             yAxis: {
                 title: {
                     text: '数量'
-                },
-                stackLabels: {
-                    enabled: true,
-                    style: {
-                        fontWeight: 'bold',
-                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                    }
                 }
             },
             tooltip: {
-                pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
                 shared: true,
-                valueSuffix: ' 台'
+                valueSuffix: '次'
             },
             plotOptions: {
-                column: {
+                area: {
                     stacking: 'normal',
-                    dataLabels: {
-                        enabled: true,
-                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
-                        style: {
-                            textShadow: '0 0 3px black'
-                        }
+                    lineColor: '#666666',
+                    lineWidth: 1,
+                    marker: {
+                        lineWidth: 1,
+                        lineColor: '#666666'
                     }
                 }
             },

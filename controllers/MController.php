@@ -59,29 +59,45 @@ class MController extends \yii\web\Controller
      */
     public function actionProcess($id,$openid)
     {
+        set_time_limit(0);
         $post = Yii::$app->request->post('TblServiceProcess');
-        $model = TblUserMaintain::findOne(['openid'=>$openid]);
+        /*$model = TblUserMaintain::findOne(['openid'=>$openid]);
         $model->attributes = $post;
         $wid = $model->wx_id;
         if( !$model->save())
-            throw new BadRequestHttpException('数据不合法');
+            throw new BadRequestHttpException('数据不合法');*/
 
         $model = TblMachineService::findOne($id);
         $model->status = $post['status'];
+        if( $model->status == 3){                   // 确认接单时间记录, 计数距离  latitude、longitude
+            $model->setKm($post['latitude'],$post['longitude']);
+        }else if($model->status == 4)               // 记录 确认接单时间
+            $model->resp_time = time() - $model->accept_time;
+
         $model->openid = $openid;
+        $wid = $model->weixin_id;
         $rendId = $model->id;
         $fromOpenid = $model->from_openid;
         $applyTime = $model->add_time;
-        if( !$model->save())
-            throw new BadRequestHttpException('更改状态错误');
 
-        $model = new TblServiceProcess();
-        $model->service_id = $id;
-        $model->process = $post['status'];
-        $model->content = json_encode($post);
-        $model->add_time = time();
-        if( !$model->save())
-            throw new BadRequestHttpException('维修进度错误');
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model->save();
+
+            // 维修进度保存
+            $model = new TblServiceProcess();
+            $model->service_id = $id;
+            $model->process = $post['status'];
+            $model->content = json_encode($post);
+            $model->add_time = time();
+            $model->save();
+
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            return $this->render('//tips/homestatus',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+        }
 
         $from = Yii::$app->request->post('from');
 
@@ -106,7 +122,7 @@ class MController extends \yii\web\Controller
      * 状态进度
      * 2、更维修表的状态
      * 3、写入维修进度+维修时间
-     * status = 2,3,4,5,6,7,9
+     * status = 2,3,4,5,6,7,8,9
      */
     public function actionProcessajax($id,$openid)
     {
@@ -114,22 +130,37 @@ class MController extends \yii\web\Controller
 
         $model = TblMachineService::findOne($id);
         $model->status = $status;
-        if($status == 8)    $model->complete_time = time();     // 维修完成时间
+        if($status == 8){
+            $model->complete_time = time();     // 维修完成时间
+            $model->fault_time = $model->complete_time + $model->parts_apply_time -$model->parts_arrive_time - $model->resp_time - $model->accept_time;
+        }
+        if($model->status == 4) {                               // 记录 确认接单时间
+            $model->resp_time = time() - $model->accept_time;
 
-        if( !$model->save())
-            Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
+        }
+
         $mid = $model->machine_id;
         $fault_id = $model->id;
         $fromOpenid = $model->from_openid;
         $applyTime = $model->add_time;
 
-        $model = new TblServiceProcess();
-        $model->service_id = $id;
-        $model->process = $status;
-        $model->content = json_encode(['status'=>$status]);
-        $model->add_time = time();
-        if( !$model->save())
-            Yii::$app->end(json_encode(['status'=>0,'msg'=>'维修进度错误']));
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $model->save();
+
+            $model = new TblServiceProcess();
+            $model->service_id = $id;
+            $model->process = $status;
+            $model->content = json_encode(['status'=>$status]);
+            $model->add_time = time();
+            $model->save();
+
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            Yii::$app->end(json_encode(['status'=>0,'msg'=>'入库失败!']));
+        }
 
         $wid = TblRentApply::find()->select('wx_id')->where(['machine_id'=>$mid,'enable'=>'Y'])->scalar();
 
@@ -217,7 +248,7 @@ class MController extends \yii\web\Controller
 
     /*
      * 维修任务详情
-     * 维修申请 id
+     * 维修申请 id, status = 2
      */
     public function actionTaskdetail($id)
     {

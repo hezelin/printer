@@ -1,7 +1,9 @@
 <?php
 use yii\helpers\Url;
 $this->title = '维修任务';
-
+/*
+ * 确认接单页面
+ */
 ?>
 <style>
     body{ background-color: #ffffff !important;}
@@ -50,8 +52,6 @@ $this->title = '维修任务';
     <input name="TblServiceProcess[latitude]" type="hidden" id="tbl_latitude"/>
     <input name="from" type="hidden" value="<?=$from?>"/>
     <input name="TblServiceProcess[longitude]" type="hidden" id="tbl_longitude"/>
-    <input name="TblServiceProcess[accuracy]" type="hidden" id="tbl_accuracy"/>
-
 <button type="button" id="access-order" class="h-fixed-bottom">
     确认接单
 </button>
@@ -67,7 +67,6 @@ $this->title = '维修任务';
             success: function (res) {
                 document.getElementById("tbl_latitude").value = res.latitude;
                 document.getElementById("tbl_longitude").value = res.longitude;
-                document.getElementById("tbl_accuracy").value = res.accuracy;
                 if( !res.latitude ) {
                 alert("获取位置失败");
                 return false;

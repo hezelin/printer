@@ -36,14 +36,14 @@ $config = [
             'port' => 6379,
             'database' => 0,
         ],
-        'session' => [
+        /*'session' => [
             'class' => 'yii\redis\Session',
             'redis' => [
                 'hostname' => 'localhost',
                 'port' => 6379,
                 'database' => 1,
             ]
-        ],
+        ],*/
         'user' => [
             'identityClass' => 'app\models\User',
             'loginUrl' => '/auth/login',

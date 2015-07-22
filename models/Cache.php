@@ -43,6 +43,10 @@ class Cache
     {
         if( !Yii::$app->user->id)
             return Yii::$app->getResponse()->redirect(Url::toRoute(['auth/login','url'=>Yii::$app->request->url]));
+        if( Yii::$app->request->get('wx_id') ){
+            Yii::$app->redis->executeCommand('SET', ['u:'.Yii::$app->user->id.':wid',Yii::$app->request->get('wx_id')]);
+            return Yii::$app->request->get('wx_id');
+        }
         $value = Yii::$app->redis->executeCommand('GET', ['u:'.Yii::$app->user->id.':wid']);
         if( empty($value) ){
             return Yii::$app->getResponse()->redirect(Url::toRoute(['weixin/select','url'=>Yii::$app->request->url]));

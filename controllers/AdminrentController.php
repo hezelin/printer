@@ -16,6 +16,7 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+use yii\web\NotFoundHttpException;
 
 class AdminrentController extends \yii\web\Controller
 {
@@ -60,6 +61,7 @@ class AdminrentController extends \yii\web\Controller
 
         if($model->load( Yii::$app->request->post()))
         {
+
             $model->due_time = $model->due_time? strtotime($model->due_time):0;
             $model->status = 2;
 
@@ -67,11 +69,12 @@ class AdminrentController extends \yii\web\Controller
                 // 如果是审核通过，改版机器的状态 和 出租次数
                 $model->updateMachineStatus();
 
-                return $this->render('//tips/success', [
+                /*return $this->render('//tips/success', [
                     'tips' => '审核成功，并且资料录入',
                     'btnText' => '返回',
                     'btnUrl' => Url::toRoute(['adminrent/apply'])
-                ]);
+                ]);*/
+                return $this->redirect(Url::toRoute(['map','id'=>$model->id]));
             }
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
@@ -290,5 +293,24 @@ class AdminrentController extends \yii\web\Controller
         }
         else
             echo json_encode(['status'=>0,'msg'=>'参数错误']);
+    }
+
+    /*
+     * 租借用户 定位
+     * $id 为 租借表的id
+     */
+    public function actionMap($id)
+    {
+        $model = TblRentApply::findOne($id);
+        if(!$model) throw new NotFoundHttpException();
+
+        if( Yii::$app->request->post('lat') && Yii::$app->request->post('lng')){
+            $model->latitude = number_format(Yii::$app->request->post('lat'),6,'.','');
+            $model->longitude = number_format(Yii::$app->request->post('lng'),6,'.','');
+            if($model->save()){
+                return $this->redirect(Url::toRoute('list'));
+            }
+        }
+        return $this->render('map',['model'=>$model]);
     }
 }

@@ -40,6 +40,9 @@ use yii\jui\DatePicker;
     <script>
         <?php $this->beginBlock('JS_END') ?>
         $('#container').highcharts({
+            chart: {
+                type: 'column'
+            },
             title: {
                 text: '维修统计'
             },

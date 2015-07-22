@@ -7,7 +7,11 @@ use yii\helpers\Url;
 
 $this->title = '租借列表';
 ?>
-
+<style>
+    .high-remark{
+        color: #FF6666;
+    }
+</style>
 <?php
 
 echo GridView::widget([
@@ -17,8 +21,9 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],               // 系列
+        ['class' => 'yii\grid\SerialColumn'],
         [
+            // 系列
             'attribute'=>'type',
             'header'=>'机型',
             'value'=>'machine.machineModel.type',
@@ -59,15 +64,17 @@ echo GridView::widget([
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions' => ['style'=>'width:100px'],
-            'template' => '{fault} &nbsp; {update} &nbsp; {delete}',
+            'headerOptions' => ['style'=>'width:120px'],
+            'template' => '{fault} &nbsp; {update} &nbsp; {map} &nbsp; {delete}',
             'buttons' => [
                 'update' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);
                 },
-                /*'change' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-sort"></span>',$url,['title'=>'更换机器']);
-                },*/
+                'map' => function($url,$model,$key){
+                    if((int)$model->latitude && (int)$model->longitude)
+                        return Html::a('<span class="glyphicon glyphicon-map-marker"></span>',$url,['title'=>'定位']);
+                    return Html::a('<span class="glyphicon glyphicon-map-marker"></span>',$url,['title'=>'定位','class'=>'high-remark']);
+                },
                 'delete' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-remove"></span>',$url,[
                         'title'=>'删除关系',
@@ -81,7 +88,7 @@ echo GridView::widget([
                         return Html::a('<i class="glyphicon glyphicon-wrench"></i>',Url::toRoute(['service/process','id'=>$key]),
                             [
                                 'title'=>'查看维修进度',
-                                'class'=>'text-danger'
+                                'class'=>'high-remark'
                             ]);
 
                     return Html::a('<i class="glyphicon glyphicon-wrench"></i>',$url,

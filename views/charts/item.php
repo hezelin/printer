@@ -37,42 +37,70 @@ use yii\jui\DatePicker;
 
 </div>
 <div id="container"></div>
+<p>&nbsp;</p>
+<div id="stock">
+    <?php if($stock):?>
+        <table class="table">
+            <tr><th>商品名称</th><th>库存数量</th></tr>
+            <?php foreach($stock as $s):?>
+            <tr><td><?=$s['name']?></td><td><?=$s['amount']?></td></tr>
+            <?php endforeach;?>
+        </table>
+    <?php endif;?>
+</div>
     <script>
         <?php $this->beginBlock('JS_END') ?>
         $('#container').highcharts({
-            /*chart: {
-                type: 'area'
-            },*/
+            chart: {
+                zoomType: 'xy'
+            },
             title: {
-                text: '商城库存数据'
+                text: '耗材库存走势'
             },
-            xAxis: {
+            xAxis: [{
                 categories: <?=json_encode($charts['cate'])?>,
-                tickmarkPlacement: 'on',
+                crosshair: true
+            }],
+            yAxis: [{
+                labels: {
+                    format: '{value}个',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
                 title: {
-                    'text':'日期'
-                }
-            },
-            yAxis: {
+                    text: '总量',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
+                opposite: true
+            }, {
                 title: {
-                    text: '数量/价格'
-                }
-            },
-            tooltip: {
-                shared: true
-//                valueSuffix: ' 台/元'
-            },
-            plotOptions: {
-                area: {
-                    stacking: 'normal',
-                    lineColor: '#666666',
-                    lineWidth: 1,
-                    marker: {
-                        lineWidth: 1,
-                        lineColor: '#666666'
+                    text: '成本',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    format: '{value} 元',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
                     }
                 }
+            }],
+            tooltip: {
+                shared: true
             },
+            /*legend: {
+                layout: 'vertical',
+                align: 'left',
+                x: 120,
+                verticalAlign: 'top',
+                y: 100,
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+            },*/
             series: <?=json_encode($charts['series'])?>
         });
         <?php $this->endBlock();?>

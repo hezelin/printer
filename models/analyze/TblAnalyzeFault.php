@@ -122,7 +122,7 @@ class TblAnalyzeFault
     }
 
     /*
-     * 执行当天的统计,当天临时 到  即时时间
+     * 执行当天的统计,当天 00:00 到  即时时间
      */
     public function today($delCmd = false)
     {
@@ -196,12 +196,17 @@ class TblAnalyzeFault
         $chart['series'] = [
             [
                 'name'=>'累计维修',
+                'type'=>'column',
                 'data'=> isset($tmp['total'])? $tmp['total']:[]
             ],[
                 'name'=>'新增维修',
+                'type'=>'column',
+                'color'=>'rgb(144, 237, 125)',
                 'data'=> isset($tmp['add'])? $tmp['add']:[]
             ],[
                 'name'=>'取消维修',
+                'type'=>'column',
+                'color'=>'rgb(255, 188, 117)',
                 'data'=> isset($tmp['cancel'])? $tmp['cancel']:[]
             ],
         ];

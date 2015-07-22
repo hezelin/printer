@@ -3,6 +3,11 @@
 namespace app\controllers;
 
 use app\models\analyze\TblAnalyzeFault;
+use app\models\analyze\TblAnalyzeMachine;
+use app\models\analyze\TblAnalyzeMaintain;
+use app\models\analyze\TblAnalyzeOrder;
+use app\models\analyze\TblAnalyzeProduct;
+use app\models\analyze\TblAnalyzeRent;
 use app\models\Cache;
 use app\models\TblWeixin;
 use yii\web\NotFoundHttpException;
@@ -15,8 +20,9 @@ class ConsoleController extends \yii\web\Controller
     /*
      * 工作报表
      */
-    public function actionView($id)
+    public function actionView()
     {
+        $id = Cache::getWid();
         $model = TblWeixin::find()
             ->where(['id'=>$id,'enable'=>'Y'])
             ->asArray()
@@ -43,23 +49,25 @@ class ConsoleController extends \yii\web\Controller
      */
     public function actionAnalyze()
     {
-        $item = (new \yii\db\Query())
-            ->select('cost_price,sell_price,item_count,cate_count')
-            ->from('tbl_analyze_product')
-            ->where('wx_id=:wid',[':wid'=>Cache::getWid()])
-            ->orderBy('date_time desc')
-            ->limit(1)
-            ->one();
-        $machine = (new \yii\db\Query())
-            ->select('free_count,rent_count,scrap_count')
-            ->from('tbl_analyze_machine')
-            ->where('wx_id=:wid',[':wid'=>Cache::getWid()])
-            ->orderBy('date_time desc')
-            ->limit(1)
-            ->one();
+        $ana = new TblAnalyzeFault();
 
-        $fault = new TblAnalyzeFault();
+        $rent= new TblAnalyzeRent();
 
-        return $this->render('analyze',['item'=>$item,'machine'=>$machine,'fault'=>$fault->getCharts()]);
+        $order = new TblAnalyzeOrder();
+
+        $maintainer = new TblAnalyzeMaintain();
+
+        $machine = new TblAnalyzeMachine();
+
+        $item = new TblAnalyzeProduct();
+        return $this->render('analyze',[
+            'item'=>$item->getCharts(),
+            'stock'=>$item->getItemStock(),
+            'machine'=>$machine->getCharts(),
+            'charts'=>$ana->getCharts(),
+            'rent'=>$rent->getCharts(),
+            'order'=>$order->getCharts(),
+            'maintainer'=>$maintainer->getCharts()
+        ]);
     }
 }

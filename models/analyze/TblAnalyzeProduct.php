@@ -121,33 +121,58 @@ class TblAnalyzeProduct
                 $tmp['cost'][] = (float)$d['cost_price'];
                 $tmp['sell'][] = (float)$d['sell_price'];
                 $tmp['item'][] = (int)$d['item_count'];
-                $tmp['cate'][] = (int)$d['cate_count'];
+//                $tmp['cate'][] = (int)$d['cate_count'];
             }
         }else
             $chart['cate'] = [];
 
         $chart['series'] = [
-            [
+            /*[
                 'name'=>'预售价',
                 'tooltip'=>['valueSuffix'=>'元'],
                 'data'=> isset($tmp['sell'])? $tmp['sell']:[],
-            ],[
+            ],*/[
                 'name'=>'成本价',
+                'type'=>'column',
+                'yAxis'=>1,
                 'tooltip'=>['valueSuffix'=>'元'],
                 'data'=> isset($tmp['cost'])? $tmp['cost']:[]
             ],[
                 'name'=>'商品数量',
+                'type'=>'spline',
+                'color'=>'rgb(255, 188, 117)',
                 'tooltip'=>['valueSuffix'=>'个'],
                 'data'=> isset($tmp['item'])? $tmp['item']:[]
             ],[
+                'name'=>'预售价',
+                'type'=>'column',
+                'color'=>'rgb(144, 237, 125)',
+                'yAxis'=>1,
+                'tooltip'=>['valueSuffix'=>'元'],
+                'data'=> isset($tmp['sell'])? $tmp['sell']:[],
+            ],/*[
                 'name'=>'商品种类',
                 'tooltip'=>['valueSuffix'=>'个'],
                 'data'=> isset($tmp['cate'])? $tmp['cate']:[]
-            ],
+            ],*/
         ];
 
         unset($data);
         unset($tmp);
         return $chart;
+    }
+
+    /*
+     * 返回商品库存
+     */
+    public function getItemStock()
+    {
+        $data = (new \yii\db\Query())
+            ->select('name,amount')
+            ->from('tbl_product')
+            ->where('enable="Y" and wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->orderBy('amount asc')
+            ->all();
+        return $data;
     }
 }
