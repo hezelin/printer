@@ -182,12 +182,14 @@ class SController extends \yii\web\Controller
     {
         if(Yii::$app->request->post()){
 
-            $model = new TblServiceEvaluate();
-            $model->add_time = time();
-            if($model->load(Yii::$app->request->post()) && $model->save())
+            $eva = new TblServiceEvaluate();
+            $eva->add_time = time();
+            if($eva->load(Yii::$app->request->post()) && $eva->save())
             {
                 $model = TblMachineService::findOne($id);
                 $model->status = 9;
+                $model->fault_score = $eva->score;                  //  增加评价数据
+
                 if( !$model->save())
                     Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
                 $model->updateMachineCount();

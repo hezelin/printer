@@ -41,7 +41,7 @@ use yii\jui\DatePicker;
         <?php $this->beginBlock('JS_END') ?>
         $('#container').highcharts({
             chart: {
-                type: 'column'
+                zoomType: 'xy'
             },
             title: {
                 text: '租借统计'
@@ -53,25 +53,37 @@ use yii\jui\DatePicker;
                     'text':'日期'
                 }
             },
-            yAxis: {
+            yAxis: [{
+                labels: {
+                    format: '{value}次',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
                 title: {
-                    text: '数量'
+                    text: '累计租借',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
+                opposite: true
+            }, {
+                title: {
+                    text: '次数',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    format: '{value} 次',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
                 }
-            },
+            }],
             tooltip: {
                 shared: true,
                 valueSuffix: '次'
-            },
-            plotOptions: {
-                area: {
-                    stacking: 'normal',
-                    lineColor: '#666666',
-                    lineWidth: 1,
-                    marker: {
-                        lineWidth: 1,
-                        lineColor: '#666666'
-                    }
-                }
             },
             series: <?=json_encode($charts['series'])?>
         });

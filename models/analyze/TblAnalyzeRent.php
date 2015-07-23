@@ -171,24 +171,31 @@ class TblAnalyzeRent
                 $tmp['add'][] = (int)$d['add_count'];
                 $tmp['collect'][] = (int)$d['collect_count'];
                 $tmp['expire'][] = (int)$d['expire_count'];
-                $tmp['total'][] = $d['total_count'];
+                $tmp['total'][] = (int)$d['total_count'];
             }
         }else
             $chart['cate'] = [];
 
         $chart['series'] = [
             [
-                'name'=>'累计租借',
-                'data'=> isset($tmp['total'])? $tmp['total']:[]
-            ],[
-                'name'=>'新增租借',
-                'data'=> isset($tmp['add'])? $tmp['add']:[]
-            ],[
                 'name'=>'快过期',
+                'type'=>'column',
+                'yAxis'=>1,
                 'data'=> isset($tmp['expire'])? $tmp['expire']:[]
             ],[
+                'name'=>'新增租借',
+                'type'=>'column',
+                'yAxis'=>1,
+                'data'=> isset($tmp['add'])? $tmp['add']:[]
+            ],[
                 'name'=>'待收租',
+                'type'=>'column',
+                'yAxis'=>1,
                 'data'=> isset($tmp['collect'])? $tmp['collect']:[]
+            ],[
+                'name'=>'累计租借',
+                'type'=>'spline',
+                'data'=> isset($tmp['total'])? $tmp['total']:[]
             ],
         ];
 

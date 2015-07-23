@@ -77,7 +77,7 @@ use yii\jui\DatePicker;
                 opposite: true
             }, {
                 title: {
-                    text: '成本',
+                    text: '金额',
                     style: {
                         color: Highcharts.getOptions().colors[0]
                     }
@@ -92,15 +92,6 @@ use yii\jui\DatePicker;
             tooltip: {
                 shared: true
             },
-            /*legend: {
-                layout: 'vertical',
-                align: 'left',
-                x: 120,
-                verticalAlign: 'top',
-                y: 100,
-                floating: true,
-                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-            },*/
             series: <?=json_encode($charts['series'])?>
         });
         <?php $this->endBlock();?>

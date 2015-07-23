@@ -1,6 +1,8 @@
 <?php
-
-namespace app\controllers;
+/*
+ * 数据分析 ，每天定时跑
+ */
+namespace app\commands;
 
 use app\models\analyze\TblAnalyzeFault;
 use app\models\analyze\TblAnalyzeMachine;
@@ -9,7 +11,7 @@ use app\models\analyze\TblAnalyzeOrder;
 use app\models\analyze\TblAnalyzeProduct;
 use app\models\analyze\TblAnalyzeRent;
 
-class AnalyzeController extends \yii\web\Controller
+class AnalyzeController extends \yii\console\Controller
 {
     /*
      * 每天跑的分析
