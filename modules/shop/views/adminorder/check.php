@@ -71,10 +71,15 @@ echo GridView::widget([
                 $item = json_decode($model->order_data,true);
                 $html = [];
                 foreach($item as $i){
-                        $html[] = '<li><a href="/shop/backend/view?id='.$i['item_id'].'"><img class="order-cover" src="'.$i['cover'].'"><span class="order-name">'.$i['name'].'</span>
-                            <p class="order-num-price">'.$i['item_nums'].' 件 <b>¥'.number_format($i['item_nums']*$i['price'],2,'.','').'</b></p></li>';
+                        $html[] = '<li>
+<a href="/shop/backend/view?id='.$i['item_id'].'">
+<img class="order-cover" src="'.$i['cover'].'">
+<span class="order-name">'.$i['name'].'</span>
+<p class="order-num-price">'.$i['item_nums'].' 件 <b>¥'.number_format($i['item_nums']*$i['price'],2,'.','').'</b></p>
+</a>
+</li>';
                 }
-                return '<ul class="order-list-m">'.join('',$html).'</ul>';
+                return '<ul class="order-list-m">'.join("\n",$html).'</ul>';
             }
         ],
         [

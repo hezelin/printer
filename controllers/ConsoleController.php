@@ -51,13 +51,54 @@ class ConsoleController extends \yii\web\Controller
             }
         }
 
-        /*$data['rent'] = (new \yii\db\Query())
-            ->select('t.id,t.name,t.phone,t.add_time,u.nickname,u.headimgurl,u.sex,m.type,m.cover_images,m.is_color')
+        $data['rent'] = (new \yii\db\Query())
+            ->select('t.id,t.name,t.phone,t.add_time,u.headimgurl,m.type,m.is_color,b.name as brand,
+                p.lowest_expense,p.black_white,p.colours')
             ->from('tbl_rent_apply as t')
             ->where('t.wx_id=:wid and t.status=1 and t.enable="Y"',[':wid'=>$wx_id])
             ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
+            ->leftJoin('tbl_machine_rent_project as p','p.id=t.project_id')
             ->leftJoin('tbl_machine_model as m','p.machine_model_id=m.id')
-            ->all();*/
+            ->leftJoin('tbl_brand b','b.id=m.brand_id')
+            ->all();
+
+        $data['alert'] = (new \yii\db\Query())
+            ->select('expire_count,collect_count')
+            ->from('tbl_analyze_rent')
+            ->where(['wx_id'=>$wx_id])
+            ->orderBy('date_time desc')
+            ->limit(1)
+            ->one();
+
+
+        $data['order'] = (new \yii\db\Query())
+            ->select('t.order_data,t.remark,t.freight,t.total_price,t.pay_score,t.pay_status,t.order_status,t.add_time,
+                d.name,d.phone,d.city,d.address')
+            ->from('tbl_shop_order t')
+            ->leftJoin('tbl_shop_address d','d.id=t.address_id')
+            ->where(['t.enable'=>'Y','t.wx_id'=>$wx_id,'t.order_status'=>[1,5]])
+            ->all();
+        if($data['order']){
+            foreach($data['order'] as &$d)
+                $d['order_data'] = json_decode($d['order_data'],true);
+        }
+
+        $data['part'] = (new \yii\db\Query())
+            ->select('t.status,t.item_id,p.name,p.market_price,p.price,p.cover,m.cover as fault_cover,m.desc,m.type,
+                a.name as nickname,a.phone')
+            ->from('tbl_parts t')
+            ->leftJoin('tbl_product p','p.id=t.item_id')
+            ->leftJoin('tbl_machine_service m','m.id=t.fault_id')
+            ->leftJoin('tbl_user_maintain a','a.openid=t.openid')
+            ->where(['t.status'=>[1,2,3,4,11],'t.wx_id'=>$wx_id,'t.enable'=>'Y'])
+            ->all();
+
+        if($data['part']){
+            foreach($data['part'] as &$d){
+                $tmp = json_decode($d['fault_cover'],true);
+                $d['fault_cover'] = $tmp['0'];
+            }
+        }
 
         return $this->render('view',['data'=>$data]);
     }
