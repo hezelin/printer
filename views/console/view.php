@@ -11,7 +11,7 @@ use yii\bootstrap\Modal;
 <link href="/css/console-task.css" rel="stylesheet">
 <div class="row">
     <div class="mod_navbar">
-        <div class="title"> <h3><i class="icon glyphicon glyphicon-tasks"></i>工作任务</h3> </div>
+        <div class="title"> <h3><i class="icon glyphicon glyphicon-tasks"></i> 工作任务</h3>  </div>
     </div>
 </div>
 <div class="row" id="task-layout">
@@ -209,10 +209,10 @@ use yii\bootstrap\Modal;
             <?php if($data['alert']):?>
             <ul class="box-list-ul">
                 <li class="box-list-li">
-                    <span class="m-tips">待收租机器</span><a class="num-alert"><?=$data['alert']['collect_count']?></a>
+                    <span class="m-tips">待收租机器</span><a href="<?=Url::toRoute(['/adminrent/collect'])?>" class="num-alert"><?=$data['alert']['collect_count']?></a>
                 </li>
                 <li class="box-list-li">
-                    <span class="m-tips">快过期机器</span><a class="num-alert"><?=$data['alert']['expire_count']?></a>
+                    <span class="m-tips">快到期租借</span><a href="<?=Url::toRoute(['/adminrent/expire'])?>" class="num-alert"><?=$data['alert']['expire_count']?></a>
                 </li>
             </ul>
             <?php else:?>
