@@ -51,16 +51,30 @@ class AdminpartsController extends Controller
     public function actionStatus($id,$status)
     {
         $model = TblParts::findOne($id);
+        if($model->status == 2 && !Yii::$app->request->get('fault_id')){
+            return $this->redirect(['/service/select','url'=>Yii::$app->request->url]);
+        }
         $model->status = $status;
-        $model->fault_id = Yii::$app->request->get('fault_id')? Yii::$app->request->get('fault_id'):$model->fault_id;
+        if( Yii::$app->request->get('fault_id') )
+            $model->fault_id = Yii::$app->request->get('fault_id');
 
-        if($model->save()){
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model->save();
             $model->process();
             if($model->status == 10 ){
                 $model->updateBind();
             }
-            return $this->redirect(['list']);
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            if(Yii::$app->request->isAjax)
+                return json_encode(['status'=>0,'msg'=>'入库失败!']);
+            return $e;
         }
+        if(Yii::$app->request->isAjax)
+            return json_encode(['status'=>1]);
+        return $this->redirect( Yii::$app->request->referrer );
     }
 
     /*

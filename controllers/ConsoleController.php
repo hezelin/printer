@@ -30,13 +30,13 @@ class ConsoleController extends \yii\web\Controller
         $wx_id = Cache::getWid();
 
         $data['maintainer'] = (new \yii\db\Query())
-            ->select('name,wait_repair_count')
+            ->select('name,phone,openid,wx_id,wait_repair_count')
             ->from('tbl_user_maintain')
             ->where('wx_id=:wid',[':wid'=>$wx_id])
             ->all();
 
         $data['fault'] = (new \yii\db\Query())
-            ->select('t.cover,t.desc,t.type,t.add_time,p.type as model,b.name as brand,a.name,a.phone,a.address')
+            ->select('t.id,t.cover,t.desc,t.type,t.add_time,p.type as model,b.name as brand,a.name,a.phone,a.address')
             ->from('tbl_machine_service t')
             ->leftJoin('tbl_machine m','t.machine_id=m.id')
             ->leftJoin('tbl_machine_model p','p.id=m.model_id')
@@ -72,7 +72,7 @@ class ConsoleController extends \yii\web\Controller
 
 
         $data['order'] = (new \yii\db\Query())
-            ->select('t.order_data,t.remark,t.freight,t.total_price,t.pay_score,t.pay_status,t.order_status,t.add_time,
+            ->select('t.order_id,t.order_data,t.remark,t.freight,t.total_price,t.pay_score,t.pay_status,t.order_status,t.add_time,
                 d.name,d.phone,d.city,d.address')
             ->from('tbl_shop_order t')
             ->leftJoin('tbl_shop_address d','d.id=t.address_id')
@@ -84,13 +84,13 @@ class ConsoleController extends \yii\web\Controller
         }
 
         $data['part'] = (new \yii\db\Query())
-            ->select('t.status,t.item_id,p.name,p.market_price,p.price,p.cover,m.cover as fault_cover,m.desc,m.type,
+            ->select('t.id,t.status,t.item_id,t.fault_id,p.name,p.market_price,p.price,p.cover,m.cover as fault_cover,m.desc,m.type,
                 a.name as nickname,a.phone')
             ->from('tbl_parts t')
             ->leftJoin('tbl_product p','p.id=t.item_id')
             ->leftJoin('tbl_machine_service m','m.id=t.fault_id')
             ->leftJoin('tbl_user_maintain a','a.openid=t.openid')
-            ->where(['t.status'=>[1,2,3,4,11],'t.wx_id'=>$wx_id,'t.enable'=>'Y'])
+            ->where(['t.status'=>[1,11],'t.wx_id'=>$wx_id,'t.enable'=>'Y'])
             ->all();
 
         if($data['part']){
@@ -100,7 +100,7 @@ class ConsoleController extends \yii\web\Controller
             }
         }
 
-        return $this->render('view',['data'=>$data]);
+        return $this->render('view',['data'=>$data,'wx_id'=>$wx_id]);
     }
 
     /*

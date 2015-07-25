@@ -48,39 +48,46 @@ class ServiceController extends \yii\web\Controller
         $serviceId = $model->id;
         $applyTime = $model->add_time;
 
-        if( !$model->save() )
-            Yii::$app->end(json_encode(['status'=>0,'msg'=>'错误1']));
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model->save();                         // 更改维修资料表
 
-        $faultStatus = $model->status;          // 维修进度状态
-        $model = new TblFaultCancelLog();
-        $model->service_id = $serviceId;
-        $model->opera = $openid? $openid:'user:'.(Yii::$app->user->id);
-        $model->type = $type;
-        $model->add_time = time();
-        $model->reason = $text;
-        $model->wx_id = $id;
+            $faultStatus = $model->status;          // 维修进度状态
+            $model = new TblFaultCancelLog();
+            $model->service_id = $serviceId;
+            $model->opera = $openid? $openid:'user:'.(Yii::$app->user->id);
+            $model->type = $type;
+            $model->add_time = time();
+            $model->reason = $text;
+            $model->wx_id = $id;
+            $model->save();
 
-        if(!$model->save())
-            Yii::$app->end(json_encode(['status'=>0,'msg'=>'错误2']));
+            if($faultStatus < 8)   {
+                // 为管理员推送消息
+                $tpl = new WxTemplate($id);
+                $url = Url::toRoute(['cancel','id'=>$model->id]);
+                $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
 
-        if($faultStatus < 8)   {
-            // 为管理员推送消息
-            $tpl = new WxTemplate($id);
-            $url = Url::toRoute(['cancel','id'=>$model->id]);
-            $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
-            $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
-            // 用户待修计数 减一
-            $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid]);
-            if(!$model)
-                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,300']) );
-            $model->wait_repair_count = $model->wait_repair_count - 1;
-            if( !$model->save() )
-                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,400']) );
+                if( $toOpenid ){
+                    $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
+                    // 用户待修计数 减一
+                    $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid]);
+                    if( $model->wait_repair_count > 0)
+                        $model->wait_repair_count = $model->wait_repair_count - 1;
+                    $model->save();
+                }
+            }
+
+            $transaction->commit();
+        }catch(\Exception $e) {
+            $transaction->rollBack();
+            if($type == 2)
+                return $this->render('//tips/homestatus',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+            return json_encode(['status'=>0,'msg'=>'入库失败!']);
         }
 
-
         if($type == 2)
-            return $this->render('//tips/homestatus',['tips'=>'维修申请取消成功！','btnText'=>'返回','btnUrl'=>Url::toRoute(['i/machine','id'=>$id])]);
+            return $this->render('//tips/homestatus',['tips'=>'维修申请取消成功！','btnText'=>'返回','btnUrl'=>Yii::$app->request->referrer]);
         return json_encode(['status'=>1]);
     }
 
@@ -228,11 +235,40 @@ class ServiceController extends \yii\web\Controller
     }
 
     /*
-     * 取消原因
-     * $id 取消列表的id
+     * 选择维修
      */
-    public function actionCancel($id)
+    public function actionSelect()
     {
+        $searchModel = new TblMachineServiceList();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $fromUrl = $this->dealUrl( Yii::$app->request->get('url') );
+
+        return $this->render('select',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'wid'=>Cache::getWid(),'fromUrl'=>$fromUrl]);
+    }
+
+    /*
+ * 处理 url
+ */
+    private function dealUrl($url)
+    {
+        if(strpos($url,'?') !== false){                     // 如果路径存在 问号 ？
+            $arr = [];
+
+            list($baseUrl,$query) = explode('?',urldecode($url) );
+            if( $query ){
+                foreach( explode('&',$query) as $q )
+                {
+                    if(!$q) continue;                       // 空白过滤
+                    list($k,$v) = explode('=',$q);
+                    if( $k == 'openid' )
+                        continue;
+                    $arr[$k] = $v;
+                }
+            }
+            return $baseUrl . ($arr? '?'.http_build_query($arr).'&':'?');
+        }
+
+        return $url.'?';                                    //  没有问号 直接返回参数
     }
 }

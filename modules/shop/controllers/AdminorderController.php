@@ -90,6 +90,27 @@ class AdminorderController extends Controller
             return json_encode(['status'=>0,'msg'=>'参数错误']);
     }
     /*
+     * 单个审核，审核通过,$send 等待发货，$wait ,等待取货
+     */
+    public function actionPassByOne()
+    {
+        if($data = Yii::$app->request->post('data')){
+            $wx_id = Cache::getWid();
+
+            list($orderId,$status) = explode('|',$data);
+            if($status == 2)
+                $newStatus = 4;
+            else
+                $newStatus = 5;
+            $model = TblShopOrder::findOne($orderId);
+            $model->order_status = $newStatus;
+            if(!$model->save())
+                return json_encode(['status'=>0,'msg'=>'系统错误!']);
+            return json_encode(['status'=>1,'new_status'=>$newStatus]);
+        }else
+            return json_encode(['status'=>0,'msg'=>'参数错误']);
+    }
+    /*
      * 管理后台订单列表
      */
     public function actionList()

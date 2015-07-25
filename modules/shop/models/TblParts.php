@@ -71,7 +71,8 @@ class TblParts extends \yii\db\ActiveRecord
     public function updateBind()
     {
         $machine = TblMachineService::findOne($this->fault_id);
-        $machine->unfinished_parts_num = $machine->unfinished_parts_numt - 1;
+        if( $machine->unfinished_parts_num > 0)
+            $machine->unfinished_parts_num = $machine->unfinished_parts_numt - 1;
         $machine->parts_arrive_time = time();
         return $machine->save();
     }

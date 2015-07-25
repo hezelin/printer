@@ -1,163 +1,20 @@
 <?php
 use yii\helpers\Url;
-    $this->title = '工作任务'
+use yii\helpers\Html;
+use yii\grid\GridView;
+use app\modules\shop\models\Shop;
+use yii\bootstrap\Modal;
+
+    $this->title = '工作任务';
+//$this->registerCssFile('/css/console-task.css');
 ?>
-<style>
-    .mod_navbar {
-        border-bottom: 1px solid #e1e1e1;
-        -webkit-box-shadow: 1px 0 3px #eee,inset 0 0 3px #fff;
-        box-shadow: 1px 0 3px #eee,inset 0 0 3px #fff;
-        padding: 0 15px;
-        position: absolute;
-        top: 0px;
-        left:0;
-        width: 100%;
-        background-color: #f9f9f7;
-        z-index: 3;
-        height: 60px;
-
-    }
-    .no-padding{
-        padding: 0;
-        padding-left: 15px;
-        padding-bottom: 15px;
-    }
-    .row-box{
-        box-shadow: 0 0 3px #eee,inset 0 0 3px #fff;
-        border: solid 1px #e1e1e1;
-        padding: 15px 15px 30px 15px;
-        background-color: #fbfbfb;
-        position: relative;
-    }
-    .row-box .box-panel-body{
-        height: 180px;
-        overflow: hidden;
-    }
-    .row-box .box-panel-header {
-        border-bottom: 1px solid #e1e1e1;
-        margin-bottom: 15px;
-        display: block;
-    }
-    .row-box .box-panel-header h4 {
-        color: #646b75;
-        font-size: 18px;
-        margin-bottom: 15px;
-        margin-top: 0;
-    }
-    h4{ margin: 0}
-    .empty-panel {
-        margin: 0 auto;
-        text-align: center;
-        text-shadow: 0 1px 0 #fff,0 -1px 0 #f2f2ea;
-        color: #cccccc;
-        font-size: 18px;
-        height: 200px;
-        line-height: 200px;
-    }
-    .icon{ margin-right: 5px;}
-    ul,li{
-        list-style: none; margin: 0; padding: 0;
-    }
-    .box-list-li{
-        height: 30px; line-height: 30px;
-    }
-    .m-name{  color: #333333; width: 33%; display: inline-block;}
-    .m-tips{ color: #999999; width: 33%; display: inline-block;}
-    
-    .num-alert{color: #f7af49; font-size: 16px;}
-
-    .fault-list-ul{
-        overflow: hidden;
-    }
-    .fault-list-li{
-        height: 60px;
-        padding-top:5px;
-        border-bottom: 1px dotted #cccccc;
-    }
-    .fault-data{ width: 40%; float: left; position: relative;}
-    .fault-btn{ width: 20%; float: right; text-align: right; margin-top: 8px;}
-    .fault-data span { color:#AAAAAA; height: 20px; line-height: 20px; overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap; width: 100%;}
-    .fault-data h4{ color: #333333; height: 30px; line-height: 30px;overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;}
-    .cover-img{
-        width: 50px;
-        height: 50px;
-        margin-right: 10px;
-        float: left;
-    }
-    .fault-time{
-        color: #AAAAAA; font-size: 12px; font-weight: 500;
-    }
-    a{ cursor: pointer;}
-    .high-show{ color: #f7af49; font-weight: 400;}
-
-
-    .order-list-li{ width: 100%;  float: left; display: block; overflow: hidden; border-bottom: 1px dotted #cccccc}
-    .order-list-m{ width: 25%;float: left;}
-    .order-list{ width: 30%;float: left;}
-    .order-address{ width: 30%;float: left;}
-    .order-btn{width: 15%; float: left; margin-top: 20px;}
-
-    .order-list p{ height: 20px; line-height: 20px; margin: 0; padding:0;}
-    .order-list-m li{
-        height: 50px; width: 180px; border-bottom: 1px solid #cccccc; padding: 7px 0; margin-bottom: 3px;
-    }
-    .order-list-m img{
-        height: 40px; width: 40px; margin-right: 10px;
-        float: left;
-    }
-    .order-list-m b{ color: #b10000; float: right; font-weight: 500;}
-    .order-list li{
-        height: 24px;
-        line-height: 24px;
-    }
-    .order-name{ overflow: hidden; width: 130px; height: 20px;  float: left;}
-    .order-error{
-        display: inline-block;
-        color: #ff0000;
-    }
-    .order-address li{
-        line-height: 24px;
-    }
-    .order-remark{
-        color: #1e90ff;
-    }
-
-
-    .part-list{ width: 25%;float: left;}
-    .part-list li{
-        height: 50px; width: 180px; border-bottom: 1px solid #cccccc; padding: 7px 0; margin-bottom: 3px;
-    }
-    .part-data{ width: 30%; float: left; position: relative;}
-    .part-btn{ width: 15%; float: right; text-align: right; margin-top: 8px;}
-    .part-data span { color:#AAAAAA; height: 20px; line-height: 20px; overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap; width: 100%;}
-    .part-data h4{ color: #333333; height: 30px; line-height: 30px;overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;}
-    .part-li{
-        border-bottom:none !important;
-    }
-
-    .list-more{ position: absolute; bottom: 0px; left: 0; text-align: center; height: 28px;
-        width: 100%;  cursor: pointer; color: #999999;
-    }
-    .list-all .box-panel-body{
-        height: auto;
-    }
-
-
-</style>
+<link href="/css/console-task.css" rel="stylesheet">
 <div class="row">
     <div class="mod_navbar">
         <div class="title"> <h3><i class="icon glyphicon glyphicon-tasks"></i>工作任务</h3> </div>
     </div>
 </div>
-<div class="row">
+<div class="row" id="task-layout">
     <p style="height: 40px;">&nbsp;</p>
     <div class="col-md-9 no-padding">
         <div class="row-box">
@@ -181,8 +38,8 @@ use yii\helpers\Url;
                                     <span><?=$d['phone'],',',$d['address']?></span>
                                 </div>
                                 <div class="fault-btn">
-                                    <button type="button" class="btn btn-info btn-sm">分配</button>
-                                    <button type="button" class="btn btn-danger btn-sm">删除</button>
+                                    <button type="button" key-id="<?=$d['id']?>" modal-type="modal-fault-allot" class="order-modal btn btn-info btn-sm">分配</button>
+                                    <button type="button" key-id="<?=$d['id']?>" modal-type="modal-fault-del" class="order-modal btn btn-danger btn-sm">关闭</button>
                                 </div>
                             </li>
                         <?php endforeach;?>
@@ -257,10 +114,10 @@ use yii\helpers\Url;
                         </ul>
                         <div class="order-btn">
                             <?php if($d['order_status'] == 1):?>
-                                <button type="button" class="btn btn-info btn-sm">发货</button>
+                                <button type="button" key="<?=$d['order_id'],'|',$d['pay_status']?>" class="order-pass btn btn-info btn-sm">通过</button>
+                                <button type="button" key-id="<?=$d['order_id']?>" modal-type="modal-order-nopass" class="order-modal btn btn-danger btn-sm">不通过</button>
                             <?php else:?>
-                            <button type="button" class="btn btn-info btn-sm">通过</button>
-                            <button type="button" class="btn btn-danger btn-sm">不通过</button>
+                                <button type="button" key-id="<?=$d['order_id']?>" modal-type="modal-order-send" class="order-modal btn btn-info btn-sm">发货</button>
                             <?php endif;?>
                         </div>
                     </li>
@@ -313,15 +170,16 @@ use yii\helpers\Url;
                                     <?php
                                         switch($d['status']){
                                             case 1:
-                                                echo '<button type="button" class="btn btn-info btn-sm">发货</button>';
-                                                break;
-                                            case 2:
-                                            case 3:
-                                            case 4:
-                                                echo '<button type="button" class="btn btn-info btn-sm">绑定</button>';
+                                                echo '<a data-href="'.Url::toRoute([Url::toRoute(['/shop/adminparts/status',
+                                                        'id'=>$d['id'],
+                                                        'status'=>$d['fault_id']>0? 3:2
+                                                    ])]).'" class="data-btn1 btn btn-info btn-sm">发货</a>';
                                                 break;
                                             case 11:
-                                                echo '<button type="button" class="btn btn-info btn-sm">回收</button>';
+                                                echo '<a data-href="'.Url::toRoute([Url::toRoute(['/shop/adminparts/status',
+                                                        'id'=>$d['id'],
+                                                        'status'=>'12'
+                                                    ])]).'" class="data-btn1 btn btn-info btn-sm">回收</a>';
                                                 break;
                                         }
                                     ?>
@@ -399,8 +257,8 @@ use yii\helpers\Url;
                             <span>月租:<b class="high-show"><?=$d['lowest_expense']?></b> , 黑白:<b class="high-show"><?=$d['black_white']?></b> , 彩色:<b class="high-show"><?=$d['colours']?></b></span>
                         </div>
                         <div class="fault-btn">
-                            <button type="button" class="btn btn-info btn-sm">通过</button>
-                            <button type="button" class="btn btn-danger btn-sm">不通过</button>
+                            <a href="<?=Url::toRoute(['adminrent/pass','id'=>$d['id']])?>" class="btn btn-info btn-sm">通过</a>
+                            <button type="button" key-id="<?=$d['id']?>" modal-type="modal-rent-apply" class="order-modal btn btn-danger btn-sm">不通过</button>
                         </div>
                     </li>
                 <?php endforeach;?>
@@ -452,14 +310,126 @@ echo newerton\fancybox\FancyBox::widget([
         ],
     ]
 ]);
+
+
+
+Modal::begin([
+    'header' => '分配任务',
+    'id' => 'modal-fault-allot',
+    'size' => 'modal-md',
+    'toggleButton' => false,
+    'footer' => '
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+    ',
+]);
+
+echo Html::beginTag('table',['class'=>'table table-striped']);
+echo '<tr><th>名字</th><th>手机</th><th>待修</th><th>分配</th></tr>';
+foreach($data['maintainer'] as $d){
+    echo '<tr><td>',$d['name'],'</td><td>',$d['phone'],'</td><td class="repair-count">',$d['wait_repair_count'],'</td><td><a class="select-maintain" href="javascript:void(0);" title="分配维修" key-wid="',$d['wx_id'],'" key-openid="',$d['openid'],'" data-method="post"><i class="glyphicon glyphicon-ok"></i></a></td></tr>';
+}
+echo Html::endTag('table');
+Modal::end();
+
+
+/*
+ * 取消任务 模态框
+ */
+Modal::begin([
+    'header' => '关闭维修申请',
+    'id' => 'modal-fault-del',
+    'size' => 'modal-md',
+    'toggleButton' => false,
+    'footer' => '
+        <button id="cancel-btn" type="button" class="btn btn-primary">取消维修</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+    ',
+]);
+echo Html::tag('p','取消维修并且给用户和管理员发送通知',['class'=>'text-primary']);
+echo Html::tag('p','',['class'=>'text-danger','id'=>'cancel-status']);
+echo Html::beginForm('','',['class'=>'form-horizontal']);
+echo Html::input('text','service_cancel','',['placeholder'=>'取消原因','class'=>'form-control','id'=>'cancel-text']);
+echo Html::endForm();
+
+Modal::end();
+
+/*
+ * 订单不通过
+ */
+Modal::begin([
+    'header' => '不通过原因',
+    'id' => 'modal-order-nopass',
+    'size' => 'modal-md',
+    'toggleButton' => false,
+    'footer' => '
+        <button id="order-cancel-btn" type="button" class="btn btn-primary">提交</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+    ',
+]);
+echo Html::tag('p','',['class'=>'text-danger','id'=>'order-cancel-status']);
+echo Html::beginForm('','',['class'=>'form-horizontal']);
+echo Html::input('text','service_cancel','',['placeholder'=>'不超过200字','class'=>'form-control','id'=>'order-cancel-text']);
+echo Html::endForm();
+
+Modal::end();
+
+/*
+ * 订单发货
+ */
+Modal::begin([
+    'header' => '发货',
+    'id' => 'modal-order-send',
+    'size' => 'modal-md',
+    'toggleButton' => false,
+    'footer' => '
+        <button id="order-send-btn" type="button" class="btn btn-primary">确定发货</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+    ',
+]);
+echo Html::tag('p','',['class'=>'text-danger','id'=>'order-send-status']);
+echo Html::beginForm('','',['class'=>'form-horizontal']);
+echo Html::dropDownList('express_type','',Shop::getExpress(),['class'=>'form-control','id'=>'express_type']);
+echo '<br/>';
+echo Html::textInput('express_no','',['placeholder'=>'订单编号','class'=>'form-control','id'=>'express_no']);
+echo Html::endForm();
+
+Modal::end();
+
+
+/*
+ * 取消租借 模态框
+ */
+Modal::begin([
+    'header' => '租借申请不通过',
+    'id' => 'modal-rent-apply',
+    'size' => 'modal-md',
+    'toggleButton' => false,
+    'footer' => '
+        <button id="rent-apply-btn" type="button" class="btn btn-primary">不通过</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+    ',
+]);
+echo Html::tag('p','不通过并且给用户发送通知',['class'=>'text-primary']);
+echo Html::tag('p','',['class'=>'text-danger','id'=>'rent-apply-status']);
+echo Html::beginForm('','',['class'=>'form-horizontal']);
+echo Html::input('text','service_cancel','',['placeholder'=>'资料不齐全无法联系','class'=>'form-control','id'=>'rent-apply-text']);
+echo Html::endForm();
+
+Modal::end();
+
 ?>
+
 
 <script>
     <?php $this->beginBlock('JS_END') ?>
+    // 共用key,fault
+    var keyId;
+    var $li;
+
     ///////////  展开 收起  功能
     var listClsoe = '<i class="glyphicon glyphicon-menu-up"></i> 收起';
     var listShow = '<i class="glyphicon glyphicon-menu-down"></i> 展开';
-    $('.list-more').click(function(){
+    $('#task-layout .list-more').click(function(){
         var p = $(this).closest('.row-box');
         if(p.hasClass('list-all') ){
             p.removeClass('list-all');
@@ -470,8 +440,164 @@ echo newerton\fancybox\FancyBox::widget([
         }
     });
 
+//    配件处理按钮
+    $('#task-layout .data-btn1').click(function(){
+        var url = $(this).attr('data-href');
+        var $this = $(this);
+        $.getJSON(url,'',function(resp){
+            if(resp.status ==1){
+                $this.closest('li').slideUp();
+            }else
+                alert(resp.msg);
+        });
+    })
+//    订单通过按钮
+    $('#task-layout .order-pass').click(function(){
+        var key = $(this).attr('key');
+        var $this = $(this);
+        var $btn = $(this).closest('.order-btn');
+        $.post(
+            '<?=Url::toRoute(['/shop/adminorder/pass-by-one'])?>',
+            {'data':key},
+            function(res){
+                if(res.status == 1){
+                    if(res.new_status == 5){
+                        $btn.html('<button type="button" key-id="'+key.substr(0,18)+'" modal-type="modal-order-send" class="order-modal btn btn-info btn-sm">发货</button>');
+                    }else{
+                        $this.closest('li').slideUp();
+                    }
+                }
+                else
+                    alert(res.msg);
+            },'json'
+        );
 
+        return false;
+    });
 
+//    弹出模态框,order-send,order-nopass,fault-allot,fault-del,rent-apply
+    $('#task-layout').on('click','.order-modal',function(){
+        var modelIds = $(this).attr('modal-type');
+        if( $(this).attr('key-id') != "undefined")
+            keyId = $(this).attr('key-id');
+        $li = $(this).closest('li');
+        $('#'+modelIds).modal('show');
+    });
+
+//    维修分配
+    $('#modal-fault-allot .select-maintain').click(function(){
+        $(this).html('<img src="/images/loading.gif">');
+        var $this = $(this);
+        var wid = $(this).attr('key-wid');
+        var openid = $(this).attr('key-openid');
+        var re_count = $(this).closest('tr').children('.repair-count');
+        $.post(
+            '<?=Url::toRoute(['/service/allot'])?>',
+            {'id':keyId,'wid':wid,'openid':openid},
+            function(res){
+                if(res.status == 1){
+                    re_count.text( parseInt(re_count.text()) + 1 );
+                    setTimeout(function(){
+                        $this.html('<i class="glyphicon glyphicon-ok"></i>');
+                        $('#my-modal').modal('hide');
+                        allotTr.remove();
+                    },1000);
+                }
+                else
+                    alert(res.msg);
+            },'json'
+        );
+        return false;
+    });
+
+//    维修关闭
+    $('#cancel-btn').click(function(){
+        var text = $.trim($('#cancel-text').val());
+        if(!text){
+            $('#cancel-status').text('请输入取消原因！');
+            $('#cancel-text').focus();
+            return false;
+        }
+        $.post(
+            '<?=Url::toRoute(['/service/delete','id'=>$wx_id])?>?fid='+keyId,
+            {'type':1,'text':text},
+            function(res){
+                if(res.status == 1){
+                    $('#modal-fault-del').modal('hide');
+                    $li.slideUp();
+                }
+                else
+                    alert(res.msg);
+            },'json'
+        );
+    })
+//    订单不通过
+    $('#order-cancel-btn').click(function(){
+        var text = $.trim($('#order-cancel-text').val());
+        if(!text){
+            $('#order-cancel-status').text('请输入不通过原因！');
+            $('#order-cancel-text').focus();
+            return false;
+        }
+        var orderIds = [];
+        orderIds.push(keyId);
+        $.post(
+            '<?=Url::toRoute(['/shop/adminorder/unpass'])?>',
+            {'text':text,'data[]':orderIds},
+            function(res){
+                if(res.status == 1){
+                    $('#modal-order-nopass').modal('hide');
+                    $li.slideUp();
+                }
+                else
+                    alert(res.msg);
+            },'json'
+        );
+    });
+//    订单发货
+    $('#order-send-btn').click(function(){
+        var text = $.trim($('#express_no').val());
+        var expressType = $('#express_type').val();
+        if(expressType !='0' && !text) {
+            $('#order-send-status').text('请输入快递单号内容！');
+            $('#express_no').focus();
+            return false;
+        }
+
+        $.post(
+            '<?=Url::toRoute(['/shop/adminorder/ajax'])?>?order_id='+keyId,
+            {type:expressType,no:text},
+            function(res){
+                if(res.status == 1){
+                    $('#modal-order-send').modal('hide');
+                    $li.slideUp();
+                }
+                else
+                    alert(res.msg);
+            },'json'
+        );
+    });
+//    租借不通过
+    $('#rent-apply-btn').click(function(){
+        var text = $.trim($('#rent-apply-text').val());
+        if(!text){
+            $('#rent-apply-status').text('请输入不通过原因！');
+            $('#rent-apply-text').focus();
+            return false;
+        }
+        $.post(
+            '<?=Url::toRoute(['/adminrent/nopass'])?>?rent_id='+keyId,
+            {'text':text},
+            function(res){
+                if(res.status == 1){
+                    $('#modal-rent-apply').modal('hide');
+                    $li.remove();
+                }
+                else
+                    alert(res.msg);
+            },'json'
+        );
+    });
     <?php $this->endBlock();?>
 </script>
 

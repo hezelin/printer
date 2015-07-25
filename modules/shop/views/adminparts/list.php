@@ -107,13 +107,13 @@ echo GridView::widget([
                         $btn = " &nbsp; ".Html::a('绑定',
                             Url::toRoute(['status',
                                 'id'=>$model->id,
-                                'fault_id'=>Yii::$app->request->get('fault_id'),
+                                'fault_id'=>$model->fault_id? :Yii::$app->request->get('fault_id'),
                                 'status'=>10
                             ]),
                             [
                                 'class'=>'btn btn-sm btn-info',
                             ]); break;
-                    case 11: $btn = " &nbsp; ".Html::a('回收',Url::toRoute(['status','id'=>$model->id,'type'=>'fault']),[
+                    case 11: $btn = " &nbsp; ".Html::a('回收',Url::toRoute(['status','id'=>$model->id,'status'=>'12']),[
                             'class'=>'btn btn-sm btn-info',
                         ]);break;
                     default: $btn ='';
