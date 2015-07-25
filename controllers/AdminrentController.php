@@ -5,6 +5,8 @@ namespace app\controllers;
 use app\models\Cache;
 use app\models\TblMachineService;
 use app\models\TblRentApply;
+use app\models\TblRentApplyCollect;
+use app\models\TblRentApplyExpire;
 use app\models\TblRentApplySearch;
 use app\models\TblRentApplyList;
 use app\models\TblRentApplyWithMachine;
@@ -312,5 +314,35 @@ class AdminrentController extends \yii\web\Controller
             }
         }
         return $this->render('map',['model'=>$model]);
+    }
+
+    /*
+     * 快过期租借列表
+     */
+    public function actionExpire()
+    {
+        $searchModel = new TblRentApplyExpire();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('expire',[
+            'dataProvider'=>$dataProvider,
+            'searchModel' => $searchModel,
+            'wid'=>Cache::getWid()
+        ]);
+    }
+
+    /*
+     * 待收租租借列表
+     */
+    public function actionCollect()
+    {
+        $searchModel = new TblRentApplyCollect();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('collect',[
+            'dataProvider'=>$dataProvider,
+            'searchModel' => $searchModel,
+            'wid'=>Cache::getWid()
+        ]);
     }
 }
