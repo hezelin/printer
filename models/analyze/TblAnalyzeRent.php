@@ -39,14 +39,14 @@ class TblAnalyzeRent
                 ->select('wx_id,count(id) as expire_count')
                 ->from('tbl_rent_apply')
                 ->where(['enable'=>'Y'])
-                ->andWhere(['>','due_time',$this->endTime-86400*3])
+                ->andWhere(['<','due_time',$this->endTime+86400*7])
                 ->groupBy('wx_id')
                 ->all();
         $collect = (new \yii\db\Query())
             ->select('wx_id,count(id) as collect_count')
             ->from('tbl_rent_apply')
             ->where(['enable'=>'Y'])
-            ->andWhere(['>','first_rent_time',$this->endTime-86400*3])
+            ->andWhere(['<','first_rent_time',$this->endTime+86400*3])
             ->groupBy('wx_id')
             ->all();
 
