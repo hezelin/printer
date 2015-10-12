@@ -61,7 +61,19 @@ class IController extends Controller
      */
     public function actionScore($id)
     {
-        return $this->render('score');
+        $openid = WxBase::openId($id);
+        $score = (new \yii\db\Query())
+            ->select('score')
+            ->from('tbl_user_count')
+            ->where('wx_id=:wid and openid=:openid',[':wid'=>$id,':openid'=>$openid])
+            ->scalar();
+
+        $log = (new \yii\db\Query())
+            ->select('score,type,add_time')
+            ->from('tbl_user_score_log')
+            ->where('wx_id=:wid and openid=:openid',[':wid'=>$id,':openid'=>$openid])
+            ->all();
+        return $this->render('score',['totalScore'=>$score?:0,'log'=>$log]);
     }
 
 }

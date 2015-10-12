@@ -29,7 +29,7 @@ echo GridView::widget([
             'label'=>'微信资料',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value' => function($model){
-                $sex=[1=>'男',2=>'女','0'=>'未知'];
+                $sex=[1=>'男',2=>'女','0'=>'未知',''=>'未知'];
                 return Html::tag('span',$model['nickname'].'&nbsp;,&nbsp;').
                        Html::tag('span',$sex[ $model['sex']].'&nbsp;,&nbsp;').
                        Html::a(Html::img( substr($model['headimgurl'],0,-1).'46',['style'=>'width:40px']),$model['headimgurl'].'?.jpg',
@@ -84,7 +84,7 @@ echo GridView::widget([
                     return Html::a('<i class="glyphicon glyphicon-remove"></i>',Url::toRoute(['unpass','id'=>$model['id']]),[
                         'title'=>'不通过',
                         'class'=>'close-model',
-                        'key-id'=>$key,
+                        'key-id'=>$model['id'],
                     ]);
                 }
             ]

@@ -1,6 +1,5 @@
 <?php
 use yii\grid\GridView;
-use yii\widgets\Pjax;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\models\ConfigBase;

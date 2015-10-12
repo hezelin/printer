@@ -9,8 +9,12 @@ $this->title = '租借列表';
 ?>
 <style>
     .high-remark{
-        color: #FF6666;
+         color: #FF6666;
+     }
+    .rent-price,.rent-price li{
+        padding: 0; margin: 0; list-style: none;
     }
+    .rent-price li{ width: 100px; height: 20px; line-height: 20px;}
 </style>
 <?php
 
@@ -23,7 +27,6 @@ echo GridView::widget([
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         [
-            // 系列
             'attribute'=>'type',
             'header'=>'机型',
             'value'=>'machine.machineModel.type',
@@ -34,7 +37,7 @@ echo GridView::widget([
             'headerOptions'=>['style'=>'width:100px'],
             'format'=>'html',
             'value'=>function($model) {
-//                'machine.series_id'
+                if(!$model->machine) return '<span class="not-set">未设置</span>';
                 return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
                         Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
             }
@@ -42,36 +45,57 @@ echo GridView::widget([
         [
             'attribute'=>'come_from',
             'header'=>'租借关系',
-            'filter'=>[0=>'自有机器',1=>'租借机器'],
+            'filter'=>\app\models\ConfigBase::$machineOrigin,
+            'format'=>'html',
             'value'=>function($model){
-                return $model->machine->come_from? '租借机器':'自有机器';
+                if(!$model->machine) return '<span class="not-set">未设置</span>';
+                return \app\models\ConfigBase::getMachineOrigin($model->machine->come_from);
             }
         ],
-        'monthly_rent',
-        'black_white',
-        'colours',
-        'name',
+        [
+            'label'=>'价格',
+            'format'=>'html',
+            'value'=>function($model){
+                $data = [
+                    '月租：'.$model->monthly_rent,
+                    '黑白：'.$model->black_white,
+                ];
+                if($model->colours)
+                    array_push($data,'彩色：'.$model->colours);
+                return Html::ul($data,['class'=>'rent-price']);
+            }
+        ],
         'phone',
+        'name',
+        'address',
         [
             'attribute' => 'due_time',
             'format' => ['date', 'php:Y-m-d'],
         ],
-        'address',
         [
             'attribute' => 'add_time',
-            'format' => ['date', 'php:Y-m-d H:i'],
+            'format' => ['date', 'php:Y-m-d'],
+        ],
+        [
+            'attribute' => 'first_rent_time',
+            'label'=>'下次收租',
+            'value'=>function($model){
+                if($model->first_rent_time < 1000000000)
+                    return '无';
+                return date('Y-m-d',$model->first_rent_time);
+            }
         ],
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions' => ['style'=>'width:120px'],
-            'template' => '{fault} &nbsp; {update} &nbsp; {map} &nbsp; {delete}',
+            'headerOptions' => ['style'=>'width:160px'],
+            'template' => '{fault} &nbsp; {update} &nbsp; {map} &nbsp; {charge} &nbsp; {delete} &nbsp; {rental}',
             'buttons' => [
                 'update' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);
                 },
                 'map' => function($url,$model,$key){
-                    if((int)$model->latitude && (int)$model->longitude)
+                    if((int)$model->latitude && (int)$model->longitude )
                         return Html::a('<span class="glyphicon glyphicon-map-marker"></span>',$url,['title'=>'定位']);
                     return Html::a('<span class="glyphicon glyphicon-map-marker"></span>',$url,['title'=>'定位','class'=>'high-remark']);
                 },
@@ -85,10 +109,9 @@ echo GridView::widget([
                 },
                 'fault' => function($url,$model,$key){
                     if(isset($model->machineFault->status) && $model->machineFault->status < 8)
-                        return Html::a('<i class="glyphicon glyphicon-wrench"></i>',Url::toRoute(['service/process','id'=>$key]),
+                        return Html::a('<i class="glyphicon glyphicon-eye-open"></i>',Url::toRoute(['service/process','id'=>$model->machineFault->id]),
                             [
                                 'title'=>'查看维修进度',
-                                'class'=>'high-remark'
                             ]);
 
                     return Html::a('<i class="glyphicon glyphicon-wrench"></i>',$url,
@@ -98,6 +121,12 @@ echo GridView::widget([
                             'data-machine-id'=>$model->machine_id,
                             'data-openid'=>$model->openid
                     ]);
+                },
+                'charge' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-yen"></span>',Url::toRoute(['charge/add','machine_id'=>$model->machine_id]),['title'=>'收租录入']);
+                },
+                'rental' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-stats"></span>',Url::toRoute(['/charts/machine-rental','machine_id'=>$model->machine_id]),['title'=>'租金统计']);
                 }
             ]
         ]
@@ -127,6 +156,9 @@ echo GridView::widget([
     echo Html::textarea('fault_text','',['placeholder'=>'故障原因','class'=>'form-control','id'=>'cancel-text']);
     echo '<br/>';
     echo Html::dropDownList('fault_type','',\app\models\ConfigBase::$faultStatus,['class'=>'form-control','id'=>'fault-reason']);
+    echo '<br/>';
+    echo Html::textarea('fault_remark','',['placeholder'=>'备注留言','class'=>'form-control','id'=>'fault-remark']);
+
     echo Html::endForm();
 
 echo GridView::widget([
@@ -175,7 +207,7 @@ echo GridView::widget([
         });
 
         $('#go-back').click(function(){
-            $(this).show();
+            $('#cancel-btn').show();
             $('#fault-text-form').show();
             $('#my-fix-model').hide();
         });
@@ -201,7 +233,7 @@ echo GridView::widget([
             var re_count = $(this).closest('tr').children('.repair-count');
             $.post(
                 '<?=Url::toRoute(['phonefault'])?>?machine_id='+machineId+'&from_openid='+fromOpenid,
-                {'wx_id':<?=$wid?>,'fault_text':faultText,'fault_type':$('#fault-reason').val(),'openid':openid},
+                {'wx_id':<?=$wid?>,'fault_text':faultText,'fault_type':$('#fault-reason').val(),'openid':openid,'fault_remark':$('#fault-remark').val()},
                 function(res){
                     if(res.status == 1){
                         re_count.text( parseInt(re_count.text()) + 1 );

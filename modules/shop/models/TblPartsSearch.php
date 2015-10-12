@@ -44,8 +44,15 @@ class TblPartsSearch extends TblParts
     {
         $query = TblParts::find()
             ->joinWith(['product','maintainer','fault'])
-            ->where(['tbl_parts.wx_id'=>Cache::getWid(),'tbl_parts.enable'=>'Y'])
-            ->andWhere(['<','tbl_parts.status',12]);
+            ->where(['tbl_parts.wx_id'=>Cache::getWid(),'tbl_parts.enable'=>'Y']);
+        $process = Yii::$app->request->get('process');
+        if($process == 2)               // 等待评价
+            $query->andWhere(['tbl_parts.status'=>12]);
+        else
+            $query->andWhere(['<','tbl_parts.status',12]);
+        $query->orderBy('apply_time desc');
+
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -46,13 +46,12 @@ class CartController extends Controller
      */
     public function actionList($id)
     {
-//        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
         $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
-            ->select('t.id,t.item_nums,p.cover,p.price,p.name')
+            ->select('t.id,t.item_nums,t.item_id,p.cover,p.price,p.name')
             ->from('tbl_shop_cart as t')
             ->leftJoin('tbl_product as p','t.item_id=p.id')
-            ->where('t.openid=:openid and t.enable="Y"',[':openid'=>$openid])
+            ->where('t.openid=:openid and t.enable="Y" and t.wx_id=:wid',[':openid'=>$openid,':wid'=>$id])
             ->all();
 
         $total = $totalPrice =0;
@@ -64,6 +63,7 @@ class CartController extends Controller
         if(!$model)
             return $this->render('//tips/homestatus',['tips'=>'购物车是空的！',
                 'btnText'=>'去商城购物','btnUrl'=>Url::toRoute(['/shop/item/list','id'=>$id])]);
+
         return $this->render('list',['model'=>$model,'total'=>$total,'totalPrice'=>$totalPrice,'id'=>$id]);
     }
 

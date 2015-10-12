@@ -41,6 +41,9 @@ class OrderController extends Controller
                 ->where('t.openid=:openid and t.enable="Y"',[':openid'=>$openid])
                 ->orderBy('item_id')
                 ->all();
+            if(!$items)
+                return $this->render('//tips/homestatus',['tips'=>'请不要重复提交！',
+                    'btnText'=>'返回','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
 
             $model->order_data = json_encode($items);
 
@@ -91,8 +94,8 @@ class OrderController extends Controller
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();
-                echo $e;
-                return $this->render('//tips/homestatus',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+//                echo $e;
+                return $this->render('//tips/homestatus',['tips'=>'库存不足，下单失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
             }
 
             return $this->render('pay',['id'=>$id,'order_id'=>$model->order_id,'price'=>$model->total_price,'payStatus'=>$model->pay_status]);
@@ -118,7 +121,7 @@ class OrderController extends Controller
         ->orderBy('add_time desc')
         ->one();
 
-        $total['score'] = (new \yii\db\Query())->select('score')->from('tbl_user_count')->where(['wx_id'=>$id,'openid'=>$openid])->scalar();
+        $total['score'] = (new \yii\db\Query())->select('score')->from('tbl_user_count')->where(['wx_id'=>$id,'openid'=>$openid])->scalar() ? :0;
 
         foreach($model as &$m)
         {
@@ -143,6 +146,13 @@ class OrderController extends Controller
             ->leftJoin('tbl_shop_address as a','t.address_id=a.id')
             ->where('t.order_id=:order_id and t.enable="Y"',[':order_id'=>$order_id])
             ->one();
+        if(!$model)
+            return $this->render('//tips/homestatus',[
+                'tips'=>'订单不存在！',
+                'btnText'=>'返回我的订单',
+                'btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]
+            );
+
         $item = json_decode($model['order_data'],true);
 
         return $this->render('detail',['model'=>$model,'id'=>$id,'item'=>$item]);
@@ -175,10 +185,40 @@ class OrderController extends Controller
                 $model->enable = 'N';
             else
                 return json_encode(['status'=>0,'msg'=>'参数错误!']);
-            if($model->save())
-                return json_encode(['status'=>1]);
-            else
+
+            $connection = Yii::$app->db;
+            $transaction = $connection->beginTransaction();
+
+            try {
+                $model->save();                     //  更改订单状态
+
+//                更改产品库存,取消订单  或者状态小于3的 删除订单
+                if($status == 'cancel' || ($status == 'delete' && $model->order_status < 3)){
+                    $sql2When = '';
+                    $itemIds = [];
+                    $itemData = json_decode($model->order_data,true);
+                    foreach( $itemData as $v){
+                        $sql2When .= " WHEN {$v['item_id']} THEN amount+{$v['item_nums']} ";
+                        $itemIds[] = $v['item_id'];
+                    }
+                    $itemIds = '('.implode(',',$itemIds).')';
+                    $sql2 = "UPDATE tbl_product SET amount = CASE id $sql2When END WHERE id IN $itemIds";
+                    $connection->createCommand($sql2)->execute();
+                }
+
+//                更改积分
+                if($model->pay_score > 0){
+                    $score = TblUserCount::findOne(['wx_id'=>$id,'openid'=>$model->openid]);
+                    $score->score = $score->score + $model->pay_score;
+                    $score->save();
+                }
+
+                $transaction->commit();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
                 return json_encode(['status'=>0,'msg'=>'入库失败!']);
+            }
+            return json_encode(['status'=>1]);
         }
         return json_encode(['status'=>1]);
     }

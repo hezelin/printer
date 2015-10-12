@@ -17,7 +17,7 @@ class TblCategory extends \yii\db\ActiveRecord
             [['wx_id', 'name'], 'required'],
             [['wx_id'], 'integer'],
             [['name'], 'string', 'max' => 50],
-            [['name'], 'unique']
+            [['wx_id', 'name'], 'unique', 'targetAttribute' => ['wx_id', 'name'], 'message' => '类目已经存在！']
         ];
     }
 

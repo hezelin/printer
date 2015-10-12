@@ -61,13 +61,14 @@ class WxBase {
      */
     public static function openId($id,$isCache=true,$route=false)
     {
-//        return 'oXMyutx3Nd4fhViJozPKbqV6N3xA';
-//        return 'oXMyut1RFKZqchW8qt_6h0OT8FN4';
-        if(isset( $_GET['openid']) && $_GET['openid'] && strlen($_GET['openid']) == 28)
-            return Yii::$app->session['openid'] = $_GET['openid'];
+        if( strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') === false )
+            return 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
 
-        if($isCache && isset( Yii::$app->session['openid']) )
-            return Yii::$app->session['openid'];
+        if(isset( $_GET['openid']) && $_GET['openid'] && strlen($_GET['openid']) == 28)
+            return Yii::$app->session['openid_'.$id] = $_GET['openid'];
+
+        if($isCache && isset( Yii::$app->session['openid_'.$id]) )
+            return Yii::$app->session['openid_'.$id];
         /*
          * 这里可以加入判断 是否微信来源
          * 如果是 请求下面的链接
@@ -152,7 +153,7 @@ class WxBase {
      * @parmas $data 为菜单数组
      * 要求不能对中文编码 ，JSON_UNESCAPED_UNICODE
      */
-    public function createMenu()
+    public function createMenu($name = '')
     {
         if( ! $this->id )
             throw new InvalidParamException('参数错误！');
@@ -161,9 +162,10 @@ class WxBase {
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create';
 
         $req = $curl->postJson($url,
-            json_encode( $this->menu(),JSON_UNESCAPED_UNICODE),
+            json_encode( $this->menu($name),JSON_UNESCAPED_UNICODE),
             array('access_token'=>$this->accessToken())
         );
+
         return $req['errmsg'] == 'ok' ? true: false;
     }
 
@@ -171,12 +173,12 @@ class WxBase {
     /*
      * 微信餐单
      */
-    public function menu()
+    public function menu($name)
     {
         return [
             'button'=>[
                 [
-                    'name'=>'科隆服务',
+                    'name'=>$name,
                     'type'=>'view',
                     'url'=>Url::toRoute(['wechat/index','id'=>$this->id],true)
                 ]

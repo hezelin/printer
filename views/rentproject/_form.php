@@ -48,7 +48,7 @@ if( Yii::$app->session->hasFlash('error') )
         ]
     ]
 ]);?>
-<?= $form->field($model, 'lowest_expense')->textInput(['placeholder'=>'每月最低消费/元']) ?>
+<?= $form->field($model, 'lowest_expense')->textInput(['placeholder'=>'每月最低消费/元，没有最低消费请填0']) ?>
 <?= $form->field($model, 'black_white')->textInput(['placeholder'=>'黑板纸张多少元每张，例如 0.05']) ?>
 <?= $form->field($model, 'colours')->textInput(['placeholder'=>'彩色纸张多少钱每张，机器不支持彩色可不填']) ?>
 <?= $form->field($model, 'is_show')->widget(\kartik\switchinput\SwitchInput::className(),[

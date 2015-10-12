@@ -2,6 +2,7 @@
 
 namespace app\modules\shop\controllers;
 
+use app\models\Cache;
 use app\models\ToolBase;
 use Yii;
 use yii\helpers\Url;
@@ -11,41 +12,37 @@ class CodeController extends \yii\web\Controller
     public $layout = '/console';
 
     /*
-     * 获取第三方二维码  url
-     */
-    private $qrcodeApiUrl = 'http://qr.liantu.com/api.php?';
-    /*
      * 配件id,商品 item_id
      */
-    public function actionParts($id,$item_id,$wx_id)
+    public function actionParts($wx_id,$item_id,$un)
     {
-        $index = (int)($id/500);
-        $imgUrl = '/images/parts/'.(int)($index/500).'/'.$index;
-        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.jpg') ){
-            $urlParams = [
-                'text' => Url::toRoute(['codeapi/parts','id'=>$id,'item_id'=>$item_id,'wx_id'=>$wx_id],'http'),
-            ];
-            $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
-            $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
-            file_put_contents($dir.'/'.$id.'.jpg',file_get_contents($qrcodeImgUrl));
+
+        $preDir = "/images/parts/$wx_id/$item_id/";
+
+        $imgUrl = $preDir.$un.'.png';
+
+        if( !is_file(Yii::getAlias('@webroot').$imgUrl) ){
+            $url = Url::toRoute(['/shop/codeapi/parts','id' =>$wx_id,'item'=>$item_id,'un'=>$un],'http');
+            $dir = ToolBase::newDir($preDir, Yii::getAlias('@webroot'));
+            $fileName = $dir . '/' . $un . '.png';
+            shell_exec("qrencode -o $fileName '$url' -s 4 -m 2 -l M");
+            $imgUrl = $preDir . $un . '.png';
         }
 
-        return $this->render('parts',['qrcodeImgUrl'=>$imgUrl.'/'.$id.'.jpg']);
+        return $this->render('parts', ['imgUrl' => $imgUrl]);
     }
 
     public function actionItem($id,$wx_id)
     {
         $index = (int)($id/500);
         $imgUrl = '/images/item/'.(int)($index/500).'/'.$index;
-        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.jpg') ){
-            $urlParams = [
-                'text' => Url::toRoute(['/shop/item/detail','id'=>$wx_id,'item_id'=>$id],'http'),
-            ];
-            $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.png') ){
+            $url = Url::toRoute(['/shop/item/detail','id'=>$wx_id,'item_id'=>$id],'http');
             $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
-            file_put_contents($dir.'/'.$id.'.jpg',file_get_contents($qrcodeImgUrl));
+            $fileName = $dir.'/'.$id.'.png';
+            shell_exec("qrencode -o $fileName '$url' -s 8 -m 2 -l H");
         }
 
-        return $this->render('item',['qrcodeImgUrl'=>$imgUrl.'/'.$id.'.jpg']);
+        return $this->render('item',['qrcodeImgUrl'=>$imgUrl.'/'.$id.'.png']);
     }
 }

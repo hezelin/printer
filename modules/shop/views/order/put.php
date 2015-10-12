@@ -153,7 +153,7 @@ $this->title = '订单结算';
 
 </style>
 
-<form method="post">
+<form method="post" id="order-form">
 
 <div id="order-detail">
     <div class="order-title">收货人信息</div>
@@ -214,7 +214,7 @@ $this->title = '订单结算';
 <?php endif;?>
 </div>
 <p>&nbsp;</p>
-<button id="order-submit-btn" href="<?=Url::toRoute(['/shop/order/put'])?>" class="h-button" style="width: 94%">提交订单</button>
+<button id="order-submit-btn" class="h-button" type="button" style="width: 94%">提交订单</button>
 
 
     <input type="hidden" name="TblShopOrder[address_id]" id="form-address" value="<?=$address['id']?>">
@@ -223,7 +223,6 @@ $this->title = '订单结算';
     <input type="hidden" name="TblShopOrder[pay_score]"  id="form-score" value="0">
     <input type="hidden" name="TblShopOrder[openid]" value="<?=$openid?>">
 </form>
-
 <script>
     <?php $this->beginBlock('JS_END') ?>
     var total_score = <?=$total['score']?>;
@@ -258,6 +257,7 @@ $this->title = '订单结算';
             }
             $('#order-total-money').text( (total_money + express_money - use_score_money).toFixed(2) )
         });
+
         $('#use-score').change(function(){
             var this_score = parseInt( $(this).val() ) || 0;
             if( this_score > total_score ){
@@ -281,7 +281,9 @@ $this->title = '订单结算';
             }
             $('#form-money').val( total_money + express_money - use_score_money );
             $('#form-score').val( use_score_money*100);
-        })
+
+            $('#order-form').submit();
+        });
     });
     <?php $this->endBlock();?>
 </script>

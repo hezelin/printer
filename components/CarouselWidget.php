@@ -131,6 +131,7 @@ MODEL_CONTENT;
             momentum: false,
             snap: true,
             snapSpeed: 400,
+            click:true,
             indicators: {
                 el: document.getElementById('{$this->nav}'),
                 resize: false

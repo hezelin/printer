@@ -1,200 +1,127 @@
 <?php
+use app\components\PassthroughWidget;
 use yii\helpers\Url;
-use app\models\ConfigBase;
-$this->title = '维修列表';
+$this->title = '配件列表';
 Yii::$app->params['layoutBottomHeight'] = 40;
 
 ?>
-<style type="text/css">
-    .h-list {
-        position: relative;
-        padding: 0;
-        margin: 0;
-        background-color: #EEEEEE;
-    }
-    .h-list a {
-        display: block;
-    }
-    .h-list ul > li {
-        background-color: #fff;
-        padding: 5px;
-        height: 140px;
-        float: left;
-        width: 100%;
-        position: relative;
-        border: 1px dashed #EEEEEE;
-    }
-    .h-list .li-cover {
-        width: 40%;
-        height: 120px;
-        float: left;
-        text-align: center;
-        position: relative;
-        vertical-align: middle;
-    }
-    .h-list .li-cover-img {
-        max-width: 100%;
-        max-height: 120px;
-    }
-    .h-list .li-name {
-        width: 56%;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        -o-text-overflow: ellipsis;
-        overflow: hidden;
-        margin-top: 4px;
-        font-family: "microsoft yahei";
-        color: #4e6fad;
-        font-size: 16px;
-        font-weight: 600;
-    }
-    .h-list .li-row {
-        height: 30px;
-        line-height: 30px;
-        float: left;
-        width: 56%;
-        margin-left: 4%;
-    }
-    .h-list .li-row-small {
-        height: 24px;
-        line-height: 24px;
-        float: left;
-        font-size: 12px;
-        width: 56%;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        -o-text-overflow: ellipsis;
-        overflow: hidden;
-        margin-left: 4%;
-    }
-    .h-list .li-label {
-        font-size: 12px;
-        color: #999999;
-        width: 15%;
-    }
-    .h-list .li-yan {
-        vertical-align: middle;
-        color: #c40000;
-        font-size: 18px;
-        font-family: Arial;
-        font-style: normal;
-        -webkit-font-smoothing: antialiased;
-    }
-    .h-list .li-price {
-        vertical-align: middle;
-        color: #c40000;
-        font-weight: bolder;
-        font-family: Arial;
-        font-size: 24px;
-        -webkit-font-smoothing: antialiased;
-    }
-    .h-list .li-func {
-        line-height: 24px;
-        font-size: 14px;
-        color: #333333;
-        height: 48px;
-        margin-top: 4px;
-        overflow: hidden;
-        float: left;
-    }
-    .h-list .li-time {
-        vertical-align: middle;
-        font-family: Arial;
-        font-size: 16px;
-        -webkit-font-smoothing: antialiased;
-    }
-    .h-list .m-apply {
-        height: 35px;
-        line-height: 32px;
-        background-image: -moz-linear-gradient(top, #ffffff, #e1e1e1);
-        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #e1e1e1));
-        background-image: -o-linear-gradient(top, #ffffff, #e1e1e1);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e1e1e1', GradientType='0');
-        text-align: center;
-        font-size: 18px;
-        color: #000000;
-        width: 100%;
-        float: left;
-        border-top: 1px solid #e1e1e1;
-        border-bottom: 1px solid #cfcfcf;
-        color: #999999;
-    }
-    .h-list .m-apply-60 {
-        height: 35px;
-        line-height: 32px;
-        background-image: -moz-linear-gradient(top, #ffffff, #e1e1e1);
-        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #e1e1e1));
-        background-image: -o-linear-gradient(top, #ffffff, #e1e1e1);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e1e1e1', GradientType='0');
-        text-align: center;
-        font-size: 18px;
-        color: #000000;
-        width: 100%;
-        float: left;
-        border-top: 1px solid #e1e1e1;
-        border-bottom: 1px solid #cfcfcf;
-        color: #999999;
-        width: 60%;
-    }
-    .h-list .m-apply-40 {
-        height: 35px;
-        line-height: 32px;
-        background-image: -moz-linear-gradient(top, #ffffff, #e1e1e1);
-        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #e1e1e1));
-        background-image: -o-linear-gradient(top, #ffffff, #e1e1e1);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e1e1e1', GradientType='0');
-        text-align: center;
-        font-size: 18px;
-        color: #000000;
-        width: 100%;
-        float: left;
-        border-top: 1px solid #e1e1e1;
-        border-bottom: 1px solid #cfcfcf;
-        color: #999999;
-        width: 40%;
-    }
-    .h-list .m-apply-50 {
-        height: 35px;
-        line-height: 32px;
-        background-image: -moz-linear-gradient(top, #ffffff, #e1e1e1);
-        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #e1e1e1));
-        background-image: -o-linear-gradient(top, #ffffff, #e1e1e1);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e1e1e1', GradientType='0');
-        text-align: center;
-        font-size: 18px;
-        color: #000000;
-        width: 100%;
-        float: left;
-        border-top: 1px solid #e1e1e1;
-        border-bottom: 1px solid #cfcfcf;
-        color: #999999;
-        width: 50%;
-    }
-    .h-list .m-machine > li {
-        height: 170px !important;
-    }
+    <style>
+        <?php $this->beginBlock('CSS') ?>
+        .item-list{  display: block;  padding: 12px 0;  width: 90%;  margin: 0 5%;  border-bottom: 1px #e3e3e3 solid;  font-size: 16px;  }
+        .item-list img{  width: 80px;  height: 60px;  float: left;  }
+        .item-list .img-status{  width: 80px;  height: 80px;  float: left;  margin-right: 10px;  color: #666;  text-align: center;  }
+        .item-list span h5{  line-height: 20px;  min-height: 60px;  color: #666;  font-weight: normal;  font-size: 16px;  }
+        .item-list span h6{  height: 30px;  color: #666;  font-weight: normal;  font-size: 16px;  }
+        .mtm_p{  text-align: right;  color: #999;  font-size: 14px;  }
+        .mtm_p b{  float: left;  font-size: 16px;  font-weight: 500;  color: #b10000;  }
+        .scan-btn{ display:none;}
+        .fault-info{  color: #b18b8d;  }
+        .bing-info{  color: #5fa3b1;  }
+        .blank-scan{
+            height: 80px; text-align: center; font-size: 18px; line-height: 80px; background-color: #d1eafb;
+            color: #999;
+        }
+        <?php $this->endBlock() ?>
+    </style>
+<?php
+$this->registerCss($this->blocks['CSS']);
+?>
 
-</style>
-<div class="h-list">
-    <?php if($model && count($model)>0):?>
-        <ul>
+    <div id="item-list-wrap">
+        <?php if($model):?>
             <?php foreach($model as $row):?>
-                <li>
-                    <a href="<?=Url::toRoute(['/shop/codeapi/parts','id'=>$parts_id,'wx_id'=>$wx_id,'fault_id'=>$row['id']])?>">
-                        <div class="li-cover">
-                            <img class="li-cover-img" src="<?=$row['fault_cover']?>"/>
-                        </div>
-                        <p class="li-row li-name">故障：<?=ConfigBase::getFaultStatus($row['fault_type'])?></p>
-                        <p class="li-row-small">描述：<?=$row['desc']?></p>
-                        <p class="li-row-small"><?=$row['name'],',',$row['phone']?></p>
-                        <p class="li-row-small"><?=$row['address']?></p>
-                        <p class="li-row-small">状态：<span style="color: red"><?=ConfigBase::getFixStatus($row['status'])?></span></p>
-                    </a>
-                </li>
+                <div class="item-list">
+                    <div class="img-status">
+                        <img src="<?=$row['cover']?>">
+                        <?=\app\modules\shop\models\Shop::getParts($row['status'])?>
+                    </div>
+               <span>
+                   <h5>(<?=$row['category']?>)<?=$row['name']?>
+                        <?php if($row['fault_id']):?>
+                        <span class="fault-info">(维修任务中)</span>
+                        <?php else:?>
+                        <span class="bing-info">(携带申请中)</span>
+                        <?php endif;?>
+                   </h5>
+                   <p class="mtm_p">
+                       <b class="scan-btn" data-url="<?=Url::toRoute(['/shop/parts/bing','part_id'=>$row['parts_id'],'item_id'=>$row['item_id'],'id'=>$row['wx_id'],'un'=>$un,'fault_id'=>$row['fault_id'],'machine_id'=>$row['machine_id'] ])?>">扫描机器绑定</b>
+                       <a class="parts-cancel-btn" parts-id="<?=$row['parts_id']?>" href="javascript:void(0)">取消</a></p>
+               </span>
+                </div>
             <?php endforeach;?>
-            <li style="clear:both; display: none;"></li>
-        </ul>
-    <?php else:?>
-        <p class="h-hint">没有符合绑定配件的维修任务</p>
-    <?php endif;?>
-</div>
+        <?php endif;?>
+        <div class="scan-btn blank-scan"  data-url="<?=Url::toRoute(['/shop/parts/bing','item_id'=>$item_id,'id'=>$id,'un'=>$un])?>">
+            扫描绑定
+        </div>
+    </div>
+
+    <script>
+        <?php $this->beginBlock('JS_END') ?>
+        var hasClick = 0;
+
+        function getId(url) {
+            var pos = parseInt(url.lastIndexOf("/")) + 1;
+            return url.substring(pos);
+        }
+
+        function getUrlParam(name,url) {
+            var reg = new RegExp("[\?|&]" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = url.match(reg);  //匹配目标参数
+            if (r != null) return unescape(r[1]);
+            return null; //返回参数值
+        }
+
+        $(function(){
+            $('.parts-cancel-btn').click(function(){
+                if(hasClick == 1) return false;
+                var $this = $(this).closest('.item-list');
+                var parts_id = $(this).attr('parts-id');
+                $.post(
+                    '<?=Url::toRoute(['cancel','id'=>$id])?>&parts_id='+parts_id,
+                    function(resp){
+                        if(resp.status == 1)
+                            $this.remove();
+                        else alert( resp.msg );
+                        hasClick = 0;
+                    },'json'
+                );
+            });
+
+            $('.scan-btn').click(function(){
+                var url = $(this).attr('data-url');
+                wx.scanQRCode({
+                    needResult: 1,  // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: function (res) {
+                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                        if( result.indexOf('codeapi/machine') == -1){
+                            alert('二维码不合法,非机器二维码！');
+                            return false;
+                        }
+                        var id = getId(result);
+                        var machine_id = getUrlParam('machine_id',url)
+                        if(  machine_id != null && machine_id != id ){
+                            alert('维修任务的机器和扫描的机器不匹配');
+                            return false;
+                        }
+                        location.href = url + '&machine_id=' + id;
+                    }
+                });
+            });
+        });
+        <?php $this->endBlock();?>
+    </script>
+
+<?php
+\app\assets\ZeptoAsset::register($this);
+$this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
+
+\app\components\WxjsapiWidget::widget([
+    'wx_id'=>$id,
+    'apiList'=>['scanQRCode'],
+    'jsReady'=>'
+        var ele = document.querySelectorAll(".scan-btn");
+        for(var i in ele)
+            ele[i].style.cssText="display:block";'
+]);
+?>

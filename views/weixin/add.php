@@ -7,7 +7,8 @@ $this->title = '添加公众号';
 
 <div class="alert alert-info" role="alert">
     1. 在公众平台(开发者中心)申请接口使用的<span class="red"> AppId </span>和
-    <span class="red"> AppSecret </span>，然后填入下边表单。<br/>
+    <span class="red"> AppSecret </span>，然后填入下边表单。 &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="/images/one0.png" class="btn btn-sm btn-info">示例</a><br/>
+    2.微信号在 公众号设置 -> 账号详情 -> 微信号 &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="/images/one4.png" class="btn btn-sm btn-info">示例</a>
 </div>
 
 <div class="row">

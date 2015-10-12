@@ -7,39 +7,24 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\TblMachineService;
 
-/**
- * TblMachineServiceSearch represents the model behind the search form about `app\models\TblMachineService`.
- */
+
 class TblMachineServiceList extends TblMachineService
 {
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
             [['id', 'weixin_id', 'machine_id', 'type', 'status', 'unfinished_parts_num', 'add_time', 'opera_time', 'accept_time', 'resp_time', 'fault_time', 'fault_score', 'parts_apply_time', 'parts_arrive_time', 'complete_time'], 'integer'],
-            [['from_openid', 'openid', 'cover', 'desc', 'enable'], 'safe'],
+            [['from_openid', 'openid', 'content', 'desc', 'enable'], 'safe'],
             [['resp_km'], 'number'],
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scenarios()
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
         $query = TblMachineService::find()->joinWith([
@@ -49,15 +34,30 @@ class TblMachineServiceList extends TblMachineService
                         $query->joinWith('brand');
                     }
                 ]);
-        }])->where([
+            }
+        ])->where([
             'tbl_machine_service.enable'=>'Y',
+            'tbl_machine_service.weixin_id'=>Cache::getWid()
         ]);
+
+        $process = Yii::$app->request->get('process');
+        if($process == 2)               // 等待评价
+            $query->andWhere(['tbl_machine_service.status'=>8]);
+        elseif($process == 3)           // 完成中
+            $query->andWhere(['tbl_machine_service.status'=>9]);
+        else                            // 维修中
+            $query->andWhere(['<','tbl_machine_service.status',8]);
+
+        if(Yii::$app->request->get('fromFault'))
+            $query->andWhere(['tbl_machine_service.openid'=>Yii::$app->request->get('fromFault')]);
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 15,
             ],
+            'sort'=>['defaultOrder'=>['id' => SORT_DESC]]
         ]);
 
         $this->load($params);
@@ -83,10 +83,23 @@ class TblMachineServiceList extends TblMachineService
 
         $query->andFilterWhere(['like', 'from_openid', $this->from_openid])
             ->andFilterWhere(['like', 'openid', $this->openid])
-            ->andFilterWhere(['like', 'cover', $this->cover])
+            ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'desc', $this->desc])
             ->andFilterWhere(['like', 'enable', $this->enable]);
 
         return $dataProvider;
+    }
+
+    /*
+     * 返回维修员
+     */
+    public function fixProvider()
+    {
+        return new ActiveDataProvider([
+            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
     }
 }

@@ -10,6 +10,7 @@ use app\models\analyze\TblAnalyzeMaintain;
 use app\models\analyze\TblAnalyzeOrder;
 use app\models\analyze\TblAnalyzeProduct;
 use app\models\analyze\TblAnalyzeRent;
+use app\models\analyze\TblAnalyzeRental;
 
 class AnalyzeController extends \yii\console\Controller
 {
@@ -20,17 +21,19 @@ class AnalyzeController extends \yii\console\Controller
     {
         set_time_limit(0);
         $ana = new TblAnalyzeFault();
-        $ana->today();
+        $ana->yesterday();
         $ana = new TblAnalyzeMaintain();
         $ana->today();
         $ana = new TblAnalyzeOrder();
-        $ana->today();
+        $ana->yesterday();
         $ana = new TblAnalyzeProduct();
-        $ana->today();
+        $ana->yesterday();
         $ana = new TblAnalyzeMachine();
-        $ana->today();
+        $ana->yesterday();
         $ana = new TblAnalyzeRent();
-        $ana->today();
+        $ana->yesterday();
+        $ana = new TblAnalyzeRental();
+        $ana->yesterday();
     }
     /*
      * 维修统计
@@ -47,7 +50,7 @@ class AnalyzeController extends \yii\console\Controller
     public function actionMaintainer()
     {
         $ana = new TblAnalyzeMaintain();
-        return $ana->historyDay(-4,0);
+        return $ana->today();
 //        return $ana->today();
     }
 
@@ -78,5 +81,11 @@ class AnalyzeController extends \yii\console\Controller
     {
         $ana = new TblAnalyzeRent();
         return $ana->historyDay(-4,0);
+    }
+
+    public function actionRental()
+    {
+        $ana = new TblAnalyzeRental();
+        return $ana->today();
     }
 }

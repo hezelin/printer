@@ -10,6 +10,6 @@ $this->title = '配件二维码';
 </div>
 <div class="col-md-4">
     <div class="qrcode-bg">
-        <img src="<?= $qrcodeImgUrl?>" width="300" height="300" />
+        <img src="<?= $imgUrl?>" width="300" height="300" />
     </div>
 </div>

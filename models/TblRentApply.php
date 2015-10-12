@@ -37,11 +37,12 @@ class TblRentApply extends \yii\db\ActiveRecord
             [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'rent_period'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
             [['enable'], 'string'],
-            [['colours'], 'default','value'=>0],
+            [['colours','monthly_rent','black_white'], 'default','value'=>0],
             [['openid'], 'string', 'max' => 28],
             [['phone'], 'string', 'max' => 11],
             [['name'], 'string', 'max' => 30],
             [['address'], 'string', 'max' => 500],
+            [['address'], 'required', 'on' => 'new-call'],
             [['apply_word'], 'string', 'max' => 200]
         ];
     }
@@ -61,7 +62,7 @@ class TblRentApply extends \yii\db\ActiveRecord
             'first_rent_time' => '下次收租时间',
             'rent_period' => '收租周期',
             'phone' => '手机',
-            'name' => '姓名/公司名',
+            'name' => '用户',
             'address' => '用户地址',
             'status' => '状态',
             'apply_word' => '备注',

@@ -42,8 +42,9 @@ class TblParts extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'item_id', 'openid'], 'required'],
-            [['wx_id', 'item_id', 'fault_id', 'status', 'apply_time', 'bing_time'], 'integer'],
+            [['wx_id', 'item_id', 'fault_id', 'machine_id', 'status', 'apply_time', 'bing_time'], 'integer'],
             [['enable'], 'string'],
+            [['un'], 'string', 'max' => 13],
             [['openid'], 'string', 'max' => 28],
             [['remark'], 'string', 'max' => 300]
         ];
@@ -53,10 +54,12 @@ class TblParts extends \yii\db\ActiveRecord
     {
         return [
             'id' => '配件id',
+            'un' => 'uniqid',
             'wx_id' => '公众号',
             'item_id' => '商品',
             'openid' => 'Openid',
             'fault_id' => 'Fault ID',
+            'machine_id' => '机器id',
             'status' => '状态',
             'remark' => '备注',
             'apply_time' => '申请时间',
@@ -72,7 +75,7 @@ class TblParts extends \yii\db\ActiveRecord
     {
         $machine = TblMachineService::findOne($this->fault_id);
         if( $machine->unfinished_parts_num > 0)
-            $machine->unfinished_parts_num = $machine->unfinished_parts_numt - 1;
+            $machine->unfinished_parts_num = $machine->unfinished_parts_num - 1;
         $machine->parts_arrive_time = time();
         return $machine->save();
     }
@@ -83,23 +86,9 @@ class TblParts extends \yii\db\ActiveRecord
     public function updateApply()
     {
         $machine = TblMachineService::findOne($this->fault_id);
-        $machine->unfinished_parts_num = $machine->unfinished_parts_numt + 1;
+        $machine->unfinished_parts_num = $machine->unfinished_parts_num + 1;
         $machine->parts_apply_time = time();
         return $machine->save();
-    }
-
-
-    /*
-     * 配件进度写入
-     */
-    public function process()
-    {
-        $model = new TblPartsLog();
-        $model->parts_id = $this->id;
-        $model->content = $this->process[$this->status];
-        $model->status = $this->status;
-        $model->add_time = time();
-        return $model->save();
     }
 
     public $process = [

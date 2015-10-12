@@ -66,6 +66,7 @@ class TblRentApplyList extends TblRentApply
             'pagination' => [
                 'pageSize' => 15,
             ],
+            'sort'=>['defaultOrder'=>['id' => SORT_DESC]]
         ]);
 
         $this->load($params);

@@ -9,7 +9,6 @@ use app\models\WxBase;
 use yii\web\Controller;
 use Yii;
 
-
 class ItemController extends Controller
 {
     public $layout = 'shop';
@@ -26,6 +25,7 @@ class ItemController extends Controller
             ->from('tbl_product as t')
             ->leftJoin('tbl_category as c','c.id=t.category_id')
             ->where('t.enable="Y" and t.wx_id=:wid',[':wid'=>$id])
+            ->andWhere(['>','t.amount',0])
             ->limit($len)
             ->orderBy('t.id desc');
         if(Yii::$app->request->get('startId'))
@@ -62,8 +62,6 @@ class ItemController extends Controller
     public function actionDetail($id,$item_id)
     {
         $openid = WxBase::openId($id);
-//        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
-
         $model = (new \yii\db\Query())
             ->select('t.id,t.wx_id,c.name as category,t.name,t.cover_images,t.price,t.market_price,t.describe,t.add_attr')
             ->from('tbl_product as t')
@@ -71,7 +69,7 @@ class ItemController extends Controller
             ->where('t.enable="Y" and t.id=:id',[':id'=>$item_id])
             ->one();
         $model['cover_images'] = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
-        $model['else_attr'] = json_decode($model['add_attr'],true);
+        $model['else_attr'] = $model['add_attr']? json_decode($model['add_attr'],true):'';
 
         return $this->render('detail',['model'=>$model,'id'=>$id,'openid'=>$openid]);
     }

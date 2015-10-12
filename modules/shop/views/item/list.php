@@ -8,7 +8,7 @@ $this->title = '商品列表';
 echo PassthroughWidget::widget([
     'data'=>$category,
     'startId'=>$startId,
-    'action'=>Url::toRoute(['/shop/parts/list','id'=>$id]),
+    'action'=>Url::toRoute(['/shop/item/list','id'=>$id]),
 ]);
 
 ?>
@@ -30,10 +30,11 @@ echo PassthroughWidget::widget([
             margin-right: 10px;
         }
         .item-list span h5{
-            height: 55px;
+            height: 50px;
             color: #666;
             font-weight: normal;
             font-size: 16px;
+            overflow: hidden;
         }
         .mtm_p{
             text-align: right;
@@ -153,7 +154,7 @@ $this->registerCss($this->blocks['CSS']);
         没有数据了
     </div>
 <?php else:?>
-    <div id="item-more" class="item-more item-more-end">
+    <div id="item-more" class="item-more">
         查看更多
     </div>
 <?php endif;?>

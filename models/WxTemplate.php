@@ -5,28 +5,32 @@
  */
 
 namespace app\models;
+use app\models\Curl;
 use Yii;
 use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 
 class WxTemplate extends WxBase {
 
-//    维修员新任务提醒
-    private  $newTaskId = 'Ty7MIhYrwdcSqNv751xITR1iuv90kWUam6A5Z-pFw_c';
-//    积分变动通知
-    private  $scoreId = 'JNQ8qK-bkS1gcKYKnfdeHUkTFVNgMg6cFbs14fVMoIQ';
-//    到期提醒通知
-    private  $dueTimeId = 'VSYOyq5Sb9vO1MIJ1OT5wtBJjM8miNpXzU6vGG5T7C8';
-//    资料审核通知
-    private  $checkInfoId = 'annBT_1RFl0KWSsyj2Y_6KAjdvL48FGT2UebP84u4pI';
-//    维修进度通知
-    private $processId = 'ubhal9RHjr99ubhsiOooCicbpsIHvnsff7vuAysMCWk';
-//    待办任务提醒
-    private $waitTaskId = 'Hie4EdBKBP4fQRt6o7Gl6QM-n415QLGVuKukb1R9e2s';
-//    服务取消通知
-    private $cancelServiceId = 'H3p4ikpCCyN-v9lKY_RCfR9Yn3d1rBRXTUON0HOQiZo';
-
 //    https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
     private $sendUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send';
+
+    /*
+     * 获取模板id
+     * $type = newTask,score,dueTime,checkInfo,process,waitTask,cancel
+     */
+    public function getTmpId($type)
+    {
+        $tmpId = (new \yii\db\Query())
+            ->select($type)
+            ->from('tbl_weixin_template')
+            ->where('wx_id=:wid',[':wid'=>$this->id])
+            ->scalar();
+        if(!$tmpId)
+            throw new BadRequestHttpException('模板id');
+        return $tmpId;
+    }
     /*
      * 发送维修员任务提醒
      * 张师傅您好，现有新的维修任务！
@@ -36,11 +40,11 @@ class WxTemplate extends WxBase {
         申请时间：2015年9月18日 09:10
         如有疑问跟总部联系
      */
-    public function sendTask($id,$openid,$name,$reason,$address,$info,$applyTime)
+    public function sendTask($id,$openid,$name,$reason,$address,$info,$applyTime,$remark='')
     {
         $tpl = [
             'touser'=>$openid,
-            'template_id'=>$this->newTaskId,
+            'template_id'=>$this->getTmpId('newTask'),
             'url'=>Url::toRoute(['m/taskdetail','id'=>$id],'http'),
 //            'topcolor'=>'#FF0000',
             'data'=> [
@@ -65,8 +69,8 @@ class WxTemplate extends WxBase {
                     'color'=>'#000000',
                 ],
                 'remark'=>[
-                    'value'=>'如有疑问跟总部联系!',
-                    'color'=>'#173177',
+                    'value'=>$remark? '留言：'.$remark:'没有留言！',
+                    'color'=>'#f07f12',
                 ],
             ]
         ];
@@ -83,13 +87,13 @@ class WxTemplate extends WxBase {
         积分余额:{{CreditTotal.DATA}}
         {{Remark.DATA}}
      *
-     * $type = [1,2,3,4]  /  [打印赠送]
+     * $type = [1,2,3,4,5,6,7]  /  [打印赠送]
      */
     public function sendScore($openid,$url,$scoreChange,$scoreTotal,$type=1)
     {
         $tpl = [
             'touser'=>$openid,
-            'template_id'=>$this->scoreId,
+            'template_id'=>$this->getTmpId('score'),
             'url'=>$url,
             'data'=> [
                 'first'=>[
@@ -101,7 +105,7 @@ class WxTemplate extends WxBase {
                     'color'=>'#000000',
                 ],
                 'Account'=>[
-                    'value'=>'打印赠送',
+                    'value'=>ConfigBase::$scoreFromStatus[$type],
                     'color'=>'#000000',
                 ],
                 'change'=>[
@@ -117,7 +121,7 @@ class WxTemplate extends WxBase {
                     'color'=>'#000000',
                 ],
                 'Remark'=>[
-                    'value'=>'您可以在网站或手机APP使用积分下单抵现，100积分=1元。',
+                    'value'=>'积分可以兑换大奖和购物抵现。',
                     'color'=>'#173177',
                 ],
             ]
@@ -140,7 +144,7 @@ class WxTemplate extends WxBase {
     {
         $tpl = [
             'touser'=>$openid,
-            'template_id'=>$this->processId,
+            'template_id'=>$this->getTmpId('process'),
             'url'=>$url,
             'data'=> [
                 'first'=>[
@@ -184,7 +188,7 @@ class WxTemplate extends WxBase {
     {
         $tpl = [
             'touser'=>$openid,
-            'template_id'=>$this->waitTaskId,
+            'template_id'=>$this->getTmpId('waitTask'),
             'url'=>$url,
             'data'=> [
                 'first'=>[
@@ -225,7 +229,7 @@ class WxTemplate extends WxBase {
     {
         $tpl = [
             'touser'=>$openid,
-            'template_id'=>$this->cancelServiceId,
+            'template_id'=>$this->getTmpId('cancel'),
             'url'=>$url,
             'data'=> [
                 'first'=>[
@@ -260,7 +264,7 @@ class WxTemplate extends WxBase {
     {
         $tpl = [
             'touser'=>$openid,
-            'template_id'=>$this->checkInfoId,
+            'template_id'=>$this->getTmpId('checkInfo'),
             'url'=>$url,
             'data'=> [
                 'first'=>[
@@ -289,12 +293,74 @@ class WxTemplate extends WxBase {
      */
     private function sendTpl($tpl)
     {
-        if(!$tpl['touser']) return false;
+        if($tpl['touser'] && strlen($tpl['touser']) == 28){
+            $curl = new Curl();
+            $res = $curl->postJson($this->sendUrl,json_encode($tpl),['access_token'=>$this->accessToken()]);
+            if( $res['errcode'] )
+                Yii::$app->end(json_encode(['status'=>0,'msg'=>$res['errmsg']]));
+            return true;
+        }
+        return false;
+    }
 
+    /*
+     * 设置模板所属行业
+     */
+    public function setWechatTmp()
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/template/api_set_industry';
         $curl = new Curl();
-        $res = $curl->postJson($this->sendUrl,json_encode($tpl),['access_token'=>$this->accessToken()]);
-        if( $res['errcode'] )
-            Yii::$app->end(json_encode(['status'=>0,'msg'=>$res['errmsg']]));
-        return true;
+        $tmpIds = [
+            'industry_id1'=>1,
+            'industry_id2'=>40
+        ];
+        $res = $curl->postJson($url,json_encode($tmpIds),['access_token'=>$this->accessToken()]);
+//        if( $res['errcode'] )
+//            throw new BadRequestHttpException('设置模板行业失败：'.$res['errmsg']);
+    }
+
+    /*
+     * 获取 微信模板id
+     */
+    public function setWechatTmpId()
+    {
+        $data = [
+            'newTask'=>'OPENTM204588400',
+            'score'=>'TM00230',
+            'dueTime'=>'TM00003',
+            'checkInfo'=>'OPENTM201057607',
+            'process'=>'TM00254',
+            'waitTask'=>'OPENTM200706571',
+            'cancel'=>'OPENTM203353498',
+        ];
+        $url = 'https://api.weixin.qq.com/cgi-bin/template/api_add_template';
+        $curl = new Curl();
+
+        $tmp = [];
+        foreach($data as $k=>$type){
+            $params = [
+                'template_id_short'=>$type,
+            ];
+            $res = $curl->postJson($url,json_encode($params),['access_token'=>$this->accessToken()]);
+            if( !$res['errcode'] )
+                $tmp[$k] = $res['template_id'];
+        }
+        if(count($tmp) == count($data)){
+            $model = TblWeixinTemplate::findOne($this->id);
+            if(!$model){
+                $model = new TblWeixinTemplate();
+                $model->wx_id = $this->id;
+            }
+            foreach($tmp as $k=>$v)
+                $model->$k = $v;
+            if(!$model->save()){
+                print_r($model->errors);
+                exit;
+            }
+//                throw new BadRequestHttpException('添加模板id,入库失败');
+        }
+
+
+//        throw new BadRequestHttpException('添加模板id失败或者模板id已存在');
     }
 } 

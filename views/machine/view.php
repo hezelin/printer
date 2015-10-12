@@ -62,6 +62,7 @@ $this->title = '机器详情';
 
         function getModel($id)
         {
+            if($id == '0') return '<span class="not-set">（无设置）</span>';
             return Html::a(ConfigBase::getMachineModel($id),Url::toRoute(['model/view','id'=>$id]));
         }
     ?>

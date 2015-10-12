@@ -135,7 +135,8 @@ class WxUser extends WxBase {
         foreach($info as $user)
         {
             $in = json_decode($user,true);
-            $val .= "({$id},'{$in['openid']}','{$in['nickname']}',{$in['sex']},'{$in['city']}','{$in['country']}','{$in['province']}','{$in['language']}','{$in['headimgurl']}',{$in['subscribe_time']},{$in['subscribe']}),";
+            $nickname = trim($in['nickname']);
+            $val .= "({$id},'{$in['openid']}','{$nickname}',{$in['sex']},'{$in['city']}','{$in['country']}','{$in['province']}','{$in['language']}','{$in['headimgurl']}',{$in['subscribe_time']},{$in['subscribe']}),";
         }
 
         $sql .= substr($val,0,-1) . ' ON DUPLICATE KEY UPDATE nickname=values(nickname),sex=values(sex),city=values(city),country=values(country),province=values(province),language=values(language),headimgurl=values(headimgurl),subscribe_time=values(subscribe_time),subscribe=values(subscribe)';

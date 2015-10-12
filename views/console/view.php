@@ -65,7 +65,9 @@ use yii\bootstrap\Modal;
                 <ul class="box-list-ul">
                     <?php foreach($data['maintainer'] as $d):?>
                     <li class="box-list-li">
+                        <a href="<?=Url::toRoute(['/service/list','fromFault'=>$d['openid']]);?>" >
                         <span class="m-name"><?=$d['name']?></span><span class="m-tips">待修机器</span><span class="num-alert"><?=$d['wait_repair_count']?></span>
+                        </a>
                     </li>
                     <?php endforeach;?>
                 </ul>
@@ -200,7 +202,7 @@ use yii\bootstrap\Modal;
         </div>
     </div>
 
-    <div class="col-md-3 no-padding">
+    <div class="col-md-2 no-padding">
         <div class="row-box">
         <div class="box-panel-header">
             <h4><i class="icon glyphicon glyphicon-bell"></i>警示模块</h4>
@@ -209,10 +211,10 @@ use yii\bootstrap\Modal;
             <?php if($data['alert']):?>
             <ul class="box-list-ul">
                 <li class="box-list-li">
-                    <span class="m-tips">待收租机器</span><a href="<?=Url::toRoute(['/adminrent/collect'])?>" class="num-alert"><?=$data['alert']['collect_count']?></a>
+                    <span class="m-tips" style="width:60%;">待收租机器</span><a href="<?=Url::toRoute(['/adminrent/collect'])?>" class="num-alert"><?=$data['alert']['collect_count']?></a>
                 </li>
                 <li class="box-list-li">
-                    <span class="m-tips">快到期租借</span><a href="<?=Url::toRoute(['/adminrent/expire'])?>" class="num-alert"><?=$data['alert']['expire_count']?></a>
+                    <span class="m-tips" style="width:60%;">快到期租借</span><a href="<?=Url::toRoute(['/adminrent/expire'])?>" class="num-alert"><?=$data['alert']['expire_count']?></a>
                 </li>
             </ul>
             <?php else:?>
@@ -221,6 +223,44 @@ use yii\bootstrap\Modal;
         </div>
         </div>
     </div>
+    <div class="col-md-10 no-padding">
+        <div class="row-box">
+            <div class="box-panel-header">
+                <h4><i class="icon glyphicon glyphicon-yen"></i>机器租金</h4>
+            </div>
+            <div class="box-panel-body">
+                <?php if($data['rental']):?>
+                    <ul class="fault-list-ul">
+                        <?php foreach($data['rental'] as $d):?>
+                            <li class="fault-list-li">
+                                <div class="fault-data">
+                                    <a href="<?=$d['sign_img']?>" class="fancybox" rel="group"><img class="cover-img" src="<?=$d['sign_img']?>" width="40" /></a>
+                                    <h4><?=$d['brand'],$d['model'],' , ',$d['name']?></h4>
+                                    <span><?=$d['address']?></span>
+                                </div>
+                                <div class="fault-data">
+                                    <h4><?=$d['username']?></h4>
+                                    <span>租金:<b class="high-show"><?=$d['total_money']?></b> , 黑白:<b class="high-show"><?=$d['black_white']?></b><?php if($d['colour']) echo ', 彩色:<b class="high-show">',$d['colour'],'</b>'; if($d['exceed_money']!='0.00') echo ', 超出金额:<b class="high-show">',$d['exceed_money'],'</b>';?></span>
+                                </div>
+                                <div class="fault-btn">
+                                    <button class="btn btn-info btn-sm rental-pass" key-id="<?=$d['id']?>" >通过</button>
+                                    <a class="btn btn-danger btn-sm" href="<?=Url::toRoute(['charge/update','id'=>$d['id']])?>">编辑</a>
+                                </div>
+                            </li>
+                        <?php endforeach;?>
+                    </ul>
+                <?php else:?>
+                    <div class="empty-panel">没有工作任务</div>
+                <?php endif;?>
+            </div>
+            <?php if(count($data['rent'])>3):?>
+                <div class="list-more" title="展开">
+                    <i class="glyphicon glyphicon-menu-down"></i> 展开
+                </div>
+            <?php endif;?>
+        </div>
+    </div>
+
     <div class="col-md-2 no-padding">
         <div class="row-box" style="height: 280px;">
         <a href="<?=Url::toRoute(['adminrent/list'])?>" class="box-panel-header">
@@ -237,7 +277,7 @@ use yii\bootstrap\Modal;
         </a>
         </div>
     </div>
-    <div class="col-md-7 no-padding">
+    <div class="col-md-10 no-padding">
         <div class="row-box">
         <div class="box-panel-header">
             <h4><i class="icon glyphicon glyphicon-resize-horizontal"></i>租借申请</h4>
@@ -319,11 +359,17 @@ Modal::begin([
     'size' => 'modal-md',
     'toggleButton' => false,
     'footer' => '
+        <button id="go-back" type="button" class="btn btn-default">上一步</button>
+        <button id="next-step" type="button" class="btn btn-primary">下一步</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
     ',
 ]);
 
-echo Html::beginTag('table',['class'=>'table table-striped']);
+echo Html::beginForm('','',['class'=>'form-horizontal','id'=>'fault-text-form']);
+echo Html::textarea('fault_remark','',['placeholder'=>'备注留言(可省略)','class'=>'form-control','id'=>'fault-remark']);
+echo Html::endForm();
+
+echo Html::beginTag('table',['class'=>'table table-striped','id'=>'my-fix-model']);
 echo '<tr><th>名字</th><th>手机</th><th>待修</th><th>分配</th></tr>';
 foreach($data['maintainer'] as $d){
     echo '<tr><td>',$d['name'],'</td><td>',$d['phone'],'</td><td class="repair-count">',$d['wait_repair_count'],'</td><td><a class="select-maintain" href="javascript:void(0);" title="分配维修" key-wid="',$d['wx_id'],'" key-openid="',$d['openid'],'" data-method="post"><i class="glyphicon glyphicon-ok"></i></a></td></tr>';
@@ -484,6 +530,21 @@ Modal::end();
         $('#'+modelIds).modal('show');
     });
 
+
+    //        上一步
+    $('#go-back').click(function(){
+        $('#next-step').show();
+        $('#fault-text-form').show();
+        $('#my-fix-model').hide();
+    });
+    //        下一步
+    $('#my-fix-model').hide();
+    $('#next-step').click(function(){
+        $(this).hide();
+        $('#fault-text-form').slideUp();
+        $('#my-fix-model').show();
+    });
+
 //    维修分配
     $('#modal-fault-allot .select-maintain').click(function(){
         $(this).html('<img src="/images/loading.gif">');
@@ -493,14 +554,14 @@ Modal::end();
         var re_count = $(this).closest('tr').children('.repair-count');
         $.post(
             '<?=Url::toRoute(['/service/allot'])?>',
-            {'id':keyId,'wid':wid,'openid':openid},
+            {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
             function(res){
                 if(res.status == 1){
                     re_count.text( parseInt(re_count.text()) + 1 );
                     setTimeout(function(){
                         $this.html('<i class="glyphicon glyphicon-ok"></i>');
-                        $('#my-modal').modal('hide');
-                        allotTr.remove();
+                        $('#modal-fault-allot').modal('hide');
+                        $li.slideUp();
                     },1000);
                 }
                 else
@@ -598,6 +659,22 @@ Modal::end();
             },'json'
         );
     });
+
+//    机器租金 通过审核
+    $('.rental-pass').click(function(){
+        keyId = $(this).attr('key-id');
+        $li = $(this).closest('li');
+        $.post(
+            '<?=Url::toRoute(['/charge/pass'])?>',
+            {logId:keyId},
+            function(resp){
+                if(resp.status == 1)
+                    $li.slideUp();
+                else
+                    alert(resp.msg);
+            },'json'
+        );
+    })
     <?php $this->endBlock();?>
 </script>
 

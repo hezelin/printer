@@ -74,7 +74,7 @@ $this->title = '商品列表';
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions'=>['style'=>'width:140px'],
-            'template' => '{view} &nbsp; {status} &nbsp; {update} &nbsp; {qrcode} &nbsp; {delete}',
+            'template' => '{view} &nbsp; {status} &nbsp; {update} &nbsp; {qrcode} &nbsp; {delete} &nbsp; {link}',
             'buttons' => [
                 'status' => function($url,$model,$key){
                     $icon = $model->status == 1? 'glyphicon glyphicon-arrow-down':'glyphicon glyphicon-arrow-up';
@@ -93,6 +93,12 @@ $this->title = '商品列表';
                         'data-confirm'=>'确定删除这个商品？'
                     ]);
                 },
+                'link' => function($url,$model,$key){
+                    return Html::tag('span','<i class="glyphicon glyphicon-link"></i>',[
+                        'class'=>'tool-tips zClip',
+                        'data-clipboard-text'=>Url::toRoute(['/shop/item/detail','id'=>$model['wx_id'],'item_id'=>$model['id']],'http')
+                    ]);
+                }
             ]
         ]
 
@@ -138,4 +144,39 @@ echo newerton\fancybox\FancyBox::widget([
 
 ?>
 
+    <div id="d_debug"></div>
 
+<script>
+    <?php $this->beginBlock('JS_END') ?>
+
+    var clip = new ZeroClipboard($(".zClip"),{forceHandCursor:true});
+
+    clip.on("ready", function() {
+        $('#global-zeroclipboard-html-bridge').attr({
+            'data-toggle': 'tooltip',
+            'data-title': '复制到剪贴板',
+            'data-placement': 'left'
+        });
+        $('#global-zeroclipboard-html-bridge').tooltip({
+            container: 'body',
+            trigger: 'hover'
+        });
+
+        this.on("aftercopy", function(event) {
+            $('#global-zeroclipboard-html-bridge').attr("title","复制成功！").tooltip("fixTitle").tooltip("show").attr("title","复制到剪贴板").tooltip("fixTitle");
+        });
+
+    });
+
+    clip.on("error", function(event) {
+        alert("浏览器不支持复制！");
+        ZeroClipboard.destroy();
+    });
+
+    <?php $this->endBlock();?>
+</script>
+
+<?php
+    $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
+    $this->registerJsFile('/js/mobile/ZeroClipboard.min.js',['depends'=>['yii\web\JqueryAsset']]);
+?>

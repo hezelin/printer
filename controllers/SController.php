@@ -4,6 +4,7 @@
  */
 
 namespace app\controllers;
+use app\models\fault\FaultList;
 use app\models\TblMachineService;
 use app\models\TblRentApply;
 use app\models\TblServiceEvaluate;
@@ -33,16 +34,30 @@ class SController extends \yii\web\Controller
             $model->weixin_id = $id;
             $model->add_time = time();
 
+            $tmp = ['cover'=>['/images/default_image.png']];
             //  如果上传图片就拉取图片
             if( isset( $_POST['TblMachineService']['imgid'] ) && $_POST['TblMachineService']['imgid'] ){
                 $wx = new WxMedia($id);
-                $model->cover = json_encode( $wx->getImages( explode('|',$_POST['TblMachineService']['imgid'] ) ) );
-            }else
-                $model->cover = json_encode(['/images/default_image.png']);
+                $tmp = ['cover'=> $wx->getImages( explode('|',$_POST['TblMachineService']['imgid'])) ];
+            }
+            // 获取录音
+            if( Yii::$app->request->post('voice') ){
+                $wx = new WxMedia($id);
+                $tmp['voice'] = $wx->getVoice( Yii::$app->request->post('voice') );
+                $tmp['voiceLen'] = Yii::$app->request->post('voiceLen');
+            }
+
+            $model->content = json_encode($tmp);
+
 
             $model->load(Yii::$app->request->post());
             if( $model->save() ){
-                $this->redirect(Url::toRoute(['detail','id'=>$id,'fault_id'=>$model->id]));
+
+                return $this->render('//tips/homestatus',[
+                    'tips'=>'维修申请成功！',
+                    'btnText'=>'返回主页',
+                    'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
+                ]);
             }
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
@@ -57,26 +72,34 @@ class SController extends \yii\web\Controller
     }
     /*
      * $id 公众号id, $mid 维修的 id,$openid 维修员openid
-     * 确认故障
+     * 故障确定
      */
     public function actionAffirmfault($id,$fault_id,$openid)
     {
         if( Yii::$app->request->post() )
         {
-            $content = [
-                'status'=>5,
-                'content'=>$_POST['TblMachineService']['desc']
-            ];
+            if( $_POST['TblMachineService']['desc'] )
+                $content['text'] = '故障已确定,原因'.$_POST['TblMachineService']['desc'];
+            else
+                $content['text'] = '故障已确定!';
+
             //  如果上传图片就拉取图片
             if( isset( $_POST['TblMachineService']['imgid'] ) && $_POST['TblMachineService']['imgid'] ){
                 $wx = new WxMedia($id);
                 $content['cover'] = $wx->getImages( explode('|',$_POST['TblMachineService']['imgid']) );
             }
+            // 获取录音
+            if( Yii::$app->request->post('voice') ){
+                $wx = new WxMedia($id);
+                $content['voice'] = $wx->getVoice( Yii::$app->request->post('voice') );
+                $content['voiceLen'] = Yii::$app->request->post('voiceLen');
+            }
+
 //            维修进度
             $model = new TblServiceProcess();
             $model->service_id = $fault_id;
             $model->process = 5;
-            $model->content = json_encode($content);
+            $model->content = json_encode($content,JSON_UNESCAPED_UNICODE);
             $model->add_time = time();
             if( !$model->save()){
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
@@ -102,44 +125,8 @@ class SController extends \yii\web\Controller
      */
     public function actionDetail($id,$fault_id)
     {
-        $model = (new \yii\db\Query())
-            ->select('t.id as fault_id,t.cover as fault_cover,t.desc,t.type as fault_type,
-                    t.add_time,t.status,m.id,p.cover,
-                    b.name as brand,p.type,m.series_id
-            ')
-            ->from('tbl_machine_service as t')
-            ->leftJoin('tbl_machine as m','m.id=t.machine_id')
-            ->leftJoin('tbl_machine_model as p','m.model_id=p.id')
-            ->leftJoin('tbl_brand as b','p.brand_id=b.id')
-            ->where(['t.id' => $fault_id])
-            ->one();
-
-        // 图片预览 路径设置
-        $covers = json_decode($model['fault_cover'],true);
-        $model['fault_cover'] = Yii::$app->request->hostInfo.$covers[0];
-        foreach($covers as $cover)
-            $model['cover_images'][] = Yii::$app->request->hostinfo.$cover;
-
-        $process = (new \yii\db\Query())
-            ->select('content,add_time')
-            ->from('tbl_service_process')
-            ->where(['service_id' => $fault_id])
-            ->orderBy('id desc')
-            ->all();
-
-        if($model['status'] == 8)
-            $btn = Html::a('评价维修',Url::toRoute(['s/evaluate','id'=>$model['fault_id']]),[
-                'class'=>'h-fixed-bottom'
-            ]);
-        else $btn = '';
-
-        if($model['status']== 1 || $model['status'] == 2)
-            $btn = Html::a('取消维修',Url::toRoute(['s/cancel','id'=>$id,'fid'=>$model['fault_id']]),[
-                'class'=>'h-fixed-bottom'
-            ]);
-
-
-        return $this->render('detail',['model'=>$model,'id'=>$id,'process'=>$process,'btn'=>$btn]);
+        $data = new FaultList($id);
+        return $this->render('detail',['model'=>$data->progress($fault_id),'id'=>$id]);
     }
 
     /*
@@ -148,66 +135,50 @@ class SController extends \yii\web\Controller
      */
     public function actionDetail2($id)
     {
-        $model = (new \yii\db\Query())
-            ->select('t.id as fault_id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,m.id,p.cover,
-                    b.name as brand,p.type,m.series_id,m.wx_id
-            ')
-            ->from('tbl_machine_service as t')
-            ->leftJoin('tbl_machine as m','m.id=t.machine_id')
-            ->leftJoin('tbl_machine_model as p','p.id=m.model_id')
-            ->leftJoin('tbl_brand as b','b.id=p.brand_id')
-            ->where(['t.id' => $id])
-            ->one();
-
-        // 图片预览 路径设置
-        $covers = json_decode($model['fault_cover'],true);
-        $model['fault_cover'] = Yii::$app->request->hostInfo.$covers[0];
-        foreach($covers as $cover)
-            $model['cover_images'][] = Yii::$app->request->hostinfo.$cover;
-
-        $process = (new \yii\db\Query())
-            ->select('content,add_time')
-            ->from('tbl_service_process')
-            ->where(['service_id' => $id])
-            ->orderBy('id desc')
-            ->all();
-
-        return $this->render('detail2',['model'=>$model,'process'=>$process]);
+        $data = new FaultList($id);
+        return $this->render('detail2',['model'=>$data->progress($id,2)]);
     }
     /*
      * 客户评价维修
-     * $id 维修表id
+     * $id 微信id
+     * $fault_id 维修表id
      */
-    public function actionEvaluate($id)
+    public function actionEvaluate($id,$fault_id)
     {
-        if(Yii::$app->request->post()){
+        $model = TblMachineService::findOne($fault_id);
+        if($model->status == 9 )
+            return $this->render('//tips/homestatus',[
+                'tips'=>'请不要重复评价！',
+                'btnText'=>'返回',
+                'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
+            ]);
 
-            $eva = new TblServiceEvaluate();
-            $eva->add_time = time();
-            if($eva->load(Yii::$app->request->post()) && $eva->save())
-            {
-                $model = TblMachineService::findOne($id);
-                $model->status = 9;
-                $model->fault_score = $eva->score;                  //  增加评价数据
+        if($score = Yii::$app->request->post('score')){
 
-                if( !$model->save())
-                    Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
-                $model->updateMachineCount();
-                $model = new TblServiceProcess();
-                $model->service_id = $id;
-                $model->process = 9;
-                $model->content = json_encode(['status'=>9]);
-                $model->add_time = time();
-                if( !$model->save())
-                    Yii::$app->end(json_encode(['status'=>0,'msg'=>'维修进度错误']));
+            $model->status = 9;
+            $model->fault_score = $score;                  //  增加评价数据
+            $model->opera_time = time();
+            $wx_id = $model->weixin_id;
 
-                return $this->render('//tips/homestatus',[
-                    'tips'=>'感谢您的评价',
-                    'btnText'=>'返回',
-                    'btnUrl'=>'javascript:history.go(-2)'
-                ]);
-            }
+            if( !$model->save())
+                Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
+            $model->updateMachineCount();
+
+            $model = new TblServiceProcess();
+            $model->service_id = $fault_id;
+            $model->process = 9;
+            $model->content = '评价完成';
+            $model->add_time = time();
+            if( !$model->save())
+                Yii::$app->end(json_encode(['status'=>0,'msg'=>'维修进度错误']));
+
+            return $this->render('//tips/homestatus',[
+                'tips'=>'感谢您的评价',
+                'btnText'=>'返回',
+                'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$wx_id])
+            ]);
         }
+
 
         return $this->render('evaluate',['id'=>$id]);
     }
@@ -218,7 +189,11 @@ class SController extends \yii\web\Controller
      */
     public function actionShowevaluate($id)
     {
-        $model = TblServiceEvaluate::findOne(['fault_id'=>$id]);
+        $model = (new \yii\db\Query())
+            ->select('fault_score as score,opera_time as add_time')
+            ->from('tbl_machine_service')
+            ->where('id=:id and status="9"',[':id'=>$id])
+            ->one();
         if(!$model)
             return $this->render('//tips/homestatus',['tips'=>'不存在这个评价']);
         return $this->render('showevaluate',['model'=>$model]);
@@ -236,10 +211,10 @@ class SController extends \yii\web\Controller
      */
     public function actionIrecord($id,$mid)
     {
-        $model = TblMachineService::findAll(['machine_id'=>$mid,'enable'=>'Y']);
+        $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->orderBy('add_time desc')->asArray()->all();
         foreach ($model as $i=>$m) {
-            $covers = json_decode($m['cover'],true);
-            $model[$i]['cover'] = $covers[0];
+            $content = json_decode($m['content'],true);
+            $model[$i]['cover'] = $content['cover'][0];
         }
         return $this->render('irecord',['model'=>$model,'id'=>$id]);
     }

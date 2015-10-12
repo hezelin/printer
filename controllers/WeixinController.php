@@ -1,7 +1,10 @@
 <?php
 
 namespace app\controllers;
+use app\models\TblStoreSetting;
 use app\models\WxBase;
+use app\models\WxTemplate;
+use app\models\WxUser;
 use Yii;
 use app\models\TblWeixin;
 use yii\filters\AccessControl;
@@ -22,7 +25,7 @@ class WeixinController extends \yii\web\Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open','select','createmenu'],
+                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open','select','createmenu','console'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -32,16 +35,15 @@ class WeixinController extends \yii\web\Controller
 
     public function actionAdd()
     {
-//        if (Yii::$app->user->isGuest)  return $this->redirect(['auth/login','url'=>'/weixin/add']);
         $model = new TblWeixin();
-        if($model->load(Yii::$app->request->post()))
+        if(Yii::$app->request->post() && $model->load(Yii::$app->request->post()))
         {
             $model->create_time = time();
             $model->due_time = $model->create_time + 3600*24*7;             // 免费试用 7 天
             $model->uid = Yii::$app->user->id;
 
             if($model->save()){
-                $this->redirect('index');
+                $this->redirect(['view','id'=>$model->id]);
             }else{
                 print_r($model->errors);
             }
@@ -83,7 +85,7 @@ class WeixinController extends \yii\web\Controller
 
     public function actionView($id)
     {
-        $host = Yii::$app->request->hostInfo;
+        $host = substr(Yii::$app->request->hostInfo,7);
         $model = $this->findModel($id);
         return $this->render('view', [
             'model' => $model,
@@ -135,24 +137,60 @@ class WeixinController extends \yii\web\Controller
      */
     public function actionOpen($id)
     {
+        set_time_limit(0);
 
         $model = $this->findModel($id);
+        Yii::$app->session['wechat'] = $model->attributes;
 
-        if(!Yii::$app->session['wechat']){
-            Yii::$app->session['wechat'] = $model->attributes;
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $wechat = new WxBase($id);
+            if( ! $wechat->createMenu($model->name) )
+                throw new BadRequestHttpException('创建菜单失败!');
+
+            $wx = new WxUser($id);                              // 拉取旧的 用户微信资料
+            $wx->pullUser();
+
+            $model->status = 2;                                 // 默认开通 14天 时间
+            $model->due_time = time() + 3600 * 24 * 14;
+            $model->save();
+                                                                // 店铺 资料 设置
+            $setting = TblStoreSetting::find()->where('wx_id=:wid',[':wid'=>$id])->one();
+            if(!$setting) $setting = new TblStoreSetting();
+            $setting->wx_id = $id;
+            $setting->add_time = time();
+            $setting->store_name = $model->name;
+            $setting->menu_name = $model->name;
+            $setting->save();
+
+            $tmp = new WxTemplate($id);
+            $tmp->setWechatTmp();                               // 设置模板行业
+            $tmp->setWechatTmpId();                             // 设置消息模板
+
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            return $this->render('//tips/homestatus',['tips'=>'开通失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
         }
-
-        $wechat = new WxBase($id);
-        if( ! $wechat->createMenu() )
-            throw new BadRequestHttpException('创建菜单失败!');
-
-        $model->status = 2;
-        $model->due_time = time() + 3600 * 24 * 7;
-        if($model->save()){
-            return $this->redirect(['index']);
-        }
+        return $this->redirect(['index']);
     }
 
+    /*
+     * 进入控制台
+     */
+    public function actionConsole()
+    {
+        $mp = (new \yii\db\Query())
+            ->select('id')
+            ->from('tbl_weixin')
+            ->where(['uid'=>Yii::$app->user->id,'enable'=>'Y'])
+            ->all();
+        if( count($mp) > 1)
+            return $this->redirect('select');
+        else if( isset($mp[0]['id']))
+            return $this->redirect(['/console/view','id'=>$mp[0]['id']]);
+    }
     /*
      * 数据过期，请重新选择公众号操作
      */
@@ -176,7 +214,7 @@ class WeixinController extends \yii\web\Controller
         $wechat = new WxBase($id);
         if( ! $wechat->createMenu() )
             throw new BadRequestHttpException('创建菜单失败!');
-        return '菜单创建成果！';
+        return '菜单创建成功！';
     }
     /*
      * 找到
@@ -189,5 +227,4 @@ class WeixinController extends \yii\web\Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-
 }

@@ -3,12 +3,11 @@
 namespace app\controllers;
 
 use app\models\ConfigBase;
-use app\models\DataCity;
+use app\models\fault\FaultList;
 use app\models\TblMachineService;
 use app\models\TblNotifyLog;
 use app\models\TblRentApply;
 use app\models\TblServiceProcess;
-use app\models\TblUserMaintain;
 use app\models\WxBase;
 use app\models\WxTemplate;
 use yii\web\BadRequestHttpException;
@@ -32,9 +31,50 @@ class MController extends \yii\web\Controller
     /*
      * 我的业绩，统计数据
      */
-    public function actionIndex()
+    public function actionIndex($id)
     {
-        return $this->render('index');
+        $openid = WxBase::openId($id);
+        $len = Yii::$app->request->get('len')? : 10;
+
+        $model = (new \yii\db\Query())
+            ->select('date,fault_time,resp_time,total_km,total_fault,total_score')
+            ->from('tbl_analyze_maintain')
+            ->where('wx_id=:wid and openid=:openid',[':wid'=>$id,':openid'=>$openid])
+            ->limit($len)
+            ->orderBy('date desc');
+        if(Yii::$app->request->get('startId'))
+            $model->andWhere(['<','date',Yii::$app->request->get('startId')]);
+        $model = $model->all();
+
+
+        foreach($model as &$r){
+            $r['fault_time'] = number_format($r['fault_time']/3600,2,'.','');
+            $r['total_km'] = number_format($r['total_km']/$r['resp_time']*3600,2,'.','');
+            $r['total_score'] = number_format($r['total_score']/$r['total_fault'],2,'.','');
+        }
+
+        if(Yii::$app->request->get('format') == 'json'){
+            return $model? json_encode([
+                'status'=>1,
+                'data'=>$model,
+                'len'=>count($model),
+                'startId'=>$model[count($model)-1]['date'],
+            ]):json_encode(['status'=>0,'msg'=>'没有数据了','startId'=>0]);
+        }
+
+        $startId = $model? $model[count($model)-1]['date']:0;
+
+        if(isset($model[0]['date']) && $model[0]['date'] == date('Ym',time())){
+            $lastMonth =  array_shift($model);
+        }else{
+            $lastMonth = ['fault_time'=>0,'total_km'=>0,'total_score'=>0,'total_fault'=>0];
+        }
+        return $this->render('index',[
+            'model'=>$model,
+            'startId'=>$startId,
+            'lastMonth'=>$lastMonth,
+            'id'=>$id,
+        ]);
     }
 
     /*
@@ -52,44 +92,71 @@ class MController extends \yii\web\Controller
     /*
      * 维修员提交故障进度，提交资料进度
      * $id 维修表id,
+     * 1、更新维修员坐标
      * 2、更维修表的状态
      * 3、写入维修进度+维修时间
-     * 1、更新维修员坐标
      * post 提交 状态  status
+     * 确认接单(status=3)
      */
     public function actionProcess($id,$openid)
     {
         set_time_limit(0);
         $post = Yii::$app->request->post('TblServiceProcess');
-        /*$model = TblUserMaintain::findOne(['openid'=>$openid]);
-        $model->attributes = $post;
-        $wid = $model->wx_id;
-        if( !$model->save())
-            throw new BadRequestHttpException('数据不合法');*/
 
         $model = TblMachineService::findOne($id);
+
+        if(  $model->status == $post['status'] )
+        {
+            return $this->render('//tips/homestatus',[
+                'tips'=>'请不要重复提交！',
+                'btnText'=>'返回主页',
+                'btnUrl'=> Url::toRoute(['wechat/index','id'=>$model['weixin_id']])
+            ]);
+        }
+
         $model->status = $post['status'];
-        if( $model->status == 3){                   // 确认接单时间记录, 计数距离  latitude、longitude
-            $model->setKm($post['latitude'],$post['longitude']);
-        }else if($model->status == 4)               // 记录 确认接单时间
-            $model->resp_time = time() - $model->accept_time;
+        // 确认接单时间记录, 计数距离  latitude、longitude
+        if($model->openid && $model->openid != $openid)           // 任务已重新分配给其他维修员，接单失败！
+        {
+            return $this->render('//tips/homestatus',[
+                'tips'=>'任务已重新分配给其他维修员！',
+                'btnText'=>'返回主页',
+                'btnUrl'=> Url::toRoute(['wechat/index','id'=>$model['weixin_id']])
+            ]);
+        }
+        $model->setKm($post['latitude'],$post['longitude']);
+
 
         $model->openid = $openid;
         $wid = $model->weixin_id;
-        $rendId = $model->id;
+        $fault_id = $model->id;
         $fromOpenid = $model->from_openid;
         $applyTime = $model->add_time;
-
+        $respKm = $model->resp_km;
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $model->save();
 
+            // 主动接单、电话维修、维修员确认接单
+            $maintainer = (new \yii\db\Query())
+                ->select('name,phone')
+                ->from('tbl_user_maintain')
+                ->where('wx_id=:wid and openid=:openid',[':wid'=>$wid,':openid'=>$openid])
+                ->one();
+            $tpl = new WxTemplate($wid);
+            $tpl->sendProcess(
+                $fromOpenid,
+                Url::toRoute(['s/detail','id'=>$wid,'fault_id'=>$fault_id],'http'),
+                '维修员：'.$maintainer['name'].'已接单，手机：'.$maintainer['phone'].'，距离：'.$respKm.'公里',
+                $applyTime
+            );
+
             // 维修进度保存
             $model = new TblServiceProcess();
             $model->service_id = $id;
             $model->process = $post['status'];
-            $model->content = json_encode($post);
+            $model->content = $maintainer['name'].' 已接单,距离：'.$respKm.'公里';
             $model->add_time = time();
             $model->save();
 
@@ -97,18 +164,6 @@ class MController extends \yii\web\Controller
         } catch(\Exception $e) {
             $transaction->rollBack();
             return $this->render('//tips/homestatus',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
-        }
-
-        $from = Yii::$app->request->post('from');
-
-        if($from == 'initiative'){              // 主动接单，给用户发送推送
-            $tpl = new WxTemplate($wid);
-            $tpl->sendProcess(
-                $fromOpenid,
-                Url::toRoute(['s/detail','id'=>$rendId],'http'),
-                '维修员已接单',
-                $applyTime
-            );
         }
 
         return $this->render('//tips/homestatus',[
@@ -122,24 +177,33 @@ class MController extends \yii\web\Controller
      * 状态进度
      * 2、更维修表的状态
      * 3、写入维修进度+维修时间
-     * status = 2,3,4,5,6,7,8,9
+     * 到达签到(status=4)、申请配件(6)、配件到达(7)、维修完成(8)、评价完成(9)
      */
     public function actionProcessajax($id,$openid)
     {
         $status = Yii::$app->request->post('status');
 
         $model = TblMachineService::findOne($id);
+        if(  $model->status ==  $status )
+        {
+            return $this->render('//tips/homestatus',[
+                'tips'=>'请不要重复提交！',
+                'btnText'=>'返回主页',
+                'btnUrl'=> Url::toRoute(['wechat/index','id'=>$model['weixin_id']])
+            ]);
+        }
+
         $model->status = $status;
+        $wid = $model->weixin_id;
         if($status == 8){
             $model->complete_time = time();     // 维修完成时间
+            $model->fault_cost = Yii::$app->request->post('fault_cost')? :0;
             $model->fault_time = $model->complete_time + $model->parts_apply_time -$model->parts_arrive_time - $model->resp_time - $model->accept_time;
         }
         if($model->status == 4) {                               // 记录 确认接单时间
             $model->resp_time = time() - $model->accept_time;
-
         }
 
-        $mid = $model->machine_id;
         $fault_id = $model->id;
         $fromOpenid = $model->from_openid;
         $applyTime = $model->add_time;
@@ -149,20 +213,21 @@ class MController extends \yii\web\Controller
         try {
             $model->save();
 
+            $process = $model->setProcess();
             $model = new TblServiceProcess();
             $model->service_id = $id;
             $model->process = $status;
-            $model->content = json_encode(['status'=>$status]);
+            $model->content = $process;
             $model->add_time = time();
             $model->save();
 
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();
+            echo $e;
             Yii::$app->end(json_encode(['status'=>0,'msg'=>'入库失败!']));
         }
-
-        $wid = TblRentApply::find()->select('wx_id')->where(['machine_id'=>$mid,'enable'=>'Y'])->scalar();
+        unset($model);
 
         $res = ['status'=>1,'dataStatus'=>$status+1];
         switch($status){
@@ -180,7 +245,7 @@ class MController extends \yii\web\Controller
                 $tpl = new WxTemplate($wid);
                 $tpl->sendWaiting(
                     $fromOpenid,
-                    Url::toRoute(['s/evaluate','id'=>$id],'http'),
+                    Url::toRoute(['s/evaluate','id'=>$wid,'fault_id'=>$id],'http'),
                     time(),
                     $applyTime
                 );
@@ -191,8 +256,6 @@ class MController extends \yii\web\Controller
                 break;
         }
         return json_encode($res);
-
-
     }
     /*
      * 维修记录
@@ -200,24 +263,8 @@ class MController extends \yii\web\Controller
      */
     public function actionRecord($id)
     {
-        $openid = WxBase::openId($id);
-        $model = (new \yii\db\Query())
-            ->select('t.id, t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    m.address,m.name,m.phone
-            ')
-            ->from('tbl_machine_service as t')
-            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
-            ->where(['t.openid' => $openid])
-            ->andWhere(['t.enable' => 'Y'])
-            ->orderBy('t.id desc')
-            ->all();
-
-        foreach ($model as $i=>$m) {
-            $covers = json_decode($m['fault_cover'],true);
-            $model[$i]['fault_cover'] = $covers[0];
-        }
-
-        return $this->render('record',['model'=>$model]);
+        $data = new FaultList($id);
+        return $this->render('record',['model'=>$data->record()]);
     }
 
     /*
@@ -226,24 +273,8 @@ class MController extends \yii\web\Controller
      */
     public function actionTask($id)
     {
-        $openid = WxBase::openId($id);
-        $model = (new \yii\db\Query())
-            ->select('t.id, t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    m.address,m.name,m.phone
-            ')
-            ->from('tbl_machine_service as t')
-            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
-            ->where(['t.openid' => $openid,'t.enable' => 'Y'])
-            ->andWhere(['<','t.status',9])
-            ->all();
-
-        foreach ($model as $i=>$m) {
-            $covers = json_decode($m['fault_cover'],true);
-            $model[$i]['fault_cover'] = $covers[0];
-        }
-
-
-        return $this->render('task',['model'=>$model,'id'=>$id]);
+        $data = new FaultList($id);
+        return $this->render('task',['model'=>$data->task(),'id'=>$id]);
     }
 
     /*
@@ -253,22 +284,27 @@ class MController extends \yii\web\Controller
     public function actionTaskdetail($id)
     {
         $model = (new \yii\db\Query())
-            ->select('t.id,t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    t.machine_id as mid,t.unfinished_parts_num, m.address,m.name,m.phone,m.wx_id,
-                    m.latitude,m.longitude
+            ->select('t.id,t.content as fault_cover,t.desc,t.type as fault_type, t.remark, t.add_time,t.status,t.fault_score,
+                    t.machine_id as mid,t.unfinished_parts_num, m.address,m.name,m.phone,t.weixin_id as wx_id,
+                    m.latitude,m.longitude,t.from_openid,p.maintain_count as fault_num
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id')
+            ->leftJoin('tbl_machine as p','p.id=t.machine_id')
             ->where(['t.id' => $id])
             ->one();
         if(!$model)
             throw new BadRequestHttpException();
 
         // 图片预览 路径设置
-        $covers = json_decode($model['fault_cover'],true);
-        $model['fault_cover'] = Yii::$app->request->hostInfo.$covers[0];
-        foreach($covers as $cover)
+        $contents = json_decode($model['fault_cover'],true);
+        $model['fault_cover'] = Yii::$app->request->hostInfo.$contents['cover'][0];
+        foreach($contents['cover'] as $cover)
             $model['cover_images'][] = Yii::$app->request->hostinfo.$cover;
+        if( isset($contents['voice'])){
+            $model['voice_url'] = $contents['voice'];
+            $model['voice_len'] = $contents['voiceLen'];
+        }
 
         $openid = WxBase::openId($model['wx_id']);
 
@@ -286,8 +322,7 @@ class MController extends \yii\web\Controller
                             [
                                 'data-ajax'=>1,
                                 'data-status'=>$status+1,
-                                'class'=>'h-fixed-bottom',
-                                'id'=>'process-btn',
+                                'class'=>'process-btn h-fixed-bottom',
                                 'data-href'=>Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid])
                             ]
                         )
@@ -301,8 +336,7 @@ class MController extends \yii\web\Controller
                             [
                                 'data-ajax'=>0,
                                 'data-status'=>$status+1,
-                                'class'=>'h-fixed-bottom',
-                                'id'=>'process-btn'
+                                'class'=>'process-btn h-fixed-bottom',
                             ]
                         )
                     ]);
@@ -316,9 +350,9 @@ class MController extends \yii\web\Controller
                                     '维修完成',
                                     Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
                                     [
-                                        'data-ajax'=>1,
+                                        'data-ajax'=>2,
                                         'data-status'=>8,
-                                        'id'=>'process-btn'
+                                        'class'=>'process-btn'
                                 ]),
                                 ['class'=>'h-off-50']
                             ).
@@ -329,7 +363,7 @@ class MController extends \yii\web\Controller
                                     [
                                         'data-ajax'=>0,
                                         'data-status'=>$status+1,
-                                        'id'=>'process-btn'
+                                        'class'=>'process-btn'
                                     ]),
                                 ['class'=>'h-off-50']
                             ),
@@ -348,9 +382,9 @@ class MController extends \yii\web\Controller
                                     '维修完成',
                                     Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
                                     [
-                                        'data-ajax'=>1,
+                                        'data-ajax'=>2,
                                         'data-status'=>8,
-                                        'id'=>'process-btn'
+                                        'class'=>'process-btn'
                                     ]),
                                 ['class'=>'h-off-50']
                             ).
@@ -361,7 +395,7 @@ class MController extends \yii\web\Controller
                                     [
                                         'data-ajax'=>0,
                                         'data-status'=>$status+1,
-                                        'id'=>'process-btn'
+                                        'class'=>'process-btn'
                                     ]),
                                 ['class'=>'h-off-50']
                             ),
@@ -376,7 +410,7 @@ class MController extends \yii\web\Controller
                             Html::a(
                                 '配件进度',
                                 Url::toRoute(['/shop/parts/process','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
-                                ['data-ajax'=>0,'id'=>'process-btn']
+                                ['data-ajax'=>0,'class'=>'process-btn']
                             ),
                         ['class'=>'h-fixed-bottom'] )
                     ]);
@@ -389,31 +423,22 @@ class MController extends \yii\web\Controller
                     [
                         'data-ajax'=>1,
                         'data-status'=>$status+1,
-                        'class'=>'h-fixed-bottom',
-                        'id'=>'process-btn'
+                        'class'=>'process-btn h-fixed-bottom',
                     ]
                 )
             ]);
             case 8:
             case 9:
-                $evaluate = (new \yii\db\Query())
-                    ->select('score')
-                    ->from('tbl_service_evaluate')
-                    ->where(['fault_id' => $model['id']])
-                    ->scalar();
-
                 return $this->render('process', [
                 'model' => $model,
                 'openid' => $openid,
-                'evaluate'=>$evaluate,
                 'btnHtml'=> Html::a(
                     '查看维修过程',
                     Url::toRoute(['s/detail2','id'=>$model['id']]),
                     [
                         'data-ajax'=>0,
                         'data-status'=>8,
-                        'class'=>'h-fixed-bottom',
-                        'id'=>'process-btn',
+                        'class'=>'process-btn h-fixed-bottom',
                 ])
             ]);
         }
@@ -448,20 +473,64 @@ class MController extends \yii\web\Controller
     public function actionInitiative($id)
     {
         $model = (new \yii\db\Query())
-            ->select('t.id, t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
+            ->select('t.id, t.content as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
                     m.address,m.name,m.phone
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
-            ->where(['t.enable' => 'Y','t.status' => 1])
+            ->where(['t.enable' => 'Y','t.status' => 1,'t.weixin_id'=>$id])
             ->orderBy('t.id desc')
             ->all();
 
         foreach ($model as $i=>$m) {
-            $covers = json_decode($m['fault_cover'],true);
-            $model[$i]['fault_cover'] = $covers[0];
+            $content = json_decode($m['fault_cover'],true);
+            $model[$i]['fault_cover'] = $content['cover'][0];
+        }
+        return $this->render('initiative',['model'=>$model,'count'=>count($model)]);
+    }
+
+    /*
+     * 维修完成，跳转到提交金额页面
+     */
+    public function actionFaultMoney($id,$openid)
+    {
+        if( Yii::$app->request->isPost){
+
+            if( $cost = Yii::$app->request->post('fault_cost') ){
+                $model = TblMachineService::findOne($id);
+                $model->fault_cost = $cost;
+                $model->status = 8;
+                $model->complete_time = time();     // 维修完成时间
+                $model->fault_time = $model->complete_time + $model->parts_apply_time -$model->parts_arrive_time - $model->resp_time - $model->accept_time;
+
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    $model->save();
+
+                    $fault = new TblServiceProcess();
+                    $fault->service_id = $id;
+                    $fault->process = 8;
+                    $fault->content = $model->setProcess();
+                    $fault->add_time = time();
+                    $fault->save();
+
+                    $transaction->commit();
+                } catch(\Exception $e) {
+                    $transaction->rollBack();
+                    Yii::$app->session->setFlash('error','入库失败!');
+                }
+                return $this->render('//tips/homestatus',[
+                    'tips'=>'维修完成！',
+                    'btnText'=>'返回维修列表',
+                    'btnText2'=>'返回首页',
+                    'btnUrl'=>Url::toRoute(['/m/task','id'=>$model->weixin_id]),
+                    'btnUrl2'=>Url::toRoute(['/wechat/index','id'=>$model->weixin_id])
+                ]);
+            }
+            else
+                Yii::$app->session->setFlash('error','维修金额不能为空！');
         }
 
-        return $this->render('initiative',['model'=>$model,'count'=>count($model)]);
+        return $this->render('faultMoney');
     }
 }

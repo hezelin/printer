@@ -41,7 +41,7 @@ class TblUserMaintainSearch extends TblUserMaintain
      */
     public function search($params)
     {
-        $query = TblUserMaintain::find(['wx_id'=>Cache::getWid()])->joinWith('userinfo');
+        $query = TblUserMaintain::find()->where(['tbl_user_maintain.wx_id'=>Cache::getWid()])->joinWith('userinfo');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

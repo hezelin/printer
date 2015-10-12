@@ -19,7 +19,7 @@ class TblMachineServiceSearch extends TblMachineService
     {
         return [
             [['id', 'weixin_id', 'machine_id', 'type', 'status', 'unfinished_parts_num', 'add_time', 'opera_time', 'accept_time', 'resp_time', 'fault_time', 'fault_score', 'parts_apply_time', 'parts_arrive_time', 'complete_time'], 'integer'],
-            [['from_openid', 'openid', 'cover', 'desc', 'enable'], 'safe'],
+            [['from_openid', 'openid', 'content', 'desc', 'enable'], 'safe'],
             [['resp_km'], 'number'],
         ];
     }
@@ -51,7 +51,8 @@ class TblMachineServiceSearch extends TblMachineService
                 ]);
         }])->where([
             'tbl_machine_service.enable'=>'Y',
-            'tbl_machine_service.status'=>1
+            'tbl_machine_service.status'=>1,
+            'tbl_machine_service.weixin_id'=>Cache::getWid()
         ]);
 
         $dataProvider = new ActiveDataProvider([
@@ -84,10 +85,23 @@ class TblMachineServiceSearch extends TblMachineService
 
         $query->andFilterWhere(['like', 'from_openid', $this->from_openid])
             ->andFilterWhere(['like', 'openid', $this->openid])
-            ->andFilterWhere(['like', 'cover', $this->cover])
+            ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'desc', $this->desc])
             ->andFilterWhere(['like', 'enable', $this->enable]);
 
         return $dataProvider;
+    }
+
+    /*
+     * 返回维修员
+     */
+    public function fixProvider()
+    {
+        return new ActiveDataProvider([
+            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
     }
 }

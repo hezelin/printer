@@ -38,7 +38,7 @@ class MachinebrandController extends Controller
     public function actionList()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => TblBrand::find()->where(['wx_id'=>Cache::getWid()]),
+            'query' => TblBrand::find()->where(['wx_id'=>Cache::getWid()])->andWhere(['>','id',0]),
             'pagination' => [
                 'pageSize' => 15,
             ],

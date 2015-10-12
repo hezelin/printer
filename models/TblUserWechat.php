@@ -20,13 +20,13 @@ class TblUserWechat extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['wx_id', 'openid', 'nickname', 'sex', 'city', 'country', 'province', 'language', 'headimgurl', 'subscribe_time', 'subscribe'], 'required'],
+            [['wx_id', 'openid', 'nickname', 'sex', 'language', 'subscribe_time', 'subscribe'], 'required'],
             [['wx_id', 'sex', 'subscribe_time', 'subscribe'], 'integer'],
             [['openid'], 'string', 'max' => 28],
             [['nickname'], 'string', 'max' => 100],
             [['city', 'country', 'province'], 'string', 'max' => 30],
             [['language'], 'string', 'max' => 20],
-            [['headimgurl'], 'string', 'max' => 140],
+            [['headimgurl'], 'string', 'max' => 145],
             [['wx_id', 'openid'], 'unique', 'targetAttribute' => ['wx_id', 'openid'], 'message' => 'The combination of 公众号id and openid has already been taken.']
         ];
     }

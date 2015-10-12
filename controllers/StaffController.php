@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\models\Cache;
 use yii\web\NotFoundHttpException;
 use app\models\TblUserMaintain;
 use app\models\TblUserMaintainSearch;

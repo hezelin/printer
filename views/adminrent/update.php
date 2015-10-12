@@ -40,10 +40,11 @@ if( Yii::$app->session->hasFlash('error') )
     <?= Html::hiddenInput('TblRentApply[region]',$model->region,['id'=>'city-region-id'])?>
 
     <?= $form->field($model, 'address')->textarea() ?>
-    <?= $form->field($model, 'due_time')->widget(\yii\jui\DatePicker::classname(), [
-        'dateFormat' => 'yyyy-MM-dd',
-        'options' => [
-            'class' => 'form-control',
+    <?= $form->field($model, 'due_time')->widget(dosamigos\datepicker\DatePicker::className(), [
+        'language' => 'zh-CN',
+        'clientOptions' => [
+            'autoclose' => true,
+            'format' => 'yyyy-mm-dd',
         ]
     ]) ?>
     <?= $form->field($model, 'apply_word')?>

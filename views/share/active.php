@@ -1,9 +1,4 @@
 <?php
 /* @var $this yii\web\View */
 ?>
-<h1>share/active</h1>
-
-<p>
-    You may change the content of this page by modifying
-    the file <code><?= __FILE__; ?></code>.
-</p>
+<div class="h-hint">没有新的活动！</div>

@@ -1,95 +1,26 @@
 <?php
-$this->title = '商品二维码';
+$this->title = '我的购物车';
+$this->registerMetaTag(['http-equiv'=>'Cache-Control','content'=>'no-cache, no-store, must-revalidate']);
+$this->registerMetaTag(['http-equiv'=>'Pragma','content'=>'no-cache']);
+$this->registerMetaTag(['http-equiv'=>'Expires','content'=>'0']);
 ?>
 <style>
-    #cart-list li{
-        border-bottom: 1px solid #ccc;
-        height: 120px;
-        width: 90%;
-        margin: 0 5%;
-        color: #444;
-    }
-    #cart-list .item-li{
-        display: block;
-        height: 60px;
-        line-height: 30px;
-        font-size: 16px;
-        margin-top: 10px;
-        overflow: hidden;
-        vert-align: middle;
-
-    }
-    #cart-list .item-li img{
-        height: 60px;
-        width: 60px;
-        float: left;
-        margin-right: 15px;
-    }
-    #cart-list .sns{
-        height: 36px;
-        line-height: 32px;
-        text-align: right;
-        margin-top: 15px;
-        color: #b10000;
-        font-size: 16px;
-    }
-    
-    #cart-list .cart-left{
-        float: left;
-        color: #444444;
-        font-size: 14px;
-        height: 30px;
-    }
-
-    #cart-list .item-del{
-        cursor: pointer;
-        margin-left: 20px;
-        font-size: 16px;
-    }
-
-    .btn-add{
-        display: block;
-        height: 36px;
-        width: 36px;
-        line-height: 28px;
-        text-align: center;
-        border: 1px #d7d7d7 solid;
-        float: left;
-        font-size: 1em;
-        cursor: pointer;
-    }
-
-    .item-count{
-        width: 3em;
-        float: left;
-        text-align: center;
-        font-size: 1em;
-        border-top: 1px solid #d7d7d7;
-        border-bottom: 1px solid #d7d7d7;
-        border-left: none;
-        border-right: none;
-        height: 36px;
-        border-radius: 0;
-    }
-    .cart-total{
-        text-align: right;
-        height: 50px;
-        line-height: 50px;
-        font-size: 18px;
-        margin-right: 5%;
-    }
-    .cart-money{
-        color: #b10000;
-        padding-left: 15px;
-    }
-
+    #cart-list li{  border-bottom: 1px solid #ccc;  height: 120px;  width: 90%;  margin: 0 5%;  color: #444;  }
+    #cart-list .item-li{  display: block;  height: 60px;  line-height: 30px;  font-size: 16px;  margin-top: 10px;  overflow: hidden;  vert-align: middle;  }
+    #cart-list .item-li img{  height: 60px;  width: 60px;  float: left;  margin-right: 15px;  }
+    #cart-list .sns{  height: 36px;  line-height: 32px;  text-align: right;  margin-top: 15px;  color: #b10000;  font-size: 16px;  }
+    #cart-list .cart-left{  float: left;  color: #444444;  font-size: 14px;  height: 30px;  }
+    #cart-list .item-del{  cursor: pointer;  margin-left: 20px;  font-size: 16px;  }
+    .btn-add{  display: block;  height: 36px;  width: 36px;  line-height: 28px;  text-align: center;  border: 1px #d7d7d7 solid;  float: left;  font-size: 1em;  cursor: pointer;  }
+    .item-count{  width: 3em;  float: left;  text-align: center;  font-size: 1em;  border-top: 1px solid #d7d7d7;  border-bottom: 1px solid #d7d7d7;  border-left: none;  border-right: none;  height: 36px;  border-radius: 0;  }
+    .cart-total{  text-align: right;  height: 50px;  line-height: 50px;  font-size: 18px;  margin-right: 5%;  }
+    .cart-money{  color: #b10000;  padding-left: 15px;  }
 </style>
-
 <div id="cart-list">
         <ul>
     <?php foreach($model as $o):?>
         <li data-id="<?=$o['id']?>" data-price="<?=$o['price']?>" data-nums="<?=$o['item_nums']?>">
-            <a class="item-li" href="<?=\yii\helpers\Url::toRoute(['/shop/item/detail','id'=>$id,'item_id'=>$o['id']])?>">
+            <a class="item-li" href="<?=\yii\helpers\Url::toRoute(['/shop/item/detail','id'=>$id,'item_id'=>$o['item_id']])?>">
                 <img src="<?=$o['cover']?>" />
                 <span><?=$o['name']?></span>
             </a>
@@ -110,7 +41,7 @@ $this->title = '商品二维码';
             共 <span id="cart-count"><?php echo $total;?></span> 件
             <b class="cart-money">￥<span id="cart-money"><?php echo $totalPrice;?></span></b>
     </div>
-    <a href="<?=\yii\helpers\Url::toRoute(['/shop/order/put','id'=>$id])?>" class="h-button">立即结算</a>
+    <button data-href="<?=\yii\helpers\Url::toRoute(['/shop/order/put','id'=>$id])?>" id="buy-btn" class="h-button">立即结算</button>
     <br/>
     <a href="<?=\yii\helpers\Url::toRoute(['/shop/item/list','id'=>$id])?>" type="button" class="h-button-default">继续添加</a>
 </div>
@@ -124,10 +55,13 @@ $this->title = '商品二维码';
         var price = parseFloat( wrap.attr('data-price') );
         var oNum = parseInt( wrap.attr('data-nums') );
 
-        $.post(
-            '/shop/cart/opera',
-            {'id':id,'num':num},
-            function(res){
+        $.ajax({
+            url:'/shop/cart/opera',
+            data:{id:id,num:num},
+            type:'post',
+            dataType:'json',
+            sync:true,
+            success:function(res){
                 if(res.status == 1){
                     if(num == 0){
                         var totalNum = parseInt( $('#cart_count').text()) - oNum;
@@ -154,12 +88,31 @@ $this->title = '商品二维码';
                     hasClick = 0;
                 }else
                     alert(res.error);
-            },
-            'json'
-        );
+            }
+        });
     }
+
+
+    /*
+     * 初始化购物车数据
+     */
+    function init(type)
+    {
+        if(type == 1){
+            localStorage.cartHasLoad = 1;
+            return true;
+        }
+        var u = navigator.userAgent;
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if( isiOS != true && localStorage.cartHasLoad == 1){
+            localStorage.cartHasLoad = 0;
+            location.reload()
+        }
+    }
+
     var hasClick = 0;
     $(function(){
+        init(0);
 
         $('.btn-add,.item-del').click(function(){
             if( hasClick == 1 ) return false;
@@ -177,7 +130,13 @@ $this->title = '商品二维码';
             var wrap = $(this).closest('li');
             cartOpera(wrap, $(this).val());
         });
-    })
+
+        $('#buy-btn').click(function(){
+            init(1);
+            var url = $(this).attr('data-href');
+            location.href = url;
+        })
+    });
     <?php $this->endBlock();?>
 </script>
 

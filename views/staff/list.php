@@ -26,6 +26,7 @@ echo GridView::widget([
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'headerOptions'=>['style'=>'width:250px'],
             'value' => function($data){
+                if( !$data->userinfo ) return '已取消关注';
                 $sex=[1=>'男',2=>'女','0'=>'未知'];
                 return  Html::a(
                     Html::img( substr($data->userinfo->headimgurl,0,-1).'46',['style'=>'width:40px']),

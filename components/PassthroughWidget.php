@@ -1,9 +1,9 @@
 <?php
 namespace app\components;
 
+use app\assets\SwiperAsset;
 use yii\base\Widget;
 use yii\helpers\Html;
-use app\assets\IscrollAsset;
 use app\assets\ZeptoAsset;
 
 class PassthroughWidget extends Widget{
@@ -28,7 +28,7 @@ class PassthroughWidget extends Widget{
     }
 
     public function run(){
-        IscrollAsset::register( $this->getView() );
+        SwiperAsset::register( $this->getView() );
         ZeptoAsset::register( $this->getView() );
         $this->registerCss();
         $this->registerScript();
@@ -50,7 +50,7 @@ class PassthroughWidget extends Widget{
     {
         $content = <<< MODEL_CONTENT
 <div id="wrapper-passthrough" style="background-color:{$this->backgroundColor};">
-    <div id="scroller-passthrough">
+    <div id="scroller-passthrough" class="swiper-wrapper">
         {$this->renderItem()}
     </div>
 </div>
@@ -65,9 +65,9 @@ MODEL_CONTENT;
 
         foreach($this->data as $d){
             if(isset($d['active']) && $d['active'])
-                $items[] = Html::a($d['name'],'javascript:void(0)',['key'=>$d['key'],'class'=>'has-click']);
+                $items[] = Html::a($d['name'],'javascript:void(0)',['key'=>$d['key'],'class'=>'swiper-slide has-click']);
             else
-                $items[] = Html::a($d['name'],'javascript:void(0)',['key'=>$d['key']]);
+                $items[] = Html::a($d['name'],'javascript:void(0)',['key'=>$d['key'],'class'=>'swiper-slide']);
         }
         return implode("\n",$items);
     }
@@ -91,18 +91,17 @@ MODEL_CONTENT;
         html.push('<p class="mtm_p"><b>￥'+d.price+'</b>'+d.category+'</p></span></a>');
         return html.join('');
     }
-    function getData(action,key,startId,q,type)
+    function getData(action,key,startId2,q,type)
     {
         $.ajax({
                 type:'get',
                 url: action,
-                data:{'key':key,'q':q,'startId':startId,'format':'json'},
+                data:{'key':key,'q':q,'startId':startId2,'format':'json'},
                 dataType:'json',
                 success:function(resp){
                     if(resp.status==1){
                         var d = resp.data;
                         startId = resp.startId;
-
                         var html = [];
                         for(var i in d){
                             html.push( getHtml(d[i]) );
@@ -127,11 +126,10 @@ MODEL_CONTENT;
 
     $(function(){
 
-        myScroll{$this->getId()} = new IScroll('#wrapper-passthrough', {
-            eventPassthrough: true,
-            scrollX: true,
-            scrollY: false,
-            preventDefault: false
+        myScroll{$this->getId()} = new Swiper('#wrapper-passthrough',{
+            pagination: false,
+            paginationClickable: true,
+            slidesPerView: 'auto'
         });
 
         // 点击类目
@@ -180,7 +178,7 @@ MODEL_JS;
     font-size: 16px;
     text-align: center;
     line-height:30px;
-    padding:7px 12px;
+    padding:7px;
     margin:0;
     float:left;
     color:#444;
@@ -211,7 +209,6 @@ MODEL_JS;
 	position: absolute;
 	z-index: 1;
 	height: 45px;
-	width:500px;
 	border-bottom:1px solid #ccc;
 }
 MODEL_CSS;

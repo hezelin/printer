@@ -5,6 +5,6 @@ return [
     'dsn' => 'mysql:host=localhost;dbname=printer',
     'username' => 'root',
     'password' => 'oursla321',
-    'charset' => 'utf8',
+    'charset' => 'utf8mb4',
     'tablePrefix' => 'tbl_',
 ];

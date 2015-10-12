@@ -4,12 +4,14 @@ namespace app\controllers;
 
 use app\models\Cache;
 use app\models\ConfigBase;
+use app\models\fault\NewCall;
 use app\models\TblFaultCancelLog;
 use app\models\TblFaultCancelLogSearch;
 use app\models\TblMachineService;
 use app\models\TblMachineServiceList;
 use app\models\TblMachineServiceSearch;
 use app\models\TblRentApply;
+use app\models\TblRentApplyList;
 use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
 use app\models\WxTemplate;
@@ -62,10 +64,12 @@ class ServiceController extends \yii\web\Controller
             $model->wx_id = $id;
             $model->save();
 
+
             if($faultStatus < 8)   {
                 // 为管理员推送消息
                 $tpl = new WxTemplate($id);
-                $url = Url::toRoute(['cancel','id'=>$model->id]);
+//                $url = Url::toRoute(['cancel','id'=>$model->id],'http');
+                $url = '';
                 $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
 
                 if( $toOpenid ){
@@ -87,26 +91,22 @@ class ServiceController extends \yii\web\Controller
         }
 
         if($type == 2)
-            return $this->render('//tips/homestatus',['tips'=>'维修申请取消成功！','btnText'=>'返回','btnUrl'=>Yii::$app->request->referrer]);
+            return $this->render('//tips/homestatus',['tips'=>'维修申请取消成功！','btnText'=>'返回首页','btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])]);
         return json_encode(['status'=>1]);
     }
 
+    /*
+     * 待分配维修
+     */
     public function actionIndex()
     {
         $searchModel = new TblMachineServiceSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $fixProvider = new ActiveDataProvider([
-            'query' => TblUserMaintain::find(['wx_id'=>Cache::getWid()]),
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
-
         return $this->render('index',[
             'dataProvider'=>$dataProvider,
             'searchModel' => $searchModel,
-            'fixProvider'=>$fixProvider,
+            'fixProvider'=> $searchModel->fixProvider(),
             'wid'=>Cache::getWid()
         ]);
     }
@@ -116,7 +116,12 @@ class ServiceController extends \yii\web\Controller
         $searchModel = new TblMachineServiceList();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('list',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'wid'=>Cache::getWid()]);
+        return $this->render('list',[
+            'dataProvider'=>$dataProvider,
+            'searchModel' => $searchModel,
+            'fixProvider'=> $searchModel->fixProvider(),
+            'wid'=>Cache::getWid()
+        ]);
     }
 
     /*
@@ -157,11 +162,12 @@ class ServiceController extends \yii\web\Controller
 
                 $fault->openid = Yii::$app->request->post('openid');
                 $fault->status = 2;
+                $fault->remark = Yii::$app->request->post('fault_remark');
                 $fault->save();
 
                 $process = new TblServiceProcess();
                 $process->service_id = Yii::$app->request->post('id');
-                $process->content = json_encode(['status'=>2]);
+                $process->content = '任务分配中';
                 $process->add_time = time();
                 $process->save();
 
@@ -174,13 +180,19 @@ class ServiceController extends \yii\web\Controller
             }
 
             // 为维修员推送消息
-            $model = TblRentApply::findOne(['machine_id'=>$machine_id,'enable'=>'Y']);
+            $model = (new \yii\db\Query())
+                ->select('name,address,phone')
+                ->from('tbl_rent_apply')
+                ->where(['machine_id'=>$machine_id,'enable'=>'Y'])
+                ->one();
+
             $tpl = new WxTemplate(Yii::$app->request->post('wid'));
             $tpl->sendTask(
                 $rendId,
                 Yii::$app->request->post('openid'),
-                $name,$reason,$model->address,
-                $model->name.','.$model->phone,$model->add_time
+                $name,$reason,$model['address'],
+                $model['name'].','.$model['phone'],$applyTime,
+                Yii::$app->request->post('fault_remark')
             );
 
             // 为申请者推送消息
@@ -198,6 +210,81 @@ class ServiceController extends \yii\web\Controller
     }
 
     /*
+     * 重新分配任务
+     * post 提交 公众号wid,  维修员openid ，维修任务 id
+     * 更新 维修员 表 tbl_user_maintain 的待维修计数
+     * 更新 维修记录表 tbl_machine_service`的状态 和 维修员
+     * 维修进度表 tbl_service_process 插入分配任务
+     * 获取用户资料  tbl_rent_apply 为维修员发送 任务的通知
+     */
+    public function actionSwitch()
+    {
+        if( Yii::$app->request->post())
+        {
+            $connection = Yii::$app->db;
+            $transaction = $connection->beginTransaction();
+
+            try {
+                $fault = TblMachineService::findOne( Yii::$app->request->post('id') );
+                $reason = ConfigBase::getFaultStatus($fault->type);
+                $machine_id = $fault->machine_id;
+                $rendId = $fault->id;
+
+                // 旧维修员 计数减一
+                $old = TblUserMaintain::findOne([
+                    'wx_id'=>Yii::$app->request->post('wid'),
+                    'openid'=>$fault->openid
+                ]);
+                $oldName = $old->name;
+                if( $old->wait_repair_count > 0){
+                    $old->wait_repair_count = $old->wait_repair_count - 1;
+                    $old->save();
+                }
+
+                $fault->openid = Yii::$app->request->post('openid');
+                $fault->save();
+
+                $new = TblUserMaintain::findOne([
+                    'wx_id'=>Yii::$app->request->post('wid'),
+                    'openid'=>Yii::$app->request->post('openid')
+                ]);
+                $newName = $new->name;
+                $new->wait_repair_count = $new->wait_repair_count + 1;
+                $new->save();                 // 新维修员计数 加一
+
+
+                $process = new TblServiceProcess();
+                $process->service_id = Yii::$app->request->post('id');
+                $process->content = '任务重新分配给 '.$newName;
+                $process->add_time = time();
+                $process->save();
+
+                $transaction->commit();
+            }catch(\Exception $e) {
+                $transaction->rollBack();
+                echo $e;
+                echo json_encode(['status'=>0,'msg'=>'参数错误']);
+                exit;
+            }
+
+            // 为维修员推送消息
+            $model = TblRentApply::findOne(['machine_id'=>$machine_id,'enable'=>'Y']);
+            $tpl = new WxTemplate(Yii::$app->request->post('wid'));
+            $tpl->sendTask(
+                $rendId,
+                Yii::$app->request->post('openid'),
+                $newName,$oldName.'转派。故障：'.$reason,$model->address,
+                $model->name.','.$model->phone,$model->add_time,
+                $fault->remark
+            );
+
+            echo json_encode(['status'=>1]);
+        }
+        else
+            echo json_encode(['status'=>0,'msg'=>'参数错误']);
+
+    }
+    /*
      * 维修任务取消任务列表
      */
     public function actionCancellist()
@@ -213,11 +300,13 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionProcess($id)
     {
-        if (($model = TblMachineService::find($id)->with([
+        $model = TblMachineService::find()->with([
                 'machine'=>function($query){
                     $query->joinWith('machineModel');
                 }
-            ])->one() ) == null) {
+            ])->where('tbl_machine_service.id=:id',[':id'=>$id])->one();
+
+        if(!$model) {
             throw new NotFoundHttpException('这个页面不存在');
         }
 //        维修进度
@@ -270,5 +359,57 @@ class ServiceController extends \yii\web\Controller
         }
 
         return $url.'?';                                    //  没有问号 直接返回参数
+    }
+
+    /*
+     * 电话维修
+     */
+    public function actionCall()
+    {
+        $searchModel = new TblRentApplyList();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $fixProvider = new ActiveDataProvider([
+            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('call',[
+            'dataProvider'=>$dataProvider,
+            'searchModel' => $searchModel,
+            'fixProvider'=>$fixProvider,
+            'wid'=>Cache::getWid()
+        ]);
+    }
+
+    /*
+     * 电话维修，新建资料
+     */
+    public function actionNewCall()
+    {
+        $model = new NewCall();
+        if(Yii::$app->request->post())
+        {
+            if( $model->save() == 'success' ){
+                Yii::$app->session->setFlash('success','资料录入成功！，请更正用户坐标！');
+                return $this->redirect(['/adminrent/map','id'=>$model->rent->id]);
+                /*return $this->render('//tips/success',[
+                    'tips'=>'资料录入成功',
+                    'btnText'=>'返回维修列表',
+                    'btnUrl'=>Url::toRoute(['list'])
+                ]);*/
+            }else
+                Yii::$app->session->setFlash('error','资料录入失败！');
+
+        }
+
+        return $this->render('newCall',[
+            'machine'=>$model->machine,
+            'rent'=>$model->rent,
+            'fault'=>$model->fault,
+            'maintainer'=>$model->getMaintainer()
+        ]);
     }
 }

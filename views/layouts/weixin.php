@@ -18,9 +18,42 @@ WeixinAsset::register($this);
 <head>
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <!--[if lte IE 8]><div id="letskillie6">
+        <div class="alert" style="position: fixed;left: 50%;margin-left: -470px;width: 918px;z-index: 9999;_position: absolute;_top: expression(eval(document.documentElement.scrollTop));">
+            <div class="content">
+                <a class="close" rel="nofollow" id="letskillie6_close" href="####"></a>
+                <p style="font-size: 14px;">
+                    您正在使用较低版本的IE浏览器浏览网页，推荐您使用<a target="_blank" rel="nofollow" class="ie8" href="http://se.360.cn/"><strong>360浏览器</strong></a>或其他浏览器，本站将能为您提供更好的服务。
+                </p>
+                <p class="browsers" style="text-align: center;">
+                    <a style="margin-right:10px;" rel="nofollow" target="_blank" class="firefox" href="http://www.mozillaonline.com/">Firefox</a>
+                    <a style="margin-right:10px;" rel="nofollow" target="_blank" class="chrome" href="http://dlsw.baidu.com/sw-search-sp/soft/9d/14744/ChromeStandalone_V45.0.2454.93_Setup.1442372894.exe">Chrome</a>
+                    <a style="margin-right:10px;" rel="nofollow" target="_blank" class="sougo" href="http://se.360.cn/">360浏览器</a>
+                </p>
+            </div>
+        </div>
+        <p style="height:53px"></p>
+    </div>
+    <script type="text/javascript">
+        (function() {
+            var letskillie6 = document.getElementById('letskillie6');
+            letskillie6.onclick = function() {
+                removeElement(this);
+            }
+            function removeElement(_element) {
+                var _parentElement = _element.parentNode;
+                if (_parentElement) {
+                    _parentElement.removeChild(_element);
+                }
+            }
+
+        })()
+    </script><![endif]-->
 
 </head>
 <body>
@@ -41,7 +74,7 @@ WeixinAsset::register($this);
                     'class' => 'container-fluid'
                 ]
             ]);
-            echo Nav::widget([
+            /*echo Nav::widget([
                 'options' => ['class' => 'navbar-nav'],
                 'items' => [
                     [
@@ -54,7 +87,7 @@ WeixinAsset::register($this);
                     ['label' => '我的主页', 'url' => ['/site/about']],
                     ['label' => '机器管理', 'url' => ['/site/contact']],
                 ],
-            ]);
+            ]);*/
 
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
@@ -77,6 +110,11 @@ WeixinAsset::register($this);
                         [
                             'items' => [
                                 [
+                                    'label' => '管理后台',
+                                    'url' => ['/weixin/console'],
+                                    'route' => '/weixin/console',
+                                ],
+                                [
                                     'label' => '微信管理',
                                     'items' => [
                                         ['label' => '我的公众号', 'url' => '/weixin/index'],
@@ -87,16 +125,16 @@ WeixinAsset::register($this);
                                     'label' => '我的账号',
                                     'items' => [
                                         ['label' => '修改密码', 'url' => '/user/reset'],
-                                        ['label' => '查看日志', 'url' => '/user/log'],
+//                                        ['label' => '查看日志', 'url' => '/user/log'],
                                     ],
                                 ],
-                                [
+                                /*[
                                     'label' => '权限管理',
                                     'items' => [
                                         ['label' => '角色管理','url' => '/role/index'],
                                         ['label' => '账户管理','url' => '/account/index'],
                                     ],
-                                ],
+                                ],*/
                             ],
                         ]);
                 ?>

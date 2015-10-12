@@ -48,7 +48,8 @@ class TblMachineSearch extends TblMachine
                     $query->joinWith(['brand']);  // 如果还有继续下去
                 }
             ])
-            ->where(['tbl_machine.wx_id'=>Cache::getWid(),'tbl_machine.enable'=>'Y']);
+            ->where(['tbl_machine.wx_id'=>Cache::getWid(),'tbl_machine.enable'=>'Y'])
+            ->orderBy('tbl_machine.id desc');
 
 
 

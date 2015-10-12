@@ -31,6 +31,7 @@ $this->title = '生成机器码';
             'attribute'=>'type',
             'format'=>'html',
             'value'=>function($data){
+                if(!$data->machineModel) return '<span class="not-set">无设置</span>';
                 return Html::a($data->machineModel->type,Url::toRoute(['model/view','id'=>$data->model_id]));
             },
 //                'value'=>'machineModel.type',

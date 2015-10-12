@@ -3,50 +3,40 @@ use yii\helpers\Url;
 $this->title = '配件记录';
 ?>
 
-    <style>
-        <?php $this->beginBlock('CSS') ?>
-        .item-list{
-            display: block;
-            padding: 12px 0;
-            width: 90%;
-            margin: 0 5%;
-            border-bottom: 1px #e3e3e3 solid;
-            font-size: 16px;
-        }
-        .item-list h5{
-            height: 55px;
-            color: #666;
-            font-weight: normal;
-            font-size: 16px;
-        }
-        .mtm_p{
-            text-align: left;
-            color: #999;
-            font-size: 14px;
-        }
-        .item-more{
-            width: 80%; background-color: #efefef;font-size: 14px;
-            /*box-shadow: 1px 1px 2px #cccccc; */
-            border: 1px solid #EEEEEE;
-            text-align: center; height: 36px; line-height: 36px;
-            margin: 15px auto; border-radius: 4px; color: #666666;
-        }
-        .item-more-end{
-            background-color: #FFFFFF;color: #cccccc;
-            border: 0px;
-        }
-        <?php $this->endBlock() ?>
-    </style>
+<style>
+    <?php $this->beginBlock('CSS') ?>
+    .item-list{  display: block;  padding: 12px 0;  width: 90%;  margin: 0 5%;  border-bottom: 1px #e3e3e3 solid;  font-size: 16px;  }
+    .item-list h5{  height: 55px;  color: #666;  font-weight: normal;  font-size: 16px;  }
+    .mtm_p{  text-align: left;  color: #999;  font-size: 14px;  }
+    .item-more{  width: 80%; background-color: #efefef;font-size: 14px;  border: 1px solid #EEEEEE;  text-align: center; height: 36px; line-height: 36px;  margin: 15px auto; border-radius: 4px; color: #666666;  }
+    .item-more-end{  background-color: #FFFFFF;color: #cccccc;  border: 0;  }
+    .log-link{ color: #0b93d5;}
+    <?php $this->endBlock() ?>
+</style>
 <?php
 $this->registerCss($this->blocks['CSS']);
+
+
+function getHtml($con)
+{
+    $con = json_decode($con,true);
+    $html[] = $con['text'];
+    if(isset($con['machine_id']))
+        $html[] = \yii\helpers\Html::a('查看机器',Url::toRoute(['/rent/user-machine','id'=>$con['machine_id']]),['class'=>'log-link']);
+
+    if(isset($con['fault_id']))
+        $html[] = \yii\helpers\Html::a('查看维修',Url::toRoute(['/m/taskdetail','id'=>$con['fault_id']]),['class'=>'log-link']);
+
+    return implode(' ，',$html);
+}
 ?>
 
 <div id="item-list-wrap">
     <?php if($model):?>
         <?php foreach($model as $row):?>
             <div class="item-list">
-               <h5><?=$row['content']?></h5>
-               <p class="mtm_p"> 时间：<?=date('Y年m月d日 H:i',$row['add_time'])?></p>
+               <h5><?=getHtml($row['content'])?></h5>
+               <p class="mtm_p"><?=date('Y年m月d日',$row['add_time'])?></p>
             </div>
         <?php endforeach;?>
     <?php else:?>

@@ -14,11 +14,15 @@ $this->title = '机器页面';
     <input name="TblRentApply[longitude]" type="hidden" id="tbl_longitude"/>
     <input name="TblRentApply[accuracy]" type="hidden" id="tbl_accuracy"/>
 
-    <button type="button" id="access-order" class="a-no-link h-link" href="<?=Url::toRoute(['m/apply','id'=>$id])?>">
+    <button type="button" id="access-order" class="a-no-link h-link-minor" href="<?=Url::toRoute(['m/apply','id'=>$id])?>">
         录入机器坐标
     </button>
-    <a class="a-no-link h-link" href="<?=Url::toRoute(['rent/machinedetail','id'=>$wid,'rent_id'=>$rent_id,'from'=>'scan'])?>">
+    <a class="a-no-link h-link" href="<?=Url::toRoute(['rent/user-machine','id'=>$id,'from'=>'scan'])?>">
         机器信息
+    </a>
+
+    <a class="a-no-link h-link" href="<?=Url::toRoute(['mcharge/add','id'=>$wid,'machine_id'=>$id])?>">
+        收租录入
     </a>
 </div>
 

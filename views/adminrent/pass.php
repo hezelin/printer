@@ -46,26 +46,28 @@ if( $type =='allot' )
     ]);
 ?>
 
-    <?= $form->field($model, 'monthly_rent') ?>
-    <?= $form->field($model, 'black_white') ?>
+    <?= $form->field($model, 'monthly_rent')->textInput(['placeholder'=>'多少元 / 每月'])?>
+    <?= $form->field($model, 'black_white')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.02  代表2分钱'])?>
 
-    <?= $form->field($model, 'colours') ?>
-    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'colours')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.04  代表4分钱'])?>
+    <?= $form->field($model, 'name')->textInput(['placeholder'=>'用户名字，个人 / 公司'])?>
     <?= $form->field($model, 'phone') ?>
-    <?= $form->field($model, 'due_time')->widget(\yii\jui\DatePicker::classname(), [
-        'dateFormat' => 'yyyy-MM-dd',
-        'options' => [
-            'class' => 'form-control',
+    <?= $form->field($model, 'due_time')->widget(dosamigos\datepicker\DatePicker::className(), [
+        'language' => 'zh-CN',
+        'clientOptions' => [
+            'autoclose' => true,
+            'format' => 'yyyy-mm-dd',
         ]
     ]) ?>
-    <?= $form->field($model, 'first_rent_time')->widget(\yii\jui\DatePicker::classname(), [
-        'dateFormat' => 'yyyy-MM-dd',
-        'options' => [
-            'class' => 'form-control',
+    <?= $form->field($model, 'first_rent_time')->widget(dosamigos\datepicker\DatePicker::className(), [
+        'language' => 'zh-CN',
+        'clientOptions' => [
+            'autoclose' => true,
+            'format' => 'yyyy-mm-dd',
         ]
     ]) ?>
-    <?= $form->field($model,'rent_period')->dropDownList([1=>'1个月',3=>'3个月','6'=>'半年','12'=>'1年'])?>
-    <?= $form->field($model, 'address')->textarea() ?>
+    <?= $form->field($model,'rent_period')->dropDownList([1=>'1个月',3=>'3个月','6'=>'半年','12'=>'1年','24'=>'2年','36'=>'3年','60'=>'5年'])?>
+    <?= $form->field($model, 'address')->textarea(['placeholder'=>'尽量填写详细的，方便维修员']) ?>
     <?= $form->field($model, 'apply_word')?>
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">

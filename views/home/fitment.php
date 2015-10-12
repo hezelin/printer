@@ -17,10 +17,7 @@
     }
 </style>
 
-<h3>首页轮播图片设置
-    <a href="<?= Url::toRoute(['home/index','id'=>Yii::$app->session['wechat']['id']]) ?>" target="_blank" style="font-size:14px;float: right;">
-        前往店铺首页</a>
-</h3>
+<h3>首页轮播图片设置</h3>
 <hr>
 <?=Alert::widget([
     'options' => [
@@ -35,7 +32,7 @@
     'model' => $model,
     'attribute' => 'image',
 //    'url' => ['home/receiveimage', 'weixinid' => $_GET['id']],
-    'url' => Url::toRoute(['home/receiveimage', 'weixinid' => Yii::$app->session['wechat']['id']]),
+    'url' => Url::toRoute(['home/receiveimage', 'weixinid' => $wx_id]),
     'gallery' => false,
     'fieldOptions' => [
         'accept' => 'image/*',

@@ -17,31 +17,31 @@ if( Yii::$app->session->hasFlash('error') )
             <input type="hidden"  name="TblServiceEvaluate[fault_id]" value="<?=$id?>" />
             <div class="h-row">
                 <div class="h-label">
-                    <input type="radio" id="score1" name="TblServiceEvaluate[score]" value="5" checked/>
+                    <input type="radio" id="score1" name="score" value="5" checked/>
                 </div>
                 <label class="h-label" for="score1">很满意</label>
             </div>
             <div class="h-row">
                 <div class="h-label">
-                    <input type="radio" id="score2" name="TblServiceEvaluate[score]" value="4"  />
+                    <input type="radio" id="score2" name="score" value="4"  />
                 </div>
                 <label class="h-label" for="score2">满意</label>
             </div>
             <div class="h-row">
                 <div class="h-label">
-                    <input type="radio" id="score3" name="TblServiceEvaluate[score]" value="3"  />
+                    <input type="radio" id="score3" name="score" value="3"  />
                 </div>
                 <label class="h-label" for="score3">一般</label>
             </div>
             <div class="h-row">
                 <div class="h-label">
-                    <input type="radio" id="score4" name="TblServiceEvaluate[score]" value="2"  />
+                    <input type="radio" id="score4" name="score" value="2"  />
                 </div>
                 <label class="h-label" for="score4">不满意</label>
             </div>
             <div class="h-row">
                 <div class="h-label">
-                    <input type="radio" id="score5" name="TblServiceEvaluate[score]" value="1"  />
+                    <input type="radio" id="score5" name="score" value="1"  />
                 </div>
                 <label class="h-label" for="score5">很不满意</label>
             </div>

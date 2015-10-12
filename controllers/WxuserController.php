@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Cache;
 use app\models\TblUserMaintainSearch;
 use app\models\TblUserWechatSearch;
 use app\models\WxUser;
@@ -53,7 +54,8 @@ class WxuserController extends \yii\web\Controller
      */
     public function actionPull()
     {
-        $wx = new WxUser(1);
+        $wxId = Cache::getWid();
+        $wx = new WxUser($wxId);
         $wx->pullUser();
     }
 

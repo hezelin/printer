@@ -30,4 +30,21 @@ class ApiController extends Controller
     {
         return WxBase::openId(1,false,$callback);
     }
+
+    /*
+     * 临时开放 openid
+     */
+    public function actionTmpOpenid($callback)
+    {
+        return WxBase::openId(14,false,$callback);
+    }
+
+    /*
+     * 临时获取用户资料
+     */
+    public function actionTmpUser($callback)
+    {
+        return WxBase::webUser(14,$callback);
+    }
+
 }

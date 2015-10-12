@@ -15,9 +15,9 @@ $this->title = '任务记录';
                             <img class="li-cover-img" src="<?=$row['cover']?>"/>
                         </div>
                         <p class="li-row li-name">故障：<?=ConfigBase::getFaultStatus($row['type'])?></p>
-                        <p class="li-row">描述：<?=$row['desc']?></p>
-                        <p class="li-row">时间：<?=date('Y-m-d H:i',$row['add_time'])?></span></p>
-                        <p class="li-row">状态：<span style="color: red"><?=ConfigBase::getFixStatus($row['status'])?></span></p>
+                        <p class="li-row-small">描述：<?=$row['desc']?></p>
+                        <p class="li-row-small">时间：<?=date('Y-m-d H:i',$row['add_time'])?></span></p>
+                        <p class="li-row-small">状态：<span style="color: red"><?=ConfigBase::getFixStatus($row['status'])?></span></p>
                     </a>
                 </li>
             <?php endforeach;?>

@@ -111,6 +111,12 @@ use yii\jui\DatePicker;
         <a href="<?=Url::toRoute(['charts/order'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
     </div>
 
+    <div class="col-md-12">
+        <div id="rental" class="chart-box"></div>
+        <a href="<?=Url::toRoute(['charts/rental'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
+    </div>
+
+
 </div>
 <script>
     <?php $this->beginBlock('JS_END') ?>
@@ -439,6 +445,41 @@ use yii\jui\DatePicker;
         },
         series: <?=json_encode($maintainer['series'])?>
     });
+
+    $('#rental').highcharts({
+        title: {
+            text: '机器租金统计'
+
+        },
+        xAxis: {
+            categories: <?=json_encode($rental['cate'])?>,
+            tickmarkPlacement: 'on',
+            title: {
+                'text':'月份'
+            }
+        },
+        yAxis: {
+            title: {
+                text: '金额'
+            }
+        },
+        tooltip: {
+            shared: true
+        },
+        plotOptions: {
+            area: {
+                stacking: 'normal',
+                lineColor: '#666666',
+                lineWidth: 1,
+                marker: {
+                    lineWidth: 1,
+                    lineColor: '#666666'
+                }
+            }
+        },
+        series: <?=json_encode($rental['series'])?>
+    });
+
     <?php $this->endBlock();?>
 </script>
 <?php

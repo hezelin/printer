@@ -25,11 +25,19 @@ class CodeapiController extends \yii\web\Controller
      */
     public function actionMachine($id)
     {
-        $rent= TblRentApply::find()->select('id,wx_id,project_id')->where(['machine_id'=>$id,'enable'=>'Y'])->one();
+        $rent= (new \yii\db\Query())
+            ->select('id,wx_id,project_id')
+            ->from('tbl_rent_apply')
+            ->where(['machine_id'=>$id,'enable'=>'Y'])
+            ->one();
+        if(!$rent)
+            return $this->render('//tips/homestatus',['tips'=>'租赁用户不存在']);
+
         $wid = $rent['wx_id'];
 
         $openid = WxBase::openId($wid);
 
+//        维修员操作
         if(!$this->checkMaintain($openid)) {             // 维修员页面跳转
 //            查看维修状态
             $model = TblMachineService::find()
@@ -42,8 +50,6 @@ class CodeapiController extends \yii\web\Controller
             $status = $model['status'];
             switch ($status) {
                 case 3:
-                case 6:
-                case 7:
                     return $this->render('machine', [
                         'openid' => $openid,
                         'service_id' => $model['id'],
@@ -55,8 +61,7 @@ class CodeapiController extends \yii\web\Controller
                             [
                                 'data-ajax' => 1,
                                 'data-status' => $status + 1,
-                                'id' => 'process-btn',
-                                'class' => 'h-link-minor',
+                                'class' => 'process-btn h-link-minor',
                             ]
                         )
                     ]);
@@ -72,8 +77,7 @@ class CodeapiController extends \yii\web\Controller
                             [
                                 'data-ajax' => 0,
                                 'data-status' => $status + 1,
-                                'id' => 'process-btn',
-                                'class' => 'h-link-minor',
+                                'class' => 'process-btn h-link-minor',
                             ]
                         )
                     ]);
@@ -90,8 +94,7 @@ class CodeapiController extends \yii\web\Controller
                                 [
                                     'data-ajax' => 1,
                                     'data-status' => 8,
-                                    'class' => 'h-link-minor',
-                                    'id' => 'process-btn'
+                                    'class' => 'process-btn h-link-minor',
                                 ]) .
                             Html::a(
                                 ConfigBase::getFixMaintainStatus($status),
@@ -99,9 +102,25 @@ class CodeapiController extends \yii\web\Controller
                                 [
                                     'data-ajax' => 0,
                                     'data-status' => $status + 1,
-                                    'class' => 'h-link-minor',
-                                    'id' => 'process-btn'
+                                    'class' => 'process-btn h-link-minor',
                                 ])
+                    ]);
+                case 6:
+                case 7:
+                    return $this->render('machine', [
+                        'openid' => $openid,
+                        'service_id' => $model['id'],
+                        'mid' => $id,
+                        'wid' => $wid,
+                        'btnHtml' => Html::a(
+                            ConfigBase::getFixMaintainStatus($status),
+                            Url::toRoute(['/shop/parts/process', 'id'=>$wid, 'fault_id' => $model['id']]),
+                            [
+                                'data-ajax' => 0,
+                                'data-status' => $status + 1,
+                                'class' => 'process-btn h-link-minor',
+                            ]
+                        )
                     ]);
                 case 9:
                     return $this->render('process', [
@@ -115,25 +134,38 @@ class CodeapiController extends \yii\web\Controller
                             [
                                 'data-ajax' => 0,
                                 'data-status' => $status + 1,
-                                'class' => 'h-link-minor',
-                                'id' => 'process-btn'
+                                'class' => 'process-btn h-link-minor',
                             ]
                         )
                     ]);
             }
         }
 
-        $data= TblMachineService::find()
+//        判断用户是否关注
+        $isSubscribe = (new \yii\db\Query())
+            ->select('count(*)')
+            ->from('tbl_user_wechat')
+            ->where(['wx_id'=>$wid,'openid'=>$openid])
+            ->scalar();
+        if(!$isSubscribe){
+            $wx_num = (new \yii\db\Query())
+                ->select('wx_num')
+                ->from('tbl_weixin')
+                ->where(['id'=>$wid])
+                ->scalar();
+            return $this->render('subscribe',['wx_num'=>$wx_num]);
+        }
+//        用户维修操作
+        $data= (new \yii\db\Query())
             ->select('status,id')
+            ->from('tbl_machine_service')
             ->where(['machine_id' => $id, 'enable' => 'Y'])
             ->andWhere(['<', 'status', 9])
-            ->asArray()
             ->one();
-        $status = $data['status'];
 
-        if($status){
-            if($status ==8)
-                $btnHtml = Html::a('评价维修',Url::toRoute(['s/evaluate','id'=>$data['id']]),['class'=>'a-no-link h-link-minor']);
+        if( isset($data['status']) ){
+            if( $data['status'] ==8 )
+                $btnHtml = Html::a('评价维修',Url::toRoute(['s/evaluate','id'=>$wid,'fault_id'=>$data['id']]),['class'=>'a-no-link h-link-minor']);
             else
                 $btnHtml = Html::a('维修进度',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link-minor']);
         }else

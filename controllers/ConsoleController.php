@@ -8,6 +8,7 @@ use app\models\analyze\TblAnalyzeMaintain;
 use app\models\analyze\TblAnalyzeOrder;
 use app\models\analyze\TblAnalyzeProduct;
 use app\models\analyze\TblAnalyzeRent;
+use app\models\analyze\TblAnalyzeRental;
 use app\models\Cache;
 use app\models\TblWeixin;
 use yii\web\NotFoundHttpException;
@@ -28,7 +29,6 @@ class ConsoleController extends \yii\web\Controller
     public function actionView()
     {
         $wx_id = Cache::getWid();
-
         $data['maintainer'] = (new \yii\db\Query())
             ->select('name,phone,openid,wx_id,wait_repair_count')
             ->from('tbl_user_maintain')
@@ -36,7 +36,7 @@ class ConsoleController extends \yii\web\Controller
             ->all();
 
         $data['fault'] = (new \yii\db\Query())
-            ->select('t.id,t.cover,t.desc,t.type,t.add_time,p.type as model,b.name as brand,a.name,a.phone,a.address')
+            ->select('t.id,t.content,t.desc,t.type,t.add_time,p.type as model,b.name as brand,a.name,a.phone,a.address')
             ->from('tbl_machine_service t')
             ->leftJoin('tbl_machine m','t.machine_id=m.id')
             ->leftJoin('tbl_machine_model p','p.id=m.model_id')
@@ -46,8 +46,8 @@ class ConsoleController extends \yii\web\Controller
             ->all();
         if($data['fault']){
             foreach($data['fault'] as &$d){
-                $tmp = json_decode($d['cover'],true);
-                $d['cover'] = $tmp['0'];
+                $tmp = json_decode($d['content'],true);
+                $d['cover'] = isset($tmp['cover']['0'])? $tmp['cover'][0]:'/images/call_maintain.png';
             }
         }
 
@@ -70,7 +70,6 @@ class ConsoleController extends \yii\web\Controller
             ->limit(1)
             ->one();
 
-
         $data['order'] = (new \yii\db\Query())
             ->select('t.order_id,t.order_data,t.remark,t.freight,t.total_price,t.pay_score,t.pay_status,t.order_status,t.add_time,
                 d.name,d.phone,d.city,d.address')
@@ -84,21 +83,33 @@ class ConsoleController extends \yii\web\Controller
         }
 
         $data['part'] = (new \yii\db\Query())
-            ->select('t.id,t.status,t.item_id,t.fault_id,p.name,p.market_price,p.price,p.cover,m.cover as fault_cover,m.desc,m.type,
+            ->select('t.id,t.status,t.item_id,t.fault_id,p.name,p.market_price,p.price,p.cover,m.content as fault_cover,m.desc,m.type,
                 a.name as nickname,a.phone')
             ->from('tbl_parts t')
             ->leftJoin('tbl_product p','p.id=t.item_id')
             ->leftJoin('tbl_machine_service m','m.id=t.fault_id')
             ->leftJoin('tbl_user_maintain a','a.openid=t.openid')
             ->where(['t.status'=>[1,11],'t.wx_id'=>$wx_id,'t.enable'=>'Y'])
+            ->orderBy('t.id desc')
             ->all();
-
         if($data['part']){
             foreach($data['part'] as &$d){
                 $tmp = json_decode($d['fault_cover'],true);
-                $d['fault_cover'] = $tmp['0'];
+                $d['fault_cover'] = isset($tmp['cover']['0'])? $tmp['cover'][0]:'/images/call_maintain.png';
             }
         }
+
+        $data['rental'] = (new \yii\db\Query())
+            ->select('t.id,t.machine_id,t.colour,t.black_white,t.total_money,t.exceed_money,t.sign_img,t.name,
+                p.name as username,p.address,
+                d.type as model,b.name as brand')
+            ->from('tbl_rent_report t')
+            ->leftJoin('tbl_rent_apply p','p.machine_id=t.machine_id and p.enable="Y"')
+            ->leftJoin('tbl_machine as m','m.id=t.machine_id')
+            ->leftJoin('tbl_machine_model as d','d.id=m.model_id')
+            ->leftJoin('tbl_brand as b','b.id=d.brand_id')
+            ->where('t.wx_id=:wid and t.status=1 and t.enable="Y"',[':wid'=>$wx_id])
+            ->all();
 
         return $this->render('view',['data'=>$data,'wx_id'=>$wx_id]);
     }
@@ -119,6 +130,9 @@ class ConsoleController extends \yii\web\Controller
         $machine = new TblAnalyzeMachine();
 
         $item = new TblAnalyzeProduct();
+
+        $rental = new TblAnalyzeRental();
+
         return $this->render('analyze',[
             'item'=>$item->getCharts(),
             'stock'=>$item->getItemStock(),
@@ -126,7 +140,8 @@ class ConsoleController extends \yii\web\Controller
             'charts'=>$ana->getCharts(),
             'rent'=>$rent->getCharts(),
             'order'=>$order->getCharts(),
-            'maintainer'=>$maintainer->getCharts()
+            'maintainer'=>$maintainer->getCharts(),
+            'rental'=> $rental->getRentalCharts()
         ]);
     }
 }

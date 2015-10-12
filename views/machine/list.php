@@ -28,6 +28,7 @@ $this->title = '机器列表';
                 'attribute'=>'type',
                 'format'=>'html',
                 'value'=>function($data){
+                    if( !$data->machineModel ) return '<span class="not-set">(未设置)</span>';
                     return Html::a($data->machineModel->type,Url::toRoute(['model/view','id'=>$data->model_id]));
                 },
 //                'value'=>'machineModel.type',
@@ -61,20 +62,25 @@ $this->title = '机器列表';
             [
                 'attribute'=>'come_from',
                 'label'=>'机器来源',
-                'format'=>'html',
-                'filter'=>['非自家','自家'],
+                'filter'=>ConfigBase::$machineOrigin,
                 'value'=>function($data){
-                    return $data->come_from? '自家':Html::tag('span','非自家',['class'=>'btn btn-warning btn-sm']);
+                    return ConfigBase::getMachineOrigin($data->come_from);
                 }
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'headerOptions' => ['style'=>'width:120px'],
-                'template' => '{view} &nbsp; {update} &nbsp; {delete} &nbsp; {qrcode}',
+                'headerOptions' => ['style'=>'width:140px'],
+                'template' => '{view} &nbsp; {update} &nbsp; {delete} &nbsp; {qrcode} &nbsp; {rental}',
                 'buttons' => [
+                    'update' => function($url,$model,$key){
+                        return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::toRoute(['update','id'=>$model->id]) ,['title'=>'修改资料']);
+                    },
                     'qrcode' => function($url,$model,$key){
                         return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['code/machine','id'=>$model->id]) ,['title'=>'机器码']);
+                    },
+                    'rental' => function($url,$model,$key){
+                        return Html::a('<span class="glyphicon glyphicon-stats"></span>',Url::toRoute(['/charts/machine-rental','machine_id'=>$model->id]),['title'=>'租金统计']);
                     }
                 ],
             ],

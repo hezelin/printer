@@ -24,8 +24,7 @@ $this->title = '店铺设置';
     ]);
 ?>
 <hr>
-    <h4>&nbsp;店铺基础设置<a href="<?= Url::toRoute(['home/index','id'=>Yii::$app->session['wechat']['id']]) ?>"
-                      target="_blank" style="font-size:14px;float: right;">前往店铺首页</a></h4>
+    <h4>&nbsp;店铺基础设置</h4>
 
 <hr>
     <?php

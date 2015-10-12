@@ -70,7 +70,9 @@ class MachineController extends \yii\web\Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        if($model->delete())
+        $model->series_id = '~del~'.$model->series_id;
+        $model->enable = 'N';
+        if($model->save())
             $model->updateCount('dec');
 
         return $this->redirect(['list']);

@@ -21,7 +21,7 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
-        'id',
+        ['class' => 'yii\grid\SerialColumn'],               // 系列
         [
             'attribute'=>'machine_model_id',
             'format'=> 'html',

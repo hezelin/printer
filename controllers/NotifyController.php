@@ -45,7 +45,6 @@ class NotifyController extends \yii\web\Controller
             }
             else
                 Yii::$app->session->setFlash('error',\app\models\ToolBase::arrayToString($model->errors));
-
         }
 
         $user = $openid? TblUserWechat::findOne(['wx_id'=>$id,'openid'=>$openid]):NULL;

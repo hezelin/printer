@@ -41,7 +41,9 @@ class TblMachineModelSearch extends TblMachineModel
      */
     public function search($params)
     {
-        $query = TblMachineModel::find()->where(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
+        $query = TblMachineModel::find()
+            ->where(['wx_id'=>Cache::getWid(),'enable'=>'Y'])
+            ->orderBy('id desc');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

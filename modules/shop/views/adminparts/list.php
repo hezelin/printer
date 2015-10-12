@@ -6,11 +6,17 @@ use yii\bootstrap\Modal;
 use app\models\ConfigBase;
 $this->title = '维修配件列表';
 ?>
-
+<style>
+    .fault-box{ width: 180px; height: 80px; margin: 0;}
+    .fault-img{width: 70px; height: 60px; float: left;display: block}
+    .fault-img img{ width: 60px; height: 60px}
+    .fault-type{height: 30px; line-height: 30px; cursor: pointer;width:110px; float: left;}
+    .fault-desc{height: 30px; line-height: 25px; width: 110px; float: left; overflow: hidden;}
+</style>
 <div >
     <ul class="nav nav-tabs" >
-        <li class="active"><a href="javascript:void(0)" >维修配件列表</a></li>
-        <li><a href="<?=Url::toRoute(['recycle'])?>" >已回收配件</a></li>
+        <li<?php if(!Yii::$app->request->get('process')) echo ' class="active"';?>><a href="<?=Url::toRoute(['list'])?>" >维修配件列表</a></li>
+        <li<?php if(Yii::$app->request->get('process')==2) echo ' class="active"';?>><a href="<?=Url::toRoute(['list','process'=>2])?>" >已回收配件</a></li>
     </ul>
 </div>
 <p>&nbsp;</p>
@@ -60,20 +66,20 @@ echo GridView::widget([
         [
             'attribute'=>'cover',
             'headerOptions'=>['style'=>'width:200px'],
-            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'label'=>'故障资料',
-            'value'=>function($model)
+            'content'=>function($model)
             {
-                if( !isset($model->fault->cover)) return '无';
-                $covers = json_decode($model->fault->cover,true);
-                $html = [];
-                foreach($covers as $cover){
-                    $html[] = Html::a(Html::img($cover,['width'=>40]),str_replace('/s/','/m/',$cover),['class' => 'fancybox','rel'=>'group1']);
+                if( !isset($model->fault->content)) return '<span class="not-set">（无设置）</span>';
+                $contents = json_decode($model->fault->content,true);
+
+                $img = '';
+                if(isset($contents['cover']) && is_array($contents['cover']) ) {
+                    $img = Html::a(Html::img($contents['cover'][0], ['width' => 40]), str_replace('/s/', '/m/', $contents['cover'][0]), ['class' => 'fancybox fault-img', 'rel' => 'group1']);
                 }
-                return ConfigBase::getFaultStatus($model->fault->type).
-                        join("\n",$html).
-                        $model->fault->desc .
-                        Html::a('详情', Url::toRoute(['/service/process','id'=>$model->fault_id]), ['class'=>'btn btn-sm btn-info']);
+
+                return '<div class="fault-box">'.$img.'<a href="'.Url::toRoute(['/service/process','id'=>$model->fault->id]).'" class="fault-type" title="查看详情">故障类型：'.ConfigBase::getFaultStatus($model->fault->type).'</a>
+                        <div class="fault-desc">'.$model->fault->desc.'</div>
+                        </div>';
             }
         ],
         [
@@ -116,6 +122,7 @@ echo GridView::widget([
                     case 11: $btn = " &nbsp; ".Html::a('回收',Url::toRoute(['status','id'=>$model->id,'status'=>'12']),[
                             'class'=>'btn btn-sm btn-info',
                         ]);break;
+                    case 12: return '已回收';
                     default: $btn ='';
                 }
                 return \app\modules\shop\models\Shop::getParts($model->status).$btn;
@@ -139,17 +146,28 @@ echo GridView::widget([
             'template' => '{remark} &nbsp; {log} &nbsp; {qrcode} &nbsp; {delete}',
             'buttons' => [
                 'remark' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-leaf"></span>','#',[
-                        'title'=>'配件备注',
-                        'key-id'=>$key,
-                        'class'=>'close-model'
-                    ]);
+                    if($model->un)
+                        return Html::a('<span class="glyphicon glyphicon-leaf"></span>','#',[
+                            'title'=>'配件备注',
+                            'un'=>$model->un,
+                            'item_id'=>$model->item_id,
+                            'wx_id'=>$model->wx_id,
+                            'class'=>'close-model'
+                        ]);
+                    else
+                        return '<span class="glyphicon glyphicon-leaf my-disabled"></span>';
                 },
                 'qrcode' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['code/parts','id'=>$key,'item_id'=>$model->item_id,'wx_id'=>$model->wx_id]),['title'=>'配件二维码']);
+                    if($model->un)
+                        return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['code/parts','un'=>$model->un,'item_id'=>$model->item_id,'wx_id'=>$model->wx_id]),['title'=>'配件二维码']);
+                    else
+                        return '<span class="glyphicon glyphicon-qrcode my-disabled"></span>';
                 },
                 'log' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-exclamation-sign"></span>',Url::toRoute(['log','id'=>$key]),['title'=>'查看记录']);
+                    if($model->un)
+                        return Html::a('<span class="glyphicon glyphicon-exclamation-sign"></span>',Url::toRoute(['log','un'=>$model->un,'item_id'=>$model->item_id,'wx_id'=>$model->wx_id]),['title'=>'查看记录']);
+                    else
+                        return '<span class="glyphicon glyphicon-exclamation-sign my-disabled"></span>';
                 },
                 'delete' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-trash"></span>',Url::toRoute(['delete','id'=>$key]),[
@@ -223,9 +241,11 @@ echo newerton\fancybox\FancyBox::widget([
 
     <script>
         <?php $this->beginBlock('JS_END') ?>
-        var keyId;
+        var keyId,un,item_id,wx_id;
         $('#fix-list .close-model').click(function(){
-            keyId = $(this).attr('key-id');
+            wx_id = $(this).attr('wx_id');
+            item_id = $(this).attr('item_id');
+            un = $(this).attr('un');
             $('#my-modal-cancel').modal('show');
             return false;
         });
@@ -238,8 +258,8 @@ echo newerton\fancybox\FancyBox::widget([
                 return false;
             }
             $.post(
-                '<?=Url::toRoute(['remark'])?>?id='+keyId,
-                {'text':text},
+                '<?=Url::toRoute(['remark'])?>?id='+wx_id+'&item_id='+item_id+'&un='+un,
+                {'content':text},
                 function(res){
                     if(res.status == 1){
                         $('#my-modal-cancel').modal('hide');

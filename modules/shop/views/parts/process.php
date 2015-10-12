@@ -5,7 +5,6 @@ $this->title = '配件列表';
 Yii::$app->params['layoutBottomHeight'] = 40;
 
 ?>
-
     <style>
         <?php $this->beginBlock('CSS') ?>
         .item-list{
@@ -20,10 +19,24 @@ Yii::$app->params['layoutBottomHeight'] = 40;
             width: 80px;
             height: 60px;
             float: left;
+        }
+        .item-list .img-status{
+            width: 80px;
+            height: 80px;
+            float: left;
             margin-right: 10px;
+            color: #666;
+            text-align: center;
         }
         .item-list span h5{
-            height: 55px;
+            line-height: 20px;
+            min-height: 60px;
+            color: #666;
+            font-weight: normal;
+            font-size: 16px;
+        }
+        .item-list span h6{
+            height: 30px;
             color: #666;
             font-weight: normal;
             font-size: 16px;
@@ -35,10 +48,15 @@ Yii::$app->params['layoutBottomHeight'] = 40;
         }
         .mtm_p b{
             float: left;
-            color: #b10000;
             font-size: 16px;
+            font-weight: 500;
+            color: #b10000;
         }
+        .scan-btn{ display:none;}
 
+        .fault-info{
+            color: #b18b8d;
+        }
         .item-more{
             width: 80%; background-color: #efefef;font-size: 14px;
             /*box-shadow: 1px 1px 2px #cccccc; */
@@ -60,10 +78,16 @@ $this->registerCss($this->blocks['CSS']);
     <?php if($model):?>
         <?php foreach($model as $row):?>
             <div class="item-list">
-                <img src="<?=$row['cover']?>">
+                <div class="img-status">
+                    <img src="<?=$row['cover']?>">
+                    <?=\app\modules\shop\models\Shop::getParts($row['status'])?>
+                </div>
                <span>
-                   <h5>(<?=$row['category']?>)<?=$row['name']?></h5>
-                   <p class="mtm_p"><b><?=\app\modules\shop\models\Shop::getParts($row['status'])?></b>
+                   <h5>(<?=$row['category']?>)<?=$row['name']?>
+<!--                       <span class="fault-info">维修：全部消息文字消息保存</span>-->
+                   </h5>
+                   <p class="mtm_p">
+                       <b class="scan-btn" data-url="<?=Url::toRoute(['/shop/parts/bing','part_id'=>$row['parts_id'],'item_id'=>$row['item_id'],'id'=>$row['wx_id'],'fault_id'=>$fault_id])?>">扫描配件绑定</b>
                        <a class="parts-cancel-btn" parts-id="<?=$row['parts_id']?>" href="javascript:void(0)">取消</a></p>
                </span>
             </div>
@@ -71,23 +95,23 @@ $this->registerCss($this->blocks['CSS']);
     <?php endif;?>
 </div>
 
-<div class="h-fixed-bottom">
-    <div class="h-off-50">
-        <a href="<?=Url::toRoute(['/shop/parts/list','id'=>$id,'fault_id'=>$fault_id])?>">
+<a class="h-fixed-bottom" href="<?=Url::toRoute(['/shop/parts/list','id'=>$id,'fault_id'=>$fault_id])?>">
             申请配件
-        </a></div>
-    <div class="h-off-50">
-        <a id="process-btn" href="javascript:void(0);">
-            绑定配件
         </a>
-    </div>
-</div>
+
 
 <script>
     <?php $this->beginBlock('JS_END') ?>
-    var mUrl = '<?=$mUrl?>';
     var fault_id = fault_id || <?=$fault_id?>;
     var hasClick = 0;
+
+    function getUrlParam(name,url) {
+        var reg = new RegExp("[\?|&]" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = url.match(reg);  //匹配目标参数
+        if (r != null) return unescape(r[1]);
+        return null; //返回参数值
+    }
+
     $(function(){
         $('.parts-cancel-btn').click(function(){
             if(hasClick == 1) return false;
@@ -103,6 +127,36 @@ $this->registerCss($this->blocks['CSS']);
                 },'json'
             );
         });
+
+        $('.scan-btn').click(function(){
+            var url = $(this).attr('data-url');
+            wx.scanQRCode({
+                needResult: 1,  // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    var str = '&un='+getUrlParam('un',result);
+                    if( getUrlParam('item_id',url) != null){
+                        if(getUrlParam('item_id',url) != getUrlParam('item',result)){
+                            alert('二维码不合法');
+                            return false;
+                        }
+                    }else
+                        str = '&item_id=' + getUrlParam('item_id',result);
+
+
+                    if( getUrlParam('id',url) != null){
+                        if( getUrlParam('id',url) != getUrlParam('id',result)) {
+                            alert('二维码不合法');
+                            return false;
+                        }
+                    }else
+                        str = '&id=' + getUrlParam('id',result);
+
+                    location.href = url + str;
+                }
+            });
+        });
     });
     <?php $this->endBlock();?>
 </script>
@@ -115,20 +169,8 @@ $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
     'wx_id'=>$id,
     'apiList'=>['scanQRCode'],
     'jsReady'=>'
-        document.querySelector("#process-btn").onclick = function () {
-            wx.scanQRCode({
-                needResult: 1,  // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-                scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-                success: function (res) {
-                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-                    if( result.indexOf(mUrl) >= 0 ){
-                        location = result+"&fault_id="+fault_id;
-                    }else{
-                        alert("二维码不符合！");
-                    }
-                }
-            });
-            return false;
-        };'
+        var ele = document.querySelectorAll(".scan-btn");
+        for(var i in ele)
+            ele[i].style.cssText="display:block";'
 ]);
 ?>

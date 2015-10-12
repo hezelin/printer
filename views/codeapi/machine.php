@@ -5,9 +5,6 @@ $this->title = '机器页面';
 
 
 <div class="h-center-wrap">
-    <!--<a class="h-link-minor" href="<?/*=Url::toRoute(['i/mapply','id'=>$mid])*/?>">
-        维修状态
-    </a>-->
 
     <?=$btnHtml?>
 
@@ -17,13 +14,17 @@ $this->title = '机器页面';
     <a class="h-link" href="<?=Url::toRoute(['m/record','id'=>$wid])?>">
         维修记录
     </a>
+
+    <a class="h-link" href="<?=Url::toRoute(['mcharge/add','id'=>$wid,'machine_id'=>$mid])?>">
+        收租录入
+    </a>
 </div>
 
     <script>
         <?php $this->beginBlock('JS_END') ?>
         var hasClick = 0;
         $(function(){
-            $('#process-btn').click(function(){
+            $('.process-btn').click(function(){
                 if(hasClick == 1)    return false;
                 hasClick = 1;
                 var href = $(this).attr('href');

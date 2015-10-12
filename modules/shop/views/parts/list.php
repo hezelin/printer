@@ -11,11 +11,11 @@ $this->title = '配件列表';
         'action'=>Url::toRoute(['/shop/parts/list','id'=>$id]),
         'linkClick'=>'
             $("#item-list-wrap").on("click",".item-list",function(){
+                if( $(this).attr("data-href") )
                 location = $(this).attr("data-href")+"&fault_id='.$fault_id.'";
             });
         '
     ]);
-
 ?>
 
 <style>
@@ -65,11 +65,13 @@ $this->title = '配件列表';
 
     .search-btn{
         position: fixed;
-        top: 10px;
-        right:10px;
-        width: 24px;
-        height: 24px;
+        top: 0px;
+        right:0px;
+        width: 40px;
+        height: 40px;
         z-index: 99;
+        padding: 10px;
+        background-color: #ffffff;
     }
     .search-input{
         position: fixed;
@@ -158,7 +160,7 @@ $this->registerCss($this->blocks['CSS']);
         没有数据了
     </div>
 <?php else:?>
-<div id="item-more" class="item-more item-more-end">
+<div id="item-more" class="item-more">
     查看更多
 </div>
 <?php endif;?>

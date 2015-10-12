@@ -100,13 +100,15 @@ class PartsController extends Controller
 
         // 非维修员不能申请配件
         if($fault_id = Yii::$app->request->get('fault_id')) {
-            $maintain = (new \yii\db\Query())
-                ->select('openid')
-                ->from('tbl_machine_service')
-                ->where('id=:id', [':id' => $fault_id])
+
+            $isMaintainer = (new \yii\db\Query())
+                ->select('count(*)')
+                ->from('tbl_user_maintain')
+                ->where('openid=:openid', [':openid' => $openid])
                 ->scalar();
-            if ($openid !== $maintain)
-                return $this->render('//tips/homestatus', ['tips' => '没有权限！', 'btnText' => '返回', 'btnUrl' => 'javascript:history.go(-1);']);
+            if ( !$isMaintainer )
+                return $this->render('//tips/homestatus', ['tips' => '不是维修员，没有权限！', 'btnText' => '返回', 'btnUrl' => 'javascript:history.go(-1);']);
+
             $btnUrl = Url::toRoute(['/m/taskdetail','id'=>$fault_id]);
             $btnText = '返回维修';
         }else{
@@ -129,10 +131,6 @@ class PartsController extends Controller
                 $parts->fault_id = $fault_id;
             $parts->save();                     // 配件表 保存
 
-            $parts_id = $parts->id;             // 配件 日志表
-            $sql2 = "insert into tbl_parts_log (`parts_id`,`content`,`status`,`add_time`) VALUES ($parts_id,'配件申请',1,$time)";
-            $connection->createCommand($sql2)->execute();
-
             $model->save();                     // 商品库存 减 一
 
             if(Yii::$app->request->get('fault_id')){    // 更新维修表
@@ -146,7 +144,7 @@ class PartsController extends Controller
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();
-            echo $e;
+//            echo $e;
             return $this->render('//tips/homestatus',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
         }
 
@@ -184,107 +182,178 @@ class PartsController extends Controller
     public function actionProcess($id,$fault_id)
     {
         $model = (new \yii\db\Query())
-            ->select('t.wx_id,t.status,t.id as parts_id,p.id,p.cover,p.name,p.price,c.name as category')
+            ->select('t.wx_id,t.status,t.id as parts_id,t.item_id,p.id,p.cover,p.name,p.price,c.name as category')
             ->from('tbl_parts as t')
             ->leftJoin('tbl_product as p','p.id=t.item_id')
             ->leftJoin('tbl_category as c','c.id=p.category_id')
             ->where('t.fault_id=:fault_id and t.enable="Y"',[':fault_id'=>$fault_id])
+            ->andWhere(['<','t.status',10])
             ->all();
 
-        $mUrl = Url::toRoute(['/shop/codeapi/parts'],'http');
-        return $this->render('process',['model'=>$model,'id'=>$id,'fault_id'=>$fault_id,'mUrl'=>$mUrl]);
+        return $this->render('process',['model'=>$model,'id'=>$id,'fault_id'=>$fault_id]);
+    }
+
+
+    /*
+     * 选择绑定
+     */
+    public function actionSelect($id,$un,$item_id)
+    {
+        $model = (new \yii\db\Query())
+            ->select('t.wx_id,t.status,t.id as parts_id,t.item_id,t.fault_id,p.id,p.cover,p.name,p.price,c.name as category,m.machine_id')
+            ->from('tbl_parts as t')
+            ->leftJoin('tbl_product as p','p.id=t.item_id')
+            ->leftJoin('tbl_category as c','c.id=p.category_id')
+            ->leftJoin('tbl_machine_service as m','m.id=t.fault_id and t.fault_id>0')
+            ->where('t.enable="Y" and t.item_id=:item_id and t.wx_id=:wx_id and t.openid=:openid',[':item_id'=>$item_id,':wx_id'=>$id,':openid'=>Yii::$app->request->get('openid')])
+            ->andWhere(['<','t.status',10])
+            ->all();
+
+        /*echo '<pre>';
+        print_r($model);
+        exit;*/
+        return $this->render('select',['model'=>$model,'id'=>$id,'un'=>$un,'item_id'=>$item_id]);
     }
 
     /*
-     * 取消配件
-     * 事务操作
-     * 1、写入配件日志
-     * 2、更改维修表 未完成配件数量
-     * 3、更改配件的状态或者删除
-     * 4、更新商品库存
+     * 绑定配件
+     * id 微信id，un uniqid ，item_id
      */
-    public function actionCancel($id,$parts_id)
+    public function actionBing($id,$un,$item_id)
     {
-        $parts = TblParts::findOne($parts_id);
-        if(!$parts) Yii::$app->end(json_encode(['status'=>1]));
+        $openid = WxBase::openId($id);
+        if($part_id = Yii::$app->request->get('part_id') ){
+            $model = TblParts::findOne($part_id);
+            if(Yii::$app->request->get('fault_id')){
+                $model->machine_id = (new \yii\db\Query())
+                    ->select('machine_id')
+                    ->from('tbl_machine_service')
+                    ->where(['id'=>$model->fault_id])
+                    ->scalar();
+                $content['fault_id'] = $model->fault_id;
+            }
+        }else if($machine_id = Yii::$app->request->get('machine_id')){
+            $model = TblParts::findOne(['un'=>$un,'item_id'=>$item_id,'wx_id'=>$id,'enable'=>'Y']);
+            if(!$model) $model = new TblParts();
+            $model->machine_id = $machine_id;
+        }else
+            return $this->render('//tips/homestatus',[
+                'tips'=>'数据不合法！',
+                'btnText'=>'返回',
+                'btnUrl'=>'javascript:history.go(-1)']);
 
+        $model->un = $un;
+        $model->wx_id = $id;
+        $model->item_id = $item_id;
+        $model->openid = $openid;
+        $model->status = 10;
+        $model->apply_time = $model->bing_time = time();
+        $model->fault_id = Yii::$app->request->get('fault_id')? : 0;
 
+        $name = (new \yii\db\Query())
+            ->select('name')
+            ->from('tbl_user_maintain')
+            ->where(['wx_id'=>$id,'openid'=>$openid])
+            ->scalar();
+
+        $content['text'] = "$name 绑定机器";
+        $content['machine_id'] = $model->machine_id;
+        $content = json_encode($content,JSON_UNESCAPED_UNICODE);
+
+        //            事务操作 绑定配件
         $time = time();
         $connection = Yii::$app->db;
         $transaction = $connection->beginTransaction();
-
         try {
-            if($parts->status == 1){            // 配件状态表删除或更改
-                $parts->delete();
-            }else{
-                $parts->status = 11;
-                $parts->save();
+            $model->save();                  // 配件基本资料
+
+            if($model->fault_id){            // 配件状态表删除或更改
+                // 维修表 未完成维修数量减一
+                $sql3 = "update tbl_machine_service set unfinished_parts_num=unfinished_parts_num-1 , parts_arrive_time={$time} where id={$model->fault_id}";
+                $connection->createCommand($sql3)->execute();
             }
 
             // 配件 日志表
-            $sql2 = "insert into tbl_parts_log (`parts_id`,`content`,`status`,`add_time`) VALUES ({$parts->id},'取消配件',1,$time)";
+            $sql2 = "insert into tbl_parts_log (`un`,`wx_id`,`item_id`,`content`,`status`,`add_time`) VALUES ('{$un}',{$id},{$item_id},'{$content}',10,$time)";
             $connection->createCommand($sql2)->execute();
 
-            // 商品库存 加一
-            $sql3 = "update tbl_product set amount=amount+1 where id={$parts->item_id}";
-
-            $connection->createCommand($sql3)->execute();
-
-
-            if($parts->fault_id){
-                // 维修表 未完成维修数量减一
-                $sql3 = "update tbl_machine_service set unfinished_parts_num=unfinished_parts_num-1 , parts_arrive_time={$time} where id={$parts->fault_id}";
-                $connection->createCommand($sql3)->execute();
-            }
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();
             echo $e;
-            Yii::$app->end(json_encode(['status'=>0,'msg'=>'入库失败']));
+            return $this->render('//tips/homestatus',[
+                'tips'=>'系统错误！',
+                'btnText'=>'返回',
+                'btnUrl'=>'javascript:history.go(-1)']);
         }
 
-        echo json_encode(['status'=>1]);
+        return $this->render('//tips/homestatus',[
+            'tips'=>'绑定成功！',
+            'btnText'=>'返回首页',
+            'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])]);
     }
 
     /*
-     * 配件备注
+     * 绑定配件
+     * id 微信id，un uniqid ，item_id
      */
-    public function actionRemark($id,$parts_id)
+    public function actionUnbing($id,$un,$item_id,$part_id,$machine_id,$openid)
     {
-        if(Yii::$app->request->post()){
-            $model = new TblPartsLog();
-            $model->content = Yii::$app->request->post('content');
-            $model->add_time = time();
-            $model->status = 13;
-            $model->parts_id = $parts_id;
-            if(!$model->save())
-                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
-            else
-                return $this->render('//tips/homestatus',[
-                   'tips'=>'备注成功',
-                    'btnText'=>'返回',
-                    'btnUrl'=>'javascript:history.go(-2)'
-                ]);
+        $model = TblParts::findOne($part_id);
+        $model->status = 11;
+
+        $name = (new \yii\db\Query())
+            ->select('name')
+            ->from('tbl_user_maintain')
+            ->where(['wx_id'=>$id,'openid'=>$openid])
+            ->scalar();
+
+        $content['text'] = "$name 解除机器";
+        $content['machine_id'] = $model->machine_id;
+        $content = json_encode($content,JSON_UNESCAPED_UNICODE);
+
+        //            事务操作 绑定配件
+        $time = time();
+        $connection = Yii::$app->db;
+        $transaction = $connection->beginTransaction();
+        try {
+            $model->save();                  // 解除绑定，更改状态
+
+            // 配件 日志表
+            $sql2 = "insert into tbl_parts_log (`un`,`wx_id`,`item_id`,`content`,`status`,`add_time`) VALUES ('{$un}',{$id},{$item_id},'{$content}',11,$time)";
+            $connection->createCommand($sql2)->execute();
+
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            echo $e;
+            return $this->render('//tips/homestatus',[
+                'tips'=>'系统错误！',
+                'btnText'=>'返回',
+                'btnUrl'=>'javascript:history.go(-1)']);
         }
-        return $this->render('remark',['parts_id'=>$parts_id,'id'=>$id]);
+
+        return $this->render('//tips/homestatus',[
+            'tips'=>'解除绑定成功！',
+            'btnText'=>'返回首页',
+            'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])]);
     }
 
     /*
      * 配件记录
      */
-    public function actionLog($parts_id)
+    public function actionLog($un,$id,$item_id)
     {
         $model = (new \yii\db\Query())
             ->select('id,content,add_time')
             ->from('tbl_parts_log')
-            ->where('parts_id=:parts_id',[':parts_id'=>$parts_id])
+            ->where('un=:un and wx_id=:id and item_id=:item_id',[':un'=>$un,':id'=>$id,':item_id'=>$item_id])
             ->limit(10)
             ->orderBy('id desc');
         if(Yii::$app->request->get('startId'))
             $model->andWhere(['<','id',Yii::$app->request->get('startId')]);
 
         $model = $model->all();
-
         if(Yii::$app->request->get('format') == 'json'){
             return $model? json_encode([
                 'status'=>1,
@@ -302,27 +371,65 @@ class PartsController extends Controller
     }
 
     /*
-     * 绑定维修
+     * 配件备注
      */
-    public function actionSelect($id,$parts_id)
+    public function actionRemark($id,$un,$item_id)
     {
-        $openid = WxBase::openId($id);
-        $model = (new \yii\db\Query())
-            ->select('t.id, t.cover as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    m.address,m.name,m.phone
-            ')
-            ->from('tbl_machine_service as t')
-            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
-            ->where(['t.openid' => $openid,'t.enable' => 'Y'])
-            ->andWhere(['>','unfinished_parts_num',0])
-            ->all();
+        if(Yii::$app->request->post()){
+            $model = new TblPartsLog();
+            if(!$model->remark())
+                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
+            else
+                return $this->render('//tips/homestatus',[
+                    'tips'=>'备注成功',
+                    'btnText'=>'返回',
+                    'btnUrl'=>'javascript:history.go(-2)'
+                ]);
+        }
+        return $this->render('remark',['un'=>$un,'id'=>$id]);
+    }
 
-        foreach ($model as $i=>$m) {
-            $covers = json_decode($m['fault_cover'],true);
-            $model[$i]['fault_cover'] = $covers[0];
+    /*
+     * 取消配件
+     * 事务操作
+     * 1、写入配件日志
+     * 2、更改维修表 未完成配件数量
+     * 3、更改配件的状态或者删除
+     * 4、更新商品库存
+     */
+    public function actionCancel($id,$parts_id)
+    {
+        $parts = TblParts::findOne($parts_id);
+        if(!$parts) Yii::$app->end(json_encode(['status'=>1]));
+
+        $time = time();
+        $connection = Yii::$app->db;
+        $transaction = $connection->beginTransaction();
+
+        try {
+            if($parts->status == 1){            // 配件状态表删除或更改
+                $parts->delete();
+            }else{
+                $parts->status = 11;
+                $parts->save();
+            }
+
+            // 商品库存 加一
+            $sql3 = "update tbl_product set amount=amount+1 where id={$parts->item_id}";
+            $connection->createCommand($sql3)->execute();
+
+            if($parts->fault_id){
+                // 维修表 未完成维修数量减一
+                $sql3 = "update tbl_machine_service set unfinished_parts_num=unfinished_parts_num-1 , parts_arrive_time={$time} where id={$parts->fault_id}";
+                $connection->createCommand($sql3)->execute();
+            }
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            echo $e;
+            Yii::$app->end(json_encode(['status'=>0,'msg'=>'入库失败']));
         }
 
-        return $this->render('select',['model'=>$model,'wx_id'=>$id,'parts_id'=>$parts_id]);
-
+        echo json_encode(['status'=>1]);
     }
 }

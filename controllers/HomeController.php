@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 use app\models\Cache;
+use app\models\WxBase;
 use yii\helpers\Url;
 use app\models\ToolBase;
 use Yii;
@@ -22,10 +23,10 @@ class HomeController extends \yii\web\Controller
     public function actionFitment()
     {
         $model = new UploadForm();
-        if(!isset(Yii::$app->session['wechat'])) $this->redirect('/weixin/index');
-        $weixinid = Cache::getWid();
-        $carousel=Carousel::find()->where(['show' => 1,'weixinid' => $weixinid])->all();
-        return $this->render('fitment', ['model' => $model,'carousel' => $carousel]);
+        $wx_id = Cache::getWid();
+        $carousel=Carousel::find()->where(['show' => 1,'weixinid' => $wx_id])->all();
+
+        return $this->render('fitment', ['model' => $model,'carousel' => $carousel,'wx_id'=>$wx_id]);
     }
 
     /*
@@ -77,7 +78,7 @@ class HomeController extends \yii\web\Controller
                 $model->image->saveAs($filepath);
 
                 $newcarousel = new Carousel();
-                $newcarousel->weixinid = Yii::$app->session['wechat']['id'];
+                $newcarousel->weixinid = Yii::$app->request->get('weixinid');
                 $newcarousel->imgurl = $filepath;
                 $newcarousel->link = '';
                 $newcarousel->title = '默认标题';
@@ -156,20 +157,28 @@ class HomeController extends \yii\web\Controller
      */
     public function actionSetting()
     {
-        if(!isset(Yii::$app->session['wechat'])) $this->redirect('/weixin/index');
+        $wid = Cache::getWid();
+        $model = TblStoreSetting::find()
+            ->where('wx_id=:wid and enable="Y"',[':wid'=> $wid])
+            ->one();
 
-        $model = TblStoreSetting::find()->where(['wx_id'=>Yii::$app->session['wechat']['id'],'enable'=>'Y'])->one();
         //若不存在，可执行添加..(添加weixin表时应添加setting表)
         if($model == null) throw new NotFoundHttpException('查看的页面不存在');
 
-        if ( $model->load(Yii::$app->request->post()) ) {
+        if ( Yii::$app->request->post() && $model->load(Yii::$app->request->post()) ) {
+
+            if( $model->oldAttributes['menu_name'] != $model->menu_name ){
+                $wechat = new WxBase($wid);
+                $wechat->createMenu($model->menu_name);
+            }
+
             if($model->save())
                 return $this->render('//tips/success',['tips'=>'资料修改成功']);
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
-        return $this->render('setting',['model' => $model]);
+        return $this->render('setting',['model' => $model,'wid'=>$wid]);
     }
 
     /*

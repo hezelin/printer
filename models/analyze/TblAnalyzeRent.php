@@ -49,7 +49,6 @@ class TblAnalyzeRent
             ->andWhere(['<','first_rent_time',$this->endTime+86400*3])
             ->groupBy('wx_id')
             ->all();
-
         $tmp = [];
         if($all){
             foreach($all as $d){
@@ -82,13 +81,13 @@ class TblAnalyzeRent
     public function addSql()
     {
         if( !$data = $this->addData() ) return false;
-
         $str='';
         foreach($data as $wid=>$d){
             $add = isset($d['add_count'])? $d['add_count']:0;
             $expire = isset($d['expire_count'])? $d['expire_count']:0;
             $collect = isset($d['collect_count'])? $d['collect_count']:0;
-            $str .= ",({$this->startTime},{$wid},{$d['total_count']},{$add},{$expire},{$collect})";
+            $total = isset($d['total_count'])? $d['total_count']:0;
+            $str .= ",({$this->startTime},{$wid},{$total},{$add},{$expire},{$collect})";
         }
         $str = substr($str,1);
         return "insert into tbl_analyze_rent (date_time,wx_id,total_count,add_count,expire_count,collect_count) values {$str}

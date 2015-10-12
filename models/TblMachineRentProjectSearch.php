@@ -42,7 +42,7 @@ class TblMachineRentProjectSearch extends TblMachineRentProject
      */
     public function search($params)
     {
-        $query = TblMachineRentProject::find();
+        $query = TblMachineRentProject::find()->where(['wx_id'=>Cache::getWid()]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

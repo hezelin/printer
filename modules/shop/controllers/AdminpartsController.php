@@ -8,7 +8,6 @@ use app\models\ToolBase;
 use app\modules\shop\models\TblParts;
 use app\modules\shop\models\TblPartsLog;
 use app\modules\shop\models\TblPartsLogSearch;
-use app\modules\shop\models\TblPartsRecycle;
 use app\modules\shop\models\TblPartsSearch;
 use Yii;
 use yii\helpers\Url;
@@ -33,20 +32,7 @@ class AdminpartsController extends Controller
     }
 
     /*
-     * 已回收配件
-     */
-    public function actionRecycle()
-    {
-        $searchModel = new TblPartsRecycle();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('recycle', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-    /*
-     * 更改机器的状态
+     * 更改配件的状态
      */
     public function actionStatus($id,$status)
     {
@@ -61,7 +47,6 @@ class AdminpartsController extends Controller
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $model->save();
-            $model->process();
             if($model->status == 10 ){
                 $model->updateBind();
             }
@@ -80,10 +65,10 @@ class AdminpartsController extends Controller
     /*
      * 配件留言记录
      */
-    public function actionLog($id)
+    public function actionLog($wx_id,$item_id,$un)
     {
         $searchModel = new TblPartsLogSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$id);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('log', [
             'searchModel' => $searchModel,
@@ -97,13 +82,9 @@ class AdminpartsController extends Controller
      */
     public function actionRemark($id)
     {
-        if($text = Yii::$app->request->post('text')){
+        if($text = Yii::$app->request->post('content')){
             $model = new TblPartsLog();
-            $model->parts_id = $id;
-            $model->content =$text;
-            $model->status = 13;
-            $model->add_time = time();
-            if( $model->save() )
+            if($model->remark())
                 return json_encode(['status'=>1]);
             else
                 return json_encode(['status'=>0,'msg'=>'入库失败！'.ToolBase::arrayToString($model->errors)]);

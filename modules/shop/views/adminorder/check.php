@@ -17,6 +17,8 @@ $this->title = '订单管理';
     .order-list-m li{
         height: 50px; width: 180px; border-bottom: 1px solid #cccccc; padding: 7px 0; margin-bottom: 3px;
     }
+    .width-150 li{ width: 150px;}
+
     .order-list-m img{
         height: 40px; width: 40px; margin-right: 10px;
         float: left;
@@ -83,7 +85,7 @@ echo GridView::widget([
             }
         ],
         [
-            'headerOptions'=>['style'=>'width:180px'],
+            'headerOptions'=>['style'=>'width:200px'],
             'format'=>'html',
             'label'=>'付款情况',
             'value'=>function($model)
@@ -101,7 +103,7 @@ echo GridView::widget([
             'value'=>function($model)
             {
                 if( isset($model->user)){
-                    return '<ul class="order-list-m"><li><img class="order-cover" src="'.substr($model->user->headimgurl,0,-1).'46"><span>'.$model->user->nickname.'</span>
+                    return '<ul class="order-list-m width-150"><li><img class="order-cover" src="'.substr($model->user->headimgurl,0,-1).'46"><span>'.$model->user->nickname.'</span>
                             <p>'.$model->user->province.$model->user->city.'</p></ul>';
                 }
                 return '丢失';

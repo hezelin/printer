@@ -8,9 +8,9 @@
         left: 0;
         width: 100%;
         height: 60px;
-        background: #FFFFFF;
+        background: #fff;
         z-index: 10000;
-        color: #000;
+        color: #edd017;
     }
     #setting-left{
         position: fixed;
@@ -18,7 +18,7 @@
         left: 0;
         width: 20%;
         height: 100%;
-        background: #CCCCCC;
+        background: #444;
         z-index: 10000;
         border-right: 1px solid #666;
         padding: 15px;
@@ -31,6 +31,7 @@
         border: 1px solid #333;
         border-radius: 4px;
         font-size: 14px;
+        color: #000000;
     }
     .setting-error{
         border-color: #ff4500;
@@ -57,6 +58,16 @@
             <input class="setting-input" type="text" data-vessel="series" data-key="top" data-end="px" name="top" value="<?=$data['seriesCss']['top']?>" />&nbsp;&nbsp;&nbsp;px</div>
         <div class="setting-row"> 左部距离：
             <input class="setting-input" type="text" data-vessel="series" data-key="left" data-end="px" name="left" value="<?=$data['seriesCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
+
+        <h4>客户名称设置</h4>
+        <div class="setting-row"> 字体颜色：
+            <input class="setting-input" type="text" data-vessel="user" data-key="color" data-end="" name="color" value="<?=$data['userCss']['color']?>"/></div>
+        <div class="setting-row"> 字体大小：
+            <input class="setting-input" type="text" data-vessel="user" data-key="font-size" data-end="px" name="size" value="<?=$data['userCss']['font-size']?>" />&nbsp;&nbsp;&nbsp;px</div>
+        <div class="setting-row"> 顶部距离：
+            <input class="setting-input" type="text" data-vessel="user" data-key="top" data-end="px" name="top" value="<?=$data['userCss']['top']?>" />&nbsp;&nbsp;&nbsp;px</div>
+        <div class="setting-row"> 左部距离：
+            <input class="setting-input" type="text" data-vessel="user" data-key="left" data-end="px" name="left" value="<?=$data['userCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
 
         <h4 class="setting-m">二维码设置</h4>
         <div class="setting-row"> 图片宽度：
@@ -90,6 +101,9 @@
             <div id="qrcode-series" style="position: absolute;<?=$data['series']?>">
                 <?= $data['seriesNum'] ?>
             </div>
+            <div id="qrcode-user" style="position: absolute;<?=$data['user']?>">
+                <?= $data['userName'] ?>
+            </div>
             <div id="qrcode-img" style="position:absolute;<?=$data['code']?>">
                 <img src="<?=$data['qrcodeImgUrl']?>" width="100%"/>
             </div>
@@ -108,6 +122,7 @@
     var ex =  /^\d+$/;
         var hasError = 0;
         var series = {};
+        var user = {};
         var code = {};
         var bgImg = {};
         $('#print-btn').click(function(){
@@ -130,6 +145,7 @@
                 }else{
                     switch ( $(this).attr('data-vessel')){
                         case 'series': series[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
+                        case 'user': user[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                         case 'code': code[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                         case 'bgImg': bgImg[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                     }
@@ -139,6 +155,7 @@
 
             if( hasError == 0){
                 $('#qrcode-series').attr('style', 'position: absolute;' + obj2string(series) );
+                $('#qrcode-user').attr('style', 'position: absolute;' + obj2string(user) );
                 $('#qrcode-img').attr('style', 'position: absolute;' + obj2string(code) );
                 $('#print-wrap').attr('style','positon:relative;width:' + bgImg.width  );
                 $('#print-bg-img').width( bgImg.width.substr(0,bgImg.width.length - 2) );
@@ -155,7 +172,6 @@
             hasError = 0;
             $('.setting-input').each(function(){
                 if($(this).attr('name') !== 'color' && !ex.test( $(this).val() ) ){
-                    console.log('必须填入整数' + $(this).val());
                     $(this).addClass('setting-error');
                     alert('必须填入整数');
                     hasError = 1;
@@ -163,6 +179,7 @@
                 }else{
                     switch ( $(this).attr('data-vessel')){
                         case 'series': series[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
+                        case 'user': user[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                         case 'code': code[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                         case 'bgImg': bgImg[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                     }
@@ -172,7 +189,7 @@
 
             $.post(
                 '/code/config',
-                {'series':series,'code':code,'bgImg':bgImg},
+                {'series':series,'user':user,'code':code,'bgImg':bgImg},
                 function(resp){
                     if(resp.status==1)
                         alert('保存成功！');

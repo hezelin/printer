@@ -65,7 +65,7 @@ echo GridView::widget([
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'template' => '{renew} | {upgrade}  &nbsp; &nbsp; {console} &nbsp; {view} &nbsp; {update} &nbsp; {delete} &nbsp; {start} &nbsp; {stop}',
+            'template' => '{renew} | {upgrade}  &nbsp; &nbsp; {console} &nbsp; {view} &nbsp; {update} &nbsp; {delete} &nbsp; {start} &nbsp; {stop} &nbsp; {qrcode}',
             'buttons' => [
                 'renew' => function($url,$model,$key){
                     if($model->status == 1)
@@ -92,6 +92,9 @@ echo GridView::widget([
                     if($model->status != 2 || $model->due_time < time())
                         Html::addCssClass($option,'my-disabled');
                     return Html::a('<span class="glyphicon glyphicon-stop"></span>',$url,$option);
+                },
+                'qrcode' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['/code/weixin']),['title'=>'公众号二维码']);
                 }
             ]
         ]

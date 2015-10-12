@@ -16,10 +16,10 @@ Yii::$app->params['layoutBottomHeight'] = 40;
     a:visited{
         color: #262b31;
     }
-    #pd_scar{height:100%;width:100%; display: none; top:0; left:0; position:fixed;z-index:599999;color:#202020;text-align:center;font-size:1em;}
+    #pd_scar{height:100%;width:100%; display: none; top:0; left:0; position:fixed;z-index:599999;color:#202020;text-align:center;font-size:1.2em;}
     .pd_scar2{position:absolute;top:40%;width:80%;left:10%;background:#fff;z-index:3;border-radius:6px;}
-    .pd_scar_a{border-bottom:1px #d7d7d7 solid;line-height:3em;margin-top:0.25em;}
-    .pd_scar_b a{display:block;width:50%;float:left;line-height:3em;text-decoration:none;color:#202020;}
+    .pd_scar_a{border-bottom:1px #d7d7d7 solid;line-height:3em;margin-top:0.25em; padding: 10px 0;}
+    .pd_scar_b a{display:block;width:50%;float:left;line-height:3em;text-decoration:none;color:#202020; padding: 10px 0;}
     .pd_bg{float:left;height:100%;width:100%;background:#000;opacity:0.5;}
 </style>
 

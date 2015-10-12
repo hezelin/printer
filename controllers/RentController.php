@@ -81,9 +81,41 @@ class RentController extends \yii\web\Controller
             ->where(['t.id'=>$rent_id])
             ->one();
 
-        $model['cover_images'] = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
-        $model['else_attr'] = array_merge(json_decode($model['else_attr'],true),json_decode($model['model_attr'],true));
+
+        $tmp1 = json_decode($model['else_attr'],true);
+        $tmp2 = json_decode($model['model_attr'],true);
+        $tmp3 = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
+        $model['cover_images'] = is_array($tmp3)? $tmp3:[];
+        $model['else_attr'] = array_merge(is_array($tmp1)?$tmp1:[],is_array($tmp2)?$tmp2:[]);
+
         return $this->render('machinedetail',['model'=>$model,'id'=>$id]);
+    }
+
+    /*
+     * 租借机器详情，这里是租借的内容展示，与租借方案无关
+     */
+    public function actionUserMachine($id)
+    {
+        $model = (new \yii\db\Query())
+            ->select('t.id,t.monthly_rent,t.black_white,t.colours,t.add_time,t.name as user,t.address,
+                m.series_id,m.else_attr,m.come_from,
+                p.type as model,p.cover_images,p.function,p.else_attr as model_attr,p.is_color,p.describe,b.name
+            ')
+            ->from('tbl_rent_apply as t')
+            ->leftJoin('tbl_machine as m','m.id=t.machine_id')
+            ->leftJoin('tbl_machine_model as p','p.id=m.model_id')
+            ->leftJoin('tbl_brand as b','b.id=p.brand_id')
+            ->where(['t.machine_id'=>$id,'t.enable'=>'Y'])
+            ->one();
+
+
+        $tmp1 = json_decode($model['else_attr'],true);
+        $tmp2 = json_decode($model['model_attr'],true);
+        $tmp3 = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
+        $model['cover_images'] = is_array($tmp3)? $tmp3:[];
+        $model['else_attr'] = array_merge(is_array($tmp1)?$tmp1:[],is_array($tmp2)?$tmp2:[]);
+
+        return $this->render('userMachine',['model'=>$model,'id'=>$id]);
     }
 
     /*

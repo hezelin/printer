@@ -141,14 +141,12 @@ class TblMachine extends \yii\db\ActiveRecord
             $rows[] = $row;
         }
 
-        $row = @Yii::$app->db->createCommand()->batchInsert('tbl_machine',
+        $row = Yii::$app->db->createCommand()->batchInsert('tbl_machine',
             ['wx_id','model_id','series_id','buy_date','buy_price','else_attr','add_time'],$rows
         )->execute();
 
         if($row)
             $this->updateCount('add',$row);
-        else
         return $row;
-
     }
 }

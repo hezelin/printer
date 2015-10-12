@@ -5,47 +5,9 @@ $this->title = '维修任务';
  * 确认接单页面
  */
 ?>
-<style>
-    body{ background-color: #ffffff !important;}
-</style>
+<?= $this->render('_detail', ['model' => $model ]) ?>
 
-<div class="h-box">
-    <div class="h-title h-gray h-hr">故障信息</div>
-    <div class="h-box-row h-hr">
-        <div class="h-left">
-            <img id="previewImage" class="h-img" src="<?=$model['fault_cover']?>" />
-        </div>
-        <div class="h-right">
-            <h4 class="h-row-1 h-hr">故障类型：<?=\app\models\ConfigBase::getFaultStatus($model['fault_type'])?></h4>
-            <p class="h-row-2"><?=$model['desc']?></p>
-        </div>
-    </div>
-</div>
 
-<div class="h-box">
-    <div class="h-title h-gray h-hr">客户资料</div>
-    <div class="h-row">
-        <div class="h-left-text">客户信息</div>
-        <div class="h-right-text"><?= $model['name'],',<a class="h-tel" href="tel:',$model['phone'],'">',$model['phone']?></a></div>
-    </div>
-    <div class="h-row">
-        <div class="h-left-text">客户地址</div>
-        <div class="h-right-text"><?= $model['address']?></div>
-    </div>
-    <div class="h-row">
-        <div class="h-left-text">申请时间</div>
-        <div class="h-right-text"><?= date('Y年m月d H:i',$model['add_time'])?></div>
-    </div>
-    <div class="h-row">
-        <div class="h-left-text">地址坐标</div>
-        <div class="h-right-text" id="map-btn" style="color: #5c72ff; font-weight: 600;">点击导航</div>
-    </div>
-    <div class="h-row">
-        <div class="h-left-text">历史维修</div>
-        <a href="<?=Url::toRoute(['s/irecord','id'=>$model['wx_id'],'mid'=>$model['mid']])?>" class="h-right-text" style="color: #5c72ff; font-weight: 600;">点击查看</a>
-    </div>
-
-</div>
 <form method="post" id="wechat-form" action="<?=Url::toRoute(['m/process','id'=>$model['id'],'openid'=>$openid])?>">
     <input name="_csrf" type="hidden" value="<?=\Yii::$app->request->csrfToken?>"/>
     <input name="TblServiceProcess[status]" type="hidden" value="3"/>
@@ -53,15 +15,17 @@ $this->title = '维修任务';
     <input name="from" type="hidden" value="<?=$from?>"/>
     <input name="TblServiceProcess[longitude]" type="hidden" id="tbl_longitude"/>
 <button type="button" id="access-order" class="h-fixed-bottom">
-    确认接单
+    加载中...
 </button>
 </form>
+
 
 <?php
 \app\components\WxjsapiWidget::widget([
     'wx_id'=>$model['wx_id'],
     'apiList'=>['getLocation','openLocation','previewImage'],
     'jsReady'=>'
+     document.querySelector("#access-order").innerHTML = "确认接单";
     document.querySelector("#access-order").onclick = function () {
         wx.getLocation({
             success: function (res) {

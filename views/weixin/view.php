@@ -9,9 +9,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="alert alert-info" role="alert">
-    1.在公众平台(<span class="red">开发者中心</span>)-><span class="red">服务配置</span>，填写下面的 <span class="red"> Token(令牌)、URL(服务器地址)</span><br/>
-    2.在公众平台(<span class="red">开发者中心</span>)->网页服务->网页账号->网页授权获取用户基本信息设置授权回调页面域名为<span class="red"> <?=$host?></span><br/>
-    3.在公众平台(<span class="red">公众号设置</span>)->功能设置->JS接口安全域名，填写<span class="red"><?=substr($host,7)?></span>
+    1.在公众平台(<span class="red">开发者中心</span>)-><span class="red">服务配置</span>，填写下面的 <span class="red"> Token(令牌)、URL(服务器地址)</span> 并且启用  &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="/images/one1.png" class="btn btn-sm btn-info">示例</a><br/>
+    2.在公众平台(<span class="red">开发者中心</span>)->网页服务->网页账号->网页授权获取用户基本信息设置授权回调页面域名为<span class="red"><?=$host?></span> &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="/images/one2.png" class="btn btn-sm btn-info">示例</a><br/>
+    3.在公众平台(<span class="red">公众号设置</span>)->功能设置->JS接口安全域名，填写<span class="red"><?=$host?></span> &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="/images/one3.png" class="btn btn-sm btn-info">示例</a><br/>
+    4.以上步骤完成之后，在<a href="<?=Url::toRoute(['/weixin/index'])?>" class="btn btn-sm btn-success">我的公众号</a> 列表页面开通服务。
 </div>
 
 <?php

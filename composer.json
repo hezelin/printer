@@ -22,6 +22,7 @@
         "linslin/yii2-curl": "*",
         "2amigos/yii2-file-upload-widget": "*",
         "2amigos/yii2-highcharts-widget" : "~1.0",
+        "2amigos/yii2-date-picker-widget" : "~1.0",
         "kucha/ueditor": "*",
         "kartik-v/yii2-widget-select2": "*",
         "kartik-v/yii2-widget-switchinput": "*",

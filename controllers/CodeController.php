@@ -3,12 +3,10 @@
 namespace app\controllers;
 
 use app\models\Cache;
-use app\models\MachineSearch;
 use app\models\TblMachineSearch;
 use app\models\TblQrcodeSetting;
 use app\models\ToolBase;
 use Yii;
-use app\models\TblMachine;
 use app\models\WxCode;
 use yii\helpers\Url;
 use yii\filters\VerbFilter;
@@ -16,12 +14,6 @@ use yii\filters\VerbFilter;
 class CodeController extends \yii\web\Controller
 {
     public $layout = 'console';
-
-
-    /*
-     * 获取第三方二维码  url
-     */
-    private $qrcodeApiUrl = 'http://qr.liantu.com/api.php?';
 
     public function behaviors()
     {
@@ -78,15 +70,14 @@ class CodeController extends \yii\web\Controller
                 $index = (int)($list[$i]['machineId']/500);
                 $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
 
-                if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$list[$i]['machineId'].'.jpg') ){
-                    $urlParams = [
-                        'text' => Url::toRoute(['codeapi/machine','id'=>$list[$i]['machineId']],'http'),
-                    ];
-                    $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+                if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$list[$i]['machineId'].'.png') ){
+
+                    $url = Url::toRoute(['codeapi/machine','id'=>$list[$i]['machineId']],'http');
                     $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
-                    file_put_contents($dir.'/'.$list[$i]['machineId'].'.jpg',file_get_contents($qrcodeImgUrl));
+                    $fileName = $dir.'/'.$list[$i]['machineId'].'.png';
+                    shell_exec("qrencode -o $fileName '$url' -s 10 -m 2 -l H");
                 }
-                $list[$i]['qrcodeImgUrl'] = $imgUrl.'/'.$list[$i]['machineId'].'.jpg';
+                $list[$i]['qrcodeImgUrl'] = $imgUrl.'/'.$list[$i]['machineId'].'.png';
             }
             $setting = TblQrcodeSetting::findOne(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
             $data = [
@@ -132,27 +123,36 @@ class CodeController extends \yii\web\Controller
     public function actionSetting($id)
     {
         set_time_limit(0);
-        $model = TblMachine::findOne($id);
+        $model = (new \yii\db\Query())
+            ->select('t.name,p.series_id')
+            ->from('tbl_rent_apply t')
+            ->leftJoin('tbl_machine p','p.id=t.machine_id')
+            ->where('t.machine_id=:mid and t.enable="Y"',[':mid'=>$id])
+            ->one();
 
         $index = (int)($id/500);
         $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
-        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.jpg') ){
-            $urlParams = [
-                'text' => Url::toRoute(['codeapi/machine','id'=>$id],'http'),
-            ];
-            $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.png') ){
 
+            $url = Url::toRoute(['codeapi/machine','id'=>$id],'http');
             $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
-            file_put_contents($dir.'/'.$id.'.jpg',file_get_contents($qrcodeImgUrl));
+            $fileName = $dir.'/'.$id.'.png';
+            shell_exec("qrencode -o $fileName '$url' -s 10 -m 2 -l H");
         }
 
-        $setting = TblQrcodeSetting::findOne(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
+        $setting = (new \yii\db\Query())
+            ->select('*')
+            ->from('tbl_qrcode_setting')
+            ->where(['wx_id'=>Cache::getWid(),'enable'=>'Y'])
+            ->one();
 
         $data = [
             'series'=>'',
+            'user'=>'',
             'code'=>'',
-            'seriesNum'=>$model->series_id,
-            'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.jpg',
+            'seriesNum'=>$model['series_id'],
+            'userName' => $model['name'],
+            'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.png',
             'img'=> [
                 'width'=>'',
                 'img'=>'/images/qrcode-bgimg-test.jpg',
@@ -164,6 +164,12 @@ class CodeController extends \yii\web\Controller
                 'left'=>50,
                 'color'=>'#FF4500',
                 'font-size'=>'55',
+            ],
+            'userCss'=>[
+                'top'=>100,
+                'left'=>50,
+                'color'=>'#FF4500',
+                'font-size'=>'40',
             ],
             'codeCss'=>[
                 'top'=>22,
@@ -188,6 +194,14 @@ class CodeController extends \yii\web\Controller
                     $data['seriesCss'][$k]= $k=='color'? $v:(int)$v;
                 }
             }
+
+            if($series = json_decode($setting['user_name'],true) ){
+                foreach($series as $k=>$v){
+                    $data['user'] .= "$k:$v;";
+
+                    $data['userCss'][$k]= $k=='color'? $v:(int)$v;
+                }
+            }
             if($series = json_decode($setting['code'],true) ){
                 foreach($series as $k=>$v){
                     $data['code'] .= "$k:$v;";
@@ -209,19 +223,27 @@ class CodeController extends \yii\web\Controller
     public function actionMachine($id)
     {
         set_time_limit(0);
-        $model = TblMachine::findOne($id);
+        $model = (new \yii\db\Query())
+            ->select('t.name,p.series_id')
+            ->from('tbl_rent_apply t')
+            ->leftJoin('tbl_machine p','p.id=t.machine_id')
+            ->where('t.machine_id=:mid and t.enable="Y"',[':mid'=>$id])
+            ->one();
 
         $index = (int)($id/500);
         $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
-        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.jpg') ){
-            $urlParams = [
-                'text' => Url::toRoute(['codeapi/machine','id'=>$id],'http'),
-            ];
-            $qrcodeImgUrl = $this->qrcodeApiUrl . http_build_query($urlParams);
+        if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.png') ){
+
+            $url = Url::toRoute(['codeapi/machine','id'=>$id],'http');
             $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
-            file_put_contents($dir.'/'.$id.'.jpg',file_get_contents($qrcodeImgUrl));
+            $fileName = $dir.'/'.$id.'.png';
+            shell_exec("qrencode -o $fileName '$url' -s 10 -m 2 -l H");
         }
-        $setting = TblQrcodeSetting::findOne(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
+        $setting = (new \yii\db\Query())
+            ->select('*')
+            ->from('tbl_qrcode_setting')
+            ->where(['wx_id'=>Cache::getWid(),'enable'=>'Y'])
+            ->one();
 
         $data = [
             'img'=> [
@@ -231,10 +253,12 @@ class CodeController extends \yii\web\Controller
                 'bgWidth'=>'',
             ],
             'series'=>'',
+            'user'=>'',
             'code'=>'',
-            'seriesNum'=>$model->series_id,
-            'machineId'=>$model->id,
-            'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.jpg'
+            'seriesNum'=>$model['series_id'],
+            'userName' => $model['name'],
+            'machineId'=>$id,
+            'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.png'
         ];
 
         if($setting){
@@ -247,6 +271,10 @@ class CodeController extends \yii\web\Controller
             if($series = json_decode($setting['series'],true) ){
                 foreach($series as $k=>$v)
                     $data['series'] .= "$k:$v;";
+            }
+            if($series = json_decode($setting['user_name'],true) ){
+                foreach($series as $k=>$v)
+                    $data['user'] .= "$k:$v;";
             }
             if($series = json_decode($setting['code'],true) ){
                 foreach($series as $k=>$v)
@@ -272,6 +300,7 @@ class CodeController extends \yii\web\Controller
 
             $setting->bg_img = json_encode(Yii::$app->request->post('bgImg'));
             $setting->series = json_encode(Yii::$app->request->post('series'));
+            $setting->user_name = json_encode(Yii::$app->request->post('user'));
             $setting->code = json_encode(Yii::$app->request->post('code'));
             $setting->add_time = time();
             if($setting->save())
@@ -290,4 +319,41 @@ class CodeController extends \yii\web\Controller
         return $this->render('score',[ 'qrcodeImgUrl'=>$wx->scoreCode() ]);
     }
 
+    /*
+     * 生成公众号二维码
+     */
+    public function actionWeixin()
+    {
+        $wx_num = (new \yii\db\Query())
+            ->select('wx_num')
+            ->from('tbl_weixin')
+            ->where(['id'=>Cache::getWid()])
+            ->scalar();
+        return $this->render('weixin',['wx_num'=>$wx_num]);
+    }
+
+    /*
+     * 配件二维码
+     *
+     */
+    public function actionParts()
+    {
+        if( Yii::$app->request->post('num') && Yii::$app->request->post('item_id') ) {
+            $itemId = Yii::$app->request->post('item_id');
+            $id = Cache::getWid();
+            $imgUrl = [];
+            $preDir = '/uploads/tmp/' . date('ymd', time()) . '/';
+            for ($i = 0; $i < Yii::$app->request->post('num'); $i++) {
+                $un = uniqid();
+                $url = Url::toRoute(['/shop/codeapi/parts','id' =>$id,'item'=>$itemId,'un'=>$un],'http');
+                $dir = ToolBase::newDir($preDir, Yii::getAlias('@webroot'));
+                $fileName = $dir . '/' . $un . '.png';
+                shell_exec("qrencode -o $fileName '$url' -s 4 -m 2 -l M");
+                $imgUrl[] = $preDir . $un . '.png';
+            }
+            return $this->render('parts', ['imgUrl' => $imgUrl]);
+        }
+
+        return $this->render('itemSelect');
+    }
 }

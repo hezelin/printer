@@ -21,6 +21,7 @@ class TblProduct extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 120],
             [['cover'], 'string', 'max' => 50],
             [['cover_images'], 'string', 'max' => 300],
+            [['use_score','give_score'],'default','value'=>0],
             [['add_attr'], 'string', 'max' => 1000]
         ];
     }

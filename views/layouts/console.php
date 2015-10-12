@@ -18,9 +18,43 @@ WeixinAsset::register($this);
 <head>
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <!--[if lte IE 8]><div id="letskillie6">
+        <div class="alert" style="position: fixed;left: 50%;margin-left: -470px;width: 918px;z-index: 9999;_position: absolute;_top: expression(eval(document.documentElement.scrollTop));">
+            <div class="content">
+                <a class="close" rel="nofollow" id="letskillie6_close" href="####"></a>
+                <p style="font-size: 14px;">
+                    您正在使用较低版本的IE浏览器浏览网页，推荐您使用<a target="_blank" rel="nofollow" class="ie8" href="http://se.360.cn/"><strong>360浏览器</strong></a>或其他浏览器，本站将能为您提供更好的服务。
+                </p>
+                <p class="browsers" style="text-align: center;">
+                    <a style="margin-right:10px;" rel="nofollow" target="_blank" class="firefox" href="http://www.mozillaonline.com/">Firefox</a>
+                    <a style="margin-right:10px;" rel="nofollow" target="_blank" class="chrome" href="http://dlsw.baidu.com/sw-search-sp/soft/9d/14744/ChromeStandalone_V45.0.2454.93_Setup.1442372894.exe">Chrome</a>
+                    <a style="margin-right:10px;" rel="nofollow" target="_blank" class="sougo" href="http://se.360.cn/">360浏览器</a>
+                </p>
+            </div>
+        </div>
+        <p style="height:53px"></p>
+    </div>
+    <script type="text/javascript">
+        (function() {
+            var letskillie6 = document.getElementById('letskillie6');
+            letskillie6.onclick = function() {
+                removeElement(this);
+            }
+            function removeElement(_element) {
+                var _parentElement = _element.parentNode;
+                if (_parentElement) {
+                    _parentElement.removeChild(_element);
+                }
+            }
+
+        })()
+    </script><![endif]-->
 
 </head>
 <body>
@@ -102,6 +136,7 @@ WeixinAsset::register($this);
                                     'items' => [
                                         ['label' => '积分二维码','url' => '/code/score'],
                                         ['label' => '生成机器码','url' => '/code/index'],
+                                        ['label' => '生成配件码','url' => '/code/parts'],
                                         ['label' => '维修员绑定码','url' => '/code/binding'],
                                     ],
                                 ],
@@ -110,6 +145,7 @@ WeixinAsset::register($this);
                                     'items' => [
                                         ['label' => '租借列表','url' => '/adminrent/list'],
                                         ['label' => '租借申请','url' => '/adminrent/apply'],
+                                        ['label' => '收租记录','url' => '/charge/list'],
                                     ],
                                 ],
                                 [
@@ -117,7 +153,7 @@ WeixinAsset::register($this);
                                     'items' => [
                                         ['label' => '待分配维修','url' => '/service/index'],
                                         ['label' => '维修列表','url' => '/service/list'],
-                                        ['label' => '取消列表','url' => '/service/cancellist'],
+                                        ['label' => '电话维修','url' => '/service/call'],
                                         ['label' => '维修配件管理', 'url' => '/shop/adminparts/list','route'=>'/shop/adminparts'],
 
                                     ],

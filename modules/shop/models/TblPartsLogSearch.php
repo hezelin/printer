@@ -18,8 +18,8 @@ class TblPartsLogSearch extends TblPartsLog
     public function rules()
     {
         return [
-            [['id', 'parts_id', 'status', 'add_time'], 'integer'],
-            [['content'], 'safe'],
+            [['id', 'item_id', 'wx_id', 'status', 'add_time'], 'integer'],
+            [['content','un'], 'safe'],
         ];
     }
 
@@ -39,9 +39,13 @@ class TblPartsLogSearch extends TblPartsLog
      *
      * @return ActiveDataProvider
      */
-    public function search($params,$id)
+    public function search($params)
     {
-        $query = TblPartsLog::find()->where(['parts_id'=>$id])->orderBy('id desc');
+        $query = TblPartsLog::find()->where([
+            'item_id'=>Yii::$app->request->get('item_id'),
+            'wx_id'=>Yii::$app->request->get('wx_id'),
+            'un'=>Yii::$app->request->get('un')
+        ])->orderBy('id desc');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,7 +61,8 @@ class TblPartsLogSearch extends TblPartsLog
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'parts_id' => $this->parts_id,
+            'wx_id' => $this->wx_id,
+            'item_id' => $this->item_id,
             'status' => $this->status,
             'add_time' => $this->add_time,
         ]);

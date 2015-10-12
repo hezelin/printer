@@ -17,7 +17,7 @@ class TblBrand extends \yii\db\ActiveRecord
             [['wx_id', 'name'], 'required'],
             [['wx_id'], 'integer'],
             [['name'], 'string', 'max' => 50],
-            [['name'], 'unique']
+            [['wx_id', 'name'], 'unique', 'targetAttribute' => ['wx_id', 'name'], 'message' => '品牌名字已经存在.']
         ];
     }
 

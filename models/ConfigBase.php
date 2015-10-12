@@ -85,7 +85,7 @@ class ConfigBase
         5 => '故障已确认',
         6 => '申请配件中',
         7 => '配件到达',
-        8 => '维修完成',
+        8 => '(完成)等待评价',
         9 => '评价完成',
     ];
 
@@ -115,7 +115,11 @@ class ConfigBase
     public static $scoreFromStatus = [
         1 => '到店消费',
         2 => '在线消费',
-        3 => '下级提成'
+        3 => '分享公众号链接',
+        4 => '邀请租机链接',
+        5 => '分享耗材链接',
+        6 => '邀请租机提成',
+        7 => '分享耗材提成'
     ];
 
     public static function getScoreFromStatus($id){
@@ -127,6 +131,7 @@ class ConfigBase
      */
     public static function getMachineBrand($id='')
     {
+        if($id == '0') return '未知';
         $brand = TblBrand::findAll(['wx_id'=>Cache::getWid()]);
         $brand = $brand? ArrayHelper::map($brand,'id','name'):[];
         return $id? $brand[$id]:$brand;
@@ -181,5 +186,21 @@ class ConfigBase
         }
 
         return ( $id && isset($tmp[$id]) )? $tmp[$id]:$tmp;
+    }
+
+    /*
+     * 机器来源
+     */
+    public static $machineOrigin = [
+        1 => '出租',
+        2 => '销售',
+        3 => '其他'
+    ];
+
+    /*
+     * 获取机器来源
+     */
+    public static function getMachineOrigin($id){
+        return isset(self::$machineOrigin[$id])? self::$machineOrigin[$id]:'出错';
     }
 }

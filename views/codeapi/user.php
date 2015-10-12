@@ -12,7 +12,7 @@ use yii\helpers\Url;
     <a class="h-link" href="<?=Url::toRoute(['i/service','id'=>$id,'mid'=>$mid])?>">
         维修记录
     </a>
-    <a class="h-link" href="<?=Url::toRoute(['m/apply','id'=>$id])?>">
+    <a class="h-link" href="<?=Url::toRoute(['share/scheme','id'=>$id])?>">
         分享赚积分
     </a>
 </div>

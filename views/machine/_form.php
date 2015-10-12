@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use dosamigos\datepicker\DatePicker;
 use app\components\MoreattrWidget;
+use yii\bootstrap\Alert;
 
 
 /* @var $this yii\web\View */
@@ -59,23 +60,15 @@ if( Yii::$app->session->hasFlash('error') )
     ]);?>
 
     <?= $form->field($model, 'buy_price')->textInput() ?>
-    <?= $form->field($model, 'buy_date')->widget(\yii\jui\DatePicker::classname(), [
-        'dateFormat' => 'yyyy-MM-dd',
-        'options' => [
-            'class' => 'form-control',
+    <?= $form->field($model, 'buy_date')->widget(dosamigos\datepicker\DatePicker::className(), [
+        'language' => 'zh-CN',
+        'clientOptions' => [
+            'autoclose' => true,
+            'format' => 'yyyy-mm-dd',
         ]
     ]) ?>
 
-    <?= $form->field($model, 'come_from')->widget(\kartik\switchinput\SwitchInput::className(),[
-        'type' => 1,
-        'pluginOptions'=>[
-            'onText'=>'是',
-            'offText'=>'否'
-        ],
-        'options'=>[
-            'style'=>'margin-left:100px',
-        ]
-    ])?>
+    <?= $form->field($model, 'come_from')->dropDownList(\app\models\ConfigBase::$machineOrigin) ?>
 
     <?php
         if( $model->isNewRecord )
@@ -83,7 +76,6 @@ if( Yii::$app->session->hasFlash('error') )
     ?>
 
     <?= $form->field($model, 'else_attr')->textInput(['placeholder'=>'属性名，属性值一一对应']) ?>
-
 
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">

@@ -63,19 +63,12 @@ class AdminrentController extends \yii\web\Controller
 
         if($model->load( Yii::$app->request->post()))
         {
-
-            $model->due_time = $model->due_time? strtotime($model->due_time):0;
+            $model->due_time = ($_POST['TblRentApplyWithMachine']['due_time'] && $_POST['TblRentApplyWithMachine']['due_time'] != '1970-01-01')? strtotime($_POST['TblRentApplyWithMachine']['due_time']):0;
+            $model->first_rent_time = ($_POST['TblRentApplyWithMachine']['first_rent_time'] && $_POST['TblRentApplyWithMachine']['first_rent_time'] != '1970-01-01')? strtotime($_POST['TblRentApplyWithMachine']['first_rent_time']):0;
             $model->status = 2;
-
             if($model->save()) {
                 // 如果是审核通过，改版机器的状态 和 出租次数
                 $model->updateMachineStatus();
-
-                /*return $this->render('//tips/success', [
-                    'tips' => '审核成功，并且资料录入',
-                    'btnText' => '返回',
-                    'btnUrl' => Url::toRoute(['adminrent/apply'])
-                ]);*/
                 return $this->redirect(Url::toRoute(['map','id'=>$model->id]));
             }
             else
@@ -89,6 +82,11 @@ class AdminrentController extends \yii\web\Controller
         $model->first_rent_time = $model->first_rent_time? :'';
         $model->monthly_rent = $model->machineProject->lowest_expense;
         $model->machine_id = '';
+
+        if($model->due_time)
+            $model->due_time = date('Y-m-d',$model->due_time);
+        if($model->first_rent_time)
+            $model->first_rent_time = date('Y-m-d',$model->first_rent_time);
 
         return $this->render('pass',[
             'model'=>$model,
@@ -125,9 +123,8 @@ class AdminrentController extends \yii\web\Controller
 
         if($model->load( Yii::$app->request->post()))
         {
-            $model->first_rent_time = ($model->first_rent_time && $model->first_rent_time != '1970-01-01')? strtotime($model->first_rent_time):0;
-            $model->due_time = ($model->due_time && $model->due_time != '1970-01-01')? strtotime($model->due_time):0;
-
+            $model->due_time = ($_POST['TblRentApply']['due_time'] && $_POST['TblRentApply']['due_time'] != '1970-01-01')? strtotime($_POST['TblRentApply']['due_time']):0;
+            $model->first_rent_time = ($_POST['TblRentApply']['first_rent_time'] && $_POST['TblRentApply']['first_rent_time'] != '1970-01-01')? strtotime($_POST['TblRentApply']['first_rent_time']):0;
             if($model->save()) {
                 return $this->render('//tips/success', [
                     'tips' => '资料修改成功',
@@ -139,6 +136,8 @@ class AdminrentController extends \yii\web\Controller
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
+        $model->due_time = date('Y-m-d',$model->due_time);
+        $model->first_rent_time = date('Y-m-d',$model->first_rent_time);
         return $this->render('pass',[
             'model'=>$model,
             'type'=>'update',
@@ -157,7 +156,7 @@ class AdminrentController extends \yii\web\Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $fixProvider = new ActiveDataProvider([
-            'query' => TblUserMaintain::find(['wx_id'=>Cache::getWid()]),
+            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -200,23 +199,23 @@ class AdminrentController extends \yii\web\Controller
             $model->wx_id = Cache::getWid();
             $model->status = 2;
 
-            $model->first_rent_time = ($model->first_rent_time && $model->first_rent_time != '1970-01-01')? strtotime($model->first_rent_time):0;
-            $model->due_time = ($model->due_time && $model->due_time != '1970-01-01')? strtotime($model->due_time):0;
-
+            $model->due_time = ($_POST['TblRentApply']['due_time'] && $_POST['TblRentApply']['due_time'] != '1970-01-01')? strtotime($_POST['TblRentApply']['due_time']):0;
+            $model->first_rent_time = ($_POST['TblRentApply']['first_rent_time'] && $_POST['TblRentApply']['first_rent_time'] != '1970-01-01')? strtotime($_POST['TblRentApply']['first_rent_time']):0;
 
             if($model->save()) {
                 $model->updateMachineStatus();
-                return $this->render('//tips/success', [
-                    'tips' => '机器绑定租借成功',
-                    'btnText' => '返回机器列表',
-                    'btnUrl' => Url::toRoute(['machine/list'])
-                ]);
+                return $this->redirect(Url::toRoute(['map','id'=>$model->id]));
             }
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
-
+        if($model->due_time)
+            $model->due_time = date('Y-m-d',$model->due_time);
+        if($model->first_rent_time)
+            $model->first_rent_time = date('Y-m-d',$model->first_rent_time);
+        else
+            $model->first_rent_time = date('Y-m-d',strtotime('3 months',time()));
 
         return $this->render('pass',[
             'model'=>$model,
@@ -245,9 +244,11 @@ class AdminrentController extends \yii\web\Controller
             $model->openid = Yii::$app->request->post('openid');
             $model->add_time = time();
             $model->status = 2;
-            $model->cover = json_encode(['/images/call_maintain.png']);
+            $model->content = json_encode(['cover'=>['/images/call_maintain.png']]);
             $model->desc = Yii::$app->request->post('fault_text');
             $model->type = Yii::$app->request->post('fault_type');
+
+            $model->remark = Yii::$app->request->post('fault_remark');
             if(!$model->save())
                 exit(json_encode(['status'=>0,'msg'=>'错误100']));
 
@@ -256,7 +257,7 @@ class AdminrentController extends \yii\web\Controller
 
             $model = new TblServiceProcess();
             $model->service_id = $fault_id;
-            $model->content = json_encode(['status'=>2]);
+            $model->content = '任务分配中';
             $model->add_time = time();
             if(!$model->save())
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,200']) );
@@ -281,7 +282,8 @@ class AdminrentController extends \yii\web\Controller
                 $fault_id,
                 Yii::$app->request->post('openid'),
                 $name,Yii::$app->request->post('fault_text'),$model->address,
-                $model->name.','.$model->phone,$model->add_time
+                $model->name.','.$model->phone,$model->add_time,
+                Yii::$app->request->post('fault_remark')
             );
 
             // 为申请者推送消息
@@ -345,4 +347,5 @@ class AdminrentController extends \yii\web\Controller
             'wid'=>Cache::getWid()
         ]);
     }
+
 }

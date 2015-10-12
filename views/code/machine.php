@@ -17,6 +17,9 @@
         <div id="qrcode-series" style="position: absolute;<?=$data['series']?>">
             <?= $data['seriesNum'] ?>
         </div>
+        <div id="qrcode-user" style="position: absolute;<?=$data['user']?>">
+            <?= $data['userName'] ?>
+        </div>
         <div id="qrcode-img" style="position:absolute;<?=$data['code']?>">
             <img src="<?=$data['qrcodeImgUrl']?>" width="100%"/>
         </div>

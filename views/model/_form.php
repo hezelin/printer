@@ -48,12 +48,14 @@ if( Yii::$app->session->hasFlash('error') )
         ]
     ]
 ]);?>
-<?= $form->field($model, 'buy_date')->widget(\yii\jui\DatePicker::classname(), [
-    'dateFormat' => 'yyyy-MM-dd',
-    'options' => [
-        'class' => 'form-control',
+<?= $form->field($model, 'buy_date')->widget(dosamigos\datepicker\DatePicker::className(), [
+    'language' => 'zh-CN',
+    'clientOptions' => [
+        'autoclose' => true,
+        'format' => 'yyyy-mm-dd',
     ]
 ]) ?>
+
 <?= $form->field($model, 'type')->textInput(['maxlength' => 50]) ?>
 <?= $form->field($model, 'function')->textInput(['placeholder'=>'强调显示，显示位置在前面']) ?>
 <?= $form->field($model, 'is_color')->radioList(['1'=>'黑白','2'=>'彩色（包含黑白）'])?>

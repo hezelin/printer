@@ -14,8 +14,11 @@ class IController extends \yii\web\Controller
 
     public function actionIndex($id)
     {
-        $openid = WxBase::openId($id);
-        $model = TblUserWechat::find()->select('nickname,headimgurl,province,city')->where(['openid'=>$openid,'wx_id'=>$id])->one();
+        $openid = WxBase::openId($id,false);
+        $model = TblUserWechat::find()
+            ->select('nickname,headimgurl,province,city')
+            ->where(['openid'=>$openid,'wx_id'=>$id])
+            ->one();
         return $this->render('index',['model'=>$model,'id'=>$id]);
     }
 
@@ -32,11 +35,19 @@ class IController extends \yii\web\Controller
             ->from('tbl_rent_apply as t')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')
             ->leftJoin('tbl_machine_model as p','m.model_id=p.id')
-            ->where(['t.wx_id' => $id, 't.openid' => $openid,'t.enable'=>'Y'])
-            ->orderBy('t.status')
+            ->where(['t.wx_id' => $id, 't.openid' => $openid,'t.enable'=>'Y','t.status'=>2])
+            ->orderBy('t.id desc')
             ->all();
 
-        return $this->render('machine',['model'=>$model,'id'=>$id]);
+        $project = (new \yii\db\Query())
+            ->select('p.id,lowest_expense,m.type,m.cover,m.function,b.name')
+            ->from('tbl_rent_apply as t')
+            ->leftJoin('tbl_machine_rent_project as p','p.id=t.project_id')
+            ->leftJoin('tbl_machine_model as m','m.id=p.machine_model_id')
+            ->leftJoin('tbl_brand as b','b.id=m.brand_id')
+            ->where(['t.wx_id' => $id, 't.openid' => $openid,'t.enable'=>'Y','t.status'=>1])
+            ->all();
+        return $this->render('machine',['model'=>$model? :[],'project'=>$project? :[],'id'=>$id ]);
     }
 
     /*
@@ -53,10 +64,10 @@ class IController extends \yii\web\Controller
      */
     public function actionService($id,$mid)
     {
-        $model = TblMachineService::findAll(['machine_id'=>$mid,'enable'=>'Y']);
+        $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->asArray()->all();
         foreach ($model as $i=>$m) {
-            $covers = json_decode($m['cover'],true);
-            $model[$i]['cover'] = $covers[0];
+            $content = json_decode($m['content'],true);
+            $model[$i]['cover'] = $content['cover'][0];
         }
         return $this->render('service',['model'=>$model,'id'=>$id]);
     }

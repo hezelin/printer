@@ -43,8 +43,9 @@ $this->title = '订单详情';
 </div>
 <?php if($payStatus==3):?>
 <a href="#" class="h-button order-btn">微信支付</a>
-<a href="<?=\yii\helpers\Url::toRoute(['/shop/order/detail','id'=>$id,'order_id'=>$order_id])?>" type="button" class="h-button-default order-btn">订单详情</a>
+<a href="<?=Url::toRoute(['/shop/order/detail','id'=>$id,'order_id'=>$order_id])?>" type="button" class="h-button-default order-btn">订单详情</a>
 <?php else:?>
-    <a href="<?=\yii\helpers\Url::toRoute(['/shop/order/detail','id'=>$id,'order_id'=>$order_id])?>" type="button" class="h-button order-btn">订单详情</a>
+    <a href="<?=Url::toRoute(['/shop/order/detail','id'=>$id,'order_id'=>$order_id])?>" type="button" class="h-button order-btn">订单详情</a>
 <?php endif;?>
-<a href="javascript:history.go(-1);" type="button" class="h-button-default order-btn">返回</a>
+<a href="<?=Url::toRoute(['/shop/i/order','id'=>$id])?>" type="button" class="h-button-default order-btn">返回我的订单</a>
+<a href="<?=Url::toRoute(['/wechat/index','id'=>$id])?>" type="button" class="h-button-default order-btn">返回首页</a>

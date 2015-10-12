@@ -15,8 +15,12 @@ class WechatController extends \yii\web\Controller
     public function actionIndex($id)
     {
         $openid = WxBase::openId($id);
-        $setting = TblStoreSetting::find(['enable'=>'Y','wx_id'=>$id])
-            ->with('carousel')->limit(5)->asArray()->one();
+        $setting = TblStoreSetting::find()
+            ->where(['enable'=>'Y','wx_id'=>$id])
+            ->with('carousel')
+            ->limit(5)
+            ->asArray()
+            ->one();
 
         if($setting == null)
             throw new NotFoundHttpException('您所访问的页面不存在');
@@ -26,13 +30,19 @@ class WechatController extends \yii\web\Controller
             $num['order'] = (new \yii\db\Query())
                 ->select('count(*)')
                 ->from('tbl_machine_service')
-                ->where('status=1 and enable="Y"')
+                ->where('status=1 and enable="Y" and weixin_id=:wid',[':wid'=>$id])
                 ->scalar();
             $num['new'] = (new \yii\db\Query())
                 ->select('count(*)')
                 ->from('tbl_notify_log')
-                ->where('enable="Y" and is_read="Y" and openid=:openid',[':openid'=>$openid])
+                ->where('enable="Y" and is_read="Y" and openid=:openid and wx_id=:wid',[':openid'=>$openid,':wid'=>$id])
                 ->scalar();
+            $num['fault'] = (new \yii\db\Query())
+                ->select('count(*)')
+                ->from('tbl_machine_service')
+                ->where('enable="Y" and status<9 and openid=:openid and weixin_id=:wid',[':openid'=>$openid,':wid'=>$id])
+                ->scalar();
+
             return $this->render('maintain',['setting'=>$setting,'num'=>$num]);
         }
 

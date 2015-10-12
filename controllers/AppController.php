@@ -76,6 +76,7 @@ class AppController extends \yii\web\Controller
                 else{
                     $maintain = new TblUserMaintain();
                     $maintain->wx_id = $id;
+                    $maintain->name = (new \yii\db\Query())->select('nickname')->from('tbl_user_wechat')->where(['wx_id'=>$id,'openid'=>$wx->msg->FromUserName])->scalar();
                     $maintain->openid = (string)$wx->msg->FromUserName;
                     $maintain->add_time = time();
                     if($maintain->save())
@@ -88,7 +89,6 @@ class AppController extends \yii\web\Controller
                 return $wx->makeText( '等待获得积分中...');
             }
         }
-
 
 //        $wx->reply($reply);
     }

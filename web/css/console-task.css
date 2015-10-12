@@ -56,10 +56,11 @@ ul,li{
 .box-list-li{
     height: 30px; line-height: 30px;
 }
-.m-name{  color: #333333; width: 33%; display: inline-block;}
-.m-tips{ color: #999999; width: 33%; display: inline-block;}
+.m-name{  color: #333333; width: 50%; display:inline-block; float: left; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; }
+.m-tips{ color: #999999; width: 33%; display: inline-block;
+    float: left;}
 
-.num-alert{color: #f7af49; font-size: 16px;}
+.num-alert{color: #f7af49; font-size: 16px; width: 15%;}
 
 .fault-list-ul{
     overflow: hidden;

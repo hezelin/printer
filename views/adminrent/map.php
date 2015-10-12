@@ -62,17 +62,22 @@
     }else
         getMarker();
 
-    //  提交数据
-    $('#save-location').click(function(){
-
-    });
     <?php $this->endBlock();?>
 </script>
 
 <?php
     $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 ?>
+<?php
 
+if( Yii::$app->session->hasFlash('success') )
+    echo \yii\bootstrap\Alert::widget([
+        'options' => [
+            'class' => 'alert-info',
+        ],
+        'body' => Yii::$app->session->getFlash('success'),
+    ]);
+?>
 <form method="post">
     <input name="_csrf" type="hidden" value="<?php echo \Yii::$app->request->csrfToken; ?>"/>
     <input id="input-lat" type="hidden" name="lat" value="<?=$model->latitude?>" />
@@ -80,6 +85,7 @@
 <div class="alert alert-info">
     <button id="save-location" type="submit" class="btn btn-info">保存定位</button>
     &nbsp;&nbsp;<?=$model->address?>
+    &nbsp;&nbsp;<span style="color:orange;">放大地图，拖动地图上的点，校正坐标</span>
 </div>
 
 </form>

@@ -19,8 +19,8 @@ class ModelController extends Controller
     public $layout = '/console';
 
     /*
- * 配置 ueditor 图片上传路径
- */
+     * 配置 ueditor 图片上传路径
+     */
     public function actions()
     {
         return [
@@ -88,6 +88,9 @@ class ModelController extends Controller
         $model = TblMachineModel::findOne($id);
         if ($model->load(Yii::$app->request->post())){
             $model->wx_id = Cache::getWid();
+            $images = json_decode($model->cover_images,true);
+            $model->cover = $images[0];
+
             if($model->save()){
                 $params = [
                     'tips'=>'修改模型成功！',
