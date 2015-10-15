@@ -74,20 +74,6 @@ WeixinAsset::register($this);
                     'class' => 'container-fluid'
                 ]
             ]);
-            /*echo Nav::widget([
-                'options' => ['class' => 'navbar-nav'],
-                'items' => [
-                    [
-                        'label' => '微信管理',
-                        'items' => [
-                           ['label' => '我的公众号', 'url' => Url::to(['weixin/index'])],
-                           ['label' => '添加公众号', 'url' => Url::to(['weixin/add'])],
-                        ],
-                    ],
-                    ['label' => '我的主页', 'url' => ['/site/about']],
-                    ['label' => '机器管理', 'url' => ['/site/contact']],
-                ],
-            ]);*/
 
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
@@ -106,37 +92,31 @@ WeixinAsset::register($this);
         <div class="container-fluid">
             <div class="row">
                 <?php
-                    echo TreeMenuWidget::widget(
+                    $item = [
                         [
+                            'label' => '管理后台',
+                            'url' => ['/weixin/console'],
+                            'route' => '/weixin/console',
+                        ],
+                        [
+                            'label' => '微信管理',
                             'items' => [
-                                [
-                                    'label' => '管理后台',
-                                    'url' => ['/weixin/console'],
-                                    'route' => '/weixin/console',
-                                ],
-                                [
-                                    'label' => '微信管理',
-                                    'items' => [
-                                        ['label' => '我的公众号', 'url' => '/weixin/index'],
-                                        ['label' => '添加公众号', 'url' => '/weixin/add'],
-                                    ],
-                                ],
-                                [
-                                    'label' => '我的账号',
-                                    'items' => [
-                                        ['label' => '修改密码', 'url' => '/user/reset'],
-//                                        ['label' => '查看日志', 'url' => '/user/log'],
-                                    ],
-                                ],
-                                /*[
-                                    'label' => '权限管理',
-                                    'items' => [
-                                        ['label' => '角色管理','url' => '/role/index'],
-                                        ['label' => '账户管理','url' => '/account/index'],
-                                    ],
-                                ],*/
+                                ['label' => '我的公众号', 'url' => '/weixin/index'],
+                                ['label' => '添加公众号', 'url' => '/weixin/add'],
                             ],
-                        ]);
+                        ],
+                        [
+                            'label' => '我的账号',
+                            'items' => [
+                                ['label' => '修改密码', 'url' => '/user/reset'],
+//                                        ['label' => '查看日志', 'url' => '/user/log'],
+                            ],
+                        ],
+                    ];
+                    if(Yii::$app->user->id == 4)
+                        array_push($item,['label' => '报名表', 'url' => '/console/zuji-apply']);
+
+                    echo TreeMenuWidget::widget(['items' => $item]);
                 ?>
                 <div class="col-sm-2 col-md-2">
                     &nbsp;

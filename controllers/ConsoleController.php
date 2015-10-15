@@ -11,6 +11,8 @@ use app\models\analyze\TblAnalyzeRent;
 use app\models\analyze\TblAnalyzeRental;
 use app\models\Cache;
 use app\models\TblWeixin;
+use app\models\TblZujiApply;
+use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use Yii;
 
@@ -143,5 +145,25 @@ class ConsoleController extends \yii\web\Controller
             'maintainer'=>$maintainer->getCharts(),
             'rental'=> $rental->getRentalCharts()
         ]);
+    }
+
+    /*
+     * 人人租机报名表
+     */
+    public function actionZujiApply()
+    {
+        $this->layout = 'weixin';
+        if( Yii::$app->user->isGuest || Yii::$app->user->id != 4 )
+            Yii::$app->end('没有权限！');
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => TblZujiApply::find(),
+            'pagination' => [
+                'pageSize' => 15,
+            ],
+             'sort'=>['defaultOrder'=>['id' => SORT_DESC]]
+        ]);
+
+        return $this->render('zujiApply',['dataProvider'=>$dataProvider]);
     }
 }
