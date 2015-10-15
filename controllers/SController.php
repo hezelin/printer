@@ -29,6 +29,15 @@ class SController extends \yii\web\Controller
     {
         if( Yii::$app->request->post() )
         {
+            $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->andWhere(['<','status',9])->one();
+            if($model){
+                return $this->render('//tips/homestatus',[
+                    'tips'=>'请不要重新申请维修！',
+                    'btnText'=>'返回主页',
+                    'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
+                ]);
+            }
+
             $model = new TblMachineService();
             $model->machine_id = $mid;
             $model->weixin_id = $id;
