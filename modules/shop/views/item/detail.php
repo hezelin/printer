@@ -103,3 +103,17 @@ Yii::$app->params['layoutBottomHeight'] = 40;
 <?php
 \app\assets\ZeptoAsset::register($this);
 $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
+
+\app\components\WxjsapiWidget::widget([
+        'wx_id'=>$model['wx_id'],
+        'apiList'=>['previewImage'],
+        'jsReady'=>'
+    document.querySelector("#carousel-iscroll").onclick = function () {
+            wx.previewImage({
+              current: "'.$model['big_cover_images'][0].'",
+              urls: '.json_encode($model['big_cover_images']).'
+            });
+      };'
+    ])
+
+?>

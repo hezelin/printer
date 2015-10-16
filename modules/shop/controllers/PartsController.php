@@ -79,6 +79,10 @@ class PartsController extends Controller
             ->where('t.enable="Y" and t.id=:id',[':id'=>$item_id])
             ->one();
         $model['cover_images'] = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
+        $model['big_cover_images'] = [];
+        foreach($model['cover_images'] as $img){
+            $model['big_cover_images'][] = Yii::$app->request->hostInfo.str_replace('/m/','/o/',$img);
+        }
         $model['else_attr'] = json_decode($model['add_attr'],true);
 
         return $this->render('detail',['model'=>$model,'id'=>$id]);
