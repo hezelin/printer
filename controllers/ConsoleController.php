@@ -31,6 +31,15 @@ class ConsoleController extends \yii\web\Controller
     public function actionView()
     {
         $wx_id = Cache::getWid();
+        $dueTime = (new \yii\db\Query())
+            ->select('due_time')
+            ->from('tbl_weixin')
+            ->where(['id'=>$wx_id])
+            ->scalar();
+        if($dueTime < time()){
+            $this->layout = 'weixin';
+            return $this->render('//tips/error',['tips'=>'已过期！']);
+        }
         $data['maintainer'] = (new \yii\db\Query())
             ->select('name,phone,openid,wx_id,wait_repair_count')
             ->from('tbl_user_maintain')
