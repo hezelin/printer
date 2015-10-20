@@ -299,6 +299,37 @@ class AdminrentController extends \yii\web\Controller
             echo json_encode(['status'=>0,'msg'=>'参数错误']);
     }
 
+    public function actionPhoneNoAllot($machine_id,$from_openid)
+    {
+        if(Yii::$app->request->post('fault_text')){
+
+            $model = new TblMachineService();
+            $model->machine_id = $machine_id;
+            $model->weixin_id = Cache::getWid();
+            $model->from_openid = $from_openid;
+            $model->add_time = time();
+            $model->status = 1;
+            $model->content = json_encode(['cover'=>['/images/call_maintain.png']]);
+            $model->desc = Yii::$app->request->post('fault_text');
+            $model->type = Yii::$app->request->post('fault_type');
+            $model->remark = Yii::$app->request->post('fault_remark');
+            if(!$model->save())
+                exit(json_encode(['status'=>0,'msg'=>'错误100']));
+
+            // 为申请者推送消息
+            $tpl = new WxTemplate(Yii::$app->request->post('wx_id'));
+            $tpl->sendProcess(
+                $from_openid,
+                Url::toRoute(['s/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$model->id],'http'),
+                '电话维修成功！',
+                $model->add_time
+            );
+            echo json_encode(['status'=>1]);
+        }
+        else
+            echo json_encode(['status'=>0,'msg'=>'参数错误']);
+    }
+
     /*
      * 租借用户 定位
      * $id 为 租借表的id

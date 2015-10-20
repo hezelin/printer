@@ -100,8 +100,8 @@ echo GridView::widget([
             'template' => '{fault}',
             'buttons' => [
                 'fault' => function($url,$model,$key){
-                    if(isset($model->machineFault->status) && $model->machineFault->status < 8)
-                        return Html::a('维修中',Url::toRoute(['service/process','id'=>$model->machineFault->id]),
+                    if(isset($model->machineFault2->status) && $model->machineFault2->status < 8)
+                        return Html::a('维修中',Url::toRoute(['service/process','id'=>$model->machineFault2->id]),
                             [
                                 'title'=>'查看维修进度',
                                 'class'=>'high-remark'
@@ -133,7 +133,8 @@ echo GridView::widget([
     'toggleButton' => false,
     'footer' => '
     <button id="go-back" type="button" class="btn btn-default">上一步</button>
-    <button id="cancel-btn" type="button" class="btn btn-primary">下一步</button>
+    <button id="server-sub" type="button" class="btn btn-success">保存维修</button>
+    <button id="cancel-btn" type="button" class="btn btn-primary">分配任务</button>
     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
     ',
     ]);
@@ -235,7 +236,36 @@ echo GridView::widget([
                 },'json'
             );
             return false;
+        });
 
+//        电话维修，先不分配
+        $('#server-sub').click(function(){
+            faultText = $.trim($('#cancel-text').val());
+            if(!faultText){
+                $('#cancel-status').text('请输入故障描述');
+                $('#cancel-text').focus();
+                return false;
+            }
+
+            if(hasClick == 1) return false;
+            hasClick = 1;
+
+            $(this).html('<img src="/images/loading.gif">');
+            var $this = $(this);
+            $.post(
+                '<?=Url::toRoute(['/adminrent/phone-no-allot'])?>?machine_id='+machineId+'&from_openid='+fromOpenid,
+                {'wx_id':<?=$wid?>,'fault_text':faultText,'fault_type':$('#fault-reason').val(),'fault_remark':$('#fault-remark').val()},
+                function(res){
+                    if(res.status == 1){
+                        $('#my-modal-cancel').modal('hide');
+                        $this.text('保存维修');
+                    }
+                    else
+                        alert(res.msg);
+                    hasClick = 0;
+                },'json'
+            );
+            return false;
         });
         <?php $this->endBlock();?>
     </script>

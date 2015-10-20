@@ -58,7 +58,7 @@ class TblRentApplyList extends TblRentApply
                     },
                 ]);
             },
-            'machineFault'
+            'machineFault2'
         ]);
 
         $dataProvider = new ActiveDataProvider([

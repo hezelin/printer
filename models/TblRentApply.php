@@ -16,10 +16,17 @@ class TblRentApply extends \yii\db\ActiveRecord
         return $this->hasOne(TblMachine::className(),['id'=>'machine_id']);
     }
 
+    // 这个 维修列表 数据重复
     public function getMachineFault()
     {
         return $this->hasOne(TblMachineService::className(),['machine_id'=>'machine_id'])->onCondition(['tbl_machine_service.enable' => 'Y']);
     }
+    // 去掉重复
+    public function getMachineFault2()
+    {
+        return $this->hasOne(TblMachineService::className(),['machine_id'=>'machine_id'])->onCondition('tbl_machine_service.enable = "Y" and tbl_machine_service.status < 9');
+    }
+
     public function getMachineProject()
     {
         return $this->hasOne(TblMachineRentProject::className(),['id'=>'project_id']);

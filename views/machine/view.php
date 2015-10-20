@@ -63,7 +63,14 @@ $this->title = '机器详情';
         function getModel($id)
         {
             if($id == '0') return '<span class="not-set">（无设置）</span>';
-            return Html::a(ConfigBase::getMachineModel($id),Url::toRoute(['model/view','id'=>$id]));
+            $model = (new \yii\db\Query())
+                ->select('t.id, p.name, t.type')
+                ->from('tbl_machine_model as t')
+                ->leftJoin('tbl_brand as p','p.id=t.brand_id')
+                ->where('t.wx_id=:wid and t.id=:id',[':wid'=>\app\models\Cache::getWid(),':id'=>$id])
+                ->one();
+            $name = isset($model['name'])? $model['name']:'不存在';
+            return Html::a($name,Url::toRoute(['model/view','id'=>$id]));
         }
     ?>
     <?= DetailView::widget([
