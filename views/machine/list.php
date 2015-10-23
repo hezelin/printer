@@ -47,7 +47,13 @@ $this->title = '机器列表';
                 'attribute'=>'status',
                 'headerOptions' => ['style'=>'width:110px'],
                 'format' => 'html',
-                'filter' => ConfigBase::$mxStatus,
+//                'filter' => ConfigBase::$mxStatus,
+                'filter' => Html::activeDropDownList(
+                    $searchModel,
+                    'status',
+                    ConfigBase::$mxStatus,
+                    ['class' => 'form-control', 'prompt' => '状态']
+                ),
                 'value' => function($data){
                     switch($data->status){
                         case 1: return Html::a(ConfigBase::getMxStatus($data->status),
