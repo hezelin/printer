@@ -42,6 +42,8 @@ echo GridView::widget([
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($model){
                 $covers = json_decode($model['cover_images'],true);
+                if( !is_array($covers) )
+                    return '';
                 $html = [];
                 foreach($covers as $cover){
                     $html[] = Html::a(Html::img($cover,['width'=>40]),str_replace('/s/','/m/',$cover),['class' => 'fancybox','rel'=>'group1']);

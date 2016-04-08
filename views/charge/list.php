@@ -20,6 +20,7 @@ $this->title = '收租记录';
             'label'=>'机型',
             'format'=>'html',
             'value'=>function($model){
+                if( isset( $model->rentApply->machine->machineModel ) )
                 return $model->rentApply->machine->machineModel->brand->name . $model->rentApply->machine->machineModel->type;
             }
         ],

@@ -40,7 +40,9 @@ echo GridView::widget([
             'label'=>'配件图片',
             'value'=>function($data)
             {
+                if( !isset($data->product->cover_images)) return '';
                 $covers = json_decode($data->product->cover_images,true);
+                if(!is_array($covers)) return '';
                 $html = [];
                 foreach($covers as $cover){
                     $html[] = Html::a(Html::img($cover,['width'=>40]),str_replace('/s/','/m/',$cover),['class' => 'fancybox','rel'=>'group1']);
