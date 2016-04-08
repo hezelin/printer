@@ -26,6 +26,7 @@
         "kucha/ueditor": "*",
         "kartik-v/yii2-widget-select2": "*",
         "kartik-v/yii2-widget-switchinput": "*",
+        "kartik-v/yii2-widget-sidenav": "*",
         "yiisoft/yii2-redis": "~2.0.0"
     },
     "require-dev": {
