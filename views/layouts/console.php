@@ -4,11 +4,10 @@ use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use app\assets\WeixinAsset;
-use app\components\TreeMenuWidget;
 
-
-/* @var $this \yii\web\View */
-/* @var $content string */
+use yii\widgets\Breadcrumbs;
+use yii\bootstrap\Alert;
+use kartik\sidenav\SideNav;
 
 WeixinAsset::register($this);
 ?>
@@ -63,13 +62,14 @@ WeixinAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => Yii::$app->session['wechat']['name'],
-                'brandUrl' => Url::toRoute( ['console/view','id'=>Yii::$app->session['wechat']['id'] ]),
+                'brandLabel' => '人人租机',
+                'brandUrl' => '#',
                 'brandOptions' => [
                     'style' => 'color:#ffffff',
                 ],
                 'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
+                    'class' => 'navbar-fixed-top',
+                    'id' => 'my-header-nav',
                 ],
                 'innerContainerOptions' => [
                     'class' => 'container-fluid'
@@ -97,104 +97,112 @@ WeixinAsset::register($this);
             ]);
             NavBar::end();
         ?>
-<P style="height: 40px">&nbsp;</P>
         <div class="container-fluid">
-            <div class="row">
-                <?php
-//                    $aa = Url::toRoute( ['console/view','id'=>Yii::$app->session['wechat']['id'] );
-                    echo TreeMenuWidget::widget(
-                        [
-                            'items' => [
-                                [
-                                    'label' => '工作任务',
-                                    'url' => ['/console/view'],
-                                    'route' => '/console/view',
+            <div class="row my-content">
+                <div class="col-sm-3 col-md-2">
+                    <?php
+                    echo SideNav::widget([
+                        'type' => SideNav::TYPE_DEFAULT,
+                        'containerOptions'=>['id' => 'my-left-nav'],
+                        'indItem' => '-',
+                        'items' => [
+                            [
+                                'label' => '工作任务',
+                                'url' => ['/console/view'],
+                                'icon' => 'tasks',
+                            ],
+                            [
+                                'label' => '数据统计',
+                                'url' => ['/console/analyze'],
+                                'icon' => 'stats',
+                            ],
+                            [
+                                'label' => '微官网',
+                                'icon' => 'home',
+                                'items' => [
+                                    ['label' => '店铺装修', 'url' => '/home/fitment'],
+                                    ['label' => '店铺设置', 'url' => '/home/setting'],
                                 ],
-                                [
-                                    'label' => '数据统计',
-                                    'url' => ['/console/analyze'],
-                                    'route' => '/console/analyze',
+                            ],
+                            [
+                                'label' => '机器管理',
+                                'icon' => 'print',
+                                'items' => [
+                                    ['label' => '租借方案', 'url' => '/rentproject/list','route'=>'/rentproject'],
+                                    ['label' => '机型资料', 'url' => '/model/list','route'=>'/model'],
+                                    ['label' => '机器列表', 'url' => '/machine/list'],
+                                    ['label' => '添加机器', 'url' => '/machine/add'],
                                 ],
-                                [
-                                    'label' => '微官网',
-                                    'items' => [
-                                        ['label' => '店铺装修', 'url' => '/home/fitment'],
-                                        ['label' => '店铺设置', 'url' => '/home/setting'],
-                                    ],
+                            ],
+                            [
+                                'label' => '二维码管理',
+                                'icon' => 'qrcode',
+                                'items' => [
+                                    ['label' => '积分二维码','url' => '/code/score'],
+                                    ['label' => '生成机器码','url' => '/code/index'],
+                                    ['label' => '生成配件码','url' => '/code/parts'],
+                                    ['label' => '维修员绑定码','url' => '/code/binding'],
                                 ],
-                                [
-                                    'label' => '机器管理',
-                                    'items' => [
-                                        ['label' => '租借方案', 'url' => '/rentproject/list','route'=>'/rentproject'],
-                                        ['label' => '机型资料', 'url' => '/model/list','route'=>'/model'],
-                                        ['label' => '机器列表', 'url' => '/machine/list'],
-                                        ['label' => '添加机器', 'url' => '/machine/add'],
-                                    ],
+                            ],
+                            [
+                                'label' => '租借管理',
+                                'icon' => 'retweet',
+                                'items' => [
+                                    ['label' => '租借列表','url' => '/adminrent/list'],
+                                    ['label' => '租借申请','url' => '/adminrent/apply'],
+                                    ['label' => '收租记录','url' => '/charge/list'],
                                 ],
-                                [
-                                    'label' => '二维码管理',
-                                    'items' => [
-                                        ['label' => '积分二维码','url' => '/code/score'],
-                                        ['label' => '生成机器码','url' => '/code/index'],
-                                        ['label' => '生成配件码','url' => '/code/parts'],
-                                        ['label' => '维修员绑定码','url' => '/code/binding'],
-                                    ],
-                                ],
-                                [
-                                    'label' => '租借管理',
-                                    'items' => [
-                                        ['label' => '租借列表','url' => '/adminrent/list'],
-                                        ['label' => '租借申请','url' => '/adminrent/apply'],
-                                        ['label' => '收租记录','url' => '/charge/list'],
-                                    ],
-                                ],
-                                [
-                                    'label' => '维修管理',
-                                    'items' => [
-                                        ['label' => '待分配维修','url' => '/service/index'],
-                                        ['label' => '维修列表','url' => '/service/list'],
-                                        ['label' => '电话维修','url' => '/service/call'],
-                                        ['label' => '维修配件管理', 'url' => '/shop/adminparts/list','route'=>'/shop/adminparts'],
+                            ],
+                            [
+                                'label' => '维修管理',
+                                'icon' => 'wrench',
+                                'items' => [
+                                    ['label' => '待分配维修','url' => '/service/index'],
+                                    ['label' => '维修列表','url' => '/service/list'],
+                                    ['label' => '电话维修','url' => '/service/call'],
+                                    ['label' => '维修配件管理', 'url' => '/shop/adminparts/list','route'=>'/shop/adminparts'],
 
-                                    ],
                                 ],
-                                [
-                                    'label' => '商城管理',
-                                    'items' => [
-                                        ['label' => '耗材列表','url' => '/shop/backend/list'],
-                                        ['label' => '录入耗材','url' => '/shop/backend/add'],
-                                        ['label' => '订单管理', 'url' => '/shop/adminorder/check','route'=>'/shop/adminorder'],
+                            ],
+                            [
+                                'label' => '商城管理',
+                                'icon' => 'shopping-cart',
+                                'items' => [
+                                    ['label' => '耗材列表','url' => '/shop/backend/list'],
+                                    ['label' => '录入耗材','url' => '/shop/backend/add'],
+                                    ['label' => '订单管理', 'url' => '/shop/adminorder/check','route'=>'/shop/adminorder'],
 
-                                    ],
                                 ],
-                                [
-                                    'label' => '积分管理',
-                                    'items' => [
-                                        ['label' => '赠送积分','url' => '/adminscore/send'],
-                                        ['label' => '积分操作记录','url' => '/adminscore/log'],
-                                    ],
+                            ],
+                            [
+                                'label' => '积分管理',
+                                'icon' => 'gift',
+                                'items' => [
+                                    ['label' => '赠送积分','url' => '/adminscore/send'],
+                                    ['label' => '积分操作记录','url' => '/adminscore/log'],
                                 ],
-                                [
-                                    'label' => '用户管理',
-                                    'items' => [
-                                        ['label' => '用户列表','url' => '/wxuser/list'],
-                                        ['label' => '维修员列表','url' => '/staff/list'],
-                                    ]
-                                ],
-                                [
-                                    'label' => '通知管理',
-                                    'items' => [
-                                        ['label' => '发送通知','url' => '/notify/send'],
-                                        ['label' => '通知日志','url' => '/notify/list']
-                                    ]
+                            ],
+                            [
+                                'label' => '用户管理',
+                                'icon' => 'user',
+                                'items' => [
+                                    ['label' => '用户列表','url' => '/wxuser/list'],
+                                    ['label' => '维修员列表','url' => '/staff/list'],
                                 ]
                             ],
-                        ]);
-                ?>
-                <div class="col-sm-2 col-md-2">
-                    &nbsp;
+                            [
+                                'label' => '通知管理',
+                                'icon' => 'bell',
+                                'items' => [
+                                    ['label' => '发送通知','url' => '/notify/send'],
+                                    ['label' => '通知日志','url' => '/notify/list']
+                                ]
+                            ]
+                        ],
+                    ]);
+                    ?>
                 </div>
-                <div class="col-sm-10 col-md-10">
+                <div class="col-sm-9 col-md-10">
                     <p style="height: 20px">&nbsp;</p>
                     <?= $content ?>
                 </div>
@@ -202,6 +210,22 @@ WeixinAsset::register($this);
         </div>
     </div>
 <?php $this->endBody() ?>
+<script>
+    $(function(){
+        var hei = $(window).height();
+        var wid = $('#my-left-nav').width();
+        $('#my-left-nav').css({
+            height:hei-50,
+            width:wid,
+            position:'fixed',
+            top:50,
+            left:0
+        });
+        $('#my-header-nav .navbar-brand').css({
+            width:wid
+        });
+    });
+</script>
 </body>
 </html>
 <?php $this->endPage() ?>

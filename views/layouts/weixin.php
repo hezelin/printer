@@ -1,14 +1,9 @@
 <?php
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use app\assets\WeixinAsset;
-use app\components\TreeMenuWidget;
-
-
-/* @var $this \yii\web\View */
-/* @var $content string */
+use kartik\sidenav\SideNav;
 
 WeixinAsset::register($this);
 ?>
@@ -63,15 +58,16 @@ WeixinAsset::register($this);
         <?php
             NavBar::begin([
                 'brandLabel' => Yii::$app->name,
-                'brandUrl' => Yii::$app->homeUrl,
+                'brandUrl' => '#',
                 'brandOptions' => [
                     'style' => 'color:#ffffff',
                 ],
                 'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
+                    'class' => 'navbar-fixed-top',
                 ],
                 'innerContainerOptions' => [
-                    'class' => 'container-fluid'
+                    'class' => 'container-fluid',
+                    'id' => 'my-header-nav',
                 ]
             ]);
 
@@ -88,46 +84,54 @@ WeixinAsset::register($this);
             ]);
             NavBar::end();
         ?>
-<P style="height: 40px">&nbsp;</P>
-        <div class="container-fluid">
-            <div class="row">
-                <?php
-                    $item = [
-                        [
-                            'label' => '管理后台',
-                            'url' => ['/weixin/console'],
-                            'route' => '/weixin/console',
-                        ],
-                        [
-                            'label' => '微信管理',
-                            'items' => [
-                                ['label' => '我的公众号', 'url' => '/weixin/index'],
-                                ['label' => '添加公众号', 'url' => '/weixin/add'],
-                            ],
-                        ],
-                        [
-                            'label' => '我的账号',
-                            'items' => [
-                                ['label' => '修改密码', 'url' => '/user/reset'],
-//                                        ['label' => '查看日志', 'url' => '/user/log'],
-                            ],
-                        ],
-                    ];
-                    if(Yii::$app->user->id == 4)
-                        array_push($item,['label' => '报名表', 'url' => '/console/zuji-apply']);
 
-                    echo TreeMenuWidget::widget(['items' => $item]);
+    <div class="container-fluid">
+        <div class="row my-content">
+
+            <div class="col-sm-3 col-md-2">
+                <?php
+                $item = [
+                    [
+                        'label' => '管理后台',
+                        'url' => ['/weixin/console'],
+                        'icon' => 'th',
+                    ],
+                    [
+                        'label' => '微信管理',
+                        'icon' => 'comment',
+                        'items' => [
+                            ['label' => '我的公众号', 'url' => '/weixin/index'],
+                            ['label' => '添加公众号', 'url' => '/weixin/add'],
+                        ],
+                    ],
+                    [
+                        'label' => '我的账号',
+                        'icon' => 'user',
+                        'items' => [
+                            ['label' => '修改密码', 'url' => '/user/reset'],
+//                                        ['label' => '查看日志', 'url' => '/user/log'],
+                        ],
+                    ],
+                ];
+
+                if(Yii::$app->user->id == 4)
+                    array_push($item,['label' => '报名表', 'url' => '/console/zuji-apply','icon'=>'stats']);
+
+                echo SideNav::widget([
+                    'type' => SideNav::TYPE_DEFAULT,
+                    'containerOptions'=>['id' => 'my-left-nav'],
+                    'indItem' => '-',
+                    'items' => $item
+                ]);
                 ?>
-                <div class="col-sm-2 col-md-2">
-                    &nbsp;
-                </div>
-                <div class="col-sm-10 col-md-10">
-                    <p style="height: 20px">&nbsp;</p>
-                    <?= $content ?>
-                </div>
+            </div>
+            <div class="col-sm-9 col-md-10">
+                <p style="height: 20px">&nbsp;</p>
+                <?= $content ?>
             </div>
         </div>
     </div>
+</div>
 <?php $this->endBody() ?>
 </body>
 </html>

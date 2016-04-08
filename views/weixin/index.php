@@ -76,7 +76,7 @@ echo GridView::widget([
                     return Html::a('升级', $url);
                 },
                 'console' => function($url,$model, $key){
-                    return Html::a('<span class="glyphicon glyphicon-home"></span>',Url::to(['console/view','id'=>$model->id]) ,['title'=>'控制台']);
+                    return Html::a('<span class="glyphicon glyphicon-th"></span>',Url::to(['console/view','id'=>$model->id]) ,['title'=>'管理后台']);
                 },
                 'update' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);

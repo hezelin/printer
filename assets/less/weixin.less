@@ -1,6 +1,6 @@
 @import 'common.less';
 @import 'site.less';
-@import 'treeMenu.less';
+//@import 'treeMenu.less';
 
 /***********   微信管理 ******************/
 
@@ -48,4 +48,82 @@
 .qrcode-bg{
   .loading-bg;
   .w(300px); .h(300px);
+}
+
+// 管理后台样式 ========================
+//@back-color:#1abc9c;
+@back-color: #00a2ca;
+#my-nav{
+  .m-b; .bg-c(@back-color); .b-b(none); .p(5px 0);
+  .navbar-brand{
+    color:#fff; .size(20px);
+    font-weight: 600;
+  }
+  .navbar-nav > li > a{ color:#fff; .size(18px);}
+}
+#my-brand{  width: 100%;  position: absolute;  top: -60px;  left: 0;  z-index: 1033;  background-color: #20957e;
+  height: 60px;  text-align: center;  font-size: 22px;  line-height: 60px;  font-weight: 600;  color: #fff;
+  a{ color: #fff;}
+  .sub-name{ position: absolute; width: 200px; right: -200px; .t-c;top: 0; .size(18px); font-weight: 500;}
+
+}
+#my-left-nav{
+  left: 0;  background: #616774; width: 100%; overflow-y: auto; padding-bottom: 50px; height: 1200px;
+  position: absolute;  .b(none); .bg-c(#616774); border-radius: 0;
+  a{color: #c6c6c6;}
+  .nav > li > a{
+    .p(10px 24px);
+  }
+  .nav > li > a:hover,
+  .nav > li > a:focus {
+    .bg-c(#525968); color:#fff;
+  }
+  .nav-pills > li.active > a,
+  .nav-pills > li.active > a:hover,
+  .nav-pills > li.active > a:focus{
+    .bg-c(#525968); color:#fff;
+  }
+
+  .table > .nav-pills > li.active > a,
+  .table > .nav-pills > li.active > a:hover,
+  .table > .nav-pills > li.active > a:focus{
+    .b-l(4px solid @back-color);  .p-l(20px);
+  }
+
+  .kv-sidenav li a{ .b-b(none);}
+  .nav-stacked > li + li{ .m-t; }
+  .kv-sidenav .active > ul{ .bg-c(#6c727f);}
+
+  .active .nav-pills > li > a {
+    padding:8px 30px 8px 38px;
+  }
+
+}
+.breadcrumb{.m-t(10px);border-radius: 2px;}
+.table th a{color: #444;}
+.table > thead > tr > th{ .b-b(1px solid #888);}
+
+.navbar-inverse .navbar-nav > .open > a,
+.navbar-inverse .navbar-nav > .open > a:hover,
+.navbar-inverse .navbar-nav > .open > a:focus{
+  .bg-c(#28D2B0);
+}
+
+#my-header-nav{
+  .bg-c(@back-color);.b-b(1px solid #444);
+  .navbar-brand{
+    color: #ffffff;font-weight: 600;.size(22px); .t-c; width: 225px;
+    .bg-c(darken(@back-color,10%));
+  }
+  .nav > li > a{color:#fff;}
+  .nav > li > a:hover,
+  .nav > li > a:focus{ .bg-c( lighten(@back-color,5%) ); color:#fff;}
+}
+
+
+
+
+// 全局设置
+.wrap .my-content {
+  .p-t(50px);
 }
