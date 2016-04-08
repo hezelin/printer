@@ -12,7 +12,7 @@ class WxBase {
 
     // 微信公众号 id
     public $id;
-    // 默认 1个小时
+    // 默认 1个小时,7200
     public static $redisTimeout = 86400;
     /*
      * 获取公众号的 app_id
@@ -27,13 +27,13 @@ class WxBase {
     
     public static function appId($id)
     {
-        if( !$appid = Yii::$app->redis->hget('wx:'.$id,'appid') ){
+        if( !$appid = Yii::$app->cache->get('wx:'.$id.':appid') ){
             $model = TblWeixin::find()
                 ->where(['id'=>$id,'enable'=>'Y'])
                 ->one();
+            Yii::$app->cache->set('wx:'.$id.':appid',$model->app_id,self::$redisTimeout);
+            Yii::$app->cache->set('wx:'.$id.':appsecret',$model->app_secret,self::$redisTimeout);
 
-            Yii::$app->redis->hmset('wx:'.$id, 'appid',$model->app_id,'appsecret',$model->app_secret);
-            Yii::$app->redis->expire('wx:'.$id, self::$redisTimeout);
             return $model->app_id;
         }
         return $appid;
@@ -44,12 +44,12 @@ class WxBase {
      */
     public static function appSecret($id)
     {
-        if( !$secret = Yii::$app->redis->hget('wx:'.$id,'appsecret') ){
+        if( !$secret = Yii::$app->cache->get('wx:'.$id.':appsecret') ){
             $model = TblWeixin::find()
                 ->where(['id'=>$id,'enable'=>'Y'])
                 ->one();
-            Yii::$app->redis->hmset('wx:'.$id, 'appid',$model->app_id,'appsecret',$model->app_secret);
-            Yii::$app->redis->expire('wx:'.$id, self::$redisTimeout);
+            Yii::$app->cache->set('wx:'.$id.':appid',$model->app_id,7180);
+            Yii::$app->cache->set('wx:'.$id.':appsecret',$model->app_secret,7180);
             return $model->app_id;
         }
         return $secret;
@@ -128,8 +128,7 @@ class WxBase {
         $curl = new Curl();
         $req = $curl->getJson($url,$data);
         if(isset($req['access_token']) && $req['access_token']){
-            Yii::$app->redis->set('wx:'.$this->id.':token',$req['access_token']);
-            Yii::$app->redis->expire('wx:'.$this->id.':token',7180);
+            Yii::$app->cache->set('wx:'.$this->id.':token',$req['access_token'],7180);
             return $req['access_token'];
         }
 
@@ -143,7 +142,7 @@ class WxBase {
      */
     public function accessToken($isCache = true)
     {
-        if( $isCache && $token = Yii::$app->redis->get('wx:'.$this->id.':token'))
+        if( $isCache && $token = Yii::$app->cache->get('wx:'.$this->id.':token'))
             return $token;
         return $this->setAccessToken();
     }

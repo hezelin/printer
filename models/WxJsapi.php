@@ -14,7 +14,7 @@ class WxJsapi extends WxBase {
      */
     public function jsTicket($isCache = true)
     {
-        if( $isCache && $ticket = Yii::$app->redis->get('wx:'.$this->id.':ticket'))
+        if( $isCache && $ticket = Yii::$app->cache->get('wx:'.$this->id.':ticket'))
             return $ticket;
 
         $url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket';
@@ -26,8 +26,7 @@ class WxJsapi extends WxBase {
         $curl = new Curl();
         $req = $curl->getJson($url,$data);
         if(isset($req['ticket']) && $req['ticket']){
-            Yii::$app->redis->set('wx:'.$this->id.':ticket',$req['ticket']);
-            Yii::$app->redis->expire('wx:'.$this->id.':ticket',7180);
+            Yii::$app->cache->set('wx:'.$this->id.':ticket',$req['ticket'],7180);
             return $req['ticket'];
         }else
             Yii::$app->end('获取 ticket 失败！'.$req['errmsg']);

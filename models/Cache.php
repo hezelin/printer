@@ -19,19 +19,19 @@ class Cache
     public static function setValue($key,$value,$expire = 0)
     {
         if ($expire == 0)
-            return (bool) Yii::$app->redis->executeCommand('SET', [$key, $value]);
+            return Yii::$app->cache->set($key,$value);
         else
-            return (bool) Yii::$app->redis->executeCommand('SET', [$key, $value, 'PX', $expire*1000 ]);
+            return Yii::$app->cache->set($key,$value,$expire);
     }
 
     public static function getValue($key)
     {
-        return Yii::$app->redis->executeCommand('GET', [$key]);
+        return Yii::$app->cache->get($key);
     }
 
     public static function delValue($key)
     {
-        return Yii::$app->redis->executeCommand('DEL', [$key]);
+        return Yii::$app->cache->delete($key);
     }
     /*
      * 获取 微信id
@@ -44,10 +44,10 @@ class Cache
         if( !Yii::$app->user->id)
             return Yii::$app->getResponse()->redirect(Url::toRoute(['auth/login','url'=>Yii::$app->request->url]));
         if( Yii::$app->request->get('wx_id') ){
-            Yii::$app->redis->executeCommand('SET', ['u:'.Yii::$app->user->id.':wid',Yii::$app->request->get('wx_id')]);
+            Yii::$app->cache->set('u:'.Yii::$app->user->id.':wid',Yii::$app->request->get('wx_id'));
             return Yii::$app->request->get('wx_id');
         }
-        $value = Yii::$app->redis->executeCommand('GET', ['u:'.Yii::$app->user->id.':wid']);
+        $value = Yii::$app->cache->get('u:'.Yii::$app->user->id.':wid');
         if( empty($value) ){
             return Yii::$app->getResponse()->redirect(Url::toRoute(['weixin/select','url'=>Yii::$app->request->url]));
         }
