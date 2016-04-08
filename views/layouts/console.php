@@ -215,10 +215,10 @@ WeixinAsset::register($this);
         var hei = $(window).height();
         var wid = $('#my-left-nav').width();
         $('#my-left-nav').css({
-            height:hei-50,
+            height:hei-51,
             width:wid,
             position:'fixed',
-            top:50,
+            top:51,
             left:0
         });
         $('#my-header-nav .navbar-brand').css({

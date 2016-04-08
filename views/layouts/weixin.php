@@ -133,6 +133,22 @@ WeixinAsset::register($this);
     </div>
 </div>
 <?php $this->endBody() ?>
+<script>
+    $(function(){
+        var hei = $(window).height();
+        var wid = $('#my-left-nav').width();
+        $('#my-left-nav').css({
+            height:hei-51,
+            width:wid,
+            position:'fixed',
+            top:51,
+            left:0
+        });
+        $('#my-header-nav .navbar-brand').css({
+            width:wid
+        });
+    });
+</script>
 </body>
 </html>
 <?php $this->endPage() ?>
