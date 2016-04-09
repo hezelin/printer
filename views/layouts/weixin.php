@@ -93,7 +93,7 @@ WeixinAsset::register($this);
                 $item = [
                     [
                         'label' => '管理后台',
-                        'url' => ['/weixin/console'],
+                        'url' => ['/console/view'],
                         'icon' => 'th',
                     ],
                     [

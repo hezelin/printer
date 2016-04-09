@@ -177,21 +177,6 @@ class WeixinController extends \yii\web\Controller
     }
 
     /*
-     * 进入控制台
-     */
-    public function actionConsole()
-    {
-        $mp = (new \yii\db\Query())
-            ->select('id')
-            ->from('tbl_weixin')
-            ->where(['uid'=>Yii::$app->user->id,'enable'=>'Y'])
-            ->all();
-        if( count($mp) > 1)
-            return $this->redirect('select');
-        else if( isset($mp[0]['id']))
-            return $this->redirect(['/console/view','id'=>$mp[0]['id']]);
-    }
-    /*
      * 数据过期，请重新选择公众号操作
      */
     public function actionSelect()
