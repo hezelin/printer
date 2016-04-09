@@ -49,13 +49,13 @@ class AuthController extends \yii\web\Controller
     public function actionLogin()
     {
         if (!\Yii::$app->user->isGuest) {
-            return $this->goHome();
+            return $this->gotoBack();
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            if( Yii::$app->request->get('url')) $this->redirect( Yii::$app->request->get('url') );
-            else return $this->goBack();
+            return $this->gotoBack();
+
         } else {
             return $this->render('login', [
                 'model' => $model,
@@ -67,7 +67,7 @@ class AuthController extends \yii\web\Controller
     {
         Yii::$app->user->logout();
 
-        return $this->goHome();
+        return $this->gotoBack();
     }
 
     public function actionRegister()
@@ -83,13 +83,11 @@ class AuthController extends \yii\web\Controller
 
             // 注册成功
             if($model->save()){
-//                Yii::$app->user->identity = $model;         // 赋值登录
                 Yii::$app->getUser()->login( $model->getUser() );
-                $this->goHome();
+                $this->gotoBack();
             }else{
                 print_r($model->errors);
             }
-//            return $this->refresh();
         }
 
         return $this->render('register',array(
@@ -98,6 +96,21 @@ class AuthController extends \yii\web\Controller
             'city' => DataCity::$city,
             'region' => DataCity::$region,
         ));
+    }
+
+    public function gotoBack()
+    {
+        if( $url = Yii::$app->request->get('url') ){
+            Yii::$app->session->get('url') && Yii::$app->session->remove('url');
+            return $this->redirect($url);
+        }
+
+        if( $url = Yii::$app->session->get('url') ){
+            Yii::$app->session->remove('url');
+            return $this->redirect($url);
+        }
+
+        return $this->redirect( Yii::$app->getHomeUrl() );
     }
 
 }

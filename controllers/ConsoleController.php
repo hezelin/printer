@@ -10,15 +10,14 @@ use app\models\analyze\TblAnalyzeProduct;
 use app\models\analyze\TblAnalyzeRent;
 use app\models\analyze\TblAnalyzeRental;
 use app\models\Cache;
-use app\models\TblWeixin;
 use app\models\TblZujiApply;
 use yii\data\ActiveDataProvider;
-use yii\web\NotFoundHttpException;
 use Yii;
 
 class ConsoleController extends \yii\web\Controller
 {
     public $layout = 'console';
+    public $defaultAction = 'view';
 
     /*
      * 工作报表
@@ -31,6 +30,7 @@ class ConsoleController extends \yii\web\Controller
     public function actionView()
     {
         $wx_id = Cache::getWid();
+
         $dueTime = (new \yii\db\Query())
             ->select('due_time')
             ->from('tbl_weixin')
@@ -40,6 +40,7 @@ class ConsoleController extends \yii\web\Controller
             $this->layout = 'weixin';
             return $this->render('//tips/error',['tips'=>'已过期！']);
         }
+
         $data['maintainer'] = (new \yii\db\Query())
             ->select('name,phone,openid,wx_id,wait_repair_count')
             ->from('tbl_user_maintain')

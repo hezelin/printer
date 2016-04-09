@@ -42,15 +42,16 @@ class Cache
     public static function getWid()
     {
         if( !Yii::$app->user->id)
-            return Yii::$app->getResponse()->redirect(Url::toRoute(['auth/login','url'=>Yii::$app->request->url]));
+            return Yii::$app->getResponse()->redirect(['auth/login','url'=>Yii::$app->request->url])->send();
+
         if( Yii::$app->request->get('wx_id') ){
             Yii::$app->cache->set('u:'.Yii::$app->user->id.':wid',Yii::$app->request->get('wx_id'));
             return Yii::$app->request->get('wx_id');
         }
         $value = Yii::$app->cache->get('u:'.Yii::$app->user->id.':wid');
-        if( empty($value) ){
-            return Yii::$app->getResponse()->redirect(Url::toRoute(['weixin/select','url'=>Yii::$app->request->url]));
-        }
+        if( empty($value) )
+            return Yii::$app->getResponse()->redirect(['weixin/select','url'=>Yii::$app->request->url])->send();
+
         return $value;
     }
 } 

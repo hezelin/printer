@@ -35,20 +35,6 @@ AppAsset::register($this);
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav'],
-                'items' => [
-                    [
-                        'label' => '微信管理',
-                        'items' => [
-                           ['label' => '我的公众号', 'url' => Url::to(['weixin/index'])],
-                           ['label' => '添加公众号', 'url' => Url::to(['weixin/add'])],
-                        ],
-                    ],
-                    ['label' => '我的主页', 'url' => ['/site/about']],
-                    ['label' => '机器管理', 'url' => ['/site/contact']],
-                ],
-            ]);
 
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
