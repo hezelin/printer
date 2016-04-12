@@ -64,7 +64,8 @@ class SController extends \yii\web\Controller
 
                 return $this->render('//tips/homestatus',[
                     'tips'=>'维修申请成功！',
-                    'btnText'=>'返回主页',
+                    'btnText'=>'正在返回主页...',
+                    'jumpUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
                     'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
                 ]);
             }

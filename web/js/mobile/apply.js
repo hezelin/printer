@@ -7,7 +7,7 @@ var images = {
     serverId:[]
 };
 
-var voice_localId,t;
+var voice_localId,t,require_img = require_img || 0;
 
 $(function(){
     //做时间计时
@@ -162,6 +162,7 @@ $(function(){
 //        提交表单
     $("#wechat-submit").click(function(){
         var i = 0, length = images.localId.length;
+
         if (images.localId.length == 0){
             alert('图片不能为空！');
             return false;

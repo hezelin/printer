@@ -2,6 +2,8 @@
 use yii\helpers\Html;
 $this->title = '状态提示';
 
+
+//<meta http-equiv="refresh" content="0;url=http://www.baidu.com/">
 /*
  * 参数  $tips ，提示文件
  * $btnText 按钮文字
@@ -19,4 +21,11 @@ echo '<p>&nbsp;</p>';
 if(isset($btnText2,$btnUrl2) && $btnText2 && $btnUrl2) {
     echo Html::a($btnText2, $btnUrl2, ['class' => 'h-button']);
 }
+
 ?>
+
+<?php if( isset($jumpUrl) && $jumpUrl ):?>
+    <script>
+        setTimeout("top.location.href='<?=$jumpUrl?>'",3000);
+    </script>
+<?php endif;?>

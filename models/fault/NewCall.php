@@ -8,6 +8,7 @@ use app\models\TblMachine;
 use app\models\TblMachineService;
 use app\models\TblRentApply;
 use app\models\TblUserMaintain;
+use app\models\ToolBase;
 use app\models\WxTemplate;
 use Yii;
 
@@ -25,7 +26,7 @@ class NewCall
     {
         $this->machine = new TblMachine();
         $this->rent = new TblRentApply(['scenario' => 'new-call']);
-        $this->fault = new TblMachineService(['scenario' => 'new-call']);
+        $this->fault = new TblMachineService();
         $this->wid = Cache::getWid();
 
         $this->machine->wx_id = $this->wid;
@@ -48,7 +49,6 @@ class NewCall
 //        维修表，需要补回 machine_id
         $this->fault->weixin_id = $this->wid;
         $this->fault->from_openid = $this->rent->openid;
-        $this->fault->status = 2;
         $this->fault->content = json_encode(['cover'=>['/images/call_maintain.png']]);
     }
 
@@ -61,39 +61,48 @@ class NewCall
         $this->rent->load(Yii::$app->request->post());
         $this->fault->load(Yii::$app->request->post());
 
+        $this->fault->status = $this->fault->openid? 2:1;            // 已分配或者还没有分配
 //        添加时间
         $this->machine->add_time = $this->rent->add_time = $this->fault->add_time = time();
         $this->rent->due_time = strtotime($this->rent->due_time);
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $this->machine->save();
+            if( !$this->machine->save())
+                throw new \Exception('系统出错--machine');
+
             $this->rent->machine_id = $this->machine->id;
+            if(!$this->rent->save())
+                throw new \Exception('系统出错--rent');
+
             $this->fault->machine_id = $this->machine->id;
-            $this->rent->save();
-            $this->fault->save();
+            if( !$this->fault->save() )
+                throw new \Exception('系统出错--fault');
 
+
+            if( $this->fault->openid ) {            // 如果电话维修任务分配给维修员
 //            更改维修员 待维修计数
-            $model = TblUserMaintain::findOne([
-                'wx_id'=>$this->machine->wx_id,
-                'openid'=>$this->fault->openid
-            ]);
-            $model->wait_repair_count = $model->wait_repair_count + 1;
-            $model->save();
-
+                $model = TblUserMaintain::findOne([
+                    'wx_id' => $this->machine->wx_id,
+                    'openid' => $this->fault->openid
+                ]);
+                $model->wait_repair_count = $model->wait_repair_count + 1;
+                $model->save();
 //            给维修员推送消息
-            $tpl = new WxTemplate($this->machine->wx_id);
-            $reason = ConfigBase::getFaultStatus($this->fault->type);
-            $tpl->sendTask(
-                $this->fault->id,
-                $this->fault->openid,
-                $model->name,$reason,$this->rent->address,
-                $this->rent->name.','.$this->rent->phone,$this->machine->add_time,$this->fault->remark
-            );
+                $tpl = new WxTemplate($this->machine->wx_id);
+                $reason = ConfigBase::getFaultStatus($this->fault->type);
+                $tpl->sendTask(
+                    $this->fault->id,
+                    $this->fault->openid,
+                    $model->name, $reason, $this->rent->address,
+                    $this->rent->name . ',' . $this->rent->phone, $this->machine->add_time, $this->fault->remark
+                );
+            }
+
             $transaction->commit();
         } catch(\Exception $e) {
-            $transaction->rollBack();
             echo $e;
+            $transaction->rollBack();
         }
 
         return 'success';

@@ -168,7 +168,8 @@ class MController extends \yii\web\Controller
 
         return $this->render('//tips/homestatus',[
             'tips'=>'接单成功',
-            'btnText'=>'返回',
+            'btnText'=>'返回任务中 ...',
+            'jumpUrl'=>Url::toRoute(['m/task','id'=>$wid]),
             'btnUrl'=> Url::toRoute(['m/task','id'=>$wid])
         ]);
     }

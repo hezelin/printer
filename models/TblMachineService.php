@@ -26,7 +26,7 @@ class TblMachineService extends \yii\db\ActiveRecord
             [['from_openid', 'openid'], 'string', 'max' => 28],
             [['content'], 'string', 'max' => 600],
             [['desc'], 'string', 'max' => 1000],
-            [['openid'],'required','on'=>'new-call'],
+//            [['openid'],'required','on'=>'new-call'],
             [['remark'], 'string', 'max' => 100]
         ];
     }
