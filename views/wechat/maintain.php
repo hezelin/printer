@@ -10,7 +10,7 @@ $this->title = '维修主页';
                 <span class="aui-iconfont aui-icon-pullup aui-color"></span>
                 <h2 class="aui-img-body aui-text-default">主动接单</h2>
                 <?php if($num['order']>0):?>
-                    <span class="aui-badge aui-badge-danger">43<?=$num['order']?></span>
+                    <span class="aui-badge aui-badge-danger"><?=$num['order']?></span>
                 <?php endif;?>
             </a>
         </li>

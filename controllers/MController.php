@@ -25,6 +25,7 @@ class MController extends \yii\web\Controller
      */
     public function actionHelp($id)
     {
+        $this->layout = 'auicss';
         return $this->render('help',['id'=>$id]);
     }
 
