@@ -8,7 +8,7 @@ use app\models\WxBase;
 
 class WechatController extends \yii\web\Controller
 {
-    public $layout = 'home';        //使用home布局
+    public $layout = 'auicss';        //使用home布局
     /*
      * 微官网，判断是否微信人员
      */
