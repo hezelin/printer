@@ -4,27 +4,39 @@ use app\models\ConfigBase;
 $this->title = '任务记录';
 ?>
 
-<div class="h-list">
-    <?php if($model && $count >0):?>
-        <p class="h-header">新维修任务 <?=$count?> 个</p>
-        <ul>
+<header class="aui-bar aui-bar-nav aui-bar-color">新维修任务 <span class="aui-badge aui-badge-warning"><?=$count?></span> </header>
+
+<div class="aui-content" id="task-list">
+    <?php if( is_array($model) && $model ):?>
+        <ul class="aui-list-view">
             <?php foreach($model as $row):?>
-                <li>
+                <li class="aui-list-view-cell aui-img">
                     <a href="<?=Url::toRoute(['m/taskdetail','id'=>$row['id']])?>">
-                        <div class="li-cover">
-                            <img class="li-cover-img" src="<?=$row['fault_cover']?>"/>
+
+                        <img class="aui-img-object aui-pull-left" src="<?=$row['fault_cover']?>">
+                        <div class="aui-img-body">
+                            <h2 class="aui-ellipsis-1">故障：<?=ConfigBase::getFaultStatus($row['fault_type'])?></h2>
+                            <p class="aui-ellipsis-2">描述：<?=$row['desc']?></p>
+                            <p class="aui-ellipsis-1"><span class="iconfont icon-yonghu aui-color"></span>
+                                <?php
+                                if($row['name'])
+                                {
+                                    echo $row['name'],' ',$row['phone'];
+                                    echo $row['name'],' ',$row['phone'];
+                                    echo $row['name'],' ',$row['phone'];
+                                }
+                                else
+                                    echo '电话维修用户';
+                                ?>
+                            </p>
+                            <p class="aui-ellipsis-1"><span class="iconfont icon-dizhi aui-color"></span> <?=$row['address']? :'未设置'?></p>
+                            <p class="aui-ellipsis-1"><span class="iconfont icon-shijian aui-color"></span> <?=date('m月d日 H:i',$row['add_time'])?></p>
                         </div>
-                        <p class="li-row li-name">故障：<?=ConfigBase::getFaultStatus($row['fault_type'])?></p>
-                        <p class="li-row-small">描述：<?=$row['desc']?></p>
-                        <p class="li-row-small"><?=$row['name'],',',$row['phone']?></p>
-                        <p class="li-row-small"><?=$row['address']?></p>
-                        <p class="li-row-small">发起时间：<?=date('m月d日 H:i',$row['add_time'])?></p>
                     </a>
                 </li>
             <?php endforeach;?>
-            <li style="clear:both; display: none;"></li>
         </ul>
     <?php else:?>
-        <p class="blank-info">没有最新维修</p>
+        <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 没有数据</div>
     <?php endif;?>
 </div>

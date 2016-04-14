@@ -3,20 +3,21 @@ use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '通知记录';
 ?>
+<header class="aui-bar aui-bar-nav aui-bar-color">新通知 <span class="aui-badge aui-badge-warning"><?=$count?></span> </header>
 
-<div class="h-box">
-    <?php if($model && $count >0):?>
-        <p class="h-header">新通知 <?=$count?> 个</p>
-        <ul>
+<div class="aui-content" id="task-list">
+    <?php if( is_array($model) && $model ):?>
+        <ul class="aui-list-view">
             <?php foreach($model as $row):?>
-                <li>
-                    <p style="font-size:16px; color:#666; padding: 0 10px;"><?=$row['text']?></p>
-                    <p style="font-size: 14px; color: #ccc; text-align: right; padding: 10px 0;"><?=date('Y-m-d H:i',$row['add_time'])?></p>
+                <li class="aui-list-view-cell aui-img">
+                        <div class="aui-img-body">
+                            <p class="aui-ellipsis-2">描述：<?=$row['text']?></p>
+                            <p class="aui-pull-right"><span class="iconfont icon-shijian"></span> <?=date('m月d日 H:i',$row['add_time'])?></p>
+                        </div>
                 </li>
             <?php endforeach;?>
-            <li style="clear:both; display: none;"></li>
         </ul>
     <?php else:?>
-        <p class="blank-info">没有最新通知</p>
+        <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 没有数据</div>
     <?php endif;?>
 </div>

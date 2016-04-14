@@ -84,6 +84,7 @@ class MController extends \yii\web\Controller
      */
     public function actionNotice($id)
     {
+        $this->layout = 'auicss';
         $openid = WxBase::openId($id);
         $model = TblNotifyLog::find()->where(['wx_id'=>$id,'openid'=>$openid,'enable'=>'Y'])->orderBy('id desc')->all();
 
@@ -466,6 +467,7 @@ class MController extends \yii\web\Controller
      */
     public function actionInitiative($id)
     {
+        $this->layout = 'auicss';
         $model = (new \yii\db\Query())
             ->select('t.id, t.content as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
                     m.address,m.name,m.phone

@@ -35,7 +35,7 @@ class WechatController extends \yii\web\Controller
             $num['new'] = (new \yii\db\Query())
                 ->select('count(*)')
                 ->from('tbl_notify_log')
-                ->where('enable="Y" and is_read="Y" and openid=:openid and wx_id=:wid',[':openid'=>$openid,':wid'=>$id])
+                ->where('enable="Y" and is_read="N" and openid=:openid and wx_id=:wid',[':openid'=>$openid,':wid'=>$id])
                 ->scalar();
             $num['fault'] = (new \yii\db\Query())
                 ->select('count(*)')

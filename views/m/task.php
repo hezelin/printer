@@ -26,7 +26,7 @@ $this->title = '任务列表';
                 <div class="aui-img-body">
                     <h2 class="aui-ellipsis-1">故障：<?=ConfigBase::getFaultStatus($row['fault_type'])?></h2>
                     <p class="aui-ellipsis-2">描述：<?=$row['desc']?></p>
-                    <p class="aui-ellipsis-1"><span class="aui-iconfont aui-icon-peoplefill aui-color"></span>
+                    <p class="aui-ellipsis-1"><span class="iconfont icon-yonghu aui-color"></span>
                         <?php
                         if($row['name'])
                         {
@@ -38,7 +38,7 @@ $this->title = '任务列表';
                             echo '电话维修用户';
                         ?>
                     </p>
-                    <p class="aui-ellipsis-1"><span class="aui-iconfont aui-icon-locationfill aui-color"></span> <?=$row['address']? :'未设置'?></p>
+                    <p class="aui-ellipsis-1"><span class="iconfont icon-dizhi aui-color"></span> <?=$row['address']? :'未设置'?></p>
                     <p class="aui-btn aui-btn-color aui-btn-sm"><?php
                         if( Yii::$app->request->get('type')=='history' )
                             echo date('Y-m-d',$row['add_time']);
