@@ -44,8 +44,7 @@ li {
   border: 0;
 }
 body {
-  font-size: 12px;
-  font-family: ubuntu, helvetica, arial;
+  font-size: 16px;
   overflow: hidden;
   /* this is important to prevent the whole page to bounce */
 }

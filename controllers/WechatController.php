@@ -45,14 +45,7 @@ class WechatController extends \yii\web\Controller
 
             return $this->render('maintain',['setting'=>$setting,'num'=>$num]);
         }
-
         return $this->render('index',['setting'=>$setting]);
-    }
-
-    public function actionMachinelist($id)
-    {
-
-        return $this->render('machinelist');
     }
 
     /*
