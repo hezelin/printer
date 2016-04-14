@@ -26,7 +26,7 @@ $this->title = '维修主页';
         <li class="aui-list-view-cell aui-img aui-col-xs-6">
             <a href="<?= Url::toRoute(['/shop/parts/my','id'=>$setting['wx_id']]) ?>" class="link-wrap">
                 <span class="iconfont icon-match aui-color"></span>
-                <h2 class="aui-img-body aui-text-default">配件列表</h2>
+                <h2 class="aui-img-body aui-text-default">我的配件</h2>
             </a>
         </li>
         <li class="aui-list-view-cell aui-img aui-col-xs-6">

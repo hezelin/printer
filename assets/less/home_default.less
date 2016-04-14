@@ -4,6 +4,7 @@
 
 
 @main-color:#33b5e5;
+@red-color:#ff0000;
 
 body{.p-b(40px); height: 100%; overflow-y: visible;}
 .copyright{ .p(10px 0); .w(100%); .t-c; display: block; .l(24px);}
@@ -49,7 +50,7 @@ body{.p-b(40px); height: 100%; overflow-y: visible;}
   .aui-tab-nav li{ .b-r(1px solid #eee);}
   .aui-tab-nav li:last-child{ .b-r(none); }
 }
-
+.aui-border-left{.b-l(2px solid @red-color)}
 .blank-text{ .h-l(150px); .t-c; .size(18px); color: #777; }
 
 .aui-btn-color{ .bg-c(@main-color); color: #fff; border:none;}
@@ -64,3 +65,4 @@ body{.p-b(40px); height: 100%; overflow-y: visible;}
 .aui-size-18{ .size(18px);}
 .aui-size-16{ .size(16px);}
 .aui-size-14{ .size(14px);}
+.aui-p-l{ .p-l(10px); }

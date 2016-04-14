@@ -34,6 +34,7 @@ class MController extends \yii\web\Controller
      */
     public function actionIndex($id)
     {
+        $this->layout = 'auicss';
         $openid = WxBase::openId($id);
         $len = Yii::$app->request->get('len')? : 10;
 
