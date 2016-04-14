@@ -270,11 +270,12 @@ class MController extends \yii\web\Controller
     }
 
     /*
-     * 最新任务
+     * 维修中、未评价、历史记录，type = process, evaluate,history
      * $id 为公众号id
      */
     public function actionTask($id)
     {
+        $this->layout = 'auicss';
         $data = new FaultList($id);
         return $this->render('task',['model'=>$data->task(),'id'=>$id]);
     }
