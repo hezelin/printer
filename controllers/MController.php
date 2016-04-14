@@ -259,15 +259,6 @@ class MController extends \yii\web\Controller
         }
         return json_encode($res);
     }
-    /*
-     * 维修记录
-     * $id 为公众号id
-     */
-    public function actionRecord($id)
-    {
-        $data = new FaultList($id);
-        return $this->render('record',['model'=>$data->record()]);
-    }
 
     /*
      * 维修中、未评价、历史记录，type = process, evaluate,history
