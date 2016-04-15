@@ -2,11 +2,8 @@
 
 namespace app\controllers;
 use app\models\TblMachineService;
-use app\models\TblRentApply;
 use app\models\TblUserWechat;
-use app\models\TblWechatMachine;
 use app\models\WxBase;
-use yii\web\NotFoundHttpException;
 
 class IController extends \yii\web\Controller
 {
@@ -14,6 +11,7 @@ class IController extends \yii\web\Controller
 
     public function actionIndex($id)
     {
+        $this->layout = 'auicss';
         $openid = WxBase::openId($id,false);
         $model = TblUserWechat::find()
             ->select('nickname,headimgurl,province,city')

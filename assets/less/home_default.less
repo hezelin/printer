@@ -72,6 +72,36 @@ body{ height: 100%; overflow-y: visible;}
   li span{ width: 19%; text-align: center; display: inline-block;}
 }
 
+
+/*
+ * 个人中心、赚钱积分
+ */
+#user-score{ .m-t(10px); .bg-c(#fff);
+  .aui-list-view{ background-color: transparent;}
+  .link-wrap{ display: block; .m; .p-l;
+    .p-b(15px);
+  }
+  .iconfont{ .size(30px); .bg-c(@main-color); width: 60px; .h-l(60px); display: inline-block;
+    color: #fff; border-radius: 60px;
+  }
+  h2{ .m-t(10px);}
+}
+#user-score-top{
+  height: 240px;  color: #FFFFFF; text-align: left;
+  position: relative;
+  background-color: #36a1db;
+  background:-webkit-gradient(linear,0 0,100% 100%, from(#36a1db), to(#36c1db));
+  background: -moz-linear-gradient(left top, #36a1db,#36c1db);
+  background: -webkit-linear-gradient(left top, #36a1db,#36c1db);
+  background: -o-linear-gradient(left top, #36a1db,#36c1db);
+  .top-content{ height: 80px; padding-top: 72px; width: 70%; margin: 0 auto;}
+  .cover{border: 1px solid #FFFFFF; border-radius: 4px; width: 80px; height: 80px;
+    float: left; margin-right: 15px;
+  }
+  .top-nickname{ height: 40px; line-height: 40px; font-size:18px;}
+  .top-from{height: 40px; line-height: 40px; font-size: 16px;}
+}
+
 /*
   全局共用区域
  */
@@ -88,8 +118,11 @@ body{ height: 100%; overflow-y: visible;}
 
 .aui-btn-color{ .bg-c(@main-color); color: #fff; border:none;}
 .aui-bg-color{.bg-c(@main-color);}
-
 .aui-bar-color{ .bg-c(#fff); color: @main-color;}
+.aui-bg-color-1{ background-color: #8ddd74 !important;}
+.aui-bg-color-2{ background-color: #ddaf46 !important;}
+.aui-bg-color-3{ background-color:#79a4dd !important;}
+.aui-bg-color-4{ background-color:#ee859d !important;}
 
 .aui-btn-sm{.size(12px); .p(6px 10px);}
 .aui-size-24{ .size(24px);}
