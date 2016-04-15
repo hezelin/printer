@@ -23,6 +23,7 @@ AuicssAsset::register($this);
 <?= $content ?>
 
 <div class="copyright aui-text-default">技术支持：<?= Yii::$app->name ?></div>
+<div style="height: 50px;">&nbsp;</div>
 <?php $this->endBody() ?>
 </body>
 </html>

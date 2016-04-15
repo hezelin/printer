@@ -62,7 +62,7 @@ WeixinAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => '人人租机',
+                'brandLabel' => Yii::$app->name,
                 'brandUrl' => '#',
                 'brandOptions' => [
                     'style' => 'color:#ffffff',

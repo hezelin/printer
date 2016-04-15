@@ -59,7 +59,7 @@ $this->title = $setting['store_name'];
 </div>
 
 <?php
-/*\app\components\WxjsapiWidget::widget([
+\app\components\WxjsapiWidget::widget([
     'wx_id'=>$setting['wx_id'],
     'apiList'=>['scanQRCode'],
     'jsReady'=>'
@@ -73,5 +73,5 @@ $this->title = $setting['store_name'];
         }
         });
     };'
-])*/
+])
 ?>

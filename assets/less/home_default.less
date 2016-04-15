@@ -104,7 +104,7 @@ body{ height: 100%; overflow-y: visible;}
 }
 
 /*
-  全局共用区域
+ * 全局共用区域
  */
 .aui-color{
   color: @main-color;
@@ -114,10 +114,22 @@ body{ height: 100%; overflow-y: visible;}
   .aui-tab-nav li{ .b-r(1px solid #eee);}
   .aui-tab-nav li:last-child{ .b-r(none); }
 }
+.aui-red-color{ color: @red-color;}
 .aui-border-left{.b-l(2px solid @red-color)}
-.blank-text{ .h-l(150px); .t-c; .size(18px); color: #777; }
+.blank-text{ .p(100px 5% 80px); .t-c; .size(18px); color: #777; display: block; .l(24px);}
 
 .aui-btn-color{ .bg-c(@main-color); color: #fff; border:none;}
+.my-btn-block{
+  .aui-btn-color;
+  display: block; .w(90%); margin-left: 5%; padding: 0; .h-l(40px);
+}
+
+.aui-color-000{color:#000 !important;}
+.aui-color-333{color:#333 !important;}
+.aui-color-666{color:#666 !important;}
+.aui-color-999{color:#999 !important;}
+.aui-color-fff{color:#fff !important;}
+
 .aui-bg-color{.bg-c(@main-color);}
 .aui-bar-color{ .bg-c(#fff); color: @main-color;}
 .aui-bg-color-1{ background-color:#8ddd74 !important;}
@@ -137,8 +149,13 @@ body{ height: 100%; overflow-y: visible;}
 .aui-p-l{ .p-l(10px); }
 .aui-box{ .p(2px 20px); .l(20px); .size(14px); .m-r(10px); .m-t(5px); display: inline-block; background-color: #efefef; .b(1px solid #e1e1e1);
   border-radius: 2px; color:#333;}
+.aui-box-sm{ .p(2px 10px); }
 .aui-box-color{.bg-c(@main-color); color: #fff; .b(1px solid darken(@main-color,5%) );}
-.aui-fixed-bottom{ .bg-c(#fff); position: fixed; bottom: 0; left: 0; .w(100%); .h-l(40px); .t-c;
+.aui-fixed-bottom{ .bg-c(#fff); position: fixed; bottom: 0; left: 0; .w(100%); .h-l(50px); .t-c;
   box-shadow: 0 1px 1px #999; .b-t(1px solid #e1e1e1);
-  a{color: #444;}
+  a{color: #777;}
+}
+
+.my-part-wrap {
+  .my-part-2 { .w(50%);.t-c; .left;}
 }

@@ -1,74 +1,60 @@
 <?php
 use yii\helpers\Url;
 $this->title = '我的机器';
-Yii::$app->params['layoutBottomHeight'] = 40;
-
 ?>
-<?php if($model || $project):?>
-    <div class="h-list"><ul class="m-machine">
-        <?php foreach($project as $row):?>
-            <li>
-                <a href="<?=Url::toRoute(['rent/detail','id'=>$id,'project_id'=>$row['id']])?>">
-                    <div class="li-cover">
-                        <img class="li-cover-img" src="<?=$row['cover']?>"/>
-                    </div>
-                    <p class="li-row li-name"><?=$row['name'],$row['type']?></p>
-                    <div class="li-row li-rent">
-                        <span class="li-label">月租</span>
-                        <em class="li-yan"> ¥</em>
-                        <span class="li-price"><?=$row['lowest_expense']?></span>
-                    </div>
-                    <p class="li-row li-func"><?=$row['function']?><?=$row['function']?></p>
-                </a>
-                <a href="javascript:void(0);" class="m-apply">
-                        租借申请中...
+
+<header class="aui-bar aui-bar-nav aui-bar-color">我的机器 <span class="aui-badge aui-badge-warning"><?=count($model)+count($project)?></span> </header>
+
+<div class="aui-content" id="task-list">
+    <?php if($model || $project):?>
+        <ul class="aui-list-view">
+            <?php foreach($project as $row):?>
+                <li class="aui-list-view-cell aui-img">
+                    <a href="<?=Url::toRoute(['rent/detail','id'=>$id,'project_id'=>$row['id']])?>">
+                        <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
+                        <div class="aui-img-body">
+                            <h2 class="aui-ellipsis-1 aui-text-info"><?=$row['name'],$row['type']?></h2>
+                            <p class="aui-ellipsis-1 aui-text-default">
+                                月租 : <span class="aui-red-color">¥<?= $row['lowest_expense']?></span>
+                            </p>
+                            <p class="aui-ellipsis-2 aui-color-000"><?=$row['function']?></p>
+                        </div>
+                        <span class="aui-box aui-box-color">租借申请中...</span>
                     </a>
-            </li>
-        <?php endforeach;?>
-        <?php foreach($model as $row):?>
-            <li>
-                <a href="<?=Url::toRoute(['rent/machinedetail','id'=>$id,'rent_id'=>$row['rent_id'],'from'=>'machine'])?>">
-                    <div class="li-cover">
-                        <img class="li-cover-img" src="<?=$row['cover']?>"/>
-                    </div>
-                    <p class="li-row li-name"><?=$row['type'],'/',$row['series_id']?></p>
-                    <div class="li-row li-rent">
-                        <span class="li-label">月租 : </span>
-                        <em class="li-yan"> ¥</em>
-                        <span class="li-price"><?= $row['monthly_rent']?></span>
-                    </div>
-                    <div class="li-row li-rent">
-                        <span class="li-label">到期 : </span>
-                        <span class="li-time"><?=date('Y年m月d',$row['due_time'])?></span>
-                    </div>
-                    <div class="li-row li-rent">
-                        <span class="li-label">维修次数 : </span>
-                        <span class="li-time"><?=$row['maintain_count']?></span>
-                    </div>
-                </a>
-                    <!--<a href="javascript:void(0);" class="m-apply">
-                        租借申请中...
-                    </a>-->
-                <div>
-                    <a href="<?=Url::toRoute(['s/apply','id'=>$id,'mid'=>$row['id']])?>" class="m-apply-50 h-b-r">
-                        维修申请
+                </li>
+            <?php endforeach;?>
+
+            <?php foreach($model as $row):?>
+                <li class="aui-list-view-cell aui-img">
+                    <a href="<?=Url::toRoute(['rent/machinedetail','id'=>$id,'rent_id'=>$row['rent_id'],'from'=>'machine'])?>">
+                        <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
+                        <div class="aui-img-body">
+                            <h2 class="aui-ellipsis-1 aui-text-info"><?=$row['type'],'/',$row['series_id']?></h2>
+                            <p class="aui-ellipsis-1 aui-text-default">
+                                月租 : <span class="aui-red-color">¥<?= $row['monthly_rent']?></span>
+                            </p>
+                            <p class="aui-ellipsis-1 aui-text-default">
+                                到期 : <span class="aui-color-000"><?=date('Y年m月d',$row['due_time'])?></span>
+                            </p>
+                            <p class="aui-ellipsis-1 aui-text-default">
+                                维修次数 : <span class="aui-color-000"><?=$row['maintain_count']?></span>
+                            </p>
+                        </div>
                     </a>
-                    <a href="<?=Url::toRoute(['i/service','id'=>$id,'mid'=>$row['id']])?>" class="m-apply-50">维修记录</a>
-                </div>
-            </li>
-        <?php endforeach;?>
-        <li style="clear:both; display: none;"></li>
-    </ul></div>
-
-    <div class="h-fixed-bottom">
-        <a href="<?=Url::toRoute(['rent/list','id'=>$id])?>">
-            租借机器
-        </a>
-    </div>
-
-
- <?php else:?>
- <div class="h-hint">亲，您还没有机器，赶快去租借一台吧</div>
-<a class="h-button" href="<?= Url::toRoute(['/rent/list','id'=>$id])?>">租借机器</a>
-
-<?php endif;?>
+                    <p class="aui-ellipsis-1" style="margin-left: 95px;">
+                        <a class="aui-box aui-box-color aui-box-sm" href="<?=Url::toRoute(['i/service','id'=>$id,'mid'=>$row['id']])?>">维修记录</a>
+                        <a class="aui-box aui-box-sm" href="<?=Url::toRoute(['s/apply','id'=>$id,'mid'=>$row['id']])?>">维修申请</a>
+                    </p>
+                </li>
+            <?php endforeach;?>
+        </ul>
+        <div class="aui-fixed-bottom">
+            <a href="<?=Url::toRoute(['rent/list','id'=>$id])?>">
+                租借机器
+            </a>
+        </div>
+    <?php else:?>
+        <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 亲，您还没有机器，赶快去租借一台吧</div>
+        <a href="<?= Url::toRoute(['/rent/list','id'=>$id])?>" class="aui-btn my-btn-block">租借机器</a>
+    <?php endif;?>
+</div>
