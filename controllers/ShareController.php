@@ -15,6 +15,7 @@ class ShareController extends \yii\web\Controller
 
     public function actionActive()
     {
+        $this->layout = 'auicss';
         return $this->render('active');
     }
 
