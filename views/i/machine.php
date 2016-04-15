@@ -3,10 +3,9 @@ use yii\helpers\Url;
 $this->title = '我的机器';
 ?>
 
-<header class="aui-bar aui-bar-nav aui-bar-color">我的机器 <span class="aui-badge aui-badge-warning"><?=count($model)+count($project)?></span> </header>
-
 <div class="aui-content" id="task-list">
     <?php if($model || $project):?>
+        <header class="aui-bar aui-bar-nav aui-bar-color">我的机器 <span class="aui-badge aui-badge-warning"><?=count($model)+count($project)?></span> </header>
         <ul class="aui-list-view">
             <?php foreach($project as $row):?>
                 <li class="aui-list-view-cell aui-img">
@@ -18,8 +17,8 @@ $this->title = '我的机器';
                                 月租 : <span class="aui-red-color">¥<?= $row['lowest_expense']?></span>
                             </p>
                             <p class="aui-ellipsis-2 aui-color-000"><?=$row['function']?></p>
+                            <span class="aui-box aui-box-color">租借申请中...</span>
                         </div>
-                        <span class="aui-box aui-box-color">租借申请中...</span>
                     </a>
                 </li>
             <?php endforeach;?>
