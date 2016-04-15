@@ -18,39 +18,39 @@ $this->title = $setting['store_name'];
     <ul class="aui-list-view aui-grid-view">
         <li class="aui-list-view-cell aui-img aui-col-xs-6">
             <a href="<?= Url::toRoute(['i/machine','id'=>$setting['wx_id']]) ?>" class="link-wrap">
-                <span class="aui-iconfont aui-icon-cascades aui-color"></span>
+                <span class="iconfont icon-icondayinji aui-color"></span>
                 <h2 class="aui-img-body aui-text-default">我的机器</h2>
             </a>
         </li>
 
         <li class="aui-list-view-cell aui-img aui-col-xs-6">
             <a id="scan-btn" href="javascript:void(0);" class="link-wrap">
-                <span class="aui-iconfont aui-icon-scan aui-color"></span>
+                <span class="iconfont icon-saomiao aui-color"></span>
                 <h2 id="code-loading" class="aui-img-body aui-text-default">加载中...</h2>
             </a>
         </li>
         <li class="aui-list-view-cell aui-img aui-col-xs-6">
             <a href="<?= Url::toRoute(['shop/item/list','id'=>$setting['wx_id']]) ?>" class="link-wrap">
-                <span class="aui-iconfont aui-icon-shop aui-color"></span>
+                <span class="iconfont icon-p-shop aui-color"></span>
                 <h2 class="aui-img-body aui-text-default">微商城</h2>
             </a>
         </li>
         <li class="aui-list-view-cell aui-img aui-col-xs-6">
             <a href="<?= Url::toRoute(['share/scheme','id'=>$setting['wx_id']]) ?>" class="link-wrap">
-                <span class="aui-iconfont aui-icon-recharge aui-color"></span>
+                <span class="iconfont icon-icon305 aui-color"></span>
                 <h2 class="aui-img-body aui-text-default">赚取积分</h2>
             </a>
         </li>
         <li class="aui-list-view-cell aui-img aui-col-xs-6">
             <a href="<?= Url::toRoute(['i/index','id'=>$setting['wx_id']]) ?>" class="link-wrap">
-                <span class="aui-iconfont aui-icon-my aui-color"></span>
+                <span class="iconfont icon-gerenziliao aui-color"></span>
                 <h2 class="aui-img-body aui-text-default">个人中心</h2>
             </a>
         </li>
 
         <li class="aui-list-view-cell aui-img aui-col-xs-6">
             <a href="<?= Url::toRoute(['share/active','id'=>$setting['wx_id']]) ?>" class="link-wrap">
-                <span class="aui-iconfont aui-icon-present aui-color"></span>
+                <span class="iconfont icon-huodong aui-color"></span>
                 <h2 class="aui-img-body aui-text-default">最新活动</h2>
             </a>
         </li>
