@@ -56,22 +56,30 @@ Yii::$app->params['layoutBottomHeight'] = 40;
 $this->registerCss($this->blocks['CSS']);
 ?>
 
-<div id="item-list-wrap">
-    <?php if($model):?>
-        <?php foreach($model as $row):?>
-            <div class="item-list">
-                <img src="<?=$row['cover']?>">
-               <span>
-                   <h5>(<?=$row['category']?>)<?=$row['name']?></h5>
-                   <p class="mtm_p"><b><?=\app\modules\shop\models\Shop::getParts($row['status'])?></b>
-                       <a class="parts-cancel-btn" parts-id="<?=$row['parts_id']?>" href="javascript:void(0)">取消</a></p>
-               </span>
-            </div>
-        <?php endforeach;?>
+<header class="aui-bar aui-bar-nav aui-bar-color">我的配件 <span class="aui-badge aui-badge-warning"><?=count($model)?></span> </header>
+
+<div class="aui-content" id="task-list">
+    <?php if( is_array($model) && $model ):?>
+        <ul class="aui-list-view">
+            <?php foreach($model as $row):?>
+                <li class="aui-list-view-cell aui-img">
+                    <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
+                    <div class="aui-img-body">
+                        <h2 class="aui-ellipsis-1">(<?=$row['category']?>)</h2>
+                        <p class="aui-ellipsis-2"><?=$row['name']?></p>
+                        <p class="aui-ellipsis-1">
+                            <span class="aui-box aui-box-color"><?=\app\modules\shop\models\Shop::getParts($row['status'])?></span>
+                            <span class="parts-cancel-btn aui-box" parts-id="<?=$row['parts_id']?>" href="javascript:void(0)">取消</span>
+                        </p>
+                    </div>
+                </li>
+            <?php endforeach;?>
+        </ul>
     <?php else:?>
-        <div class="h-hint">没有配件</div>
+        <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 没有数据</div>
     <?php endif;?>
 </div>
+
 
 <div class="h-fixed-bottom">
     <a id="process-btn" href="<?=Url::toRoute(['/shop/parts/list','id'=>$id])?>">

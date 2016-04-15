@@ -167,6 +167,7 @@ class PartsController extends Controller
      */
     public function actionMy($id)
     {
+        $this->layout = '/auicss';
         $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('t.wx_id,t.status,t.id as parts_id,p.id,p.cover,p.name,p.price,c.name as category')

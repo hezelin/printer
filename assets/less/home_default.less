@@ -31,12 +31,46 @@ body{.p-b(40px); height: 100%; overflow-y: visible;}
   .aui-badge{ top: 18px; right: 10px;}
 }
 
+/*
+ * 维修任务
+ */
 #task-list{
   .aui-list-view{ background-color: transparent;}
-  .aui-list-view .aui-img-object{ width: 80px; height: 80px; line-height: 80px;}
+  .aui-list-view .aui-img-object{ width: 80px; height: 80px; line-height: 80px; max-width: 80px;}
   .aui-list-view-cell{ .m-t(15px); .bg-c(#fff);}
   .aui-list-view-cell:after{ .b-b(none);}
   .aui-list-view:after{ .b-t(none);}
+}
+
+/*
+ * 我的业绩
+ */
+.item-more{  width: 100%; background-color: #fff;font-size: 14px;  border: 1px solid #EEEEEE;  text-align: center; height: 36px; line-height: 36px;  margin: 15px auto; border-radius: 4px; color: #666666;  }
+.item-more-end{  display: none !important;  }
+#top{ height: 180px;  color: #FFFFFF; text-align: left;
+  position: relative;
+  background-color: #36a1db;
+  background:-webkit-gradient(linear,0 0,100% 100%, from(#36a1db), to(#36c1db));
+  background: -moz-linear-gradient(left top, #36a1db,#36c1db);
+  background: -webkit-linear-gradient(left top, #36a1db,#36c1db);
+  background: -o-linear-gradient(left top, #36a1db,#36c1db);
+
+  dl,dd{ list-style: none; padding: 0; margin: 0;}
+  .top-content{ height: 140px;  text-align: center; position: relative;  display: block;
+      dd{ width: 50%; display: block; float: left; height: 90px; padding: 15px 0;
+    border-bottom: 1px solid #e5e5e5; border-right: 1px solid #e5e5e5;}
+      dd:nth-child(even){border-right: none;}
+      .num{ display: block; height: 40px; line-height: 40px; font-size: 40px; font-weight: 600;}
+      .end{ font-size: 14px; padding-left: 5px;}
+      .tips{ line-height: 16px; font-size: 14px;}
+  }
+}
+
+#item-list-wrap{ margin-top: 15px; background-color: #fff; font-size: 12px;
+  .list-title{ height: 50px; line-height: 50px;border-bottom: 1px solid #cccccc; background-color: transparent !important;}
+  li{ height: 40px; line-height: 40px; }
+  li:nth-child(odd){ background-color: #EDF5F2;}
+  li span{ width: 19%; text-align: center; display: inline-block;}
 }
 
 /*
@@ -66,3 +100,6 @@ body{.p-b(40px); height: 100%; overflow-y: visible;}
 .aui-size-16{ .size(16px);}
 .aui-size-14{ .size(14px);}
 .aui-p-l{ .p-l(10px); }
+.aui-box{ .p(2px 20px); .l(20px); .size(14px); .m-r(10px); .m-t(5px); display: inline-block; background-color: #efefef; .b(1px solid #e1e1e1);
+  border-radius: 2px; color:#333;}
+.aui-box-color{.bg-c(@main-color); color: #fff; .b(1px solid darken(@main-color,5%) );}
