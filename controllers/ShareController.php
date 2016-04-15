@@ -34,6 +34,7 @@ class ShareController extends \yii\web\Controller
      */
     public function actionScheme($id)
     {
+        $this->layout = 'auicss';
         $openid = WxBase::openId($id);
         $score = (new \yii\db\Query())
             ->select('score')
