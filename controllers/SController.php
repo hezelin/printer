@@ -6,17 +6,12 @@
 namespace app\controllers;
 use app\models\fault\FaultList;
 use app\models\TblMachineService;
-use app\models\TblRentApply;
-use app\models\TblServiceEvaluate;
 use app\models\TblServiceProcess;
 use app\models\ToolBase;
 use app\models\WxBase;
-use app\models\WxJsapi;
 use app\models\WxMedia;
 use Yii;
-use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\web\BadRequestHttpException;
 
 class SController extends \yii\web\Controller
 {
@@ -221,6 +216,7 @@ class SController extends \yii\web\Controller
      */
     public function actionIrecord($id,$mid)
     {
+        $this->layout = 'auicss';
         $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->orderBy('add_time desc')->asArray()->all();
         foreach ($model as $i=>$m) {
             $content = json_decode($m['content'],true);
