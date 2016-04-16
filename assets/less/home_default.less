@@ -109,20 +109,15 @@ body{ height: 100%; overflow-y: visible;}
 #fault-detail{
   .bg-c(#fff);
   .aui-content,.aui-content > .aui-list-view:last-child{.m-b;}
+
+  /*
+   * 录音样式
+   */
+  #voice-wrap{width: 100%; float: left; position: relative; border-radius: 30px; background-color: #f2f2f2;
+    .h-l(36px); cursor: pointer; color:@main-color; .size(24px); .p-l(15px);
+  }
+  .voice-image{.size(20px); .m-r(10px); .left;}
 }
-
-/*
- * 录音样式
- */
-#voice-wrap{width: 60%; float: left; position: relative; border-radius: 30px; background-color: #CCFFFF;
-  height: 40px; cursor: pointer;}
-.voice-time{text-align:left; padding-left:10px; font-size:20px;height:40px;line-height:40px;color:#505050;}
-.voice-image{ margin:4px 10px 0 5px;height:32px;width:32px;float:left; background: url(/images/voice.png) -120px 0 no-repeat;}
-.voice-start .voice-image{background-position: 0 0;}
-.voice-stop .voice-image{background-position: -40px 0;}
-.voice-playing .voice-image{background-position: -120px 0;}
-.voice-play .voice-image{background-position: -80px 0;}
-
 
 /*
  * 全局共用区域
@@ -188,3 +183,5 @@ body{ height: 100%; overflow-y: visible;}
   .h-l(40px); width: 100%; text-align: right;
   img{ .w(40px); .h(40px);}
 }
+
+.m-r-10{ margin-right: 10px;}

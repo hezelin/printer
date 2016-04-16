@@ -35,14 +35,15 @@ use yii\helpers\Url;
                     <div class="aui-col-xs-3 aui-text-default">用户录音</div>
                     <div class="aui-col-xs-9">
                         <div id="voice-wrap" data-value="3" data-time="<?=$model['voice_len']?>">
-                            <div class="voice-image voice-playing"></div>
-                            <p class="voice-time"><span id="voice-time"><?=$model['voice_len']?></span>＂</p>
+                            <span class="voice-image iconfont icon-shengyin"></span>
+                            <span id="voice-time"><?=$model['voice_len']?></span>＂
                         </div>
                         <audio hidden="true" preload="auto" onended="play_ended()" id="myaudio">
                             <source src="<?=$model['voice_url']?>" type="audio/mpeg">
                             <source src="<?=substr($model['voice_url'],0,-3)?>amr" type="audio/mpeg">
                             "不支持播放录音"
                         </audio>
+                    </div>
                     </div>
                 </li>
             <?php endif;?>
@@ -116,7 +117,7 @@ use yii\helpers\Url;
 var playtime,myAudio;
 function get_less_time(){
     var time = parseInt($('#voice-time').text())-1;
-    $('#voice-wrap').removeClass('voice-play').addClass('voice-stop');
+    $('#voice-wrap').children('.voice-image').removeClass('icon-shengyin').addClass('icon-zanting');
     if(time<0)
         $('#voice-time').text('00');
     else if(time<10)
@@ -128,7 +129,8 @@ function get_less_time(){
 
 function play_ended(){
     clearInterval(playtime);
-    $('#voice-wrap').attr('data-value',3).removeClass('voice-stop').addClass('voice-playing');
+    $('#voice-wrap').attr('data-value',3);
+    $('#voice-wrap').children('.voice-image').removeClass('icon-zanting').addClass('icon-shengyin');
     $('#voice-time').text( $('#voice-wrap').attr('data-time'));
 }
 
@@ -137,11 +139,12 @@ $(function(){
     $('#voice-wrap').click(function(){
         var obj = $(this);
         var value = $(obj).attr('data-value');
+        var voiceImage = $(this).children('.voice-image')
 
         //播放录音
         if(value==3){
             obj.attr('data-value',4);
-            obj.removeClass('voice-stop').addClass('voice-playing');
+            voiceImage.removeClass('icon-shengyin').addClass('icon-zanting');
             myAudio = document.getElementById('myaudio');
             myAudio.play();
             playtime = setInterval(get_less_time,1000);
@@ -150,7 +153,7 @@ $(function(){
         //暂停播放
         if(value ==4){
             obj.attr('data-value',3);
-            obj.removeClass('voice-playing').addClass('voice-stop');
+            voiceImage.removeClass('icon-zanting').addClass('icon-shengyin');
             myAudio.pause();
             clearInterval(playtime);
         }
