@@ -104,6 +104,27 @@ body{ height: 100%; overflow-y: visible;}
 }
 
 /*
+ * 维修详情
+ */
+#fault-detail{
+  .bg-c(#fff);
+  .aui-content,.aui-content > .aui-list-view:last-child{.m-b;}
+}
+
+/*
+ * 录音样式
+ */
+#voice-wrap{width: 60%; float: left; position: relative; border-radius: 30px; background-color: #CCFFFF;
+  height: 40px; cursor: pointer;}
+.voice-time{text-align:left; padding-left:10px; font-size:20px;height:40px;line-height:40px;color:#505050;}
+.voice-image{ margin:4px 10px 0 5px;height:32px;width:32px;float:left; background: url(/images/voice.png) -120px 0 no-repeat;}
+.voice-start .voice-image{background-position: 0 0;}
+.voice-stop .voice-image{background-position: -40px 0;}
+.voice-playing .voice-image{background-position: -120px 0;}
+.voice-play .voice-image{background-position: -80px 0;}
+
+
+/*
  * 全局共用区域
  */
 .aui-color{
@@ -151,11 +172,19 @@ body{ height: 100%; overflow-y: visible;}
   border-radius: 2px; color:#333;}
 .aui-box-sm{ .p(2px 10px); }
 .aui-box-color{.bg-c(@main-color); color: #fff; .b(1px solid darken(@main-color,5%) );}
+
 .aui-fixed-bottom{ .bg-c(#fff); position: fixed; bottom: 0; left: 0; .w(100%); .h-l(50px); .t-c;
-  box-shadow: 0 1px 1px #999; .b-t(1px solid #e1e1e1);
+  box-shadow: 0 1px 1px #999; .b-t(1px solid #e1e1e1); color: #777;
   a{color: #777;}
+}
+.aui-fixed-2{
+  a{.w(50%); .left; .p; .m;}
 }
 
 .my-part-wrap {
   .my-part-2 { .w(50%);.t-c; .left;}
+}
+.list-box-img{ position: absolute; right:18px; top: 50%; transform: translateY(-50%);
+  .h-l(40px); width: 100%; text-align: right;
+  img{ .w(40px); .h(40px);}
 }

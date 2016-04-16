@@ -279,6 +279,7 @@ class MController extends \yii\web\Controller
      */
     public function actionTaskdetail($id)
     {
+        $this->layout = 'auicss';
         $model = (new \yii\db\Query())
             ->select('t.id,t.content as fault_cover,t.desc,t.type as fault_type, t.remark, t.add_time,t.status,t.fault_score,
                     t.machine_id as mid,t.unfinished_parts_num, m.address,m.name,m.phone,t.weixin_id as wx_id,
@@ -318,7 +319,7 @@ class MController extends \yii\web\Controller
                             [
                                 'data-ajax'=>1,
                                 'data-status'=>$status+1,
-                                'class'=>'process-btn h-fixed-bottom',
+                                'class'=>'process-btn aui-fixed-bottom',
                                 'data-href'=>Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid])
                             ]
                         )
@@ -332,7 +333,7 @@ class MController extends \yii\web\Controller
                             [
                                 'data-ajax'=>0,
                                 'data-status'=>$status+1,
-                                'class'=>'process-btn h-fixed-bottom',
+                                'class'=>'process-btn aui-fixed-bottom',
                             ]
                         )
                     ]);
@@ -341,29 +342,23 @@ class MController extends \yii\web\Controller
                         'openid' => $openid,
                         'btnHtml'=>Html::tag(
                             'div',
-                            Html::tag('div',
-                                Html::a(
-                                    '维修完成',
-                                    Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
-                                    [
-                                        'data-ajax'=>2,
-                                        'data-status'=>8,
-                                        'class'=>'process-btn'
+                            Html::a(
+                                '维修完成',
+                                Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                                [
+                                    'data-ajax'=>2,
+                                    'data-status'=>8,
+                                    'class'=>'process-btn'
+                            ]).
+                            Html::a(
+                                ConfigBase::getFixMaintainStatus($status),
+                                Url::toRoute(['s/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
+                                [
+                                    'data-ajax'=>0,
+                                    'data-status'=>$status+1,
+                                    'class'=>'process-btn'
                                 ]),
-                                ['class'=>'h-off-50']
-                            ).
-                            Html::tag('div',
-                                Html::a(
-                                    ConfigBase::getFixMaintainStatus($status),
-                                    Url::toRoute(['s/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
-                                    [
-                                        'data-ajax'=>0,
-                                        'data-status'=>$status+1,
-                                        'class'=>'process-btn'
-                                    ]),
-                                ['class'=>'h-off-50']
-                            ),
-                            ['class'=>'h-fixed-bottom']
+                            ['class'=>'aui-fixed-bottom aui-fixed-2']
                         )
                     ]);
             case 6:
@@ -373,29 +368,23 @@ class MController extends \yii\web\Controller
                         'openid' => $openid,
                         'btnHtml'=>Html::tag(
                             'div',
-                            Html::tag('div',
-                                Html::a(
-                                    '维修完成',
-                                    Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
-                                    [
-                                        'data-ajax'=>2,
-                                        'data-status'=>8,
-                                        'class'=>'process-btn'
-                                    ]),
-                                ['class'=>'h-off-50']
-                            ).
-                            Html::tag('div',
-                                Html::a(
-                                    '申请配件',
-                                    Url::toRoute(['s/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
-                                    [
-                                        'data-ajax'=>0,
-                                        'data-status'=>$status+1,
-                                        'class'=>'process-btn'
-                                    ]),
-                                ['class'=>'h-off-50']
-                            ),
-                            ['class'=>'h-fixed-bottom']
+                            Html::a(
+                                '维修完成',
+                                Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                                [
+                                    'data-ajax'=>2,
+                                    'data-status'=>8,
+                                    'class'=>'process-btn'
+                                ]).
+                            Html::a(
+                                '申请配件',
+                                Url::toRoute(['s/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
+                                [
+                                    'data-ajax'=>0,
+                                    'data-status'=>$status+1,
+                                    'class'=>'process-btn'
+                                ]),
+                            ['class'=>'aui-fixed-bottom aui-fixed-2']
                         )
                     ]);
                 }
@@ -408,7 +397,7 @@ class MController extends \yii\web\Controller
                                 Url::toRoute(['/shop/parts/process','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
                                 ['data-ajax'=>0,'class'=>'process-btn']
                             ),
-                        ['class'=>'h-fixed-bottom'] )
+                        ['class'=>'aui-fixed-bottom'] )
                     ]);
             case 7: return $this->render('process', [
                 'model' => $model,
@@ -419,7 +408,7 @@ class MController extends \yii\web\Controller
                     [
                         'data-ajax'=>1,
                         'data-status'=>$status+1,
-                        'class'=>'process-btn h-fixed-bottom',
+                        'class'=>'process-btn aui-fixed-bottom',
                     ]
                 )
             ]);
@@ -434,7 +423,7 @@ class MController extends \yii\web\Controller
                     [
                         'data-ajax'=>0,
                         'data-status'=>8,
-                        'class'=>'process-btn h-fixed-bottom',
+                        'class'=>'process-btn aui-fixed-bottom',
                 ])
             ]);
         }

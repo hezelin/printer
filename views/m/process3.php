@@ -7,6 +7,7 @@ $this->title = '维修任务';
 
 <?= $this->render('_detail', ['model' => $model ]) ?>
 
+
 <?=$btnHtml?>
 
 <script>
