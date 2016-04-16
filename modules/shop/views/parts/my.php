@@ -40,7 +40,7 @@ $this->title = '配件列表';
     $(function(){
         $('.parts-cancel-btn').click(function(){
             if(hasClick == 1) return false;
-            var $this = $(this).closest('.item-list');
+            var $this = $(this).closest('.aui-list-view-cell');
             var parts_id = $(this).attr('parts-id');
             $.post(
                 '<?=Url::toRoute(['cancel','id'=>$id])?>&parts_id='+parts_id,
