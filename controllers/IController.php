@@ -7,11 +7,10 @@ use app\models\WxBase;
 
 class IController extends \yii\web\Controller
 {
-    public  $layout = 'home';  //使用home布局
+    public  $layout = 'auicss';  //使用home布局
 
     public function actionIndex($id)
     {
-        $this->layout = 'auicss';
         $openid = WxBase::openId($id,false);
         $model = TblUserWechat::find()
             ->select('nickname,headimgurl,province,city')
@@ -26,7 +25,6 @@ class IController extends \yii\web\Controller
      */
     public function actionMachine($id)
     {
-        $this->layout = 'auicss';
         $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('t.id as rent_id,t.wx_id,t.project_id,t.due_time,t.status,t.monthly_rent,m.id,p.function,m.maintain_count,
@@ -54,6 +52,7 @@ class IController extends \yii\web\Controller
      */
     public function actionScore()
     {
+        $this->layout = 'home';
         return $this->render('score');
     }
 
