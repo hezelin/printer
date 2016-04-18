@@ -18,6 +18,7 @@ class ItemController extends Controller
      */
     public function actionList($id)
     {
+        $this->layout = '/auicss';
         $len = Yii::$app->request->get('len')? : 10;
 
         $model = (new \yii\db\Query())
@@ -52,7 +53,7 @@ class ItemController extends Controller
             'model'=>$model,
             'startId'=>$startId,
             'id'=>$id,
-            'category'=>\app\modules\shop\models\Shop::getMenu($id),
+            'len'=>$len,
         ]);
     }
 

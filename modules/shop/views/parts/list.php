@@ -1,5 +1,4 @@
 <?php
-use app\components\PassthroughWidget;
 use yii\helpers\Url;
 $this->title = '配件列表';
 
@@ -156,27 +155,6 @@ $dataHref = $fault_id? 'data-href':'href';          // 维修员页面跳转标�
                $(this).addClass('.has-show');
            }
         });
-        // 搜索按钮
-        /*$('#s-open').click(function(){
-            $('#search-input').show();
-        });
-
-        $('#s-close').click(function(){
-            $('#search-show').hide();
-            q='';
-            getData(action,key,'',q,'html');
-        });
-
-
-        $('#search-input .s-button').click(function(){
-            if( $('#search-input .s-input').val() ){
-                q = $('#search-input .s-input').val();
-                getData(action,key,'',q,'html');
-                $('#search-show').show();
-                $('#search-show .s-text').text(q);
-            }
-            $('#search-input').hide();
-        });*/
     });
     <?php $this->endBlock(); ?>
 </script>
