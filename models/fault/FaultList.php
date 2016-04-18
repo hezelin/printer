@@ -29,9 +29,16 @@ class FaultList
             ')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
-            ->where(['t.openid' => $openid,'t.enable' => 'Y'])
-            ->andWhere(['<','t.status',9])
-            ->orderBy('t.add_time desc')
+            ->where(['t.openid' => $openid,'t.enable' => 'Y']);
+
+        if(Yii::$app->request->get('type') == 'evaluate')
+            $model = $model->andWhere(['t.status'=>8]);
+        elseif( Yii::$app->request->get('type') == 'history')
+            $model = $model->andWhere(['t.status'=>9]);
+        else
+            $model = $model->andWhere(['<','t.status',8]);
+
+        $model = $model->orderBy('t.add_time desc')
             ->all();
 
         foreach ($model as $i=>$m) {
@@ -39,7 +46,9 @@ class FaultList
             $model[$i]['fault_cover'] = $content['cover'][0];
         }
 
-        $tmp = [];
+        return $model;
+
+        /*$tmp = [];
         foreach($model as $m){
             if($m['status'] == 8){
                 $tmp['evaluate'][] = $m;
@@ -47,7 +56,7 @@ class FaultList
                 $tmp['process'][] = $m;
         }
         unset($model);
-        return $tmp;
+        return $tmp;*/
     }
 
     /*

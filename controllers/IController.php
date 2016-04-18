@@ -2,15 +2,12 @@
 
 namespace app\controllers;
 use app\models\TblMachineService;
-use app\models\TblRentApply;
 use app\models\TblUserWechat;
-use app\models\TblWechatMachine;
 use app\models\WxBase;
-use yii\web\NotFoundHttpException;
 
 class IController extends \yii\web\Controller
 {
-    public  $layout = 'home';  //使用home布局
+    public  $layout = 'auicss';  //使用home布局
 
     public function actionIndex($id)
     {
@@ -55,6 +52,7 @@ class IController extends \yii\web\Controller
      */
     public function actionScore()
     {
+        $this->layout = 'home';
         return $this->render('score');
     }
 

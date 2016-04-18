@@ -1,4 +1,4 @@
 <?php
 /* @var $this yii\web\View */
 ?>
-<div class="h-hint">没有新的活动！</div>
+<div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 没有数据</div>

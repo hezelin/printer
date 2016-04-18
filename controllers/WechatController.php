@@ -8,7 +8,7 @@ use app\models\WxBase;
 
 class WechatController extends \yii\web\Controller
 {
-    public $layout = 'home';        //使用home布局
+    public $layout = 'auicss';        //使用home布局
     /*
      * 微官网，判断是否微信人员
      */
@@ -35,7 +35,7 @@ class WechatController extends \yii\web\Controller
             $num['new'] = (new \yii\db\Query())
                 ->select('count(*)')
                 ->from('tbl_notify_log')
-                ->where('enable="Y" and is_read="Y" and openid=:openid and wx_id=:wid',[':openid'=>$openid,':wid'=>$id])
+                ->where('enable="Y" and is_read="N" and openid=:openid and wx_id=:wid',[':openid'=>$openid,':wid'=>$id])
                 ->scalar();
             $num['fault'] = (new \yii\db\Query())
                 ->select('count(*)')
@@ -45,14 +45,7 @@ class WechatController extends \yii\web\Controller
 
             return $this->render('maintain',['setting'=>$setting,'num'=>$num]);
         }
-
         return $this->render('index',['setting'=>$setting]);
-    }
-
-    public function actionMachinelist($id)
-    {
-
-        return $this->render('machinelist');
     }
 
     /*

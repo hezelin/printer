@@ -4,44 +4,39 @@ use yii\helpers\Url;
  * 故障详情 头部
  */
 ?>
-    <style>
-        body{background-color: #f1f1f1 !important;}
-        #voice-wrap{width: 60%; float: left; position: relative; border-radius: 30px; background-color: #CCFFFF;
-            height: 40px; cursor: pointer;}
-        .voice-time{text-align:left; padding-left:10px; font-size:20px;height:40px;line-height:40px;color:#505050;}
-        .voice-image{ margin:4px 10px 0 5px;height:32px;width:32px;float:left; background: url(/images/voice.png) -120px 0 no-repeat;}
-        .voice-start .voice-image{background-position: 0 0;}
-        .voice-stop .voice-image{background-position: -40px 0;}
-        .voice-playing .voice-image{background-position: -120px 0;}
-        .voice-play .voice-image{background-position: -80px 0;}
-    </style>
+<div id="fault-detail">
+    <div class="aui-padded-10 aui-bg-default"><p class="aui-border-left aui-p-l">故障信息</p></div>
+    <div class="aui-content">
+        <ul class="aui-list-view aui-in">
+            <li class="aui-list-view-cell">
+                <a class="aui-arrow-right" id="previewImage">
+                    <div class="aui-col-xs-3 aui-text-default">故障图片</div>
+                    <div class="aui-col-xs-9">
+                        <?=count($model['cover_images'])?>张
+                        <div class="list-box-img">
+                            <img src="<?=$model['fault_cover']?>" />
+                        </div>
+                    </div>
+                </a>
+            </li>
 
-    <div class="h-box-line">
-        <div class="h-box-title">故障信息</div>
-        <div class="h-box-content">
+            <li class="aui-list-view-cell">
+                <a class="aui-arrow-right" href="<?=Url::toRoute(['/s/detail2','id'=>$model['id']])?>">
+                    <div class="aui-col-xs-3 aui-text-default">故障类型</div>
+                    <div class="aui-col-xs-9">
+                        <?=\app\models\ConfigBase::getFaultStatus($model['fault_type'])?>
+                        <div class="list-box-img aui-text-primary">查看进度</div>
+                    </div>
+                </a>
+            </li>
 
-            <div class="h-box-row">
-                <div class="h-box-label">故障图片</div>
-                <div class="h-box-text" id="previewImage" >
-                    <?=count($model['cover_images'])?>张
-                    <div class="h-box-img"> <img src="<?=$model['fault_cover']?>" /></div>
-                    <em class="h-icon-go"></em>
-                </div>
-            </div>
-
-            <a class="h-box-row" href="<?=Url::toRoute(['/s/detail2','id'=>$model['id']])?>">
-                <div class="h-box-label">故障类型</div>
-                <div class="h-box-text"><?=\app\models\ConfigBase::getFaultStatus($model['fault_type'])?></div>
-                <div class="h-box-img">进度</div>
-                <em class="h-icon-go"></em>
-            </a>
             <?php if( isset($model['voice_url']) && $model['voice_url']):?>
-                <div class="h-box-row">
-                    <div class="h-box-label">用户录音</div>
-                    <div class="h-box-text">
+                <li class="aui-list-view-cell">
+                    <div class="aui-col-xs-3 aui-text-default">用户录音</div>
+                    <div class="aui-col-xs-9">
                         <div id="voice-wrap" data-value="3" data-time="<?=$model['voice_len']?>">
-                            <div class="voice-image voice-playing"></div>
-                            <p class="voice-time"><span id="voice-time"><?=$model['voice_len']?></span>＂</p>
+                            <span class="voice-image iconfont icon-shengyin"></span>
+                            <span id="voice-time"><?=$model['voice_len']?></span>＂
                         </div>
                         <audio hidden="true" preload="auto" onended="play_ended()" id="myaudio">
                             <source src="<?=$model['voice_url']?>" type="audio/mpeg">
@@ -49,60 +44,72 @@ use yii\helpers\Url;
                             "不支持播放录音"
                         </audio>
                     </div>
-
-                </div>
+                    </div>
+                </li>
             <?php endif;?>
 
             <?php if( $model['desc'] ):?>
-                <div class="h-box-row">
-                    <div class="h-box-label">故障描述</div>
-                    <div class="h-box-text"><?=$model['desc']?></div>
+            <li class="aui-list-view-cell">
+                <div class="aui-col-xs-3 aui-text-default">故障描述</div>
+                <div class="aui-col-xs-9">
+                    <?=$model['desc']?>
                 </div>
+            </li>
             <?php endif;?>
 
             <?php if( $model['remark'] ):?>
-                <div class="h-box-row">
-                    <div class="h-box-label">客服留言</div>
-                    <div class="h-box-text h-color-red"><?=$model['remark']?></div>
+            <li class="aui-list-view-cell">
+                <div class="aui-col-xs-3 aui-text-default">客服留言</div>
+                <div class="aui-col-xs-9 aui-text-danger">
+                    <?=$model['remark']?>
                 </div>
+            </li>
             <?php endif;?>
-
-        </div>
+        </ul>
     </div>
+    <div class="aui-padded-10 aui-bg-default"><p class="aui-border-left aui-p-l">客户资料</p></div>
+    <div class="aui-content">
+        <ul class="aui-list-view aui-in">
+            <li class="aui-list-view-cell">
+                <div class="aui-col-xs-3 aui-text-default">客户信息</div>
+                <div class="aui-col-xs-9">
+                    <?= $model['name'],',<a class="h-tel" href="tel:',$model['phone'],'">',$model['phone']?></a>
+                </div>
+            </li>
+            <li class="aui-list-view-cell">
+                <div class="aui-col-xs-3 aui-text-default">客户地址</div>
+                <div class="aui-col-xs-9"> <?= $model['address']?> </div>
+            </li>
+            <li class="aui-list-view-cell">
+                <div class="aui-col-xs-3 aui-text-default">申请时间</div>
+                <div class="aui-col-xs-9"><?= date('Y年m月d H:i',$model['add_time'])?></div>
+            </li>
 
-    <div class="h-box-line">
-        <div class="h-box-title">客户资料</div>
-        <div class="h-box-content">
-            <div class="h-box-row">
-                <div class="h-box-label">客户信息</div>
-                <div class="h-box-text"><?= $model['name'],',<a class="h-tel" href="tel:',$model['phone'],'">',$model['phone']?></a></div>
-            </div>
-            <div class="h-box-row">
-                <div class="h-box-label">客户地址</div>
-                <div class="h-box-text"><?= $model['address']?></div>
-            </div>
-            <div class="h-box-row">
-                <div class="h-box-label">申请时间</div>
-                <div class="h-box-text"><?= date('Y年m月d H:i',$model['add_time'])?></div>
-            </div>
             <?php if($model['fault_score']):?>
-                <div class="h-box-row">
-                    <div class="h-box-label">用户评价</div>
-                    <div class="h-box-text"><?=$model['fault_score']?> 分</div>
-                </div>
+            <li class="aui-list-view-cell">
+                <div class="aui-col-xs-3 aui-text-default">用户评价</div>
+                <div class="aui-col-xs-9"><?=$model['fault_score']?> 分</div>
+            </li>
             <?php endif;?>
-            <div class="h-box-row" id="map-btn">
-                <div class="h-box-label">地址坐标</div>
-                <div class="h-box-text">点击导航</div>
-                <em class="h-icon-go"></em>
-            </div>
-            <a class="h-box-row" href="<?=Url::toRoute(['s/irecord','id'=>$model['wx_id'],'mid'=>$model['mid']])?>">
-                <div class="h-box-label">历史维修</div>
-                <div class="h-box-text"><?=($model['fault_num']+1)?>次</div>
-                <em class="h-icon-go"></em>
-            </a>
-        </div>
+
+            <li class="aui-list-view-cell">
+                <a class="aui-arrow-right" id="map-btn">
+                    <div class="aui-col-xs-3 aui-text-default">地址坐标</div>
+                    <div class="aui-col-xs-9 aui-text-primary">点击导航</div>
+                </a>
+            </li>
+
+            <li class="aui-list-view-cell">
+                <a class="aui-arrow-right" href="<?=Url::toRoute(['s/irecord','id'=>$model['wx_id'],'mid'=>$model['mid']])?>">
+                    <div class="aui-col-xs-3 aui-text-default">历史维修</div>
+                    <div class="aui-col-xs-9 aui-text-primary">
+                        <?=($model['fault_num']+1)?>次
+                    </div>
+                </a>
+            </li>
+        </ul>
     </div>
+</div>
 
 <script>
 <?php $this->beginBlock('JS_END') ?>
@@ -110,7 +117,7 @@ use yii\helpers\Url;
 var playtime,myAudio;
 function get_less_time(){
     var time = parseInt($('#voice-time').text())-1;
-    $('#voice-wrap').removeClass('voice-play').addClass('voice-stop');
+    $('#voice-wrap').children('.voice-image').removeClass('icon-shengyin').addClass('icon-zanting');
     if(time<0)
         $('#voice-time').text('00');
     else if(time<10)
@@ -122,7 +129,8 @@ function get_less_time(){
 
 function play_ended(){
     clearInterval(playtime);
-    $('#voice-wrap').attr('data-value',3).removeClass('voice-stop').addClass('voice-playing');
+    $('#voice-wrap').attr('data-value',3);
+    $('#voice-wrap').children('.voice-image').removeClass('icon-zanting').addClass('icon-shengyin');
     $('#voice-time').text( $('#voice-wrap').attr('data-time'));
 }
 
@@ -131,11 +139,12 @@ $(function(){
     $('#voice-wrap').click(function(){
         var obj = $(this);
         var value = $(obj).attr('data-value');
+        var voiceImage = $(this).children('.voice-image')
 
         //播放录音
         if(value==3){
             obj.attr('data-value',4);
-            obj.removeClass('voice-stop').addClass('voice-playing');
+            voiceImage.removeClass('icon-shengyin').addClass('icon-zanting');
             myAudio = document.getElementById('myaudio');
             myAudio.play();
             playtime = setInterval(get_less_time,1000);
@@ -144,7 +153,7 @@ $(function(){
         //暂停播放
         if(value ==4){
             obj.attr('data-value',3);
-            obj.removeClass('voice-playing').addClass('voice-stop');
+            voiceImage.removeClass('icon-zanting').addClass('icon-shengyin');
             myAudio.pause();
             clearInterval(playtime);
         }

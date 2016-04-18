@@ -4,19 +4,28 @@ use yii\helpers\Url;
 $this->title = '查看资料';
 ?>
 
-<div id="h-color-list">
-    <a class="color-row" style="background-color: #ffcb26" href="<?= Url::toRoute(['rent/list','id'=>$id]) ?>" >
-        租机方案
-        <b class="icon-go-right"></b>
-    </a>
-    <a class="color-row" style="background-color: #b4db68" href="<?= Url::toRoute(['/shop/parts/list','id'=>$id]) ?>" >
-        配件查看
-        <b class="icon-go-right"></b>
+<div class="aui-content">
+    <ul class="aui-list-view aui-in">
+        <li class="aui-list-view-cell">
+            <a href="<?= Url::toRoute(['rent/list','id'=>$id]) ?>" class="aui-arrow-right aui-text-default">
+                <span class="iconfont icon-chanpin aui-color aui-size-20"></span>&nbsp;租机方案
+            </a>
+        </li>
+    </ul>
+    <ul class="aui-list-view aui-in">
+        <li class="aui-list-view-cell">
+            <a href="<?= Url::toRoute(['/shop/parts/list','id'=>$id]) ?>" class="aui-arrow-right aui-text-default">
+                <span class="iconfont icon-peizhi aui-color aui-size-20"></span>&nbsp;配件查看
+            </a>
+        </li>
+    </ul>
 
-    </a>
-    <a class="color-row" style="background-color: #87dbce" href="<?= Url::toRoute(['help/service','id'=>$id]) ?>" >
-        维修帮助
-        <b class="icon-go-right"></b>
+    <ul class="aui-list-view aui-in">
+        <li class="aui-list-view-cell">
+            <a href="<?= Url::toRoute(['help/service','id'=>$id]) ?>" class="aui-arrow-right aui-text-default">
+                <span class="iconfont icon-bangzhu aui-color aui-size-20"></span>&nbsp;维修帮助
+            </a>
+        </li>
+    </ul>
 
-    </a>
 </div>

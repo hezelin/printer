@@ -1,7 +1,6 @@
 <?php
 use yii\helpers\Url;
 $this->title = '维修任务';
-Yii::$app->params['layoutBottomHeight'] = 40;
 ?>
 
 <?= $this->render('_detail', ['model' => $model ]) ?>

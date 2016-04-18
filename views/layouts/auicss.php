@@ -21,11 +21,10 @@ AuicssAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 <?= $content ?>
-<div id="wechat-footer">
-<div class="copyright">技术支持：<?= Yii::$app->name ?></div>
-</div>
-<?php $this->endBody() ?>
 
+<div class="copyright aui-text-default">技术支持：<?= Yii::$app->name ?></div>
+<div style="height: 50px;">&nbsp;</div>
+<?php $this->endBody() ?>
 </body>
 </html>
 <?php $this->endPage() ?>

@@ -2,54 +2,55 @@
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '任务列表';
-Yii::$app->params['layoutBottomHeight'] = 40;
 
+//$this->registerJsFile('/js/aui/api.js');
+//$this->registerJsFile('/js/aui/aui-tap.js');
 ?>
 
-<div class="h-list">
-    <?php if($model):?>
-        <ul>
-            <?php if(isset($model['process'])):?>
-                <li class="li-title">处理中维修单</li>
-                <?php foreach($model['process'] as $row):?>
-                    <li>
-                        <a href="<?=Url::toRoute(['m/taskdetail','id'=>$row['id']])?>">
-                            <div class="li-cover">
-                                <img class="li-cover-img" src="<?=$row['fault_cover']?>"/>
-                            </div>
-                            <p class="li-row li-name">故障：<?=ConfigBase::getFaultStatus($row['fault_type'])?></p>
-                            <p class="li-row-small">描述：<?=$row['desc']?></p>
-                            <p class="li-row-small"><?=$row['name'],',',$row['phone']?></p>
-                            <p class="li-row-small"><?=$row['address']?></p>
-                            <p class="li-row-small">状态：<span style="color: red"><?=ConfigBase::getFixStatus($row['status'])?></span></p>
-                        </a>
-                    </li>
-                <?php endforeach;?>
-            <?php endif;?>
-            <?php if(isset($model['evaluate'])):?>
-                <li class="li-title">待评价维修单</li>
-                <?php foreach($model['evaluate'] as $row):?>
-                    <li>
-                        <a href="<?=Url::toRoute(['m/taskdetail','id'=>$row['id']])?>">
-                            <div class="li-cover">
-                                <img class="li-cover-img" src="<?=$row['fault_cover']?>"/>
-                            </div>
-                            <p class="li-row li-name">故障：<?=ConfigBase::getFaultStatus($row['fault_type'])?></p>
-                            <p class="li-row-small">描述：<?=$row['desc']?></p>
-                            <p class="li-row-small"><?=$row['name'],',',$row['phone']?></p>
-                            <p class="li-row-small"><?=$row['address']?></p>
-                            <p class="li-row-small">状态：<span style="color: red"><?=ConfigBase::getFixStatus($row['status'])?></span></p>
-                        </a>
-                    </li>
-                <?php endforeach;?>
-            <?php endif;?>
-<!--            <li style="clear:both; display: none;"></li>-->
-        </ul>
-    <?php else:?>
-        <p class="blank-info">没有新维修任务</p>
-    <?php endif;?>
+<div class="aui-tab aui-color">
+    <ul class="aui-tab-nav">
+        <li <?=Yii::$app->request->get('type')? '':'class="active"'?>><a href="<?=Url::toRoute(['/m/task','id'=>$id])?>">维修中</a></li>
+        <li <?=Yii::$app->request->get('type')=='evaluate'? 'class="active"':''?>><a href="<?=Url::toRoute(['/m/task','id'=>$id,'type'=>'evaluate'])?>">待评价</a></li>
+        <li <?=Yii::$app->request->get('type')=='history'? 'class="active"':''?>><a href="<?=Url::toRoute(['/m/task','id'=>$id,'type'=>'history'])?>">历史记录</a></li>
+    </ul>
 </div>
 
-<a class="h-fixed-bottom" href="<?=Url::toRoute(['m/record','id'=>$id])?>">
-    历史完成维修
-</a>
+<div class="aui-content" id="task-list">
+<?php if( is_array($model) && $model ):?>
+<ul class="aui-list-view">
+    <?php foreach($model as $row):?>
+        <li class="aui-list-view-cell aui-img">
+            <a href="<?=Url::toRoute(['m/taskdetail','id'=>$row['id']])?>">
+
+                <img class="aui-img-object aui-pull-left" src="<?=$row['fault_cover']?>">
+                <div class="aui-img-body">
+                    <h2 class="aui-ellipsis-1">故障：<?=ConfigBase::getFaultStatus($row['fault_type'])?></h2>
+                    <p class="aui-ellipsis-2">描述：<?=$row['desc']?></p>
+                    <p class="aui-ellipsis-1"><span class="iconfont icon-yonghu aui-color"></span>
+                        <?php
+                        if($row['name'])
+                        {
+                            echo $row['name'],' ',$row['phone'];
+                            echo $row['name'],' ',$row['phone'];
+                            echo $row['name'],' ',$row['phone'];
+                        }
+                        else
+                            echo '电话维修用户';
+                        ?>
+                    </p>
+                    <p class="aui-ellipsis-1"><span class="iconfont icon-dizhi aui-color"></span> <?=$row['address']? :'未设置'?></p>
+                    <p class="aui-btn aui-btn-color aui-btn-sm"><?php
+                        if( Yii::$app->request->get('type')=='history' )
+                            echo date('Y-m-d',$row['add_time']);
+                        else
+                            echo ConfigBase::getFixStatus($row['status']);
+                        ?></p>
+                </div>
+            </a>
+        </li>
+    <?php endforeach;?>
+</ul>
+<?php else:?>
+<div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 没有数据</div>
+<?php endif;?>
+</div>

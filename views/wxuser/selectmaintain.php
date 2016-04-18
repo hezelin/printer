@@ -22,7 +22,7 @@ echo GridView::widget([
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($data)
             {
-                if($data->userinfo->headimgurl)
+                if( isset($data->userinfo->headimgurl) && $data->userinfo->headimgurl)
                     return Html::a( Html::img( substr($data->userinfo->headimgurl,0,-1) .'46',['width'=>40]),
                         $data->userinfo->headimgurl.'?.jpg',
                         ['class'=>'fancybox','rel'=>'group1']

@@ -11,7 +11,7 @@ $this->title = '机器页面';
     <a class="h-link" href="<?=Url::toRoute(['m/taskdetail','id'=>$service_id])?>">
         故障信息
     </a>
-    <a class="h-link" href="<?=Url::toRoute(['m/record','id'=>$wid])?>">
+    <a class="h-link" href="<?=Url::toRoute(['m/task','id'=>$wid,'type'=>'history'])?>">
         维修记录
     </a>
 

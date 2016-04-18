@@ -1,29 +1,30 @@
 <?php
 use yii\helpers\Url;
 use app\models\ConfigBase;
-$this->title = '任务记录';
+$this->title = '维修记录';
 
 ?>
+<header class="aui-bar aui-bar-nav aui-bar-color">维修记录 <span class="aui-badge aui-badge-warning"><?=count($model)?></span> </header>
 
-<div class="h-list">
-    <?php if($model && count($model)>0):?>
-        <ul>
+<div class="aui-content" id="task-list">
+    <?php if( is_array($model) && $model ):?>
+        <ul class="aui-list-view">
             <?php foreach($model as $row):?>
-                <li>
+                <li class="aui-list-view-cell aui-img">
                     <a href="<?=Url::toRoute(['s/detail','id'=>$id,'fault_id'=>$row['id']])?>">
-                        <div class="li-cover">
-                            <img class="li-cover-img" src="<?=$row['cover']?>"/>
+
+                        <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
+                        <div class="aui-img-body">
+                            <h2 class="aui-ellipsis-1">故障：<?=ConfigBase::getFaultStatus($row['type'])?></h2>
+                            <p class="aui-ellipsis-2">描述：<?=$row['desc']?></p>
+                            <p class="aui-ellipsis-1">时间：<?=date('m月d日 H:i',$row['add_time'])?></p>
+                            <span class="aui-box aui-box-color"><?=ConfigBase::getFixStatus($row['status'])?></span>
                         </div>
-                        <p class="li-row li-name">故障：<?=ConfigBase::getFaultStatus($row['type'])?></p>
-                        <p class="li-row-small">描述：<?=$row['desc']?></p>
-                        <p class="li-row-small">时间：<?=date('Y-m-d H:i',$row['add_time'])?></span></p>
-                        <p class="li-row-small">状态：<span style="color: red"><?=ConfigBase::getFixStatus($row['status'])?></span></p>
                     </a>
                 </li>
             <?php endforeach;?>
-            <li style="clear:both; display: none;"></li>
         </ul>
     <?php else:?>
-        <p class="blank-info">没有维修记录</p>
+        <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 没有数据</div>
     <?php endif;?>
 </div>
