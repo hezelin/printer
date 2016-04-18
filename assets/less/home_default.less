@@ -46,6 +46,7 @@ body{ height: 100%; overflow-y: visible;}
  * 我的业绩
  */
 .item-more{  width: 100%; background-color: #fff;font-size: 14px;  border: 1px solid #EEEEEE;  text-align: center; height: 36px; line-height: 36px;  margin: 15px auto; border-radius: 4px; color: #666666;  }
+.item-more-90{ .item-more; .w(90%);}
 .item-more-end{  display: none !important;  }
 #top{ height: 180px;  color: #FFFFFF; text-align: left;
   position: relative;
@@ -120,6 +121,16 @@ body{ height: 100%; overflow-y: visible;}
 }
 
 /*
+ * top-search 顶部搜索
+ */
+#top-search{
+  position: fixed; .w(100%); .h-l(40px); top:0; left:0; z-index: 99;
+  .aui-input-row{ .p(0 10px);}
+  .aui-list-view{ position: fixed; z-index: 99; top: 40px; left: 0; width: 100%; display: none;}
+  .aui-list-view-cell{ .h(44px); .l(20px);}
+//  .cate-name{max-width:100px;}
+}
+/*
  * 全局共用区域
  */
 .aui-color{
@@ -130,6 +141,7 @@ body{ height: 100%; overflow-y: visible;}
   .aui-tab-nav li{ .b-r(1px solid #eee);}
   .aui-tab-nav li:last-child{ .b-r(none); }
 }
+.aui-input-color{ color:@main-color !important;}
 .aui-red-color{ color: @red-color;}
 .aui-border-left{.b-l(2px solid @red-color)}
 .blank-text{ .p(100px 5% 80px); .t-c; .size(18px); color: #777; display: block; .l(24px);}
@@ -162,6 +174,10 @@ body{ height: 100%; overflow-y: visible;}
 .aui-size-18{ .size(18px);}
 .aui-size-16{ .size(16px);}
 .aui-size-14{ .size(14px);}
+.aui-h-60{.h(60px);}
+
+.my-ellipsis-3{ -webkit-line-clamp:3; }
+
 .aui-p-l{ .p-l(10px); }
 .aui-box{ .p(2px 20px); .l(20px); .size(14px); .m-r(10px); .m-t(5px); display: inline-block; background-color: #efefef; .b(1px solid #e1e1e1);
   border-radius: 2px; color:#333;}

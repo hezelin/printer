@@ -29,6 +29,7 @@ class PartsController extends Controller
      */
     public function actionList($id)
     {
+        $this->layout = '/auicss';
         $len = Yii::$app->request->get('len')? : 10;
 
         $model = (new \yii\db\Query())
@@ -62,8 +63,8 @@ class PartsController extends Controller
             'model'=>$model,
             'startId'=>$startId,
             'id'=>$id,
+            'len'=>$len,
             'fault_id'=>Yii::$app->request->get('fault_id'),
-            'category'=>\app\modules\shop\models\Shop::getMenu($id),
         ]);
     }
 

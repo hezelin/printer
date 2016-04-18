@@ -2,6 +2,7 @@
 namespace app\modules\shop\models;
 
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\helpers\Url;
 use app\models\Cache;
 /**
@@ -25,19 +26,14 @@ class Shop {
      */
     public static function getMenu($wx_id='')
     {
-        $category = TblCategory::findAll(['wx_id'=>$wx_id? :Cache::getWid()]);
-        $tmp = [
-            ['name'=>'全部','key'=>'all','active'=>true]
-        ];
+        $category = TblCategory::find()->where(['wx_id'=>$wx_id? :Cache::getWid()])->asArray()->all();
+        $tmp[] = Html::tag('li','全部',['data-key'=>'','class'=>'aui-list-view-cell']);
         if($category){
             foreach($category as $c){
-                $tmp[]=[
-                    'name'=>$c['name'],
-                    'key'=>$c['id']
-                ];
+                $tmp[]= Html::tag('li',$c['name'],['data-key'=>$c['id'],'class'=>'aui-list-view-cell']);
             }
         }
-        return $tmp;
+        return join("\n",$tmp);
     }
 
     /*
