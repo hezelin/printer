@@ -85,7 +85,7 @@ class TblMachine extends \yii\db\ActiveRecord
             'status' => '状态',
             'maintain_count' => '维修次数',
             'rent_count' => '租借次数',
-            'come_from' => '自家机器',
+            'come_from' => '机器分类',
             'add_time' => '添加时间',
             'enable' => '是否有效',
             'amount' => '机器数量',
