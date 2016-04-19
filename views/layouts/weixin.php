@@ -100,22 +100,22 @@ WeixinAsset::register($this);
                         'label' => '微信管理',
                         'icon' => 'comment',
                         'items' => [
-                            ['label' => '我的公众号', 'url' => '/weixin/index'],
-                            ['label' => '添加公众号', 'url' => '/weixin/add'],
+                            ['label' => '我的公众号', 'url' => ['/weixin/index']],
+                            ['label' => '添加公众号', 'url' => ['/weixin/add']],
                         ],
                     ],
                     [
                         'label' => '我的账号',
                         'icon' => 'user',
                         'items' => [
-                            ['label' => '修改密码', 'url' => '/user/reset'],
+                            ['label' => '修改密码', 'url' => ['/user/reset']],
 //                                        ['label' => '查看日志', 'url' => '/user/log'],
                         ],
                     ],
                 ];
 
                 if(Yii::$app->user->id == 4)
-                    array_push($item,['label' => '报名表', 'url' => '/console/zuji-apply','icon'=>'stats']);
+                    array_push($item,['label' => '报名表', 'url' => ['/console/zuji-apply'],'icon'=>'stats']);
 
                 echo SideNav::widget([
                     'type' => SideNav::TYPE_DEFAULT,

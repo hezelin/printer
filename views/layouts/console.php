@@ -120,47 +120,47 @@ WeixinAsset::register($this);
                                 'label' => '微官网',
                                 'icon' => 'home',
                                 'items' => [
-                                    ['label' => '店铺装修', 'url' => '/home/fitment'],
-                                    ['label' => '店铺设置', 'url' => '/home/setting'],
+                                    ['label' => '店铺装修', 'url' => ['/home/fitment']],
+                                    ['label' => '店铺设置', 'url' => ['/home/setting']],
                                 ],
                             ],
                             [
                                 'label' => '机器管理',
                                 'icon' => 'print',
                                 'items' => [
-                                    ['label' => '租借方案', 'url' => '/rentproject/list','route'=>'/rentproject'],
-                                    ['label' => '机型资料', 'url' => '/model/list','route'=>'/model'],
-                                    ['label' => '机器列表', 'url' => '/machine/list'],
-                                    ['label' => '添加机器', 'url' => '/machine/add'],
+                                    ['label' => '租借方案', 'url' => ['/rentproject/list']],
+                                    ['label' => '机型资料', 'url' => ['/model/list']],
+                                    ['label' => '机器列表', 'url' => ['/machine/list']],
+                                    ['label' => '添加机器', 'url' => ['/machine/add']],
                                 ],
                             ],
                             [
                                 'label' => '二维码管理',
                                 'icon' => 'qrcode',
                                 'items' => [
-                                    ['label' => '积分二维码','url' => '/code/score'],
-                                    ['label' => '生成机器码','url' => '/code/index'],
-                                    ['label' => '生成配件码','url' => '/code/parts'],
-                                    ['label' => '维修员绑定码','url' => '/code/binding'],
+                                    ['label' => '积分二维码','url' => ['/code/score']],
+                                    ['label' => '生成机器码','url' => ['/code/index']],
+                                    ['label' => '生成配件码','url' => ['/code/parts']],
+                                    ['label' => '维修员绑定码','url' => ['/code/binding']],
                                 ],
                             ],
                             [
                                 'label' => '租赁管理',
                                 'icon' => 'retweet',
                                 'items' => [
-                                    ['label' => '租赁列表','url' => '/adminrent/list'],
-                                    ['label' => '租赁申请','url' => '/adminrent/apply'],
-                                    ['label' => '收租记录','url' => '/charge/list'],
+                                    ['label' => '租赁列表','url' => ['/adminrent/list']],
+                                    ['label' => '租赁申请','url' => ['/adminrent/apply']],
+                                    ['label' => '收租记录','url' => ['/charge/list']],
                                 ],
                             ],
                             [
                                 'label' => '维修管理',
                                 'icon' => 'wrench',
                                 'items' => [
-                                    ['label' => '待分配维修','url' => '/service/index'],
-                                    ['label' => '维修列表','url' => '/service/list'],
-                                    ['label' => '电话维修','url' => '/service/call'],
-                                    ['label' => '维修配件管理', 'url' => '/shop/adminparts/list','route'=>'/shop/adminparts'],
+                                    ['label' => '待分配维修','url' => ['/service/index']],
+                                    ['label' => '维修列表','url' => ['/service/list']],
+                                    ['label' => '电话维修','url' => ['/service/call']],
+                                    ['label' => '维修配件管理', 'url' => ['/shop/adminparts/list']],
 
                                 ],
                             ],
@@ -168,9 +168,9 @@ WeixinAsset::register($this);
                                 'label' => '商城管理',
                                 'icon' => 'shopping-cart',
                                 'items' => [
-                                    ['label' => '耗材列表','url' => '/shop/backend/list'],
-                                    ['label' => '录入耗材','url' => '/shop/backend/add'],
-                                    ['label' => '订单管理', 'url' => '/shop/adminorder/check','route'=>'/shop/adminorder'],
+                                    ['label' => '耗材列表','url' => ['/shop/backend/list']],
+                                    ['label' => '录入耗材','url' => ['/shop/backend/add']],
+                                    ['label' => '订单管理', 'url' => ['/shop/adminorder/check']],
 
                                 ],
                             ],
@@ -178,27 +178,27 @@ WeixinAsset::register($this);
                                 'label' => '积分管理',
                                 'icon' => 'gift',
                                 'items' => [
-                                    ['label' => '赠送积分','url' => '/adminscore/send'],
-                                    ['label' => '积分操作记录','url' => '/adminscore/log'],
+                                    ['label' => '赠送积分','url' => ['/adminscore/send']],
+                                    ['label' => '积分操作记录','url' => ['/adminscore/log']],
                                 ],
                             ],
                             [
                                 'label' => '用户管理',
                                 'icon' => 'user',
                                 'items' => [
-                                    ['label' => '用户列表','url' => '/wxuser/list'],
-                                    ['label' => '维修员列表','url' => '/staff/list'],
+                                    ['label' => '用户列表','url' => ['/wxuser/list']],
+                                    ['label' => '维修员列表','url' => ['/staff/list']],
                                 ]
                             ],
                             [
                                 'label' => '通知管理',
                                 'icon' => 'bell',
                                 'items' => [
-                                    ['label' => '发送通知','url' => '/notify/send'],
-                                    ['label' => '通知日志','url' => '/notify/list']
+                                    ['label' => '发送通知','url' => ['/notify/send']],
+                                    ['label' => '通知日志','url' => ['/notify/list']]
                                 ]
                             ]
-                        ],
+                        ]
                     ]);
                     ?>
                 </div>
