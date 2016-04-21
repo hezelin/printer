@@ -68,6 +68,7 @@ class AppController extends \yii\web\Controller
         if( ($wx->msg->Event == 'SCAN' && $key = $wx->msg->EventKey) ||
             ($wx->msg->Event == 'subscribe' && substr($wx->msg->EventKey,0,8) == 'qrscene_' && $key = substr($wx->msg->EventKey,8,-1))
         ){
+
             if($key == 1)               // 绑定维修员事件
             {
                 $maintain = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$wx->msg->FromUserName]);
@@ -83,9 +84,9 @@ class AppController extends \yii\web\Controller
                         return $wx->makeText('成功绑定为维修员！');
                     return $wx->makeText( ToolBase::arrayToString($maintain->errors));
                 }
-            }elseif($key ==2 )          // 扫描积分二维码
+            }elseif($key == 2 )          // 扫描积分二维码
             {
-                Cache::setValue('score:'.$id,$wx->msg->FromUserName,60*30);
+                Yii::$app->cache->set('score:'.$id,(string)$wx->msg->FromUserName,60*30);
                 return $wx->makeText( '等待获得积分中...');
             }
         }

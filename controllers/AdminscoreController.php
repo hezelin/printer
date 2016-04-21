@@ -18,7 +18,7 @@ class AdminscoreController extends \yii\web\Controller
     public function actionApi()
     {
         $id = Cache::getWid();
-        $openid = Cache::getValue('score:' . $id);
+        $openid = Yii::$app->cache->get('score:' . $id);
         if(!$openid)
             Yii::$app->end( json_encode(['status'=>0]) );
 
@@ -64,7 +64,7 @@ class AdminscoreController extends \yii\web\Controller
                 Cache::delValue('score:' . $id);              // 删除等级获取积分的 openid
 
                 $wechat = new WxTemplate($id);
-                $wechat->sendScore($openid, Url::toRoute(['/adminscore/log'],'http'), $score, $scoreTotal);
+                $wechat->sendScore($openid, Url::toRoute(['/shop/i/score','id'=>$id],'http'), $score, $scoreTotal);
 
                 return $this->render('//tips/success', [
                     'tips' => '成功为用户赠送 ' . $score . ' 积分, 用户目前总积分（' . $scoreTotal . '）',
