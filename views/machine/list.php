@@ -16,9 +16,9 @@ $this->title = '机器列表';
 
 <div class="row" id="my-search-filer">
     <span>机器来源：</span>
-    <a href="list?TblMachineSearch[come_from]=1" class="btn btn-default<?= $_GET['TblMachineSearch']['come_from'] == 1? ' btn-primary':''?>"> 出租 </a>
-    <a href="list?TblMachineSearch[come_from]=2" class="btn btn-default<?= $_GET['TblMachineSearch']['come_from'] == 2? ' btn-primary':''?>"> 销售 </a>
-    <a href="list?TblMachineSearch[come_from]=3" class="btn btn-default<?= $_GET['TblMachineSearch']['come_from'] == 3? ' btn-primary':''?>"> 维修 </a>
+    <a href="list?TblMachineSearch[come_from]=1" class="btn <?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] != 1? 'btn-default':'btn-primary'?>"> 出租 </a>
+    <a href="list?TblMachineSearch[come_from]=2" class="btn btn-default<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 2? ' btn-primary':''?>"> 销售 </a>
+    <a href="list?TblMachineSearch[come_from]=3" class="btn btn-default<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 3? ' btn-primary':''?>"> 维修 </a>
 </div>
 
 

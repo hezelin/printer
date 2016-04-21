@@ -43,7 +43,11 @@ class CodeController extends \yii\web\Controller
     public function actionIndex()
     {
         $searchModel = new TblMachineSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $params = Yii::$app->request->queryParams;
+        if( !isset($params['TblMachineSearch']['status']) )
+            $params['TblMachineSearch']['status'] = 1;
+
+        $dataProvider = $searchModel->search($params);
 
         return $this->render('index', [
             'searchModel' => $searchModel,

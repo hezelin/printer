@@ -9,6 +9,19 @@ use app\models\ConfigBase;
 $this->title = '生成机器码';
 ?>
 
+<style>
+    #my-search-filer{ margin-bottom: 15px;}
+    #my-search-filer span{ width:150px; font-weight: 600; font-size: 24px; padding-left: 15px; float: left; height: 40px;}
+    #my-search-filer a{margin-right: 15px; display: inline-block; padding: 5px 45px;}
+</style>
+
+<div class="row" id="my-search-filer">
+    <span>机器来源：</span>
+    <a href="index?TblMachineSearch[status]=1" class="btn <?= isset($_GET['TblMachineSearch']['status']) && $_GET['TblMachineSearch']['status'] != 1? 'btn-default':'btn-primary'?>"> 闲置中 </a>
+    <a href="index?TblMachineSearch[status]=2" class="btn btn-default<?= isset($_GET['TblMachineSearch']['status']) && $_GET['TblMachineSearch']['status'] == 2? ' btn-primary':''?>"> 已租借 </a>
+    <a href="index?TblMachineSearch[status]=3" class="btn btn-default<?= isset($_GET['TblMachineSearch']['status']) && $_GET['TblMachineSearch']['status'] == 3? ' btn-primary':''?>"> 已报废 </a>
+</div>
+
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'tableOptions' => ['class' => 'table table-striped'],
