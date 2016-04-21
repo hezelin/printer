@@ -86,7 +86,11 @@ class MachineController extends \yii\web\Controller
     public function actionList()
     {
         $searchModel = new TblMachineSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $params = Yii::$app->request->queryParams;
+        if( !isset($params['TblMachineSearch']['come_from']) )
+            $params['TblMachineSearch']['come_from'] = 1;
+
+        $dataProvider = $searchModel->search($params);
 
         return $this->render('list', [
             'searchModel' => $searchModel,

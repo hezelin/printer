@@ -1,17 +1,26 @@
 <?php
-
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 use app\models\ConfigBase;
+use yii\bootstrap\ActiveForm;
 
-
-/* @var $this yii\web\View */
-/* @var $searchModel app\models\MachineSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '机器列表';
 ?>
+<style>
+    #my-search-filer{ margin-bottom: 15px;}
+    #my-search-filer span{ width:150px; font-weight: 600; font-size: 24px; padding-left: 15px; float: left; height: 40px;}
+    #my-search-filer a{margin-right: 15px; display: inline-block; padding: 5px 45px;}
+</style>
+
+<div class="row" id="my-search-filer">
+    <span>机器来源：</span>
+    <a href="list?TblMachineSearch[come_from]=1" class="btn btn-default<?= $_GET['TblMachineSearch']['come_from'] == 1? ' btn-primary':''?>"> 出租 </a>
+    <a href="list?TblMachineSearch[come_from]=2" class="btn btn-default<?= $_GET['TblMachineSearch']['come_from'] == 2? ' btn-primary':''?>"> 销售 </a>
+    <a href="list?TblMachineSearch[come_from]=3" class="btn btn-default<?= $_GET['TblMachineSearch']['come_from'] == 3? ' btn-primary':''?>"> 维修 </a>
+</div>
+
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
