@@ -58,49 +58,71 @@ class CodeController extends \yii\web\Controller
 
     /*
      * 批量打印机器码
-     * post 提交多个机器id|编号，英文分号隔开
-     * 2|No1,3|1,6|35,7|L6,8|L7,9|88,10|89,11|10,12|11
+     * post 提交多个机器id,英文分号隔开
      */
     public function actionMachineall()
     {
-//        $this->layout = 'blank';
-        $list = [];
         if(Yii::$app->request->post('list')){
+            $ids = explode(',',Yii::$app->request->post('list'));
+            sort($ids);
 
-            $data = explode(',',Yii::$app->request->post('list'));
+            $model = (new \yii\db\Query())
+                ->select('t.series_id,a.name,a.id,t.come_from,t.id as machine_id')
+                ->from('tbl_machine t')
+                ->leftJoin('tbl_rent_apply a','a.machine_id=t.id')
+                ->where(['t.id'=>$ids])
+                ->all();
 
-            foreach( $data as $i => $row){
-                list($list[$i]['machineId'] , $list[$i]['seriesNum']) = explode('|',$row);
 
-                $index = (int)($list[$i]['machineId']/500);
+            foreach( $model as &$row){
+
+                $index = (int)($row['machine_id']/500);
                 $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
 
-                if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$list[$i]['machineId'].'.png') ){
+                if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$row['machine_id'].'.png') ){
 
-                    $url = Url::toRoute(['codeapi/machine','id'=>$list[$i]['machineId']],'http');
+                    $url = Url::toRoute(['codeapi/machine','id'=>$row['machine_id']],'http');
                     $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
-                    $fileName = $dir.'/'.$list[$i]['machineId'].'.png';
+                    $fileName = $dir.'/'.$row['machine_id'].'.png';
                     shell_exec("qrencode -o $fileName '$url' -s 10 -m 2 -l H");
                 }
-                $list[$i]['qrcodeImgUrl'] = $imgUrl.'/'.$list[$i]['machineId'].'.png';
+                $row['qrcodeImgUrl'] = $imgUrl.'/'.$row['machine_id'].'.png';
+                $row['come_from'] = ConfigBase::machineComeFrom($row['come_from']);
             }
-            $setting = TblQrcodeSetting::findOne(['wx_id'=>Cache::getWid(),'enable'=>'Y']);
+
+
+            $setting = (new \yii\db\Query())
+                ->select('*')
+                ->from('tbl_qrcode_setting')
+                ->where(['wx_id'=>Cache::getWid(),'enable'=>'Y'])
+                ->one();
+
             $data = [
                 'img'=> [
-                    'width'=>'',
+                    'width'=>' width="700px"',
                     'img'=>'/images/qrcode-bgimg-test.jpg',
                     'style'=>'',
                     'bgWidth'=>'',
                 ],
                 'series'=>'',
+                'user'=>'',
                 'code'=>'',
-                'list'=>$list,
+                'apply'=>'',
+
+                /*'come_from'=> ConfigBase::machineComeFrom($model['come_from']),
+                'seriesNum'=>$model['series_id'],
+                'userName' => $model['name'],
+                'applyId' => $model['id'],*/
             ];
 
             if($setting){
                 if($series = json_decode($setting['bg_img'],true) ){
+
                     $data['img']['style'] = isset($series['width'])? 'width:'.$series['width'].';':'100%;';
-                    $data['img']['width'] = isset($series['width'])? ' width="'.$series['width'].'"':'';
+
+                    if( isset($series['width']) && $series['width'])
+                        $data['img']['width'] = ' width="'.$series['width'].'"';
+
                     $data['img']['img'] = isset($series['img'])? $series['img']:'';
                 }
 
@@ -108,15 +130,21 @@ class CodeController extends \yii\web\Controller
                     foreach($series as $k=>$v)
                         $data['series'] .= "$k:$v;";
                 }
+                if($series = json_decode($setting['user_name'],true) ){
+                    foreach($series as $k=>$v)
+                        $data['user'] .= "$k:$v;";
+                }
                 if($series = json_decode($setting['code'],true) ){
                     foreach($series as $k=>$v)
                         $data['code'] .= "$k:$v;";
                 }
+                if($series = json_decode($setting['apply'],true) ){
+                    foreach($series as $k=>$v)
+                        $data['apply'] .= "$k:$v;";
+                }
                 unset($setting);
             }
-            unset($model);
-            unset($list);
-            return $this->render('machineall',['data'=>$data]);
+            return $this->render('machineall',['data'=>$data,'model'=>$model]);
         }
     }
 
@@ -145,13 +173,12 @@ class CodeController extends \yii\web\Controller
             shell_exec("qrencode -o $fileName '$url' -s 10 -m 2 -l H");
         }
 
-        /*$setting = (new \yii\db\Query())
+        $setting = (new \yii\db\Query())
             ->select('*')
             ->from('tbl_qrcode_setting')
             ->where(['wx_id'=>Cache::getWid(),'enable'=>'Y'])
-            ->one();*/
+            ->one();
 
-        $setting = [];
         $data = [
             'series'=>'',
             'user'=>'',
@@ -205,15 +232,20 @@ class CodeController extends \yii\web\Controller
             if($series = json_decode($setting['series'],true) ){
                 foreach($series as $k=>$v){
                     $data['series'] .= "$k:$v;";
-
                     $data['seriesCss'][$k]= $k=='color'? $v:(int)$v;
+                }
+            }
+
+            if($series = json_decode($setting['apply'],true) ){
+                foreach($series as $k=>$v){
+                    $data['apply'] .= "$k:$v;";
+                    $data['applyCss'][$k]= $k=='color'? $v:(int)$v;
                 }
             }
 
             if($series = json_decode($setting['user_name'],true) ){
                 foreach($series as $k=>$v){
                     $data['user'] .= "$k:$v;";
-
                     $data['userCss'][$k]= $k=='color'? $v:(int)$v;
                 }
             }
@@ -302,7 +334,6 @@ class CodeController extends \yii\web\Controller
                 foreach($series as $k=>$v)
                     $data['code'] .= "$k:$v;";
             }
-
             if($series = json_decode($setting['apply'],true) ){
                 foreach($series as $k=>$v)
                     $data['apply'] .= "$k:$v;";

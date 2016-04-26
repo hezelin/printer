@@ -31,7 +31,7 @@ $this->title = '生成机器码';
         [
             'class' => CheckboxColumn::className(),
             'checkboxOptions' => function($model, $key, $index, $column) {
-                return ['value'=> $model->id . '|' . $model->series_id ];
+                return ['value'=> $model->id];
             }
         ],
         ['class' => 'yii\grid\SerialColumn'],               // 系列
