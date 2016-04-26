@@ -28,7 +28,7 @@ if( Yii::$app->session->hasFlash('error') )
         'id' => 'add-form',
         'options' => ['class' => 'form-horizontal'],
         'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-5\">{input}</div>\n<div class=\"col-lg-5\">{error}</div>",
+            'template' => "{label}\n<div class=\"col-lg-5\">{input}</div>\n<div class=\"col-lg-5\">{hint}{error}</div>",
             'labelOptions' => ['class' => 'col-lg-2 control-label'],
         ],
     ])
@@ -43,31 +43,31 @@ if( $type =='allot' )
         'pluginOptions' => [
             'allowClear' => true
         ]
-    ]);
+    ])->hint('给用户分配机器');
 ?>
 
-    <?= $form->field($model, 'monthly_rent')->textInput(['placeholder'=>'多少元 / 每月'])?>
-    <?= $form->field($model, 'black_white')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.02  代表2分钱'])?>
+    <?= $form->field($model, 'monthly_rent')->textInput(['placeholder'=>'多少元 / 每月'])->hint('多少元 / 每月') ?>
+    <?= $form->field($model, 'black_white')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.02  代表2分钱'])->hint('多少元 / 每张')?>
 
-    <?= $form->field($model, 'colours')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.04  代表4分钱'])?>
-    <?= $form->field($model, 'name')->textInput(['placeholder'=>'用户名字，个人 / 公司'])?>
-    <?= $form->field($model, 'phone') ?>
+    <?= $form->field($model, 'colours')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.04  代表4分钱'])->hint('多少元 / 每张')?>
+    <?= $form->field($model, 'name')->textInput(['placeholder'=>'用户名字，个人 / 公司'])->hint('个人 / 公司')?>
+    <?= $form->field($model, 'phone')->hint('真实手机号码') ?>
     <?= $form->field($model, 'due_time')->widget(dosamigos\datepicker\DatePicker::className(), [
         'language' => 'zh-CN',
         'clientOptions' => [
             'autoclose' => true,
             'format' => 'yyyy-mm-dd',
         ]
-    ]) ?>
+    ])->hint('合同快到期提醒') ?>
     <?= $form->field($model, 'first_rent_time')->widget(dosamigos\datepicker\DatePicker::className(), [
         'language' => 'zh-CN',
         'clientOptions' => [
             'autoclose' => true,
             'format' => 'yyyy-mm-dd',
         ]
-    ]) ?>
-    <?= $form->field($model,'rent_period')->dropDownList([1=>'1个月',3=>'3个月','6'=>'半年','12'=>'1年','24'=>'2年','36'=>'3年','60'=>'5年'])?>
-    <?= $form->field($model, 'address')->textarea(['placeholder'=>'尽量填写详细的，方便维修员']) ?>
+    ])->hint('到期自动提醒收租') ?>
+    <?= $form->field($model,'rent_period')->dropDownList([1=>'1个月',3=>'3个月','6'=>'半年','12'=>'1年','24'=>'2年','36'=>'3年','60'=>'5年'])->hint('到期自动提醒收租')?>
+    <?= $form->field($model, 'address')->textarea(['placeholder'=>'尽量填写详细的，方便维修员'])->hint('尽量填写详细，方便维修') ?>
     <?= $form->field($model, 'apply_word')?>
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">

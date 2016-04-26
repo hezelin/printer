@@ -83,8 +83,9 @@ class AdminrentController extends \yii\web\Controller
         $model->monthly_rent = $model->machineProject->lowest_expense;
         $model->machine_id = '';
 
-        if($model->due_time)
-            $model->due_time = date('Y-m-d',$model->due_time);
+        if( $model->due_time < time() )
+            $model->due_time = date('Y-m-d',strtotime('1 year'));
+
         if($model->first_rent_time)
             $model->first_rent_time = date('Y-m-d',$model->first_rent_time);
 

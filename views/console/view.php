@@ -263,7 +263,7 @@ use yii\bootstrap\Modal;
 
     <div class="col-md-2 no-padding">
         <div class="row-box" style="height: 280px;">
-        <a href="<?=Url::toRoute(['adminrent/list'])?>" class="box-panel-header">
+        <a href="<?=Url::toRoute(['service/call'])?>" class="box-panel-header">
             <h4><i class="icon glyphicon glyphicon-phone-alt"></i>电话报修</h4>
         </a>
         <a href="<?=Url::toRoute(['adminscore/send'])?>" class="box-panel-header">
