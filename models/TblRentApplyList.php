@@ -78,7 +78,7 @@ class TblRentApplyList extends TblRentApply
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
+            'tbl_rent_apply.id' => $this->id,
             'wx_id' => $this->wx_id,
             'project_id' => $this->project_id,
             'machine_id' => $this->machine_id,
