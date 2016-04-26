@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Cache;
 use app\models\ConfigBase;
+use app\models\code\MachineAhead;
 use app\models\TblMachineSearch;
 use app\models\TblQrcodeSetting;
 use app\models\ToolBase;
@@ -57,6 +58,41 @@ class CodeController extends \yii\web\Controller
     }
 
     /*
+     * 提前生成机器二维码
+     */
+    public function actionAhead()
+    {
+        $count = (new \yii\db\Query())
+            ->select('count(*)')
+            ->from('tbl_machine')
+            ->where(['come_from'=>4])
+            ->scalar();
+
+        if($num = (int)Yii::$app->request->post('ahead-code')){
+
+            if( ($num + $count) > 300 )
+                Yii::$app->session->setFlash('error','已达到限制300条数据');
+            else{
+                $machine= new MachineAhead($num);
+                $machine->createAll();
+                $count += $num;
+                $this->refresh();
+            }
+        }
+
+        $searchModel = new TblMachineSearch();
+        $params = Yii::$app->request->queryParams;
+        $params['TblMachineSearch']['come_from'] = 4;
+
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('ahead', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'count' => $count,
+        ]);
+    }
+    /*
      * 批量打印机器码
      * post 提交多个机器id,英文分号隔开
      */
@@ -108,11 +144,6 @@ class CodeController extends \yii\web\Controller
                 'user'=>'',
                 'code'=>'',
                 'apply'=>'',
-
-                /*'come_from'=> ConfigBase::machineComeFrom($model['come_from']),
-                'seriesNum'=>$model['series_id'],
-                'userName' => $model['name'],
-                'applyId' => $model['id'],*/
             ];
 
             if($setting){

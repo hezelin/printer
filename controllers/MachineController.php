@@ -22,6 +22,7 @@ class MachineController extends \yii\web\Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+                    'force-delete' => ['post'],
                 ],
             ],
         ];
@@ -76,6 +77,15 @@ class MachineController extends \yii\web\Controller
             $model->updateCount('dec');
 
         return $this->redirect(['list']);
+    }
+
+    /*
+     * 删除真实数据
+     */
+    public function actionForceDelete($id)
+    {
+        $this->findModel($id)->delete();
+        return $this->redirect('/code/ahead');
     }
 
     public function actionIndex()

@@ -43,10 +43,10 @@
 
         $('#col-qrcode-num').change(function(){
             var wid = Math.floor( a4_width/parseInt( $(this).val() )) - 4;
-            console.log(wid);
+//            console.log(wid);
             $('.a4').css({'width':wid,'height':wid});
 //            $('.a4').attr('width',wid);
-            console.log('22222');
+//            console.log('22222');
         });
 
     <?php $this->endBlock();?>
