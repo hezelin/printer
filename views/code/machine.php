@@ -3,7 +3,19 @@
 ?>
 
 <style>
-    #qrcode-series{position: absolute;top:65px;left:50px;font-size:4em;color:orangered;}
+    #qrcode-series{position: absolute;
+        top: 138px;
+        left: 335px;
+        font-size: 1.5em;
+        color: #444444;
+    }
+    #qrcode-user{position: absolute;
+        top: 135px;
+        left: 50px;
+        font-size: 1.5em;
+        color:#ff4500;
+    }
+    #user-id{position: absolute;top:65px;left:45px;font-size:4em;color:orangered;}
     #qrcode-img{position:absolute;top:22px;left:330px;width:120px;}
 </style>
 <div class="col-md-10 col-md-offset-1">
@@ -14,14 +26,17 @@
 <div class="col-md-10 col-md-offset-1">
     <div  id="print-wrap" style="position: relative;<?=$data['img']['style']?>">
         <img src="<?=$data['img']['img']?>" <?=$data['img']['width']?>/>
-        <div id="qrcode-series" style="position: absolute;<?=$data['series']?>">
-            <?= $data['seriesNum'] ?>
+        <div id="user-id" style="position:absolute;<?=$data['apply']?>">
+            <?=$data['applyId']? $data['come_from'].$data['applyId']:''?>
         </div>
         <div id="qrcode-user" style="position: absolute;<?=$data['user']?>">
             <?= $data['userName'] ?>
         </div>
         <div id="qrcode-img" style="position:absolute;<?=$data['code']?>">
             <img src="<?=$data['qrcodeImgUrl']?>" width="100%"/>
+        </div>
+        <div id="qrcode-series" style="position: absolute;<?=$data['series']?>">
+            机器编号:<?= $data['seriesNum'] ?>
         </div>
     </div>
 </div>

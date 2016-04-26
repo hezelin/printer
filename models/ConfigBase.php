@@ -203,4 +203,11 @@ class ConfigBase
     public static function getMachineOrigin($id){
         return isset(self::$machineOrigin[$id])? self::$machineOrigin[$id]:'出错';
     }
+
+    /*
+     * 二维码获取英文缩写
+     */
+    public static function machineComeFrom($id){
+        return $id==1? 'CZ':($id==2? 'XS':'WX');
+    }
 }

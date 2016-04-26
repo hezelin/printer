@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Cache;
+use app\models\ConfigBase;
 use app\models\TblMachineSearch;
 use app\models\TblQrcodeSetting;
 use app\models\ToolBase;
@@ -228,12 +229,15 @@ class CodeController extends \yii\web\Controller
     {
         set_time_limit(0);
         $model = (new \yii\db\Query())
-            ->select('t.name,p.series_id')
-            ->from('tbl_rent_apply t')
-            ->leftJoin('tbl_machine p','p.id=t.machine_id')
-            ->where('t.machine_id=:mid and t.enable="Y"',[':mid'=>$id])
+            ->select('t.series_id,a.name,a.id,t.come_from')
+            ->from('tbl_machine t')
+            ->leftJoin('tbl_rent_apply a','a.machine_id=t.id')
+            ->where(['t.id'=>$id])
             ->one();
 
+       /* echo '<pre>';
+        print_r($model);
+        exit;*/
         $index = (int)($id/500);
         $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
         if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.png') ){
@@ -243,15 +247,16 @@ class CodeController extends \yii\web\Controller
             $fileName = $dir.'/'.$id.'.png';
             shell_exec("qrencode -o $fileName '$url' -s 10 -m 2 -l H");
         }
-        $setting = (new \yii\db\Query())
+        /*$setting = (new \yii\db\Query())
             ->select('*')
             ->from('tbl_qrcode_setting')
             ->where(['wx_id'=>Cache::getWid(),'enable'=>'Y'])
-            ->one();
+            ->one();*/
 
+        $setting = [];
         $data = [
             'img'=> [
-                'width'=>'',
+                'width'=>' width="700px"',
                 'img'=>'/images/qrcode-bgimg-test.jpg',
                 'style'=>'',
                 'bgWidth'=>'',
@@ -259,16 +264,23 @@ class CodeController extends \yii\web\Controller
             'series'=>'',
             'user'=>'',
             'code'=>'',
+            'apply'=>'',
+            'come_from'=> ConfigBase::machineComeFrom($model['come_from']),
             'seriesNum'=>$model['series_id'],
             'userName' => $model['name'],
+            'applyId' => $model['id'],
             'machineId'=>$id,
             'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.png'
         ];
 
         if($setting){
             if($series = json_decode($setting['bg_img'],true) ){
+
                 $data['img']['style'] = isset($series['width'])? 'width:'.$series['width'].';':'100%;';
-                $data['img']['width'] = isset($series['width'])? ' width="'.$series['width'].'"':'';
+
+                if( isset($series['width']) && $series['width'])
+                    $data['img']['width'] = ' width="'.$series['width'].'"';
+
                 $data['img']['img'] = isset($series['img'])? $series['img']:'';
             }
 
@@ -283,6 +295,11 @@ class CodeController extends \yii\web\Controller
             if($series = json_decode($setting['code'],true) ){
                 foreach($series as $k=>$v)
                     $data['code'] .= "$k:$v;";
+            }
+
+            if($series = json_decode($setting['apply'],true) ){
+                foreach($series as $k=>$v)
+                    $data['apply'] .= "$k:$v;";
             }
             unset($setting);
         }
