@@ -36,7 +36,7 @@
             <img src="<?=$data['qrcodeImgUrl']?>" width="100%"/>
         </div>
         <div id="qrcode-series" style="position: absolute;<?=$data['series']?>">
-            机器编号:<?= $data['seriesNum'] ?>
+            <?= $data['seriesNum'] ?>
         </div>
     </div>
 </div>

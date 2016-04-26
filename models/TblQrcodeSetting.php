@@ -18,7 +18,7 @@ class TblQrcodeSetting extends \yii\db\ActiveRecord
             [['wx_id', 'add_time'], 'integer'],
             [['enable'], 'string'],
             [['bg_img'], 'string', 'max' => 200],
-            [['series', 'user_name', 'code'], 'string', 'max' => 300]
+            [['series', 'apply', 'user_name', 'code'], 'string', 'max' => 300]
         ];
     }
 
@@ -29,6 +29,7 @@ class TblQrcodeSetting extends \yii\db\ActiveRecord
             'wx_id' => '公众号id',
             'bg_img' => '背景图片',
             'series' => '编号参数',
+            'apply' => '用户编号',
             'user_name' => '用户名字',
             'code' => '二维码参数',
             'add_time' => '添加时间',

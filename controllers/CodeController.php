@@ -129,10 +129,10 @@ class CodeController extends \yii\web\Controller
     {
         set_time_limit(0);
         $model = (new \yii\db\Query())
-            ->select('t.name,p.series_id')
-            ->from('tbl_rent_apply t')
-            ->leftJoin('tbl_machine p','p.id=t.machine_id')
-            ->where('t.machine_id=:mid and t.enable="Y"',[':mid'=>$id])
+            ->select('t.series_id,a.name,a.id,t.come_from')
+            ->from('tbl_machine t')
+            ->leftJoin('tbl_rent_apply a','a.machine_id=t.id')
+            ->where(['t.id'=>$id])
             ->one();
 
         $index = (int)($id/500);
@@ -145,19 +145,23 @@ class CodeController extends \yii\web\Controller
             shell_exec("qrencode -o $fileName '$url' -s 10 -m 2 -l H");
         }
 
-        $setting = (new \yii\db\Query())
+        /*$setting = (new \yii\db\Query())
             ->select('*')
             ->from('tbl_qrcode_setting')
             ->where(['wx_id'=>Cache::getWid(),'enable'=>'Y'])
-            ->one();
+            ->one();*/
 
+        $setting = [];
         $data = [
             'series'=>'',
             'user'=>'',
             'code'=>'',
+            'apply'=>'',
             'seriesNum'=>$model['series_id'],
             'userName' => $model['name'],
             'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.png',
+            'come_from'=> ConfigBase::machineComeFrom($model['come_from']),
+            'applyId' => $model['id'],
             'img'=> [
                 'width'=>'',
                 'img'=>'/images/qrcode-bgimg-test.jpg',
@@ -165,16 +169,22 @@ class CodeController extends \yii\web\Controller
                 'bgWidth'=>'700'
             ],
             'seriesCss'=>[
-                'top'=>65,
-                'left'=>50,
+                'top'=>138,
+                'left'=>335,
+                'color'=>'#444444',
+                'font-size'=>'22',
+            ],
+            'applyCss'=>[
+                'top'=>70,
+                'left'=>60,
                 'color'=>'#FF4500',
-                'font-size'=>'55',
+                'font-size'=>'45',
             ],
             'userCss'=>[
-                'top'=>100,
-                'left'=>50,
+                'top'=>130,
+                'left'=>60,
                 'color'=>'#FF4500',
-                'font-size'=>'40',
+                'font-size'=>'30',
             ],
             'codeCss'=>[
                 'top'=>22,
@@ -235,9 +245,6 @@ class CodeController extends \yii\web\Controller
             ->where(['t.id'=>$id])
             ->one();
 
-       /* echo '<pre>';
-        print_r($model);
-        exit;*/
         $index = (int)($id/500);
         $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
         if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$id.'.png') ){
@@ -247,13 +254,12 @@ class CodeController extends \yii\web\Controller
             $fileName = $dir.'/'.$id.'.png';
             shell_exec("qrencode -o $fileName '$url' -s 10 -m 2 -l H");
         }
-        /*$setting = (new \yii\db\Query())
+        $setting = (new \yii\db\Query())
             ->select('*')
             ->from('tbl_qrcode_setting')
             ->where(['wx_id'=>Cache::getWid(),'enable'=>'Y'])
-            ->one();*/
+            ->one();
 
-        $setting = [];
         $data = [
             'img'=> [
                 'width'=>' width="700px"',
@@ -321,6 +327,7 @@ class CodeController extends \yii\web\Controller
 
             $setting->bg_img = json_encode(Yii::$app->request->post('bgImg'));
             $setting->series = json_encode(Yii::$app->request->post('series'));
+            $setting->apply = json_encode(Yii::$app->request->post('apply'));
             $setting->user_name = json_encode(Yii::$app->request->post('user'));
             $setting->code = json_encode(Yii::$app->request->post('code'));
             $setting->add_time = time();

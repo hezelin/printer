@@ -22,6 +22,7 @@
         z-index: 10000;
         border-right: 1px solid #666;
         padding: 15px;
+        overflow-y: scroll;
     }
     .setting-input{
         width: 75px;
@@ -49,15 +50,15 @@
 <div id="setting-wrap">
     <div id="setting-left">
         <form class="setting-form">
-        <h4>编号设置</h4>
+        <h4>客户编号设置</h4>
         <div class="setting-row"> 字体颜色：
-            <input class="setting-input" type="text" data-vessel="series" data-key="color" data-end="" name="color" value="<?=$data['seriesCss']['color']?>"/></div>
+            <input class="setting-input" type="text" data-vessel="apply" data-key="color" data-end="" name="color" value="<?=$data['applyCss']['color']?>"/></div>
         <div class="setting-row"> 字体大小：
-            <input class="setting-input" type="text" data-vessel="series" data-key="font-size" data-end="px" name="size" value="<?=$data['seriesCss']['font-size']?>" />&nbsp;&nbsp;&nbsp;px</div>
+            <input class="setting-input" type="text" data-vessel="apply" data-key="font-size" data-end="px" name="size" value="<?=$data['applyCss']['font-size']?>" />&nbsp;&nbsp;&nbsp;px</div>
         <div class="setting-row"> 顶部距离：
-            <input class="setting-input" type="text" data-vessel="series" data-key="top" data-end="px" name="top" value="<?=$data['seriesCss']['top']?>" />&nbsp;&nbsp;&nbsp;px</div>
+            <input class="setting-input" type="text" data-vessel="apply" data-key="top" data-end="px" name="top" value="<?=$data['applyCss']['top']?>" />&nbsp;&nbsp;&nbsp;px</div>
         <div class="setting-row"> 左部距离：
-            <input class="setting-input" type="text" data-vessel="series" data-key="left" data-end="px" name="left" value="<?=$data['seriesCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
+            <input class="setting-input" type="text" data-vessel="apply" data-key="left" data-end="px" name="left" value="<?=$data['applyCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
 
         <h4>客户名称设置</h4>
         <div class="setting-row"> 字体颜色：
@@ -69,13 +70,24 @@
         <div class="setting-row"> 左部距离：
             <input class="setting-input" type="text" data-vessel="user" data-key="left" data-end="px" name="left" value="<?=$data['userCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
 
-        <h4 class="setting-m">二维码设置</h4>
+        <h4 class="setting-m">二维码图片设置</h4>
         <div class="setting-row"> 图片宽度：
             <input class="setting-input" type="text" data-vessel="code" data-key="width" data-end="px" name="code_size" value="<?=$data['codeCss']['width']?>"/>&nbsp;&nbsp;&nbsp;px</div>
         <div class="setting-row"> 顶部距离：
             <input class="setting-input" type="text" data-vessel="code" data-key="top" data-end="px" name="code_top" value="<?=$data['codeCss']['top']?>"/>&nbsp;&nbsp;&nbsp;px</div>
         <div class="setting-row"> 左部距离：
             <input class="setting-input" type="text" data-vessel="code" data-key="left" data-end="px" name="code_left" value="<?=$data['codeCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
+
+        <h4>机器编号设置</h4>
+        <div class="setting-row"> 字体颜色：
+            <input class="setting-input" type="text" data-vessel="series" data-key="color" data-end="" name="color" value="<?=$data['seriesCss']['color']?>"/></div>
+        <div class="setting-row"> 字体大小：
+            <input class="setting-input" type="text" data-vessel="series" data-key="font-size" data-end="px" name="size" value="<?=$data['seriesCss']['font-size']?>" />&nbsp;&nbsp;&nbsp;px</div>
+        <div class="setting-row"> 顶部距离：
+            <input class="setting-input" type="text" data-vessel="series" data-key="top" data-end="px" name="top" value="<?=$data['seriesCss']['top']?>" />&nbsp;&nbsp;&nbsp;px</div>
+        <div class="setting-row"> 左部距离：
+            <input class="setting-input" type="text" data-vessel="series" data-key="left" data-end="px" name="left" value="<?=$data['seriesCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
+
 
         <h4 class="setting-m">背景图片设置</h4>
         <div class="setting-row"> 图片宽度：
@@ -84,6 +96,7 @@
             <input id="print-bg-img-url" class="setting-input" type="hidden" data-vessel="bgImg" data-key="img" data-end="" name="color" value="<?=$data['img']['img']?>"/>
             <div id="upload-img" class="btn btn-default">上传图片</div>
         </div>
+        <div class="clear"></div>
         </form>
     </div>
 </div>
@@ -98,14 +111,17 @@
     <div class="col-md-10 col-md-offset-1">
         <div  id="print-wrap" style="position: relative;<?=$data['img']['style']?>">
             <img id="print-bg-img" src="<?=$data['img']['img']?>" <?=$data['img']['width']?>/>
-            <div id="qrcode-series" style="position: absolute;<?=$data['series']?>">
-                <?= $data['seriesNum'] ?>
+            <div id="user-id" style="position:absolute;<?=$data['apply']?>">
+                <?=$data['applyId']? $data['come_from'].$data['applyId']:''?>
             </div>
             <div id="qrcode-user" style="position: absolute;<?=$data['user']?>">
                 <?= $data['userName'] ?>
             </div>
             <div id="qrcode-img" style="position:absolute;<?=$data['code']?>">
                 <img src="<?=$data['qrcodeImgUrl']?>" width="100%"/>
+            </div>
+            <div id="qrcode-series" style="position: absolute;<?=$data['series']?>">
+                <?= $data['seriesNum'] ?>
             </div>
         </div>
     </div>
@@ -119,48 +135,57 @@
             str += i+':' + obj[i] + ';';
         return str;
     }
-    var ex =  /^\d+$/;
-        var hasError = 0;
-        var series = {};
-        var user = {};
-        var code = {};
-        var bgImg = {};
-        $('#print-btn').click(function(){
-            $('#print-wrap').printArea();
-        });
+    var ex =  /^\d+$/,
+        hasError = 0,
+        series = {},
+        apply = {},
+        user = {},
+        code = {},
+        bgImg = {};
+    $('#print-btn').click(function(){
+        $('#print-wrap').printArea();
+    });
 
-        $('#print-setting-btn').click(function(){
-            $('#setting-wrap').show();
-        });
+    $('#print-setting-btn').click(function(){
+        $('#setting-wrap').show();
+    });
 
-        $('.setting-input').blur(function(){
-            hasError = 0;
-            $('.setting-input').each(function(){
-                if($(this).attr('name') !== 'color' && !ex.test( $(this).val() ) ){
-                    console.log('必须填入整数' + $(this).val());
-                    $(this).addClass('setting-error');
-                    alert('必须填入整数');
-                    hasError = 1;
-                    return false;
-                }else{
-                    switch ( $(this).attr('data-vessel')){
-                        case 'series': series[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
-                        case 'user': user[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
-                        case 'code': code[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
-                        case 'bgImg': bgImg[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
-                    }
-                    $(this).removeClass('setting-error');
+    function initData()
+    {
+        hasError = 0;
+        $('.setting-input').each(function(){
+            if($(this).attr('name') !== 'color' && !ex.test( $(this).val() ) ){
+                $(this).addClass('setting-error');
+                alert('必须填入整数');
+                hasError = 1;
+                return false;
+            }else{
+                switch ( $(this).attr('data-vessel')){
+                    case 'series': series[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
+                    case 'apply': apply[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
+                    case 'user': user[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
+                    case 'code': code[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
+                    case 'bgImg': bgImg[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                 }
-            })
-
-            if( hasError == 0){
-                $('#qrcode-series').attr('style', 'position: absolute;' + obj2string(series) );
-                $('#qrcode-user').attr('style', 'position: absolute;' + obj2string(user) );
-                $('#qrcode-img').attr('style', 'position: absolute;' + obj2string(code) );
-                $('#print-wrap').attr('style','positon:relative;width:' + bgImg.width  );
-                $('#print-bg-img').width( bgImg.width.substr(0,bgImg.width.length - 2) );
+                $(this).removeClass('setting-error');
             }
-        });
+        })
+
+        if( hasError == 0){
+            $('#qrcode-series').attr('style', 'position: absolute;' + obj2string(series) );
+            $('#user-id').attr('style', 'position: absolute;' + obj2string(apply) );
+            $('#qrcode-user').attr('style', 'position: absolute;' + obj2string(user) );
+            $('#qrcode-img').attr('style', 'position: absolute;' + obj2string(code) );
+            $('#print-wrap').attr('style','positon:relative;width:' + bgImg.width  );
+            $('#print-bg-img').width( bgImg.width.substr(0,bgImg.width.length - 2) );
+        }
+    }
+
+    initData();
+
+    $('.setting-input').blur(function(){
+        initData();
+    });
 
 //        保存二维码设置
         $('#print-save').click(function(){
@@ -179,6 +204,7 @@
                 }else{
                     switch ( $(this).attr('data-vessel')){
                         case 'series': series[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
+                        case 'apply': apply[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                         case 'user': user[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                         case 'code': code[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
                         case 'bgImg': bgImg[ $(this).attr('data-key') ] = $(this).val() + $(this).attr('data-end'); break;
@@ -189,7 +215,7 @@
 
             $.post(
                 '/code/config',
-                {'series':series,'user':user,'code':code,'bgImg':bgImg},
+                {'series':series,'apply':apply,'user':user,'code':code,'bgImg':bgImg},
                 function(resp){
                     if(resp.status==1)
                         alert('保存成功！');
