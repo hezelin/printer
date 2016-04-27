@@ -194,7 +194,8 @@ class ConfigBase
     public static $machineOrigin = [
         1 => '出租',
         2 => '销售',
-        3 => '维修'
+        3 => '维修',
+        4 => '二维码',
     ];
 
     /*

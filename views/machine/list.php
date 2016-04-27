@@ -19,6 +19,7 @@ $this->title = '机器列表';
     <a href="list?TblMachineSearch[come_from]=1" class="btn <?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] != 1? 'btn-default':'btn-primary'?>"> 出租 </a>
     <a href="list?TblMachineSearch[come_from]=2" class="btn btn-default<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 2? ' btn-primary':''?>"> 销售 </a>
     <a href="list?TblMachineSearch[come_from]=3" class="btn btn-default<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 3? ' btn-primary':''?>"> 维修 </a>
+    <a href="list?TblMachineSearch[come_from]=4" class="btn btn-default<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 4? ' btn-primary':''?>"> 二维码 </a>
 </div>
 
 
