@@ -48,7 +48,7 @@ class TblRentApplyList extends TblRentApply
     {
         $query = TblRentApply::find()->where([
             'tbl_rent_apply.wx_id'=>Cache::getWid(),
-            'tbl_rent_apply.status'=>2,
+            'tbl_rent_apply.status'=>[2,3],
             'tbl_rent_apply.enable'=>'Y',
         ])->joinWith([
             'machine'=>function($query){

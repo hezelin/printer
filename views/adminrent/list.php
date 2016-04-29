@@ -27,6 +27,10 @@ echo GridView::widget([
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         [
+            'attribute'=>'id',
+            'header'=>'客户id',
+        ],
+        [
             'attribute'=>'type',
             'header'=>'机型',
             'value'=>'machine.machineModel.type',
