@@ -209,6 +209,12 @@ class ConfigBase
      * 二维码获取英文缩写
      */
     public static function machineComeFrom($id){
-        return $id==1? 'CZ':($id==2? 'XS':'WX');
+        switch($id){
+            case 1:return 'cz';
+            case 2:return 'xs';
+            case 3:return 'wx';
+            case 4:return 'tq';
+            default: return 'qt';
+        }
     }
 }

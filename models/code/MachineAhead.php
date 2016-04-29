@@ -47,7 +47,7 @@ class MachineAhead
         foreach($this->getMachineIdBySeries() as $m){
             $tmpSeries = $this->getSeriesId();
             $this->seriesData[] = $tmpSeries;
-            $items[] = ['未设置','未设置',0,$this->_wid,$m['id'],$m['series_id'],$due_time,$due_time,3,2,$t];
+            $items[] = [' ',' ',0,$this->_wid,$m['id'],$m['series_id'],$due_time,$due_time,3,2,$t];
         }
         return $items;
     }
