@@ -42,11 +42,12 @@ class MachineAhead
     public function addApply()
     {
         $items = [];
+        $t = time();
         $due_time = strtotime('10 year',time());
         foreach($this->getMachineIdBySeries() as $m){
             $tmpSeries = $this->getSeriesId();
             $this->seriesData[] = $tmpSeries;
-            $items[] = ['未设置','未设置',0,$this->_wid,$m['id'],$m['series_id'],$due_time,$due_time,3,2];
+            $items[] = ['未设置','未设置',0,$this->_wid,$m['id'],$m['series_id'],$due_time,$due_time,3,2,$t];
         }
         return $items;
     }
@@ -74,7 +75,7 @@ class MachineAhead
 
         if($row){
             Yii::$app->db->createCommand()->batchInsert('tbl_rent_apply',
-                ['phone', 'name', 'project_id','wx_id','machine_id', 'openid','due_time','first_rent_time','rent_period','status'],$this->addApply())->execute();
+                ['phone', 'name', 'project_id','wx_id','machine_id', 'openid','due_time','first_rent_time','rent_period','status','add_time'],$this->addApply())->execute();
         }
     }
 
