@@ -3,6 +3,7 @@
 namespace app\controllers;
 use app\models\Cache;
 use app\models\TblMachineSearch;
+use app\models\TblRentApply;
 use Yii;
 use app\models\TblMachine;
 use app\models\ToolBase;
@@ -85,6 +86,8 @@ class MachineController extends \yii\web\Controller
     public function actionForceDelete($id)
     {
         $this->findModel($id)->delete();
+        $model= TblRentApply::find()->where(['machine_id'=>$id])->one()->delete();
+
         return $this->redirect('/code/ahead');
     }
 
