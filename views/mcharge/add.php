@@ -17,14 +17,18 @@
         </span>
     </li>
     <li class="list-group-item">
-        <span class="list-label">上次读数：</span><span class="list-text"><?php
+        <span class="list-label"><?=$lastCharge? '上次读数':'初始读数'?>：</span><span class="list-text"><?php
             if($lastCharge){
                 echo '黑白：',$lastCharge['black_white'],'张';
                 if($rent['colours'])
                     echo '，彩色：',$lastCharge['colour'],'张';
                 echo '，租金：',$lastCharge['total_money'],'元，超出金额：',$lastCharge['exceed_money'],'元，收取时间：',date('Y-m-d H:i',$lastCharge['add_time']);
             }else
-                echo '无';
+            {
+                echo '黑白：',$rent['black_amount'],'张';
+                if($rent['colours'])
+                    echo '，彩色：',$lastCharge['colour_amount'],'张';
+            }
             ?>
         </span>
     </li>

@@ -50,6 +50,8 @@ if( $type =='allot' )
     <?= $form->field($model, 'black_white')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.02  代表2分钱'])->hint('多少元 / 每张')?>
 
     <?= $form->field($model, 'colours')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.04  代表4分钱'])->hint('多少元 / 每张')?>
+    <?= $form->field($model, 'black_amount')->textInput(['placeholder'=>'必填'])->hint('机器黑白读数初始值')?>
+    <?= $form->field($model, 'colours_amount')->textInput(['placeholder'=>'彩色机必填'])->hint('机器彩色读数初始值')?>
     <?= $form->field($model, 'name')->textInput(['placeholder'=>'用户名字，个人 / 公司'])->hint('个人 / 公司')?>
     <?= $form->field($model, 'phone')->hint('真实手机号码') ?>
     <?= $form->field($model, 'due_time')->widget(dosamigos\datepicker\DatePicker::className(), [

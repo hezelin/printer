@@ -30,12 +30,12 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'openid', 'project_id', 'due_time', 'phone', 'name', 'add_time','machine_id','first_rent_time', 'rent_period'], 'required'],
-            [['wx_id', 'project_id', 'machine_id', 'status', 'add_time'], 'integer'],
+            [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'black_amount', 'colours_amount'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
             [['enable'], 'string'],
             [['openid'], 'string', 'max' => 28],
             [['phone'], 'string', 'max' => 11],
-            [['colours'], 'default', 'value' => 0],
+            [['colours','black_amount','colours_amount'], 'default', 'value' => 0],
             [['name'], 'string', 'max' => 30],
             [['address'], 'string', 'max' => 500],
             [['apply_word'], 'string', 'max' => 200]
@@ -53,6 +53,8 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
             'monthly_rent' => '月租',
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
+            'black_amount' => '黑板读数',
+            'colours_amount' => '彩色读数',
             'due_time' => '合同到期时间',
             'first_rent_time' => '下次收租时间',
             'rent_period' => '收租周期',

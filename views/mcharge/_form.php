@@ -92,8 +92,8 @@ if( Yii::$app->session->hasFlash('error') )
         'colours'=>(float)$rent['colours'],
         'black_white'=>(float)$rent['black_white'],
         'rent_period'=>(int)$rent['rent_period'],
-        'last_black'=> isset($lastCharge['black_white'])? (int)$lastCharge['black_white']:0,
-        'last_colour'=> isset($lastCharge['colour'])? (int)$lastCharge['colour']:0
+        'last_black'=> isset($lastCharge['black_white'])? (int)$lastCharge['black_white']:$rent['black_amount'],
+        'last_colour'=> isset($lastCharge['colour'])? (int)$lastCharge['colour']:$rent['colours_amount']
     ])?>;
 
     <?php $this->beginBlock('JS_END') ?>
