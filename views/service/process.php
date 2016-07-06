@@ -21,7 +21,7 @@ $this->title = '维修进度';
 </style>
 <?php
 function getMachine($model){
-    if( !$model->machine->machineModel ) return '<span class="not-set">（无设置）</span>';
+    if( !isset($model->machine->machineModel) ) return '<span class="not-set">（无设置）</span>';
     return Html::a(Html::img($model->machine->machineModel->cover,['width'=>40]),str_replace('/s/','/m/',$model->machine->machineModel->cover),['class'=>'fancybox','rel'=>'group']) .
 //            ' , ' . $model->machine->brand .
             ' , ' . $model->machine->machineModel->type .
