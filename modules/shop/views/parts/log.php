@@ -25,7 +25,7 @@ function getHtml($con)
         $html[] = \yii\helpers\Html::a('查看机器',Url::toRoute(['/rent/user-machine','id'=>$con['machine_id']]),['class'=>'log-link']);
 
     if(isset($con['fault_id']))
-        $html[] = \yii\helpers\Html::a('查看维修',Url::toRoute(['/m/taskdetail','id'=>$con['fault_id']]),['class'=>'log-link']);
+        $html[] = \yii\helpers\Html::a('查看维修',Url::toRoute(['/maintain/task/detail','id'=>$con['fault_id']]),['class'=>'log-link']);
 
     return implode(' ，',$html);
 }

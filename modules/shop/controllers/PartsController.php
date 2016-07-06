@@ -114,7 +114,7 @@ class PartsController extends Controller
             if ( !$isMaintainer )
                 return $this->render('//tips/homestatus', ['tips' => '不是维修员，没有权限！', 'btnText' => '返回', 'btnUrl' => 'javascript:history.go(-1);']);
 
-            $btnUrl = Url::toRoute(['/m/taskdetail','id'=>$fault_id]);
+            $btnUrl = Url::toRoute(['/maintain/task/detail','id'=>$fault_id]);
             $btnText = '返回维修';
         }else{
             $btnText = '返回主页';
