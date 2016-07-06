@@ -5,7 +5,7 @@ $this->title = '赚钱积分';
 ?>
 
 <div id="h-color-list">
-    <a class="color-row" style="background-color: #ffcb26" href="<?= Url::toRoute(['rent/list','id'=>$id]) ?>" >
+    <a class="color-row" style="background-color: #ffcb26" href="<?= url::toRoute(['/user/rent/list','id'=>$id]) ?>" >
         分享租机方案
         <b class="icon-go-right"></b>
     </a>

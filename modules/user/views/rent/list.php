@@ -11,7 +11,7 @@ $this->title = '机器列表';
         <ul class="aui-list-view">
             <?php foreach($model as $row):?>
                 <li class="aui-list-view-cell aui-img">
-                    <a href="<?=Url::toRoute(['rent/detail','id'=>$id,'project_id'=>$row['id']])?>">
+                    <a href="<?=url::toRoute(['/user/rent/detail','id'=>$id,'project_id'=>$row['id']])?>">
                         <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
                         <div class="aui-img-body">
                             <h2 class="aui-ellipsis-1 aui-text-info"><?=$row['name'],$row['type']?></h2>
@@ -25,7 +25,7 @@ $this->title = '机器列表';
             <?php endforeach;?>
         </ul>
         <div class="aui-fixed-bottom">
-            <a href="<?=Url::toRoute(['rent/list','id'=>$id])?>">
+            <a href="<?=url::toRoute(['/user/rent/list','id'=>$id])?>">
                 租借机器
             </a>
         </div>

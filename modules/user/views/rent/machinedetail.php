@@ -19,7 +19,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
     <div class="de-row-b-2">
         <span class="de-label">月租</span>
         <em class="de-yan">¥</em>
-        <span class="de-price"><?=$model['lowest_expense']?></span>
+        <span class="de-price"><?=$model['monthly_rent']?></span>
     </div>
     <hr class="de-line-row">
     <ul class="de-box">
@@ -39,8 +39,18 @@ Yii::$app->params['layoutBottomHeight'] = 40;
         </li>
         <li class="de-row">
             <span class="de-label">型号</span>
-            <span class="de-value"><?=$model['type']?></span>
+            <span class="de-value"><?=$model['model']?></span>
         </li>
+        <li class="de-row">
+            <span class="de-label">系列号</span>
+            <span class="de-value"><?=$model['series_id']?></span>
+        </li>
+        <?php if($model['come_from']!=1):?>
+            <li class="de-row">
+                <span class="de-label">租借时间</span>
+                <span class="de-value"><?=date('Y-m-d H:i',$model['add_time'])?>元/张</span>
+            </li>
+        <?php endif;?>
     </ul>
 
     <hr class="de-line-row">
@@ -69,7 +79,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
 
     <?php else:?>
         <div class="h-fixed-bottom">
-            <a href="<?=Url::toRoute(['rent/apply','id'=>$id,'mid'=>$model['id']])?>">
+            <a href="<?=url::toRoute(['/user/rent/apply','id'=>$id,'mid'=>$model['id']])?>">
                 租借机器
             </a>
         </div>

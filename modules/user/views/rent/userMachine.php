@@ -54,6 +54,19 @@ Yii::$app->params['layoutBottomHeight'] = 40;
     </ul>
 
     <hr class="de-line-row">
+
+    <ul class="de-box">
+        <li class="de-row">
+            <span class="de-label">用户</span>
+            <span class="de-value"><?=$model['user']?></span>
+        </li>
+        <li class="de-row">
+            <span class="de-label">地址</span>
+            <span class="de-value"><?=$model['address']?></span>
+        </li>
+    </ul>
+
+    <hr class="de-line-row">
     <?php if($model['else_attr']):?>
     <ul class="de-box">
         <li class="de-row">
@@ -79,7 +92,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
 
     <?php else:?>
         <div class="h-fixed-bottom">
-            <a href="<?=Url::toRoute(['rent/apply','id'=>$id,'mid'=>$model['id']])?>">
+            <a href="<?=url::toRoute(['/user/rent/apply','id'=>$id,'mid'=>$model['id']])?>">
                 租借机器
             </a>
         </div>
