@@ -7,7 +7,7 @@ $this->title = '维修任务';
 ?>
 <?= $this->render('_detail', ['model' => $model ]) ?>
 
-<form method="post" id="wechat-form" action="<?=Url::toRoute(['m/process','id'=>$model['id'],'openid'=>$openid])?>">
+<form method="post" id="wechat-form" action="<?=Url::toRoute(['/maintain/task/process','id'=>$model['id'],'openid'=>$openid])?>">
     <input name="_csrf" type="hidden" value="<?=\Yii::$app->request->csrfToken?>"/>
     <input name="TblServiceProcess[status]" type="hidden" value="3"/>
     <input name="TblServiceProcess[latitude]" type="hidden" id="tbl_latitude"/>

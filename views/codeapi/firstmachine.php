@@ -6,7 +6,7 @@ $this->title = '机器页面';
 <style>
 
 </style>
-<form method="post" id="wechat-form" action="<?=Url::toRoute(['m/machineposition','mid'=>$id])?>">
+<form method="post" id="wechat-form" action="<?=Url::toRoute(['/maintain/machine/position','mid'=>$id])?>">
 
 <div class="h-center-wrap">
     <input name="_csrf" type="hidden" value="<?=\Yii::$app->request->csrfToken?>"/>
