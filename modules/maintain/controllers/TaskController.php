@@ -91,7 +91,7 @@ class TaskController extends Controller
         switch($status){
             case 1: return $this->render('detail',['model'=>$model,'openid'=>$openid,'from'=>'initiative']);
             case 2: return $this->render('detail',['model'=>$model,'openid'=>$openid,'from'=>'allot']);
-            case 3: return $this->render('process3', [
+            case 3: return $this->render('process-scan', [
                 'model' => $model,
                 'openid' => $openid,
                 'mUrl' => Url::toRoute(['codeapi/machine','id'=>$model['mid']],'http'),
@@ -102,7 +102,7 @@ class TaskController extends Controller
                         'data-ajax'=>1,
                         'data-status'=>$status+1,
                         'class'=>'process-btn aui-fixed-bottom',
-                        'data-href'=>Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid])
+                        'data-href'=>Url::toRoute(['/maintain/task/process-ajax','id'=>$model['id'],'openid'=>$openid])
                     ]
                 )
             ]);
@@ -126,7 +126,7 @@ class TaskController extends Controller
                     'div',
                     Html::a(
                         '维修完成',
-                        Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                        Url::toRoute(['/maintain/task/process-ajax','id'=>$model['id'],'openid'=>$openid]),
                         [
                             'data-ajax'=>2,
                             'data-status'=>8,
@@ -152,7 +152,7 @@ class TaskController extends Controller
                             'div',
                             Html::a(
                                 '维修完成',
-                                Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                                Url::toRoute(['/maintain/task/process-ajax','id'=>$model['id'],'openid'=>$openid]),
                                 [
                                     'data-ajax'=>2,
                                     'data-status'=>8,
@@ -186,7 +186,7 @@ class TaskController extends Controller
                 'openid' => $openid,
                 'btnHtml'=>Html::a(
                     ConfigBase::getFixMaintainStatus($status),
-                    Url::toRoute(['m/processajax','id'=>$model['id'],'openid'=>$openid]),
+                    Url::toRoute(['/maintain/task/process-ajax','id'=>$model['id'],'openid'=>$openid]),
                     [
                         'data-ajax'=>1,
                         'data-status'=>$status+1,
