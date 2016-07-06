@@ -5,7 +5,7 @@ use yii\helpers\Url;
 
 
 <div class="h-center-wrap">
-    <!--<a class="h-link-minor" href="<?/*=Url::toRoute(['s/apply','id'=>$id,'mid'=>$mid])*/?>">
+    <!--<a class="h-link-minor" href="<?/*=url::toRoute(['/maintain/fault/apply','id'=>$id,'mid'=>$mid])*/?>">
         维修进度
     </a>-->
     <?=$btnHtml;?>

@@ -57,7 +57,7 @@ class CodeapiController extends \yii\web\Controller
                         'wid' => $wid,
                         'btnHtml' => Html::a(
                             ConfigBase::getFixMaintainStatus($status),
-                            Url::toRoute(['m/processajax', 'id' => $model['id'], 'openid' => $openid]),
+                            Url::toRoute(['/maintain/task/process-ajax', 'id' => $model['id'], 'openid' => $openid]),
                             [
                                 'data-ajax' => 1,
                                 'data-status' => $status + 1,
@@ -73,7 +73,7 @@ class CodeapiController extends \yii\web\Controller
                         'wid' => $wid,
                         'btnHtml' => Html::a(
                             ConfigBase::getFixMaintainStatus($status),
-                            Url::toRoute(['s/affirmfault', 'id' => $wid, 'fault_id' => $model['id'], 'openid' => $openid]),
+                            url::toRoute(['/maintain/fault/affirmfault', 'id' => $wid, 'fault_id' => $model['id'], 'openid' => $openid]),
                             [
                                 'data-ajax' => 0,
                                 'data-status' => $status + 1,
@@ -90,7 +90,7 @@ class CodeapiController extends \yii\web\Controller
                         'btnHtml' =>
                             Html::a(
                                 '维修完成',
-                                Url::toRoute(['m/processajax', 'id' => $model['id'], 'openid' => $openid]),
+                                Url::toRoute(['/maintain/task/process-ajax', 'id' => $model['id'], 'openid' => $openid]),
                                 [
                                     'data-ajax' => 1,
                                     'data-status' => 8,
@@ -130,7 +130,7 @@ class CodeapiController extends \yii\web\Controller
                         'wid' => $wid,
                         'btnHtml' => Html::a(
                             '查看评价',
-                            Url::toRoute(['s/showevaluate', 'id' => $model['id']]),
+                            url::toRoute(['/maintain/fault/showevaluate', 'id' => $model['id']]),
                             [
                                 'data-ajax' => 0,
                                 'data-status' => $status + 1,
@@ -165,11 +165,11 @@ class CodeapiController extends \yii\web\Controller
 
         if( isset($data['status']) ){
             if( $data['status'] ==8 )
-                $btnHtml = Html::a('评价维修',Url::toRoute(['s/evaluate','id'=>$wid,'fault_id'=>$data['id']]),['class'=>'a-no-link h-link-minor']);
+                $btnHtml = Html::a('评价维修',url::toRoute(['/maintain/fault/evaluate','id'=>$wid,'fault_id'=>$data['id']]),['class'=>'a-no-link h-link-minor']);
             else
-                $btnHtml = Html::a('维修进度',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link-minor']);
+                $btnHtml = Html::a('维修进度',url::toRoute(['/maintain/fault/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link-minor']);
         }else
-            $btnHtml = Html::a('申请维修',Url::toRoute(['s/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link']);
+            $btnHtml = Html::a('申请维修',url::toRoute(['/maintain/fault/apply','id'=>$wid,'mid'=>$id]),['class'=>'a-no-link h-link']);
 
         return $this->render('user',['id'=>$wid,'mid'=>$id,'btnHtml'=>$btnHtml]);
 

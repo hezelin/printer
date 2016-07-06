@@ -290,7 +290,7 @@ class AdminrentController extends \yii\web\Controller
             // 为申请者推送消息
             $tpl->sendProcess(
                 $from_openid,
-                Url::toRoute(['s/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$fault_id],'http'),
+                url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$fault_id],'http'),
                 '任务已分配',
                 $applyTime
             );
@@ -321,7 +321,7 @@ class AdminrentController extends \yii\web\Controller
             $tpl = new WxTemplate(Yii::$app->request->post('wx_id'));
             $tpl->sendProcess(
                 $from_openid,
-                Url::toRoute(['s/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$model->id],'http'),
+                url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$model->id],'http'),
                 '电话维修成功！',
                 $model->add_time
             );

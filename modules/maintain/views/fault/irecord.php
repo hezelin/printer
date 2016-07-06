@@ -1,10 +1,10 @@
 <?php
 use yii\helpers\Url;
 use app\models\ConfigBase;
-$this->title = '维修记录';
-
+$this->title = '机器维修记录';
 ?>
-<header class="aui-bar aui-bar-nav aui-bar-color">维修记录 <span class="aui-badge aui-badge-warning"><?=count($model)?></span> </header>
+
+<header class="aui-bar aui-bar-nav aui-bar-color">维修次数 <span class="aui-badge aui-badge-warning"><?=count($model)?></span> </header>
 
 <div class="aui-content" id="task-list">
     <?php if( is_array($model) && $model ):?>
@@ -15,9 +15,8 @@ $this->title = '维修记录';
 
                         <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
                         <div class="aui-img-body">
-                            <h2 class="aui-ellipsis-1">故障：<?=ConfigBase::getFaultStatus($row['type'])?></h2>
+                            <h2 class="aui-ellipsis-1 aui-text-primary">故障：<?=ConfigBase::getFaultStatus($row['type'])?></h2>
                             <p class="aui-ellipsis-2">描述：<?=$row['desc']?></p>
-                            <p class="aui-ellipsis-1">时间：<?=date('m月d日 H:i',$row['add_time'])?></p>
                             <span class="aui-box aui-box-color"><?=ConfigBase::getFixStatus($row['status'])?></span>
                         </div>
                     </a>

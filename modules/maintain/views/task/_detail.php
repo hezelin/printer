@@ -100,7 +100,7 @@ use yii\helpers\Url;
             </li>
 
             <li class="aui-list-view-cell">
-                <a class="aui-arrow-right" href="<?=Url::toRoute(['s/irecord','id'=>$model['wx_id'],'mid'=>$model['mid']])?>">
+                <a class="aui-arrow-right" href="<?=url::toRoute(['/maintain/fault/irecord','id'=>$model['wx_id'],'mid'=>$model['mid']])?>">
                     <div class="aui-col-xs-3 aui-text-default">历史维修</div>
                     <div class="aui-col-xs-9 aui-text-primary">
                         <?=($model['fault_num']+1)?>次

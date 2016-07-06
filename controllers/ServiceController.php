@@ -198,7 +198,7 @@ class ServiceController extends \yii\web\Controller
             // 为申请者推送消息
             $tpl->sendProcess(
                 $fromOpenid,
-                Url::toRoute(['s/detail','id'=>Yii::$app->request->post('wid'),'fault_id'=>$rendId],'http'),
+                url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wid'),'fault_id'=>$rendId],'http'),
                 '任务分配中',
                 $applyTime
             );

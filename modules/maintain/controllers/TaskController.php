@@ -111,7 +111,7 @@ class TaskController extends Controller
                 'openid' => $openid,
                 'btnHtml'=>Html::a(
                     ConfigBase::getFixMaintainStatus($status),
-                    Url::toRoute(['s/affirmfault','id'=>$model['wx_id'],'fault_id'=>$model['id'],'openid'=>$openid]),
+                    url::toRoute(['/maintain/fault/affirmfault','id'=>$model['wx_id'],'fault_id'=>$model['id'],'openid'=>$openid]),
                     [
                         'data-ajax'=>0,
                         'data-status'=>$status+1,
@@ -134,7 +134,7 @@ class TaskController extends Controller
                         ]).
                     Html::a(
                         ConfigBase::getFixMaintainStatus($status),
-                        Url::toRoute(['s/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
+                        url::toRoute(['/maintain/fault/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
                         [
                             'data-ajax'=>0,
                             'data-status'=>$status+1,
@@ -160,7 +160,7 @@ class TaskController extends Controller
                                 ]).
                             Html::a(
                                 '申请配件',
-                                Url::toRoute(['s/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
+                                url::toRoute(['/maintain/fault/applyparts','id'=>$model['wx_id'],'fault_id'=>$model['id']]),
                                 [
                                     'data-ajax'=>0,
                                     'data-status'=>$status+1,
@@ -201,7 +201,7 @@ class TaskController extends Controller
                     'openid' => $openid,
                     'btnHtml'=> Html::a(
                         '查看维修过程',
-                        Url::toRoute(['s/detail2','id'=>$model['id']]),
+                        url::toRoute(['/maintain/fault/detail2','id'=>$model['id']]),
                         [
                             'data-ajax'=>0,
                             'data-status'=>8,
@@ -269,7 +269,7 @@ class TaskController extends Controller
             $tpl = new WxTemplate($wid);
             $tpl->sendProcess(
                 $fromOpenid,
-                Url::toRoute(['s/detail','id'=>$wid,'fault_id'=>$fault_id],'http'),
+                url::toRoute(['/maintain/fault/detail','id'=>$wid,'fault_id'=>$fault_id],'http'),
                 '维修员：'.$maintainer['name'].'已接单，手机：'.$maintainer['phone'].'，距离：'.$respKm.'公里',
                 $applyTime
             );
@@ -355,12 +355,12 @@ class TaskController extends Controller
         $res = ['status'=>1,'dataStatus'=>$status+1];
         switch($status){
             case 4:
-                $res['href'] = Url::toRoute(['s/affirmfault','id'=>$wid,'fault_id'=>$fault_id,'openid'=>$openid]);
+                $res['href'] = url::toRoute(['/maintain/fault/affirmfault','id'=>$wid,'fault_id'=>$fault_id,'openid'=>$openid]);
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
             case 5:
-                $res['href'] = Url::toRoute(['s/affirmfault','id'=>$wid,'fault_id'=>$fault_id,'openid'=>$openid]);
+                $res['href'] = url::toRoute(['/maintain/fault/affirmfault','id'=>$wid,'fault_id'=>$fault_id,'openid'=>$openid]);
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
@@ -368,12 +368,12 @@ class TaskController extends Controller
                 $tpl = new WxTemplate($wid);
                 $tpl->sendWaiting(
                     $fromOpenid,
-                    Url::toRoute(['s/evaluate','id'=>$wid,'fault_id'=>$id],'http'),
+                    url::toRoute(['/maintain/fault/evaluate','id'=>$wid,'fault_id'=>$id],'http'),
                     time(),
                     $applyTime
                 );
 
-                $res['href'] = Url::toRoute(['s/detail2','id'=>$id]);
+                $res['href'] = url::toRoute(['/maintain/fault/detail2','id'=>$id]);
                 $res['dataAjax'] = 0;
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
