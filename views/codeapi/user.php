@@ -9,7 +9,7 @@ use yii\helpers\Url;
         维修进度
     </a>-->
     <?=$btnHtml;?>
-    <a class="h-link" href="<?=Url::toRoute(['i/service','id'=>$id,'mid'=>$mid])?>">
+    <a class="h-link" href="<?=Url::toRoute(['/user/i/service','id'=>$id,'mid'=>$mid])?>">
         维修记录
     </a>
     <a class="h-link" href="<?=Url::toRoute(['share/scheme','id'=>$id])?>">

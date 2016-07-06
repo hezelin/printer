@@ -17,7 +17,7 @@ $this->title = $setting['store_name'];
 <div class="aui-content" id="home-fault">
     <ul class="aui-list-view aui-grid-view">
         <li class="aui-list-view-cell aui-img aui-col-xs-6">
-            <a href="<?= Url::toRoute(['i/machine','id'=>$setting['wx_id']]) ?>" class="link-wrap">
+            <a href="<?= Url::toRoute(['/user/i/machine','id'=>$setting['wx_id']]) ?>" class="link-wrap">
                 <span class="iconfont icon-icondayinji aui-color"></span>
                 <h2 class="aui-img-body aui-text-default">我的机器</h2>
             </a>
@@ -42,7 +42,7 @@ $this->title = $setting['store_name'];
             </a>
         </li>
         <li class="aui-list-view-cell aui-img aui-col-xs-6">
-            <a href="<?= Url::toRoute(['i/index','id'=>$setting['wx_id']]) ?>" class="link-wrap">
+            <a href="<?= Url::toRoute(['/user/i/index','id'=>$setting['wx_id']]) ?>" class="link-wrap">
                 <span class="iconfont icon-gerenziliao aui-color"></span>
                 <h2 class="aui-img-body aui-text-default">个人中心</h2>
             </a>
