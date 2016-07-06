@@ -31,6 +31,6 @@ $this->title = '机器列表';
         </div>
     <?php else:?>
         <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 亲，您还没有机器，赶快去租借一台吧</div>
-        <a href="<?= Url::toRoute(['/rent/list','id'=>$id])?>" class="aui-btn my-btn-block">租借机器</a>
+        <a href="<?= url::toRoute(['/user/rent/list','id'=>$id])?>" class="aui-btn my-btn-block">租借机器</a>
     <?php endif;?>
 </div>

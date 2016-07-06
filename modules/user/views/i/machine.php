@@ -9,7 +9,7 @@ $this->title = '我的机器';
         <ul class="aui-list-view">
             <?php foreach($project as $row):?>
                 <li class="aui-list-view-cell aui-img">
-                    <a href="<?=url::toRoute(['/rent/detail','id'=>$id,'project_id'=>$row['id']])?>">
+                    <a href="<?=url::toRoute(['/user/rent/detail','id'=>$id,'project_id'=>$row['id']])?>">
                         <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
                         <div class="aui-img-body">
                             <h2 class="aui-ellipsis-1 aui-text-info"><?=$row['name'],$row['type']?></h2>
@@ -25,7 +25,7 @@ $this->title = '我的机器';
 
             <?php foreach($model as $row):?>
                 <li class="aui-list-view-cell aui-img">
-                    <a href="<?=url::toRoute(['/rent/machinedetail','id'=>$id,'rent_id'=>$row['rent_id'],'from'=>'machine'])?>">
+                    <a href="<?=url::toRoute(['/user/rent/machinedetail','id'=>$id,'rent_id'=>$row['rent_id'],'from'=>'machine'])?>">
                         <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
                         <div class="aui-img-body">
                             <h2 class="aui-ellipsis-1 aui-text-info"><?=$row['type'],'/',$row['series_id']?></h2>
@@ -48,12 +48,12 @@ $this->title = '我的机器';
             <?php endforeach;?>
         </ul>
         <div class="aui-fixed-bottom">
-            <a href="<?=url::toRoute(['/rent/list','id'=>$id])?>">
+            <a href="<?=url::toRoute(['/user/rent/list','id'=>$id])?>">
                 租借机器
             </a>
         </div>
     <?php else:?>
         <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 亲，您还没有机器，赶快去租借一台吧</div>
-        <a href="<?= Url::toRoute(['/rent/list','id'=>$id])?>" class="aui-btn my-btn-block">租借机器</a>
+        <a href="<?= url::toRoute(['/user/rent/list','id'=>$id])?>" class="aui-btn my-btn-block">租借机器</a>
     <?php endif;?>
 </div>

@@ -7,7 +7,7 @@ $this->title = '查看资料';
 <div class="aui-content">
     <ul class="aui-list-view aui-in">
         <li class="aui-list-view-cell">
-            <a href="<?= Url::toRoute(['/rent/list','id'=>$id]) ?>" class="aui-arrow-right aui-text-default">
+            <a href="<?= url::toRoute(['/user/rent/list','id'=>$id]) ?>" class="aui-arrow-right aui-text-default">
                 <span class="iconfont icon-chanpin aui-color aui-size-20"></span>&nbsp;租机方案
             </a>
         </li>
