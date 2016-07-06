@@ -11,6 +11,12 @@ $config = [
         'shop' => [
             'class' => 'app\modules\shop\Module',
         ],
+        'maintain' => [
+            'class' => 'app\modules\maintain\Module',
+        ],
+        'user' => [
+            'class' => 'app\modules\user\Module',
+        ],
     ],
     'components' => [
         'urlManager' =>[
@@ -64,7 +70,7 @@ $config = [
     ],
     'params' => require(__DIR__ . '/params.php'),
 ];
-
+$config['modules']['gii'] = 'yii\gii\Module';
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
