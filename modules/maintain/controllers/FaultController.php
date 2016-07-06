@@ -261,7 +261,7 @@ class FaultController extends Controller
      */
     public function actionIrecord($id,$mid)
     {
-        $this->layout = 'auicss';
+        $this->layout = '/auicss';
         $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->orderBy('add_time desc')->asArray()->all();
         foreach ($model as $i=>$m) {
             $content = json_decode($m['content'],true);

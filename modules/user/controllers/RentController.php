@@ -16,7 +16,7 @@ class RentController extends \yii\web\Controller
      */
     public function actionList($id)
     {
-        $this->layout = 'auicss';
+        $this->layout = '/auicss';
         $model = (new \yii\db\Query())
             ->select('t.id,lowest_expense,p.type,p.cover,p.function,b.name')
             ->from('tbl_machine_rent_project as t')
