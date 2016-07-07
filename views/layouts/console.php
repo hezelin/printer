@@ -1,12 +1,10 @@
 <?php
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use app\assets\WeixinAsset;
 
 use yii\widgets\Breadcrumbs;
-use yii\bootstrap\Alert;
 use kartik\sidenav\SideNav;
 
 WeixinAsset::register($this);
@@ -128,7 +126,9 @@ WeixinAsset::register($this);
                                 'label' => '机器管理',
                                 'icon' => 'print',
                                 'items' => [
-                                    ['label' => '机型资料', 'url' => ['/model/list']],
+                                    ['label' => '机型资料', 'url' => ['/model/list'],
+                                        'active' => in_array(Yii::$app->controller->getRoute(),['model/list','model/add','model/view','model/update']),
+                                    ],
                                     ['label' => '机器列表', 'url' => ['/machine/list']],
                                     ['label' => '添加机器', 'url' => ['/machine/add']],
                                     ['label' => '租借方案', 'url' => ['/rentproject/list']],
@@ -204,7 +204,9 @@ WeixinAsset::register($this);
                     ?>
                 </div>
                 <div class="col-sm-9 col-md-10">
-                    <p style="height: 20px">&nbsp;</p>
+                    <?= Breadcrumbs::widget([
+                        'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                    ]) ?>
                     <?= $content ?>
                 </div>
             </div>

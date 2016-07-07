@@ -4,7 +4,6 @@ use yii\widgets\ActiveForm;
 use yii\bootstrap\Alert;
 use yii\helpers\Url;
 ?>
-<P>&nbsp;</P>
 <style>
     #ui-datepicker-div{
         z-index: 999 !important;

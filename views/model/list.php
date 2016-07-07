@@ -4,14 +4,12 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '机器模型管理';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div >
-    <ul class="nav nav-tabs" >
-        <li><a href="<?=Url::toRoute(['add','url'=>Yii::$app->request->get('url')])?>" >添加</a></li>
-        <li class="active"><a href="javascript:void(0)" >列表</a></li>
-    </ul>
-</div>
+
+<a class="btn btn-info" href="<?=Url::toRoute(['add','url'=>Yii::$app->request->get('url')])?>" >添加机型</a>
+
 <p>&nbsp;</p>
 <?php
 

@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Url;
 $this->title = '修改机器模型';
+$this->params['breadcrumbs'][] = ['label'=>'机器列表','url'=>['list']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div >
     <ul class="nav nav-tabs" >
