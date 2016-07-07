@@ -1,6 +1,5 @@
 <?php
     use dosamigos\fileupload\FileUploadUI;
-    use yii\bootstrap\Alert;
     use yii\helpers\Url;
     use app\components\LoadingWidget;
 
@@ -19,20 +18,16 @@
 
 <h3>首页轮播图片设置</h3>
 <hr>
-<?=Alert::widget([
-    'options' => [
-        'class' => 'alert-info',
-        'style' => 'color:gray; font-size: 12px',
-    ],
-    'body' => '<strong>温馨提示</strong>：为保证显示质量，请上传长宽比例为2:1的图片。',
-    ])
-?>
+
+<div class="alert alert-info">
+    <strong>温馨提示</strong>：为保证显示质量，请上传长宽比例为2:1的图片。
+</div>
 <!--上传图片插件-->
 <?= FileUploadUI::widget([
     'model' => $model,
     'attribute' => 'image',
 //    'url' => ['home/receiveimage', 'weixinid' => $_GET['id']],
-    'url' => Url::toRoute(['home/receiveimage', 'weixinid' => $wx_id]),
+    'url' => Url::toRoute(['home/receive-image', 'weixinid' => $wx_id]),
     'gallery' => false,
     'fieldOptions' => [
         'accept' => 'image/*',
@@ -58,61 +53,67 @@
 
 <hr>
 <h4>已添加轮播图</h4>
-    <table role="presentation" class="table table-striped">
-        <tbody class="files">
-        <tr align="center">
-            <td>
-                轮播图预览
-            </td>
-            <td>
-                标题
-            </td>
-            <td>
-                链接
-            </td>
-            <td>
-                操作
-            </td>
-        </tr>
-<?php
-    foreach ($carousel as $onecarousel) {
-        if(is_file($onecarousel['imgurl'])){
-            $imagepath = '/'.$onecarousel['imgurl'];
-?>
-        <tr class="template-download fade in">
-            <td>
-            <span class="preview">
 
-                    <a href="<?php echo $imagepath;?>" target="_blank" title="<?php echo $onecarousel['imgurl'];?>" data-gallery="">
-                        <img src="<?php echo $imagepath;?>" title="<?php echo $onecarousel['title'];?>" style="max-height: 100px"/></a>
 
-            </span>
-            </td>
-            <td>
-                <p class="name">
+    <div class="market-customer-index">
+        <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'tableOptions' => ['class' => 'table table-striped'],
+//        'layout' => "{items}\n{pager}",
+            'export' => false,
+            'columns' => [
+                ['class' => 'yii\grid\SerialColumn'],
 
-                    <span class="textedit" data-tdtype="edit" data-id="<?=$onecarousel['id'] ?>" data-field="title" data-require="1" data-unique="0"><?php echo trim($onecarousel['title'])?$onecarousel['title']:"点击设置";?></span>
+                'imageurl:image',
+                [
+                    'class'=>'kartik\grid\EditableColumn',
+                    'attribute'=>'last_trace',
+                    'pageSummary'=>true,
+                    'editableOptions'=> [
+                        'formOptions' => ['action' => ['/market/editable/data']],
+                        'showButtonLabels' => true,
+                        'submitButton' => [
+                            'label' => '保存',
+                            'class' => 'btn btn-primary btn-sm',
+                        ]
+                    ]
+                ],
+                [
+                    'class'=>'kartik\grid\EditableColumn',
+                    'attribute'=>'remark',
+                    'pageSummary'=>true,
+                    'editableOptions'=> [
+                        'formOptions' => ['action' => ['/market/editable/data']],
+                        'showButtonLabels' => true,
+                        'submitButton' => [
+                            'label' => '保存',
+                            'class' => 'btn btn-primary btn-sm',
+                        ]
+                    ]
+                ],
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    'template' => '{view} &nbsp; {log} &nbsp; {free}',
+                    'headerOptions' => ['style'=>'width:120px;'],
+                    'header' => '操作',
+                    'buttons' => [
+                        'log' => function($url,$model,$key){
+                            return Html::a('<i class="glyphicon glyphicon-info-sign"></i>',$url,['title'=>'跟踪记录']);
+                        },
+                        'free' => function($url,$model,$key){
+                            return Html::a('<i class="glyphicon glyphicon-refresh"></i>',['free','id'=>$key,'from'=>Yii::$app->request->url],['title'=>'释放资料',
+                                'data' => [
+                                    'confirm' => '确定要释放此选项吗?',
+                                    'method' => 'post'
+                                ]]);
 
-                </p>
+                        }
+                    ]
 
-            </td>
-            <td>
-                <span class="textedit" data-tdtype="edit" data-id="<?=$onecarousel['id'] ?>" data-field="link" data-unique="0"><?php echo trim($onecarousel['link'])?$onecarousel['link']:"点击设置";?></span>
-            </td>
-            <td>
-
-                <button class="btn btn-danger deletebtn" data-id="<?=$onecarousel['id'] ?>" data-type="DELETE">
-                    <i class="glyphicon glyphicon-trash"></i>
-                    <span>删除</span>
-                </button>
-                <input name="delete" value="<?=$onecarousel['id'] ?>" class="toggle" type="checkbox">
-
-            </td>
-        </tr>
-<?php }} ?>
-        </tbody>
-    </table>
-
+                ],
+            ],
+        ]); ?>
+    </div>
 
 <?php
 //echo Html::a('删除', ['delimg', 'id' => $model->id], [

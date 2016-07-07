@@ -3,6 +3,8 @@
 use yii\bootstrap\Alert;
 
 $this->title = '添加机器';
+$this->params['breadcrumbs'][] = ['label'=>'机器列表','url'=>['list']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 

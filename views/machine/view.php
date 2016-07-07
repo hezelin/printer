@@ -5,10 +5,9 @@ use yii\widgets\DetailView;
 use yii\helpers\Url;
 use app\models\ConfigBase;
 
-/* @var $this yii\web\View */
-/* @var $model app\models\TblMachine */
-
 $this->title = '机器详情';
+$this->params['breadcrumbs'][] = ['label'=>'机器列表','url'=>['list']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <p>

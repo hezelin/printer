@@ -5,6 +5,7 @@ use yii\bootstrap\Modal;
 use yii\helpers\Url;
 
 $this->title = '电话维修';
+$this->params['breadcrumbs'][]= $this->title;
 ?>
 <style>
     .high-remark{
@@ -35,7 +36,7 @@ echo GridView::widget([
         ['class' => 'yii\grid\SerialColumn'],
         [
             'attribute'=>'id',
-            'header'=>'用户编号',
+            'header'=>'客户编号',
         ],
         [
             'attribute'=>'type',
@@ -44,7 +45,7 @@ echo GridView::widget([
         ],
         [
             'attribute'=>'series_id',
-            'header'=>'编号',
+            'header'=>'机身系列号',
             'headerOptions'=>['style'=>'width:100px'],
             'format'=>'html',
             'value'=>function($model) {

@@ -7,6 +7,7 @@ use yii\bootstrap\Modal;
 
 
 $this->title = '待维修列表';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <style>
@@ -103,11 +104,11 @@ echo GridView::widget([
         ],
 
         'machine.machineModel.brand.name',
-        'machine.machineModel.type',
+//        'machine.machineModel.type',
         [
             'attribute'=>'series_id',
             'format'=>'html',
-            'header'=>'系列号',
+            'header'=>'机身系列号',
             'headerOptions'=>['style'=>'width:100px'],
             'value'=>function($model){
                 if( !isset($model->machine->series_id)) return '无';

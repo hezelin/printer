@@ -2,6 +2,7 @@
 namespace app\controllers;
 use app\models\Cache;
 use app\models\WxBase;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 use app\models\ToolBase;
 use Yii;
@@ -24,15 +25,21 @@ class HomeController extends \yii\web\Controller
     {
         $model = new UploadForm();
         $wx_id = Cache::getWid();
-        $carousel=Carousel::find()->where(['show' => 1,'weixinid' => $wx_id])->all();
 
-        return $this->render('fitment', ['model' => $model,'carousel' => $carousel,'wx_id'=>$wx_id]);
+        $dataProvider = new ActiveDataProvider([
+            'query' => Carousel::find()->where(['weixinid'=>$wx_id]),
+            'pagination' => [
+                'pageSize' => 15,
+            ],
+             'sort'=>['defaultOrder'=>['sort' => SORT_ASC]]
+        ]);
+        return $this->render('fitment', ['model' => $model,'dataProvider' => $dataProvider,'wx_id'=>$wx_id]);
     }
 
     /*
      * 接收上传的图片并返回信息
      */
-    public function actionReceiveimage()
+    public function actionReceiveImage()
     {
 
         if (Yii::$app->request->isPost) {
@@ -82,7 +89,6 @@ class HomeController extends \yii\web\Controller
                 $newcarousel->imgurl = $filepath;
                 $newcarousel->link = '';
                 $newcarousel->title = '默认标题';
-                $newcarousel->show = 1;
                 $newcarousel->save();
                 $newid = $newcarousel->attributes['id'];
 

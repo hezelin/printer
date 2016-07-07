@@ -4,7 +4,7 @@ use yii\widgets\DetailView;
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '机器型号详情';
-$this->params['breadcrumbs'][] = ['label'=>'机器列表','url'=>['list']];
+$this->params['breadcrumbs'][] = ['label'=>'机型列表','url'=>['list']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php
