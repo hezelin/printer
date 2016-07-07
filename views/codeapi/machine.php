@@ -15,7 +15,7 @@ $this->title = '机器页面';
         维修记录
     </a>
 
-    <a class="h-link" href="<?=Url::toRoute(['mcharge/add','id'=>$wid,'machine_id'=>$mid])?>">
+    <a class="h-link" href="<?=url::toRoute(['/maintain/charge/add','id'=>$wid,'machine_id'=>$mid])?>">
         收租录入
     </a>
 </div>

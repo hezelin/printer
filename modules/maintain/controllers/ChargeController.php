@@ -9,10 +9,10 @@ use app\models\WxMedia;
 use Yii;
 use yii\helpers\Url;
 
-class MchargeController extends \yii\web\Controller
+class ChargeController extends \yii\web\Controller
 {
     public $enableCsrfValidation = false;
-    public $layout = 'home';
+    public $layout = '/home';
 
     public function actionAdd($id,$machine_id)
     {
@@ -49,7 +49,7 @@ class MchargeController extends \yii\web\Controller
                 'btnText'=>'返回主页',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
                 'btnText2'=>'返回修改',
-                'btnUrl2'=>Url::toRoute(['/mcharge/update','id'=>$id,'report_id'=>$model->id])
+                'btnUrl2'=>url::toRoute(['/maintain/charge/update','id'=>$id,'report_id'=>$model->id])
             ]);
         }
         $openid = WxBase::openId($id);
@@ -75,16 +75,6 @@ class MchargeController extends \yii\web\Controller
             'lastCharge'=>$lastCharge,
             'openid'=>$openid
         ]);
-    }
-
-    public function actionDetail()
-    {
-        return $this->render('detail');
-    }
-
-    public function actionList()
-    {
-        return $this->render('list');
     }
 
     public function actionUpdate($id,$report_id)
@@ -119,7 +109,7 @@ class MchargeController extends \yii\web\Controller
                 'btnText'=>'返回主页',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
                 'btnText2'=>'返回修改',
-                'btnUrl2'=>Url::toRoute(['/mcharge/update','id'=>$id,'report_id'=>$model->id])
+                'btnUrl2'=>url::toRoute(['/maintain/charge/update','id'=>$id,'report_id'=>$model->id])
             ]);
         }
         $rent = (new \yii\db\Query())
