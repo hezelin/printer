@@ -18,13 +18,14 @@ use Yii;
 
 class FaultController extends Controller
 {
-    public $layout = '/auicss';
+    public $layout = '/home';
 
     /*
      * 收费维修，维修员输入付款金额
      */
     public function actionCharge($id,$openid)
     {
+        $this->layout = '/auicss';
         if( Yii::$app->request->isPost){
 
             if( $cost = Yii::$app->request->post('fault_cost') ){
