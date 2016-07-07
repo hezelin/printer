@@ -45,6 +45,8 @@ echo GridView::widget([
     'layout' => "{items}\n{pager}",
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],               // 系列
+        'user_id',
+        'user_name',
         [
             'attribute'=>'cover',
             'header'=>'故障图片',
@@ -94,16 +96,16 @@ echo GridView::widget([
             }
         ],
         [
-            'attribute'=>'machine.machineModel.cover',
+            'attribute'=>'cover',
             'header'=>'机器',
             'content'=>function($data)
             {
-                if( isset($data->machine->machineModel->cover )  )
-                    return Html::a(Html::img($data->machine->machineModel->cover,['width'=>40]),str_replace('/s/','/m/',$data->machine->machineModel->cover),['class'=>'fancybox','rel'=>'group1']);
+                if( isset($data->cover )  )
+                    return Html::a(Html::img($data->cover,['width'=>40]),str_replace('/s/','/m/',$data->cover),['class'=>'fancybox','rel'=>'group1']);
             }
         ],
 
-        'machine.machineModel.brand.name',
+        'brand_name',
 //        'machine.machineModel.type',
         [
             'attribute'=>'series_id',
@@ -111,12 +113,12 @@ echo GridView::widget([
             'header'=>'机身系列号',
             'headerOptions'=>['style'=>'width:100px'],
             'value'=>function($model){
-                if( !isset($model->machine->series_id)) return '无';
-                return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
-                Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
+                if( !isset($model->series_id)) return '无';
+                return Html::a($model->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
+                Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine_id]),['title'=>'查看机器二维码']);
             }
         ],
-        'machine.maintain_count',
+        'maintain_count',
         [
             'attribute'=>'status',
             'header'=>'进度',

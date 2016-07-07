@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\views;
 
 use Yii;
@@ -18,12 +19,14 @@ class ViewFaultData extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'weixin_id', 'type', 'status', 'add_time', 'maintain_count', 'user_id'], 'integer'],
-            [['weixin_id', 'add_time'], 'required'],
+            [['id', 'weixin_id', 'machine_id', 'type', 'status', 'add_time', 'maintain_count', 'user_id'], 'integer'],
+            [['weixin_id', 'machine_id', 'add_time'], 'required'],
             [['desc'], 'string', 'max' => 500],
             [['content'], 'string', 'max' => 600],
+            [['openid'], 'string', 'max' => 28],
+            [['remark'], 'string', 'max' => 100],
+            [['series_id', 'brand_name'], 'string', 'max' => 50],
             [['cover'], 'string', 'max' => 52],
-            [['name'], 'string', 'max' => 50],
             [['user_name'], 'string', 'max' => 30],
         ];
     }
@@ -33,16 +36,20 @@ class ViewFaultData extends \yii\db\ActiveRecord
         return [
             'id' => '自增id',
             'weixin_id' => '微信id',
+            'machine_id' => '机器id',
             'type' => '故障类型',
             'status' => '状态',
             'desc' => '故障描述',
             'content' => '内容（cover,voice)',
+            'openid' => '维修员id',
+            'remark' => '备注',
             'add_time' => '添加时间',
             'maintain_count' => '维修次数',
+            'series_id' => '编号',
             'cover' => '封面',
-            'name' => '名称',
-            'user_id' => '自增id',
-            'user_name' => '姓名',
+            'brand_name' => '品牌',
+            'user_id' => '客户编号',
+            'user_name' => '客户名字',
         ];
     }
 }

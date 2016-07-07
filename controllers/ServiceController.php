@@ -14,6 +14,7 @@ use app\models\TblRentApply;
 use app\models\TblRentApplyList;
 use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
+use app\models\views\ViewFaultDataSearch;
 use app\models\WxTemplate;
 use yii\data\ActiveDataProvider;
 
@@ -113,13 +114,19 @@ class ServiceController extends \yii\web\Controller
 
     public function actionList()
     {
-        $searchModel = new TblMachineServiceList();
+        $searchModel = new ViewFaultDataSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $fixProvider = new ActiveDataProvider([
+            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
         return $this->render('list',[
             'dataProvider'=>$dataProvider,
             'searchModel' => $searchModel,
-            'fixProvider'=> $searchModel->fixProvider(),
+            'fixProvider'=> $fixProvider,
             'wid'=>Cache::getWid()
         ]);
     }

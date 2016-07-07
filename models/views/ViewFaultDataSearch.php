@@ -6,16 +6,16 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\views\ViewFaultData;
+use app\models\Cache;
 
 
 class ViewFaultDataSearch extends ViewFaultData
 {
-
     public function rules()
     {
         return [
-            [['id', 'weixin_id', 'type', 'status', 'add_time', 'maintain_count', 'user_id'], 'integer'],
-            [['desc', 'content', 'cover', 'name', 'user_name'], 'safe'],
+            [['id', 'weixin_id', 'machine_id', 'type', 'status', 'add_time', 'maintain_count', 'user_id'], 'integer'],
+            [['desc', 'content', 'openid', 'remark', 'series_id', 'cover', 'brand_name', 'user_name'], 'safe'],
         ];
     }
 
@@ -27,12 +27,25 @@ class ViewFaultDataSearch extends ViewFaultData
 
     public function search($params)
     {
-        $query = ViewFaultData::find();
+        $query = ViewFaultData::find()->where(['weixin_id'=>Cache::getWid()]);;
 
-        // add conditions that should always apply here
+        $process = Yii::$app->request->get('process');
+        if($process == 2)               // 等待评价
+            $query->andWhere(['status'=>8]);
+        elseif($process == 3)           // 完成中
+            $query->andWhere(['status'=>9]);
+        else                            // 维修中
+            $query->andWhere(['<','status',8]);
+
+        if(Yii::$app->request->get('fromFault'))
+            $query->andWhere(['openid'=>Yii::$app->request->get('fromFault')]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 15,
+            ],
+            'sort'=>['defaultOrder'=>['id' => SORT_DESC]]
         ]);
 
         $this->load($params);
@@ -47,6 +60,7 @@ class ViewFaultDataSearch extends ViewFaultData
         $query->andFilterWhere([
             'id' => $this->id,
             'weixin_id' => $this->weixin_id,
+            'machine_id' => $this->machine_id,
             'type' => $this->type,
             'status' => $this->status,
             'add_time' => $this->add_time,
@@ -56,8 +70,11 @@ class ViewFaultDataSearch extends ViewFaultData
 
         $query->andFilterWhere(['like', 'desc', $this->desc])
             ->andFilterWhere(['like', 'content', $this->content])
+            ->andFilterWhere(['like', 'openid', $this->openid])
+            ->andFilterWhere(['like', 'remark', $this->remark])
+            ->andFilterWhere(['like', 'series_id', $this->series_id])
             ->andFilterWhere(['like', 'cover', $this->cover])
-            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'brand_name', $this->brand_name])
             ->andFilterWhere(['like', 'user_name', $this->user_name]);
 
         return $dataProvider;
