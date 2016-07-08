@@ -7,20 +7,22 @@ use app\models\ConfigBase;
 $this->title = '机器列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<style>
-    #my-search-filer{ margin-bottom: 15px;}
-    #my-search-filer span{ width:150px; font-weight: 600; font-size: 24px; padding-left: 15px; float: left; height: 40px;}
-    #my-search-filer a{margin-right: 15px; display: inline-block; padding: 5px 45px;}
-</style>
 
-<div class="row" id="my-search-filer">
-    <span>机器分类：</span>
-    <a href="list?TblMachineSearch[come_from]=1" class="btn <?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] != 1? 'btn-default':'btn-primary'?>"> 出租 </a>
-    <a href="list?TblMachineSearch[come_from]=2" class="btn btn-default<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 2? ' btn-primary':''?>"> 销售 </a>
-    <a href="list?TblMachineSearch[come_from]=3" class="btn btn-default<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 3? ' btn-primary':''?>"> 维修 </a>
-    <a href="list?TblMachineSearch[come_from]=4" class="btn btn-default<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 4? ' btn-primary':''?>"> 虚拟机器 </a>
+
+<div class="row">
+    <div class="col-md-2">
+        <a href="<?=Url::toRoute(['add'])?>" class="btn btn-info">添加机器</a>
+    </div>
+    <div class="col-md-10">
+        <ul class="nav nav-tabs">
+        <li<?= isset($_GET['ViewMachineModelSearch']['come_from']) && $_GET['ViewMachineModelSearch']['come_from'] != 1? '':' class="active"'?>><a href="list?ViewMachineModelSearch[come_from]=1"> 出租 </a></li>
+        <li<?= isset($_GET['ViewMachineModelSearch']['come_from']) && $_GET['ViewMachineModelSearch']['come_from'] == 2? ' class="active"':''?>><a href="list?ViewMachineModelSearch[come_from]=2"> 销售 </a></li>
+        <li<?= isset($_GET['ViewMachineModelSearch']['come_from']) && $_GET['ViewMachineModelSearch']['come_from'] == 3? ' class="active"':''?>><a href="list?ViewMachineModelSearch[come_from]=3"> 维修 </a></li>
+        <li<?= isset($_GET['ViewMachineModelSearch']['come_from']) && $_GET['ViewMachineModelSearch']['come_from'] == 4? ' class="active"':''?>><a href="list?ViewMachineModelSearch[come_from]=4"> 虚拟机器 </a></li>
+        </ul>
+    </div>
 </div>
-
+<p>&nbsp;</p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -28,26 +30,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],               // 系列
+            'id',
             'series_id',
             'buy_date',
             'buy_price',
             'maintain_count',
             'rent_count',
-            [
-                'attribute'=>'type',
-                'format'=>'html',
-                'value'=>function($data){
-                    if( !$data->machineModel ) return '<span class="not-set">(未设置)</span>';
-                    return Html::a($data->machineModel->type,Url::toRoute(['model/view','id'=>$data->model_id]));
-                },
-//                'value'=>'machineModel.type',
-                'header'=>'型号'
-            ],
-            [
-                'attribute'=>'name',
-                'value'=>'machineModel.brand.name',
-                'header'=>'品牌'
-            ],
+            'model',
+            'brand_name',
             [
                 'attribute'=>'add_time',
                 'format'=>['date','php:Y-m-d H:i'],
@@ -76,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute'=>'come_from',
-                'label'=>'机器来源',
+                'label'=>'机器分类',
                 'filter'=>ConfigBase::$machineOrigin,
                 'value'=>function($data){
                     return ConfigBase::getMachineOrigin($data->come_from);

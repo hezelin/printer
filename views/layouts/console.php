@@ -127,7 +127,7 @@ WeixinAsset::register($this);
                                 'icon' => 'print',
                                 'items' => [
                                     ['label' => '机器资料', 'url' => ['/machine/list'],
-                                        'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'machine',
+                                        'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'machine' || Yii::$app->controller->getRoute()=='charts/machine-rental',
                                     ],
                                     ['label' => '租赁方案', 'url' => ['/rentproject/list']],
                                 ],

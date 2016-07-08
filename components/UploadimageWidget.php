@@ -2,7 +2,7 @@
 /*
  * ajax upload image
  * @author harry
- * @time 2015年6月5日
+ * @time 2017年7月8日
  */
 namespace app\components;
 
@@ -119,66 +119,67 @@ MODEL_CSS;
     {
         UploadimageAsset::register($this->view);
         $script =<<<MODEL_JS
-var uploadImage = $('#image-upload-{$this->id}');
-var uploadImageWrap = $('#image-show-{$this->id}');
-var uploadImageNum = {$this->imageLimit};
-var hasUploadImage = {$this->hasUploadImages};
-var uploadDisable = 0;
-function resetImageVal(){
+var uploadImage{$this->id} = $('#image-upload-{$this->id}');
+var uploadImageWrap{$this->id} = $('#image-show-{$this->id}');
+var uploadImageNum{$this->id} = {$this->imageLimit};
+var hasUploadImage{$this->id} = {$this->hasUploadImages};
+var uploadDisable{$this->id} = 0;
+function resetImageVal{$this->id}(){
     var imgs = [];
     $('#image-show-{$this->id} .upload-image-btn img').each(function(){
         imgs.push( $(this).attr('src') );
     });
     if(imgs.length > 0)
-        $('#{$this->inputId}').val(  uploadImageNum ==1? imgs[0]:JSON.stringify(imgs));
+        $('#{$this->inputId}').val(  uploadImageNum{$this->id} ==1? imgs[0]:JSON.stringify(imgs));
     else
         $('#{$this->inputId}').val('');
 
-    hasUploadImage = imgs.length;
-     if(hasUploadImage >= uploadImageNum){
-        Ajax.disable();
-        uploadDisable = 1;
-        uploadImage.hide();
+    hasUploadImage{$this->id} = imgs.length;
+
+     if(hasUploadImage{$this->id} >= uploadImageNum{$this->id}){
+        Ajax{$this->id}.disable();
+        uploadDisable{$this->id} = 1;
+        uploadImage{$this->id}.hide();
      }else{
-        if( uploadDisable == 1){
-            Ajax.enable();
-            uploadDisable = 0;
-            uploadImage.show();
+        if( uploadDisable{$this->id} == 1){
+            Ajax{$this->id}.enable();
+            uploadDisable{$this->id} = 0;
+            uploadImage{$this->id}.show();
         }
      }
 
 }
 
 
-var Ajax = new AjaxUpload('#image-upload-{$this->id}', {
+var Ajax{$this->id} = new AjaxUpload('#image-upload-{$this->id}', {
     action: '{$this->serverUrl}',
     name: 'uploadfile',
     onSubmit: function(file, ext){
-        if(hasUploadImage >= uploadImageNum){
-            alert('只能上传' + uploadImageNum + '张图片');
+        if(hasUploadImage{$this->id} >= uploadImageNum{$this->id}){
+            alert('只能上传' + uploadImageNum{$this->id} + '张图片');
             return false;
         }
         if (! (ext && /^(jpg|png|jpeg|gif)$/.test(ext))){
             alert('请上传图片文件');
             return false;
         }
-        uploadImage.text('上传中...');
+        uploadImage{$this->id}.text('上传中...');
     },
     responseType:'json',
     onComplete: function(file, obj){
-        uploadImage.text('上传图片');
+        uploadImage{$this->id}.text('上传图片');
         if(obj.status == 1){
-            uploadImageWrap.append('<div class="upload-image-btn"><img src="'+obj.url+'"/><i class="delete-img glyphicon glyphicon-remove-circle"></i></div>');
-            resetImageVal();
+            uploadImageWrap{$this->id}.append('<div class="upload-image-btn"><img src="'+obj.url+'"/><i class="delete-img glyphicon glyphicon-remove-circle"></i></div>');
+            resetImageVal{$this->id}();
         }
         else alert( obj.msg);
     }
 });
 
-resetImageVal();
+resetImageVal{$this->id}();
 $('#image-show-{$this->id}').on('click','.delete-img',function(){
     $(this).closest('.upload-image-btn').remove();
-    resetImageVal();
+    resetImageVal{$this->id}();
 });
 MODEL_JS;
 

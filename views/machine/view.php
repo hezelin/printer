@@ -41,36 +41,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 ConfigBase::getMxStatus($model->status) ;
         }
 
-        function getFrom($model){
+        /*function getFrom($model){
             return $model->come_from? '自家':'非自家';
-        }
+        }*/
 
         function formatImage($model){
             return '<img src="'.$model->cover.'" width=100 >';
         }
-        function elseAttr($model){
-            $arr = json_decode($model->else_attr,true);
-            if(!$arr)
-                return '无';
-            $html = '';
-            foreach($arr as $row)
-                $html .= '<p>'.$row['name'].' : <span class="orange">'.$row['value'].'</span>';
-
-            return $html;
-        }
-
-        function getModel($id)
+        function getModel($modelId)
         {
-            if($id == '0') return '<span class="not-set">（无设置）</span>';
-            $model = (new \yii\db\Query())
-                ->select('t.id, p.name, t.type')
-                ->from('tbl_machine_model as t')
-                ->leftJoin('tbl_brand as p','p.id=t.brand_id')
-                ->where('t.wx_id=:wid and t.id=:id',[':wid'=>\app\models\Cache::getWid(),':id'=>$id])
+            $data = (new \yii\db\Query())
+                ->select('model,brand_name')
+                ->from('tbl_machine_model')
+                ->where(['id'=>$modelId])
                 ->one();
-            $name = isset($model['name'])? $model['name']:'不存在';
-            return Html::a($name,Url::toRoute(['model/view','id'=>$id]));
+            return $data? $data['brand_name'].','.$data['model']:'未知';
         }
+
     ?>
     <?= DetailView::widget([
         'model' => $model,
@@ -80,6 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'series_id',
             [
                 'attribute'=>'model_id',
+                'label' => '品牌机型',
                 'format'=>'html',
                 'value'=>getModel($model->model_id),
             ],
@@ -102,12 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'come_from',
                 'label'=>'机器来源',
-                'value' => getFrom($model),
+                'value' => ConfigBase::getMachineOrigin($model->come_from),
             ],
-            [
-                'attribute' => 'else_attr',
-                'format' => 'html',
-                'value' =>elseAttr($model),
-            ]
         ],
     ]) ?>

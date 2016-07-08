@@ -4,3 +4,6 @@ CREATE OR REPLACE view view_fault_data AS SELECT t1.id,t1.weixin_id,t1.machine_i
 
 
 
+-- 2、机器关联型号视图
+
+CREATE OR REPLACE view view_machine_model AS SELECT t1.id,t1.wx_id,t1.model_id,t1.series_id,t1.buy_price,t1.buy_date,t1.cover,t1.come_from,t1.status,t1.maintain_count,t1.rent_count,t1.add_time,t2.model,t2.brand_name FROM tbl_machine t1 LEFT JOIN tbl_machine_model t2 ON t1.model_id=t2.id

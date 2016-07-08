@@ -47,6 +47,9 @@ class SiteController extends Controller
                 'minLength' => 4,
                 'maxLength' => 6,
             ],
+            'image' => [
+                'class' => 'app\components\HarryImageAction',
+            ]
         ];
     }
 

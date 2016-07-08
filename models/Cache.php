@@ -41,7 +41,7 @@ class Cache
      */
     public static function getWid()
     {
-        if( !Yii::$app->user->id)
+        if( Yii::$app->user->isGuest )
             return Yii::$app->getResponse()->redirect(['auth/login','url'=>Yii::$app->request->url])->send();
 
         if( Yii::$app->request->get('wx_id') ){

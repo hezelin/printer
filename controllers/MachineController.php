@@ -4,6 +4,7 @@ namespace app\controllers;
 use app\models\Cache;
 use app\models\TblMachineSearch;
 use app\models\TblRentApply;
+use app\models\views\ViewMachineModelSearch;
 use Yii;
 use app\models\TblMachine;
 use app\models\ToolBase;
@@ -35,16 +36,11 @@ class MachineController extends \yii\web\Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $model->wx_id = Cache::getWid();
-            $model->add_time = time();
-
             if( !$model->validate() ){                              // 验证数据是否完整
                 return $this->render('add', ['model' => $model ]);
             }
-
             if( $model->amount == 1 ){
-                if( $model->save() ){
-                    $model->updateCount();                          // 更新计数
+                if( $model->save(false) ){
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
                 else
@@ -52,11 +48,10 @@ class MachineController extends \yii\web\Controller
             }else{
                 $row =$model->multiSave();                          // 批量插入，并且自动更新统计
                 if($row)
-                    return $this->render('//tips/success',[
-                        'tips'=>'成功添加 '.$row.' 个机器！',
-                        'btnText'=>'继续添加',
-                        'btnUrl'=>Url::toRoute(['add'])
-                    ]);
+                {
+                    Yii::$app->session->setFlash('success','成功批量添加 '.$row.' 个机器');
+                    $this->refresh();
+                }
             }
 
         }
@@ -72,10 +67,8 @@ class MachineController extends \yii\web\Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        $model->series_id = '~del~'.$model->series_id;
-        $model->enable = 'N';
-        if($model->save())
-            $model->updateCount('dec');
+        $model->status = 11;
+        $model->save();
 
         return $this->redirect(['list']);
     }
@@ -98,10 +91,10 @@ class MachineController extends \yii\web\Controller
 
     public function actionList()
     {
-        $searchModel = new TblMachineSearch();
+        $searchModel = new ViewMachineModelSearch();
         $params = Yii::$app->request->queryParams;
-        if( !isset($params['TblMachineSearch']['come_from']) )
-            $params['TblMachineSearch']['come_from'] = 1;
+        if( !isset($params['ViewMachineModelSearch']['come_from']) )
+            $params['ViewMachineModelSearch']['come_from'] = 1;
 
         $dataProvider = $searchModel->search($params);
 

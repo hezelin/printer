@@ -3,7 +3,8 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\jui\DatePicker;
 $this->title = '收租记录';
-
+$this->params['breadcrumbs'][] = ['label'=>'机器列表','url'=>['/machine/list']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
     <style>
         .input-group-addon{
