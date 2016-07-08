@@ -126,13 +126,10 @@ WeixinAsset::register($this);
                                 'label' => '机器管理',
                                 'icon' => 'print',
                                 'items' => [
-                                    ['label' => '机型资料', 'url' => ['/model/list'],
-                                        'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'model',
-                                    ],
                                     ['label' => '机器资料', 'url' => ['/machine/list'],
                                         'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'machine',
                                     ],
-                                    ['label' => '租借方案', 'url' => ['/rentproject/list']],
+                                    ['label' => '租赁方案', 'url' => ['/rentproject/list']],
                                 ],
                             ],
                             [

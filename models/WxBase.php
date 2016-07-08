@@ -74,7 +74,7 @@ class WxBase {
          * 如果是 请求下面的链接
          * 如果否 跳转到登录页面
          */
-        return Yii::$app->getResponse()->redirect( self::webOpenId($id,'base',$route));
+        return Yii::$app->getResponse()->redirect( self::webOpenId($id,'base',$route))->send();
     }
 
     /*
@@ -85,7 +85,7 @@ class WxBase {
      */
     public static function webUser($id,$route=false)
     {
-        return Yii::$app->getResponse()->redirect( self::webOpenId($id,'userinfo',$route));
+        return Yii::$app->getResponse()->redirect( self::webOpenId($id,'userinfo',$route))->send();
     }
 
     /*

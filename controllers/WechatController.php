@@ -24,7 +24,6 @@ class WechatController extends \yii\web\Controller
 
         if($setting == null)
             throw new NotFoundHttpException('您所访问的页面不存在');
-
         if(!$this->checkMaintain($id,$openid)){             // 维修员页面跳转订
 //            查询 系统订单数
             $num['order'] = (new \yii\db\Query())
