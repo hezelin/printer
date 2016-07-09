@@ -9,13 +9,15 @@ use app\models\TblMachineModelSearch;
 use app\models\TblMachineRentProject;
 use app\models\TblMachineRentProjectSearch;
 use app\models\ToolBase;
+use app\models\views\ViewSchemeModel;
+use app\models\views\ViewSchemeModelSearch;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
 use yii\web\NotFoundHttpException;
 
-class RentprojectController extends Controller
+class RentProjectController extends Controller
 {
     public $layout = '/console';
     /*
@@ -68,7 +70,7 @@ class RentprojectController extends Controller
      */
     public function actionList()
     {
-        $searchModel = new TblMachineRentProjectSearch();
+        $searchModel = new ViewSchemeModelSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('list', [
@@ -82,7 +84,7 @@ class RentprojectController extends Controller
      */
     public function actionView($id)
     {
-        $model = TblMachineRentProject::findOne($id);
+        $model = ViewSchemeModel::findOne($id);
         if(!$model)
             throw new NotFoundHttpException('页面不存在');
         return $this->render('view',['model'=>$model]);

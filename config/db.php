@@ -6,5 +6,4 @@ return [
     'username' => 'root',
     'password' => 'oursla321',
     'charset' => 'utf8mb4',
-    'tablePrefix' => 'tbl_',
 ];

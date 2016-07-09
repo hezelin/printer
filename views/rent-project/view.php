@@ -4,6 +4,8 @@ use yii\widgets\DetailView;
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '租借方案详情';
+$this->params['breadcrumbs'][] = ['label'=>'方案列表','url'=>['list']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php
 
@@ -52,15 +54,16 @@ function getCover($str)
     'options' => ['class' => 'table table-striped detail-view'],
     'attributes' => [
         'id',
-        [
-            'attribute'=>'machine_model_id',
-            'format'=> 'html',
-            'value'=>getModel($model->machine_model_id)
-
-        ],
+        'brand_name',
+        'model',
         'lowest_expense',
         'black_white',
         'colours',
+        [
+            'attribute' => 'cover',
+            'format' => 'html',
+            'value' => \app\models\config\Tool::getImage($model->cover,100,true),
+        ],
         [
             'attribute'=>'is_show',
             'value'=>$model->is_show==1? '显示':'不显示',
