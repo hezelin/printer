@@ -1,7 +1,8 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\grid\GridView;
+//use yii\grid\GridView;
+use kartik\grid\GridView;
 use app\models\ConfigBase;
 
 $this->title = '机器列表';
@@ -31,7 +32,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],               // 系列
             'id',
-            'series_id',
+//            'series_id',
+            [
+                'class'=>'kartik\grid\EditableColumn',
+                'attribute'=> 'series_id',
+                'headerOptions' => ['style'=>'width:60px'],
+                'pageSummary'=>true,
+//                'label' => '信用分数',
+                'editableOptions'=> [
+                    'formOptions' => ['action' => ['/machine/editable']],
+                    'showButtonLabels' => true,
+                    'submitButton' => [
+                        'label' => '保存',
+                        'class' => 'btn btn-primary btn-sm',
+                    ],
+                ],
+            ],
             'buy_date',
             'buy_price',
             'maintain_count',

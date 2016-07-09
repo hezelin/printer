@@ -30,7 +30,8 @@ class TblMachine extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['model_id', 'images', 'brand', 'amount'], 'required'],
+            [['model_id', 'images', 'brand'], 'required'],
+            ['amount','required','on'=>['create']],
             [['wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'add_time', 'come_from','amount'], 'integer'],
             [['buy_price'], 'number'],
             [['buy_date'], 'safe'],

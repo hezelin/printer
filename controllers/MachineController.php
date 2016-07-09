@@ -30,9 +30,35 @@ class MachineController extends \yii\web\Controller
         ];
     }
 
+    /*
+     * 更改信用分数 和 信用过期时间，过期时间需要转换格式
+     * hasEditable:1
+     * editableIndex:0
+     * editableKey:2
+     * editableAttribute:verify_credit_lose_time
+     * ViewServerRank[0][verify_credit_lose_time]:2016年06月24日
+     */
+    public function actionEditable()
+    {
+        $model = TblMachine::findOne($_POST['editableKey']);
+        if(!$model){
+            return ['output'=>'','message'=>'数据库错误'];
+        }
+
+        if (isset($_POST['hasEditable'])) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            $value = $_POST['ViewMachineModel'][$_POST['editableIndex']][$_POST['editableAttribute']];
+            $model->$_POST['editableAttribute'] = $value;
+            if($model->save())
+                return ['output'=>$value, 'message'=>''];
+            return $model->errors;
+//            return ['output'=>'','message'=>'数据库错误'];
+        }
+    }
+
     public function actionAdd()
     {
-        $model = new TblMachine();
+        $model = new TblMachine(['scenario' => 'create']);
 
         if ($model->load(Yii::$app->request->post())) {
 
