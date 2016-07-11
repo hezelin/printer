@@ -51,13 +51,7 @@ class TblRentApplyList extends TblRentApply
             'tbl_rent_apply.status'=>[2,3],
             'tbl_rent_apply.enable'=>'Y',
         ])->joinWith([
-            'machine'=>function($query){
-                $query->joinWith([
-                    'machineModel'=>function($query){
-                        $query->joinWith('brand');
-                    },
-                ]);
-            },
+            'machine',
             'machineFault2'
         ]);
 

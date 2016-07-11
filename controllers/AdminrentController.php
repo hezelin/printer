@@ -20,7 +20,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
-class AdminrentController extends \yii\web\Controller
+class AdminRentController extends \yii\web\Controller
 {
     public $layout = 'console';
 

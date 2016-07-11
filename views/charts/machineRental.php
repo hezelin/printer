@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </style>
 
     <div class="alert alert-info" role="alert">
-        <p>机器资料：<?=$rent['brand'],' , ',$rent['type'],' , ',$rent['series_id']?></p>
+        <p>机器资料：<?=$rent['brand'],' , ',$rent['model_name'],' , ',$rent['series_id']?></p>
         <p>用户资料：<?=$rent['name'],' , ',$rent['address']?></p>
         <p>租借方案：最低消费<?=$rent['monthly_rent']?>元，付款周期：<?=$rent['rent_period']?>个月，黑白 <?=$rent['black_white']?>元/每张
             <?php

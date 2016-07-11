@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <li<?= isset($_GET['ViewMachineModelSearch']['come_from']) && $_GET['ViewMachineModelSearch']['come_from'] != 1? '':' class="active"'?>><a href="list?ViewMachineModelSearch[come_from]=1"> 出租 </a></li>
         <li<?= isset($_GET['ViewMachineModelSearch']['come_from']) && $_GET['ViewMachineModelSearch']['come_from'] == 2? ' class="active"':''?>><a href="list?ViewMachineModelSearch[come_from]=2"> 销售 </a></li>
         <li<?= isset($_GET['ViewMachineModelSearch']['come_from']) && $_GET['ViewMachineModelSearch']['come_from'] == 3? ' class="active"':''?>><a href="list?ViewMachineModelSearch[come_from]=3"> 维修 </a></li>
-        <li<?= isset($_GET['ViewMachineModelSearch']['come_from']) && $_GET['ViewMachineModelSearch']['come_from'] == 4? ' class="active"':''?>><a href="list?ViewMachineModelSearch[come_from]=4"> 虚拟机器 </a></li>
+        <li<?= isset($_GET['ViewMachineModelSearch']['come_from']) && $_GET['ViewMachineModelSearch']['come_from'] == 4? ' class="active"':''?>><a href="list?ViewMachineModelSearch[come_from]=4"> 预设机器 </a></li>
         </ul>
     </div>
 </div>

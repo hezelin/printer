@@ -87,10 +87,9 @@ class ChartsController extends \yii\web\Controller
 
         $rent = (new \yii\db\Query())
             ->select('monthly_rent,black_white,colours,rent_period,t.name,t.address,first_rent_time,
-                p.type,m.series_id,p.brand_name as brand')
+                m.model_name,m.series_id,m.brand_name as brand')
             ->from('tbl_rent_apply t')
             ->leftJoin('tbl_machine m','t.machine_id=m.id')
-            ->leftJoin('tbl_machine_model p','p.id=m.model_id')
             ->where('t.machine_id=:mid and t.enable="Y"',[':mid'=>$machine_id])
             ->orderBy('t.id desc')
             ->one();
