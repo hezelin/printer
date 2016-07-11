@@ -64,6 +64,8 @@ if( Yii::$app->session->hasFlash('success') )
 
     <?= $form->field($model, 'come_from')->dropDownList(\app\models\ConfigBase::$machineOrigin) ?>
 
+    <?= $form->field($model, 'remark')->textarea(['rows'=>4,'placeholder'=>'机器特点可备注，可省略']) ?>
+
     <?php
         if( $model->isNewRecord )
            echo  $form->field($model, 'amount')->textInput(['value'=>1]);

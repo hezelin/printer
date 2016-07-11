@@ -35,9 +35,9 @@ class TblMachine extends \yii\db\ActiveRecord
             [['wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'add_time', 'come_from','amount'], 'integer'],
             [['buy_price'], 'number'],
             [['buy_date'], 'safe'],
-            [['brand', 'series_id'], 'string', 'max' => 50],
+            [['model_name', 'brand', 'series_id'], 'string', 'max' => 50],
             [['brand_name', 'cover'], 'string', 'max' => 100],
-            [['images'], 'string', 'max' => 500],
+            [['images', 'remark'], 'string', 'max' => 500],
         ];
     }
 
@@ -45,6 +45,7 @@ class TblMachine extends \yii\db\ActiveRecord
     {
         $this->cover = str_replace('/s/','/m/',json_decode($this->images,true)[0]);
         $this->brand_name = ConfigScheme::brand($this->brand);
+        $this->updateModel();
         if (parent::beforeSave($insert)) {
             if($insert)
             {
@@ -62,6 +63,7 @@ class TblMachine extends \yii\db\ActiveRecord
             'id' => '机器id',
             'wx_id' => '公众号id',
             'model_id' => '选择机型',
+            'model_name' => '机型',
             'brand' => '品牌字母',
             'brand_name' => '品牌名字',
             'series_id' => '机身序列号',
@@ -69,6 +71,7 @@ class TblMachine extends \yii\db\ActiveRecord
             'buy_date' => '购买时间',
             'cover' => '封面图片',
             'images' => '机器图片',
+            'remark' => '机器备注',
             'status' => '状态',
             'maintain_count' => '维修次数',
             'rent_count' => '租借次数',
@@ -87,6 +90,7 @@ class TblMachine extends \yii\db\ActiveRecord
     {
         $this->cover = str_replace('/s/','/m/',json_decode($this->images,true)[0]);
         $this->brand_name = ConfigScheme::brand($this->brand);
+        $this->updateModel();                           // 更新 model_name
 
         $wx_id = Cache::getWid();
         $rows = [];
@@ -100,13 +104,29 @@ class TblMachine extends \yii\db\ActiveRecord
             $row[6] = $this->buy_date;
             $row[7] = $this->buy_price;
             $row[8] = time();
+            $row[9] = $this->model_name;
+            $row[10] = $this->remark;
             $rows[] = $row;
         }
 
         $row = Yii::$app->db->createCommand()->batchInsert('tbl_machine',
-            ['wx_id','model_id','brand','brand_name','cover','images','buy_date','buy_price','add_time'],$rows
+            ['wx_id','model_id','brand','brand_name','cover','images','buy_date','buy_price','add_time','model_name','remark'],$rows
         )->execute();
 
         return $row;
+    }
+
+    /*
+     * 添加机器或者修改机器，获取机型名字
+     */
+    public function updateModel()
+    {
+        if( !isset($this->oldAttributes['model_id']) || $this->attributes['model_id'] != $this->oldAttributes['model_id']){
+            $this->model_name = (new \yii\db\Query())
+                ->select('model')
+                ->from('tbl_machine_model')
+                ->where(['id'=>$this->attributes['model_id']])
+                ->scalar();
+        }
     }
 }

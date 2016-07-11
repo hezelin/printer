@@ -32,13 +32,25 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],               // 系列
             'id',
-//            'series_id',
             [
                 'class'=>'kartik\grid\EditableColumn',
                 'attribute'=> 'series_id',
                 'headerOptions' => ['style'=>'width:60px'],
                 'pageSummary'=>true,
-//                'label' => '信用分数',
+                'editableOptions'=> [
+                    'formOptions' => ['action' => ['/machine/editable']],
+                    'showButtonLabels' => true,
+                    'submitButton' => [
+                        'label' => '保存',
+                        'class' => 'btn btn-primary btn-sm',
+                    ],
+                ],
+            ],
+            [
+                'class'=>'kartik\grid\EditableColumn',
+                'attribute'=> 'remark',
+                'headerOptions' => ['style'=>'width:60px'],
+                'pageSummary'=>true,
                 'editableOptions'=> [
                     'formOptions' => ['action' => ['/machine/editable']],
                     'showButtonLabels' => true,
@@ -52,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'buy_price',
             'maintain_count',
             'rent_count',
-            'model',
+            'model_name',
             'brand_name',
             [
                 'attribute'=>'add_time',

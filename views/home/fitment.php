@@ -1,19 +1,17 @@
 <?php
-    use dosamigos\fileupload\FileUploadUI;
-    use yii\helpers\Url;
-    use app\components\LoadingWidget;
+use dosamigos\fileupload\FileUploadUI;
+use yii\helpers\Url;
+use yii\helpers\Html;
+use app\components\LoadingWidget;
+use kartik\grid\GridView;
 
-    $this->title = '店铺装修';
-    $this->registerJsFile("/js/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
-    $this->registerJsFile("/js/myjs.js");
+$this->title = '店铺装修';
+$this->registerJsFile("/js/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile("/js/myjs.js");
 ?>
 
 <style>
-    .textedit {
-        padding-right: 18px;
-        background: url('/images/pencil.png') no-repeat right;
-        background-size: 16px;
-    }
+    /*.template-download{ display: none !important;}*/
 </style>
 
 <h3>首页轮播图片设置</h3>
@@ -26,7 +24,6 @@
 <?= FileUploadUI::widget([
     'model' => $model,
     'attribute' => 'image',
-//    'url' => ['home/receiveimage', 'weixinid' => $_GET['id']],
     'url' => Url::toRoute(['home/receive-image', 'weixinid' => $wx_id]),
     'gallery' => false,
     'fieldOptions' => [
@@ -39,9 +36,8 @@
     // 打印日志
     'clientEvents' => [
         'fileuploaddone' => 'function(e, data) {
-                                    $("#newadd").show();
-                                    $("#newtable").show();
-                                }',
+            tmp = data.result.files[0];
+        }',
         'fileuploadfail' => 'function(e, data) {
                                 }',
         'fileuploaddestroy' => 'function(e, data) {
@@ -52,25 +48,29 @@
 ?>
 
 <hr>
-<h4>已添加轮播图</h4>
+<h4>已添加轮播图,排序越小越在前面</h4>
 
 
     <div class="market-customer-index">
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
-            'tableOptions' => ['class' => 'table table-striped'],
-//        'layout' => "{items}\n{pager}",
+            'tableOptions' => ['class' => 'table table-striped','id'=>'image-list'],
+            'layout' => "{items}\n{pager}",
             'export' => false,
             'columns' => [
-                ['class' => 'yii\grid\SerialColumn'],
-
-                'imageurl:image',
+                [
+                    'attribute'=>'imgurl',
+                    'format'=>'html',
+                    'content'=>function($model){
+                        return '<img src="'.$model->imgurl.'" width="100">';
+                    }
+                ],
                 [
                     'class'=>'kartik\grid\EditableColumn',
-                    'attribute'=>'last_trace',
+                    'attribute'=>'link',
                     'pageSummary'=>true,
                     'editableOptions'=> [
-                        'formOptions' => ['action' => ['/market/editable/data']],
+                        'formOptions' => ['action' => ['/home/editable']],
                         'showButtonLabels' => true,
                         'submitButton' => [
                             'label' => '保存',
@@ -80,10 +80,23 @@
                 ],
                 [
                     'class'=>'kartik\grid\EditableColumn',
-                    'attribute'=>'remark',
+                    'attribute'=>'title',
                     'pageSummary'=>true,
                     'editableOptions'=> [
-                        'formOptions' => ['action' => ['/market/editable/data']],
+                        'formOptions' => ['action' => ['/home/editable']],
+                        'showButtonLabels' => true,
+                        'submitButton' => [
+                            'label' => '保存',
+                            'class' => 'btn btn-primary btn-sm',
+                        ]
+                    ]
+                ],
+                [
+                    'class'=>'kartik\grid\EditableColumn',
+                    'attribute'=>'sort',
+                    'pageSummary'=>true,
+                    'editableOptions'=> [
+                        'formOptions' => ['action' => ['/home/editable']],
                         'showButtonLabels' => true,
                         'submitButton' => [
                             'label' => '保存',
@@ -93,20 +106,12 @@
                 ],
                 [
                     'class' => 'yii\grid\ActionColumn',
-                    'template' => '{view} &nbsp; {log} &nbsp; {free}',
+                    'template' => '{delete}',
                     'headerOptions' => ['style'=>'width:120px;'],
                     'header' => '操作',
                     'buttons' => [
-                        'log' => function($url,$model,$key){
-                            return Html::a('<i class="glyphicon glyphicon-info-sign"></i>',$url,['title'=>'跟踪记录']);
-                        },
-                        'free' => function($url,$model,$key){
-                            return Html::a('<i class="glyphicon glyphicon-refresh"></i>',['free','id'=>$key,'from'=>Yii::$app->request->url],['title'=>'释放资料',
-                                'data' => [
-                                    'confirm' => '确定要释放此选项吗?',
-                                    'method' => 'post'
-                                ]]);
-
+                        'delete' => function($url,$model,$key){
+                            return Html::button('删除',['class'=>'btn btn-danger btn-sm delete-btn','data-id'=>$key]);
                         }
                     ]
 
@@ -115,24 +120,16 @@
         ]); ?>
     </div>
 
-<?php
-//echo Html::a('删除', ['delimg', 'id' => $model->id], [
-//    'class' => 'btn btn-danger',
-//    'data' => [
-//        'confirm' => '确定删除该轮播图？',
-//        'method' => 'post',
-//    ],
-//]); ?>
 
 <?= LoadingWidget::widget([  //动态添加的元素用不了
-    'target' => '.table',
-    'childTarget' => '.deletebtn',
+    'target' => '#image-list',
+    'childTarget' => '.delete-btn',
     'confirmMessage'=>'确定删除该轮播图？',
-    'th' => 'obj',      //$(this)
-    'url' => "delimg/'+$(this).attr('data-id')+'", //注意调用处外围有单引号
+    'th' => 'obj',      //$(this) 变量
+    'url' => "delimg?id='+obj.attr('data-id')+'", //注意调用处外围有单引号
     'success' => 'function(msg){
             if(msg){
-                obj.parent().parent().fadeOut(1000,function(){$(this).remove()}); //移除hr
+                obj.closest("tr").fadeOut(1000,function(){$(this).remove()}); //移除tr
             }
         }',
 ]);

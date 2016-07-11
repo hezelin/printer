@@ -7,14 +7,13 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\TblMachine;
 
-
 class TblMachineSearch extends TblMachine
 {
     public function rules()
     {
         return [
             [['id', 'wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'add_time', 'come_from'], 'integer'],
-            [['brand', 'brand_name', 'series_id', 'buy_date', 'cover', 'images'], 'safe'],
+            [['model_name', 'brand', 'brand_name', 'series_id', 'buy_date', 'cover', 'images', 'remark'], 'safe'],
             [['buy_price'], 'number'],
         ];
     }
@@ -27,16 +26,16 @@ class TblMachineSearch extends TblMachine
 
     public function search($params)
     {
-        $query = TblMachine::find();
+        $query = TblMachine::find()
+            ->where(['wx_id'=>Cache::getWid()])
+            ->andWhere(['<','status',11])
+            ->orderBy('add_time desc');
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
-        $query = TblMachine::find()->where(['wx_id'=>Cache::getWid(),'tbl_machine.enable'=>'Y'])
-            ->orderBy('tbl_machine.id desc');
 
         $this->load($params);
 
@@ -60,11 +59,13 @@ class TblMachineSearch extends TblMachine
             'come_from' => $this->come_from,
         ]);
 
-        $query->andFilterWhere(['like', 'brand', $this->brand])
+        $query->andFilterWhere(['like', 'model_name', $this->model_name])
+            ->andFilterWhere(['like', 'brand', $this->brand])
             ->andFilterWhere(['like', 'brand_name', $this->brand_name])
             ->andFilterWhere(['like', 'series_id', $this->series_id])
             ->andFilterWhere(['like', 'cover', $this->cover])
-            ->andFilterWhere(['like', 'images', $this->images]);
+            ->andFilterWhere(['like', 'images', $this->images])
+            ->andFilterWhere(['like', 'remark', $this->remark]);
 
         return $dataProvider;
     }

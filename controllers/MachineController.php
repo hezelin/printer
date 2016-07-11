@@ -47,12 +47,11 @@ class MachineController extends \yii\web\Controller
 
         if (isset($_POST['hasEditable'])) {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            $value = $_POST['ViewMachineModel'][$_POST['editableIndex']][$_POST['editableAttribute']];
+            $value = $_POST['TblMachine'][$_POST['editableIndex']][$_POST['editableAttribute']];
             $model->$_POST['editableAttribute'] = $value;
             if($model->save())
                 return ['output'=>$value, 'message'=>''];
-            return $model->errors;
-//            return ['output'=>'','message'=>'数据库错误'];
+            return ['output'=>'','message'=>'数据库错误'];
         }
     }
 
@@ -75,8 +74,13 @@ class MachineController extends \yii\web\Controller
                 $row =$model->multiSave();                          // 批量插入，并且自动更新统计
                 if($row)
                 {
-                    Yii::$app->session->setFlash('success','成功批量添加 '.$row.' 个机器');
-                    $this->refresh();
+//                    $this->refresh();
+//                    Yii::$app->session->setFlash('success','成功批量添加 '.$row.' 个机器');
+                    return $this->render('//tips/success',[
+                        'tips'=>'成功批量添加 '.$row.' 个机器',
+                        'btnText'=>'继续添加',
+                        'btnUrl'=>Url::toRoute(['add'])
+                    ]);
                 }
             }
 
@@ -117,10 +121,10 @@ class MachineController extends \yii\web\Controller
 
     public function actionList()
     {
-        $searchModel = new ViewMachineModelSearch();
+        $searchModel = new TblMachineSearch();
         $params = Yii::$app->request->queryParams;
-        if( !isset($params['ViewMachineModelSearch']['come_from']) )
-            $params['ViewMachineModelSearch']['come_from'] = 1;
+        if( !isset($params['TblMachineSearch']['come_from']) )
+            $params['TblMachineSearch']['come_from'] = 1;
 
         $dataProvider = $searchModel->search($params);
 

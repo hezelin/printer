@@ -11,12 +11,38 @@ use app\models\UploadForm;
 use yii\web\UploadedFile;
 use app\models\TblStoreSetting;
 use yii\web\NotFoundHttpException;
+use yii\web\YiiAsset;
 
 class HomeController extends \yii\web\Controller
 {
     public $enableCsrfValidation = false;
 
     public $layout = 'console';
+
+    /*
+     * 更改信用分数 和 信用过期时间，过期时间需要转换格式
+     * hasEditable:1
+     * editableIndex:0
+     * editableKey:2
+     * editableAttribute:verify_credit_lose_time
+     * ViewServerRank[0][verify_credit_lose_time]:2016年06月24日
+     */
+    public function actionEditable()
+    {
+        $model = Carousel::findOne($_POST['editableKey']);
+        if(!$model){
+            return ['output'=>'','message'=>'数据库错误'];
+        }
+
+        if (isset($_POST['hasEditable'])) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            $value = $_POST['Carousel'][$_POST['editableIndex']][$_POST['editableAttribute']];
+            $model->$_POST['editableAttribute'] = $value;
+            if($model->save())
+                return ['output'=>$value, 'message'=>''];
+            return ['output'=>'','message'=>'数据库错误'];
+        }
+    }
 
     /*
      * 店铺装修后台
@@ -41,13 +67,11 @@ class HomeController extends \yii\web\Controller
      */
     public function actionReceiveImage()
     {
-
         if (Yii::$app->request->isPost) {
             $model = new UploadForm();
             $model->image = UploadedFile::getInstance($model, 'image');
 
             if ( $model->image ) {
-
                 //非图片格式
                 if(substr($model->image->type,0,5)!='image') {
                     $data = [
@@ -76,17 +100,18 @@ class HomeController extends \yii\web\Controller
                     return json_encode($data);
                 }
 
-                //上传
-                $filename = time().'_'.rand(100,999).'.'. $model->image->extension;  //原名$model->image->baseName
 
-                $yearmonthdir = date('Ym').'/';
-                if(!file_exists('uploads/'.$yearmonthdir)) mkdir('uploads/'.$yearmonthdir);
-                $filepath = 'uploads/'.$yearmonthdir.$filename;
-                $model->image->saveAs($filepath);
+
+                //上传
+                $filename = uniqid().'.'. $model->image->extension;      //原名$model->image->baseName
+                $path = '/uploads/carousel/'.date('ym').'/'.date('d').'/';
+                $dir = $this->newDir($path,Yii::getAlias('@app/web/'));
+
+                $model->image->saveAs($dir.$filename);
 
                 $newcarousel = new Carousel();
                 $newcarousel->weixinid = Yii::$app->request->get('weixinid');
-                $newcarousel->imgurl = $filepath;
+                $newcarousel->imgurl = $path.$filename;
                 $newcarousel->link = '';
                 $newcarousel->title = '默认标题';
                 $newcarousel->save();
@@ -99,10 +124,8 @@ class HomeController extends \yii\web\Controller
                                 'id'=>$newid,
                                 'name'=>$filename,
                                 'size'=>$model->image->size,
-                                'url'=>'/' . $filepath,
-                                'thumbnailUrl'=>'/' . $filepath,
-                                'deleteUrl'=> Url::toRoute(['home/delimg','imagename'=>$filepath]),
-                                'deleteType'=>'DELETE'
+                                'url'=> $path.$filename,
+                                'thumbnailUrl'=>$path.$filename,
                             ]
                         ]
                     ];
@@ -113,14 +136,24 @@ class HomeController extends \yii\web\Controller
     }
 
     /*
+     * 循环嵌套建立目录
+     */
+    public function newDir($dir,$preDir=''){
+        $parts = explode('/', $dir);
+        $dir = $preDir;
+        foreach($parts as $part)
+            if(!is_dir($dir .= "/$part")) mkdir($dir,0755);
+        return $dir;
+    }
+
+    /*
      * 删除上传的图片
      */
     public function actionDelimg($id)
     {
         $carousel = Carousel::findOne($id);
         $res=$carousel->delete();
-
-        @unlink($carousel['imgurl']);
+        @unlink(Yii::getAlias('@app/web').$carousel['imgurl']);
         return $res;
     }
 
@@ -156,7 +189,6 @@ class HomeController extends \yii\web\Controller
             $resarr = ['status' => 0, 'error' => 'GET is empty' ];
         return json_encode($resarr);
     }
-
 
     /*
      * 官网设置

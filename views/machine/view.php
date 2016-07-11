@@ -48,15 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
         function formatImage($model){
             return '<img src="'.$model->cover.'" width=100 >';
         }
-        function getModel($modelId)
-        {
-            $data = (new \yii\db\Query())
-                ->select('model,brand_name')
-                ->from('tbl_machine_model')
-                ->where(['id'=>$modelId])
-                ->one();
-            return $data? $data['brand_name'].','.$data['model']:'未知';
-        }
+
 
     ?>
     <?= DetailView::widget([
@@ -69,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'model_id',
                 'label' => '品牌机型',
                 'format'=>'html',
-                'value'=>getModel($model->model_id),
+                'value'=>$model->brand_name.','.$model->model_name,
             ],
             [
                 'attribute'=>'buy_price',

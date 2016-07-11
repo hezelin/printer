@@ -26,9 +26,9 @@ class Carousel extends \yii\db\ActiveRecord
         return [
             'id' => '自增id',
             'weixinid' => '对应的微信公众号',
-            'imgurl' => 'Imgurl',
-            'link' => 'Link',
-            'title' => 'Title',
+            'imgurl' => '图片',
+            'link' => '链接',
+            'title' => '标题',
             'sort' => '排序',
         ];
     }
