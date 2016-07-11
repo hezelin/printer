@@ -47,6 +47,7 @@
 
     }
 </style>
+<p>&nbsp;</p>
 <div id="setting-wrap">
     <div id="setting-left">
         <form class="setting-form">
@@ -59,16 +60,6 @@
             <input class="setting-input" type="text" data-vessel="apply" data-key="top" data-end="px" name="top" value="<?=$data['applyCss']['top']?>" />&nbsp;&nbsp;&nbsp;px</div>
         <div class="setting-row"> 左部距离：
             <input class="setting-input" type="text" data-vessel="apply" data-key="left" data-end="px" name="left" value="<?=$data['applyCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
-
-        <h4>客户名称设置</h4>
-        <div class="setting-row"> 字体颜色：
-            <input class="setting-input" type="text" data-vessel="user" data-key="color" data-end="" name="color" value="<?=$data['userCss']['color']?>"/></div>
-        <div class="setting-row"> 字体大小：
-            <input class="setting-input" type="text" data-vessel="user" data-key="font-size" data-end="px" name="size" value="<?=$data['userCss']['font-size']?>" />&nbsp;&nbsp;&nbsp;px</div>
-        <div class="setting-row"> 顶部距离：
-            <input class="setting-input" type="text" data-vessel="user" data-key="top" data-end="px" name="top" value="<?=$data['userCss']['top']?>" />&nbsp;&nbsp;&nbsp;px</div>
-        <div class="setting-row"> 左部距离：
-            <input class="setting-input" type="text" data-vessel="user" data-key="left" data-end="px" name="left" value="<?=$data['userCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
 
         <h4 class="setting-m">二维码图片设置</h4>
         <div class="setting-row"> 图片宽度：
@@ -112,10 +103,7 @@
         <div  id="print-wrap" style="position: relative;<?=$data['img']['style']?>">
             <img id="print-bg-img" src="<?=$data['img']['img']?>" <?=$data['img']['width']?>/>
             <div id="user-id" style="position:absolute;<?=$data['apply']?>">
-                <?=$data['applyId']? $data['come_from'].$data['applyId']:''?>
-            </div>
-            <div id="qrcode-user" style="position: absolute;<?=$data['user']?>">
-                <?= $data['userName'] ?>
+                <?=$data['applyId']?>
             </div>
             <div id="qrcode-img" style="position:absolute;<?=$data['code']?>">
                 <img src="<?=$data['qrcodeImgUrl']?>" width="100%"/>

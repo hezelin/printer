@@ -46,8 +46,8 @@ class CodeController extends \yii\web\Controller
     {
         $searchModel = new TblMachineSearch();
         $params = Yii::$app->request->queryParams;
-        if( !isset($params['TblMachineSearch']['status']) )
-            $params['TblMachineSearch']['status'] = 1;
+        if( !isset($params['TblMachineSearch']['come_from']) )
+            $params['TblMachineSearch']['come_from'] = 1;
 
         $dataProvider = $searchModel->search($params);
 
@@ -103,27 +103,25 @@ class CodeController extends \yii\web\Controller
             sort($ids);
 
             $model = (new \yii\db\Query())
-                ->select('t.series_id,a.name,a.id,t.come_from,t.id as machine_id')
-                ->from('tbl_machine t')
-                ->leftJoin('tbl_rent_apply a','a.machine_id=t.id')
-                ->where(['t.id'=>$ids])
+                ->select('series_id,id')
+                ->from('tbl_machine')
+                ->where(['id'=>$ids])
                 ->all();
 
 
             foreach( $model as &$row){
 
-                $index = (int)($row['machine_id']/500);
+                $index = (int)($row['id']/500);
                 $imgUrl = '/images/qrcode/'.(int)($index/500).'/'.$index;
 
-                if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$row['machine_id'].'.png') ){
+                if( !is_file(Yii::getAlias('@webroot').$imgUrl.'/'.$row['id'].'.png') ){
 
-                    $url = Url::toRoute(['codeapi/machine','id'=>$row['machine_id']],'http');
+                    $url = Url::toRoute(['codeapi/machine','id'=>$row['id']],'http');
                     $dir = ToolBase::newDir($imgUrl,Yii::getAlias('@webroot'));
-                    $fileName = $dir.'/'.$row['machine_id'].'.png';
+                    $fileName = $dir.'/'.$row['id'].'.png';
                     shell_exec("qrencode -o $fileName '$url' -s 10 -m 2 -l H");
                 }
-                $row['qrcodeImgUrl'] = $imgUrl.'/'.$row['machine_id'].'.png';
-                $row['come_from'] = ConfigBase::machineComeFrom($row['come_from']);
+                $row['qrcodeImgUrl'] = $imgUrl.'/'.$row['id'].'.png';
             }
 
 
@@ -141,7 +139,6 @@ class CodeController extends \yii\web\Controller
                     'bgWidth'=>'',
                 ],
                 'series'=>'',
-                'user'=>'',
                 'code'=>'',
                 'apply'=>'',
             ];
@@ -161,10 +158,7 @@ class CodeController extends \yii\web\Controller
                     foreach($series as $k=>$v)
                         $data['series'] .= "$k:$v;";
                 }
-                if($series = json_decode($setting['user_name'],true) ){
-                    foreach($series as $k=>$v)
-                        $data['user'] .= "$k:$v;";
-                }
+
                 if($series = json_decode($setting['code'],true) ){
                     foreach($series as $k=>$v)
                         $data['code'] .= "$k:$v;";
@@ -188,10 +182,9 @@ class CodeController extends \yii\web\Controller
     {
         set_time_limit(0);
         $model = (new \yii\db\Query())
-            ->select('t.series_id,a.name,a.id,t.come_from')
-            ->from('tbl_machine t')
-            ->leftJoin('tbl_rent_apply a','a.machine_id=t.id')
-            ->where(['t.id'=>$id])
+            ->select('series_id,id')
+            ->from('tbl_machine')
+            ->where(['id'=>$id])
             ->one();
 
         $index = (int)($id/500);
@@ -216,9 +209,7 @@ class CodeController extends \yii\web\Controller
             'code'=>'',
             'apply'=>'',
             'seriesNum'=>$model['series_id'],
-            'userName' => $model['name'],
             'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.png',
-            'come_from'=> ConfigBase::machineComeFrom($model['come_from']),
             'applyId' => $model['id'],
             'img'=> [
                 'width'=>'',
@@ -237,12 +228,6 @@ class CodeController extends \yii\web\Controller
                 'left'=>60,
                 'color'=>'#FF4500',
                 'font-size'=>'45',
-            ],
-            'userCss'=>[
-                'top'=>130,
-                'left'=>60,
-                'color'=>'#FF4500',
-                'font-size'=>'30',
             ],
             'codeCss'=>[
                 'top'=>22,
@@ -274,12 +259,6 @@ class CodeController extends \yii\web\Controller
                 }
             }
 
-            if($series = json_decode($setting['user_name'],true) ){
-                foreach($series as $k=>$v){
-                    $data['user'] .= "$k:$v;";
-                    $data['userCss'][$k]= $k=='color'? $v:(int)$v;
-                }
-            }
             if($series = json_decode($setting['code'],true) ){
                 foreach($series as $k=>$v){
                     $data['code'] .= "$k:$v;";
@@ -302,10 +281,9 @@ class CodeController extends \yii\web\Controller
     {
         set_time_limit(0);
         $model = (new \yii\db\Query())
-            ->select('t.series_id,a.name,a.id,t.come_from')
-            ->from('tbl_machine t')
-            ->leftJoin('tbl_rent_apply a','a.machine_id=t.id')
-            ->where(['t.id'=>$id])
+            ->select('series_id,id')
+            ->from('tbl_machine')
+            ->where(['id'=>$id])
             ->one();
 
         $index = (int)($id/500);
@@ -334,10 +312,7 @@ class CodeController extends \yii\web\Controller
             'user'=>'',
             'code'=>'',
             'apply'=>'',
-            'come_from'=> ConfigBase::machineComeFrom($model['come_from']),
             'seriesNum'=>$model['series_id'],
-            'userName' => $model['name'],
-            'applyId' => $model['id'],
             'machineId'=>$id,
             'qrcodeImgUrl'=>$imgUrl.'/'.$id.'.png'
         ];
@@ -356,10 +331,6 @@ class CodeController extends \yii\web\Controller
             if($series = json_decode($setting['series'],true) ){
                 foreach($series as $k=>$v)
                     $data['series'] .= "$k:$v;";
-            }
-            if($series = json_decode($setting['user_name'],true) ){
-                foreach($series as $k=>$v)
-                    $data['user'] .= "$k:$v;";
             }
             if($series = json_decode($setting['code'],true) ){
                 foreach($series as $k=>$v)

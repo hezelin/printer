@@ -5,7 +5,8 @@ use yii\grid\GridView;
 use yii\grid\CheckboxColumn;
 use yii\bootstrap\Alert;
 
-$this->title = '生成机器码';
+$this->title = '预设机器二维码';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php
@@ -20,7 +21,7 @@ if( Yii::$app->session->hasFlash('error') )
 ?>
 
 <div class="alert alert-info" role="alert">
-    1、您最多只能生成300个无机器资料 二维码，目前已生成<?=$count?>个
+    1、您最多只能生成300个空资料的机器二维码，目前已生成<?=$count?>个
     <p>&nbsp;</p>
     <form class="form-inline" method="post">
         <input name="_csrf" type="hidden" value="<?php echo \Yii::$app->request->csrfToken; ?>"/>
@@ -44,7 +45,7 @@ if( Yii::$app->session->hasFlash('error') )
             }
         ],
         ['class' => 'yii\grid\SerialColumn'],               // 系列
-        'series_id',
+        'id',
         [
             'attribute'=>'add_time',
             'format'=>['date','php:Y-m-d H:i'],

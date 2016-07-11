@@ -139,9 +139,12 @@ WeixinAsset::register($this);
                                 'icon' => 'qrcode',
                                 'items' => [
                                     ['label' => '积分二维码','url' => ['/code/score']],
-                                    ['label' => '批量生成机器码','url' => ['/code/index']],
-                                    ['label' => '批量生成无机器二维码','url' => ['/code/ahead']],
-                                    ['label' => '批量生成配件码','url' => ['/code/parts']],
+                                    [
+                                        'label' => '机器二维码','url' => ['/code/index'],
+                                        'active' => in_array(Yii::$app->controller->getRoute(),['code/index','code/machine','code/machineall']),
+                                    ],
+                                    ['label' => '预设机器二维码','url' => ['/code/ahead']],
+                                    ['label' => '配件二维码','url' => ['/code/parts']],
                                     ['label' => '维修员绑定码','url' => ['/code/binding']],
                                 ],
                             ],

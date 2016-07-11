@@ -1,5 +1,6 @@
 <?php
-$this->title = '生成机器码';
+$this->title = '批量打印二维码';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <style>
@@ -8,7 +9,7 @@ $this->title = '生成机器码';
 </style>
 <div class="col-md-10 col-md-offset-1">
     <button class="btn btn-primary" id="print-btn"><i class="glyphicon glyphicon-print"></i>&nbsp;&nbsp;批量打印&nbsp;&nbsp;</button>
-    <a href="<?=\yii\helpers\Url::toRoute(['setting','id'=>$model[0]['machine_id']])?>" class="btn btn-default" style="margin-left: 15px;"><i class="glyphicon glyphicon-qrcode"></i> 二维码设置</a>
+    <a href="<?=\yii\helpers\Url::toRoute(['setting','id'=>$model[0]['id']])?>" class="btn btn-default" style="margin-left: 15px;"><i class="glyphicon glyphicon-qrcode"></i> 二维码设置</a>
 </div>
 
 <div class="col-md-10 col-md-offset-1">
@@ -17,10 +18,7 @@ $this->title = '生成机器码';
         <div style="position: relative;<?=$data['img']['style']?>">
             <img src="<?=$data['img']['img']?>" <?=$data['img']['width']?>/>
             <div id="user-id" style="position:absolute;<?=$data['apply']?>">
-                <?=$row['id']? $row['come_from'].$row['id']:''?>
-            </div>
-            <div id="qrcode-user" style="position: absolute;<?=$data['user']?>">
-                <?= $row['name'] ?>
+                <?=$row['id']?>
             </div>
             <div id="qrcode-img" style="position:absolute;<?=$data['code']?>">
                 <img src="<?=$row['qrcodeImgUrl']?>" width="100%"/>
