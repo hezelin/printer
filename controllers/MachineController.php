@@ -30,14 +30,6 @@ class MachineController extends \yii\web\Controller
         ];
     }
 
-    /*
-     * 更改信用分数 和 信用过期时间，过期时间需要转换格式
-     * hasEditable:1
-     * editableIndex:0
-     * editableKey:2
-     * editableAttribute:verify_credit_lose_time
-     * ViewServerRank[0][verify_credit_lose_time]:2016年06月24日
-     */
     public function actionEditable()
     {
         $model = TblMachine::findOne($_POST['editableKey']);
@@ -127,6 +119,24 @@ class MachineController extends \yii\web\Controller
         $dataProvider = $searchModel->search($params);
 
         return $this->render('list', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /*
+     * 预设机器
+     */
+    public function actionPreList()
+    {
+        $searchModel = new TblMachineSearch();
+        $params = Yii::$app->request->queryParams;
+        if( !isset($params['TblMachineSearch']['come_from']) )
+            $params['TblMachineSearch']['come_from'] = 4;
+
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('pre-list', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

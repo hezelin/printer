@@ -37,6 +37,24 @@ class RentProjectController extends Controller
         ];
     }
 
+
+    public function actionEditable()
+    {
+        $model = TblMachineRentProject::findOne($_POST['editableKey']);
+        if(!$model){
+            return ['output'=>'','message'=>'数据库错误'];
+        }
+
+        if (isset($_POST['hasEditable'])) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            $value = $_POST['ViewSchemeModel'][$_POST['editableIndex']][$_POST['editableAttribute']];
+            $model->$_POST['editableAttribute'] = $value;
+            if($model->save(false))
+                return ['output'=>$value, 'message'=>''];
+            return ['output'=>'','message'=>'数据库错误'];
+        }
+    }
+
     /*
      * 添加模型
      */

@@ -71,7 +71,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'add_time',
                 'value' => date("Y-m-d H:i:s",$model->add_time),
-                ],
+            ],
+            [
+                'attribute' => 'cover',
+                'format' => 'html',
+                'value' => \app\models\config\Tool::getImage($model->cover,100,true)
+            ],
+            'remark',
             'rent_count',
             'maintain_count',
             [

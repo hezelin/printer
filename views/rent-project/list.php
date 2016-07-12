@@ -1,12 +1,12 @@
 <?php
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '租机方案列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-    <div><a href="<?=Url::toRoute(['add'])?>" class="btn btn-info">添加租赁方案</a></div>
+    <div style="margin-bottom: 15px;"><a href="<?=Url::toRoute(['add'])?>" class="btn btn-info">添加租赁方案</a></div>
 
 <?php
 echo GridView::widget([
@@ -29,12 +29,21 @@ echo GridView::widget([
             }
         ],
         [
-            'attribute'=>'is_show',
-            'filter'=>[1=>'显示',0=>'不显示'],
-            'value'=>function($data)
-            {
-                return $data->is_show==1? '显示':'不显示';
-            }
+            'class'=>'kartik\grid\EditableColumn',
+            'attribute'=> 'is_show',
+            'headerOptions' => ['style'=>'width:60px'],
+            'pageSummary'=>true,
+            'editableOptions'=> [
+                'formOptions' => ['action' => ['/rent-project/editable']],
+                'showButtonLabels' => true,
+                'submitButton' => [
+                    'label' => '保存',
+                    'class' => 'btn btn-primary btn-sm',
+                ],
+                'inputType' => kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                'data' => [1=>'显示',2=>'不显示'],
+                'displayValueConfig' => [1=>'显示',2=>'不显示'],
+            ],
         ],
         [
             'attribute'=>'add_time',
