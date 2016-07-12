@@ -43,13 +43,7 @@ class TblMachineServiceSearch extends TblMachineService
     public function search($params)
     {
         $query = TblMachineService::find()->joinWith([
-            'machine'=>function($query){
-                $query->joinWith([
-                    'machineModel'=>function($query){
-                        $query->joinWith('brand');
-                    }
-                ]);
-        }])->where([
+            'machine'])->where([
             'tbl_machine_service.enable'=>'Y',
             'tbl_machine_service.status'=>1,
             'tbl_machine_service.weixin_id'=>Cache::getWid()
@@ -90,18 +84,5 @@ class TblMachineServiceSearch extends TblMachineService
             ->andFilterWhere(['like', 'enable', $this->enable]);
 
         return $dataProvider;
-    }
-
-    /*
-     * 返回维修员
-     */
-    public function fixProvider()
-    {
-        return new ActiveDataProvider([
-            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
     }
 }

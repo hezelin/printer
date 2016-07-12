@@ -15,6 +15,7 @@ use app\models\TblRentApplyList;
 use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
 use app\models\views\ViewFaultDataSearch;
+use app\models\views\ViewRentFaultMachineSearch;
 use app\models\WxTemplate;
 use yii\data\ActiveDataProvider;
 
@@ -98,11 +99,12 @@ class ServiceController extends \yii\web\Controller
 
     /*
      * 待分配维修
+     * $status ==1 ,待分配维修
      */
     public function actionIndex()
     {
-        $searchModel = new TblMachineServiceSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel = new ViewFaultDataSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,1);
 
         return $this->render('index',[
             'dataProvider'=>$dataProvider,
@@ -294,12 +296,12 @@ class ServiceController extends \yii\web\Controller
     /*
      * 维修任务取消任务列表
      */
-    public function actionCancellist()
+    public function actionCancelList()
     {
         $searchModel = new TblFaultCancelLogSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('cancellist',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
+        return $this->render('cancel-list',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);
     }
 
     /*
@@ -373,7 +375,7 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionCall()
     {
-        $searchModel = new TblRentApplyList();
+        $searchModel = new ViewRentFaultMachineSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $fixProvider = new ActiveDataProvider([

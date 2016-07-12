@@ -6,6 +6,7 @@ use app\models\ConfigBase;
 use yii\bootstrap\Modal;
 
 $this->title = '待维修列表';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <style>
@@ -78,21 +79,19 @@ echo GridView::widget([
                 return '<ul class="list-text">'.join("\n",$li).'</ul>';
             }
         ],
-        [
-            'attribute'=>'machine.machineModel.cover',
+        /*[
+            'attribute'=>'machine.cover',
             'header'=>'机器',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
-            'value'=>function($data)
-            {
-                if( isset($data->machine->machineModel->cover )  )
-                    return Html::a(Html::img($data->machine->machineModel->cover,['width'=>40]),str_replace('/s/','/m/',$data->machine->machineModel->cover),['class'=>'fancybox','rel'=>'group1']);
+            'value'=>function($data){
+                return \app\models\config\Tool::getImage($data->machine->cover,40,true);
             }
-        ],
+        ],*/
 
-        'machine.machineModel.brand.name',
-        'machine.machineModel.type',
-        'machine.series_id',
-        'machine.maintain_count',
+        'brand_name',
+        'model_name',
+        'series_id',
+        'maintain_count',
         [
             'attribute' => 'add_time',
             'header'=>'申请时间',

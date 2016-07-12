@@ -1,5 +1,6 @@
 <?php
-    $this->title = '用户定位'
+$this->title = '用户定位';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <style type="text/css">

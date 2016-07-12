@@ -24,9 +24,8 @@ class ViewFaultData extends \yii\db\ActiveRecord
             [['desc'], 'string', 'max' => 500],
             [['content'], 'string', 'max' => 600],
             [['openid'], 'string', 'max' => 28],
-            [['remark'], 'string', 'max' => 100],
-            [['series_id', 'brand_name'], 'string', 'max' => 50],
-            [['cover'], 'string', 'max' => 52],
+            [['remark', 'cover', 'brand_name'], 'string', 'max' => 100],
+            [['series_id', 'model_name'], 'string', 'max' => 50],
             [['user_name'], 'string', 'max' => 30],
         ];
     }
@@ -45,11 +44,12 @@ class ViewFaultData extends \yii\db\ActiveRecord
             'remark' => '备注',
             'add_time' => '添加时间',
             'maintain_count' => '维修次数',
-            'series_id' => '编号',
-            'cover' => '封面',
-            'brand_name' => '品牌',
-            'user_id' => '客户编号',
-            'user_name' => '客户名字',
+            'series_id' => '机身序列号',
+            'cover' => '封面图片',
+            'brand_name' => '品牌名字',
+            'model_name' => '机型名字',
+            'user_id' => '自增id',
+            'user_name' => '姓名',
         ];
     }
 }

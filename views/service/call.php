@@ -38,20 +38,16 @@ echo GridView::widget([
             'attribute'=>'id',
             'header'=>'客户编号',
         ],
+        /*'brand_name',
+        'model_name',
+        'series_id',*/
         [
-            'attribute'=>'type',
-            'header'=>'机型',
-            'value'=>'machine.machineModel.type',
-        ],
-        [
-            'attribute'=>'series_id',
-            'header'=>'机身系列号',
+            'attribute'=>'brand_name',
+            'header'=>'机身资料',
             'headerOptions'=>['style'=>'width:100px'],
             'format'=>'html',
             'value'=>function($model) {
-                if(!$model->machine) return '<span class="not-set">未设置</span>';
-                return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
-                        Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
+                return Html::a($model->brand_name.$model->model_name.$model->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']);
             }
         ],
         [
@@ -61,7 +57,7 @@ echo GridView::widget([
             'format'=>'html',
             'value'=>function($model){
                 if(!$model->machine) return '<span class="not-set">未设置</span>';
-                return \app\models\ConfigBase::getMachineOrigin($model->machine->come_from);
+                return \app\models\ConfigBase::getMachineOrigin($model->come_from);
             }
         ],
         [
@@ -104,8 +100,8 @@ echo GridView::widget([
             'template' => '{fault}',
             'buttons' => [
                 'fault' => function($url,$model,$key){
-                    if(isset($model->machineFault2->status) && $model->machineFault2->status < 8)
-                        return Html::a('维修中',Url::toRoute(['service/process','id'=>$model->machineFault2->id]),
+                    if(isset($model->status) && $model->status < 8)
+                        return Html::a('维修中',Url::toRoute(['service/process','id'=>$model->fault_id]),
                             [
                                 'title'=>'查看维修进度',
                                 'class'=>'high-remark'

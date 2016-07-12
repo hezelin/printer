@@ -2,6 +2,7 @@
 
 namespace app\models\views;
 
+use app\models\TblUserMaintain;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -15,7 +16,7 @@ class ViewFaultDataSearch extends ViewFaultData
     {
         return [
             [['id', 'weixin_id', 'machine_id', 'type', 'status', 'add_time', 'maintain_count', 'user_id'], 'integer'],
-            [['desc', 'content', 'openid', 'remark', 'series_id', 'cover', 'brand_name', 'user_name'], 'safe'],
+            [['desc', 'content', 'openid', 'remark', 'series_id', 'cover', 'brand_name', 'model_name', 'user_name'], 'safe'],
         ];
     }
 
@@ -25,9 +26,9 @@ class ViewFaultDataSearch extends ViewFaultData
         return Model::scenarios();
     }
 
-    public function search($params)
+    public function search($params,$status=null)
     {
-        $query = ViewFaultData::find()->where(['weixin_id'=>Cache::getWid()]);;
+        $query = ViewFaultData::find()->where(['weixin_id'=>Cache::getWid()]);
 
         $process = Yii::$app->request->get('process');
         if($process == 2)               // 等待评价
@@ -36,6 +37,9 @@ class ViewFaultDataSearch extends ViewFaultData
             $query->andWhere(['status'=>9]);
         else                            // 维修中
             $query->andWhere(['<','status',8]);
+
+        if($status)
+            $query->andWhere(['status'=>$status]);
 
         if(Yii::$app->request->get('fromFault'))
             $query->andWhere(['openid'=>Yii::$app->request->get('fromFault')]);
@@ -75,8 +79,22 @@ class ViewFaultDataSearch extends ViewFaultData
             ->andFilterWhere(['like', 'series_id', $this->series_id])
             ->andFilterWhere(['like', 'cover', $this->cover])
             ->andFilterWhere(['like', 'brand_name', $this->brand_name])
+            ->andFilterWhere(['like', 'model_name', $this->model_name])
             ->andFilterWhere(['like', 'user_name', $this->user_name]);
 
         return $dataProvider;
+    }
+
+    /*
+     * 返回维修员
+     */
+    public function fixProvider()
+    {
+        return new ActiveDataProvider([
+            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
     }
 }

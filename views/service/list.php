@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <li <?php if(!Yii::$app->request->get('process')) echo 'class="active"';?>><a href="<?=Url::toRoute(['list'])?>" >维修中</a></li>
         <li <?php if(Yii::$app->request->get('process')==2) echo 'class="active"';?>><a href="<?=Url::toRoute(['list','process'=>2])?>" >等待评价</a></li>
         <li <?php if(Yii::$app->request->get('process')==3) echo 'class="active"';?>><a href="<?=Url::toRoute(['list','process'=>3])?>" >已完成</a></li>
-        <li><a href="<?=Url::toRoute(['cancellist'])?>" >已取消</a></li>
+        <li><a href="<?=Url::toRoute(['cancel-list'])?>" >已取消</a></li>
     </ul>
 </div>
 <p>&nbsp;</p>
