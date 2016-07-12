@@ -12,7 +12,10 @@ WHERE t1.status<11
 
 -- 2、租赁方案，关联机型
 
-CREATE OR REPLACE view view_scheme_model AS SELECT t1.*,t2.brand_name,t2.model FROM tbl_machine_rent_project t1 LEFT JOIN tbl_machine_model t2 ON t1.machine_model_id=t2.id
+CREATE OR REPLACE view view_scheme_model AS SELECT
+t1.*,t2.brand_name,t2.model
+FROM tbl_machine_rent_project t1
+LEFT JOIN tbl_machine_model t2 ON t1.machine_model_id=t2.id
 
 
 -- 3、电话维修视图
