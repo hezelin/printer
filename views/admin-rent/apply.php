@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\bootstrap\Modal;
 
 $this->title = '租借申请';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php
@@ -37,11 +38,11 @@ echo GridView::widget([
             }
         ],
         [
-            'attribute'=>'cover_images',
+            'attribute'=>'images',
             'label'=>'机型图片',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($model){
-                $covers = json_decode($model['cover_images'],true);
+                $covers = json_decode($model['images'],true);
                 if( !is_array($covers) )
                     return '';
                 $html = [];
@@ -52,7 +53,11 @@ echo GridView::widget([
             }
         ],
         [
-            'attribute'=>'type',
+            'attribute'=>'brand_name',
+            'label'=>'品牌',
+        ],
+        [
+            'attribute'=>'model',
             'label'=>'机器型号',
         ],
         [
@@ -62,9 +67,9 @@ echo GridView::widget([
             'value'=>function($model)
             {
                 $row[] = Html::tag('div','最低消费：'.$model['lowest_expense'].'元');
-                $row[] = Html::tag('div','黑白：'.$model['black_white'].'元/张');
-                if($model['is_color'] == 2)
-                    $row[] = Html::tag('div','彩色：'.$model['colours'].'元/张');
+                $row[] = Html::tag('div','黑白：'.\app\models\config\Tool::schemePrice($model['black_white']));
+                if($model['colours'])
+                    $row[] = Html::tag('div','彩色：'.\app\models\config\Tool::schemePrice($model['colours']));
                 return join("\n",$row);
             }
         ],

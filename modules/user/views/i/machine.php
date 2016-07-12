@@ -9,14 +9,13 @@ $this->title = '我的机器';
         <ul class="aui-list-view">
             <?php foreach($project as $row):?>
                 <li class="aui-list-view-cell aui-img">
-                    <a href="<?=url::toRoute(['/user/rent/detail','id'=>$id,'project_id'=>$row['id']])?>">
+                    <a class="aui-arrow-right" href="<?=url::toRoute(['/user/rent/detail','id'=>$id,'project_id'=>$row['id']])?>">
                         <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
                         <div class="aui-img-body">
-                            <h2 class="aui-ellipsis-1 aui-text-info"><?=$row['name'],$row['type']?></h2>
+                            <h2 class="aui-ellipsis-1 aui-text-info"><?=$row['brand_name'],$row['model']?></h2>
                             <p class="aui-ellipsis-1 aui-text-default">
                                 月租 : <span class="aui-red-color">¥<?= $row['lowest_expense']?></span>
                             </p>
-                            <p class="aui-ellipsis-2 aui-color-000"><?=$row['function']?></p>
                             <span class="aui-box aui-box-color">租借申请中...</span>
                         </div>
                     </a>
@@ -25,10 +24,10 @@ $this->title = '我的机器';
 
             <?php foreach($model as $row):?>
                 <li class="aui-list-view-cell aui-img">
-                    <a href="<?=url::toRoute(['/user/rent/machinedetail','id'=>$id,'rent_id'=>$row['rent_id'],'from'=>'machine'])?>">
+                    <a class="aui-arrow-right" href="<?=url::toRoute(['/user/rent/machine-detail','id'=>$id,'rent_id'=>$row['rent_id'],'from'=>'machine'])?>">
                         <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
                         <div class="aui-img-body">
-                            <h2 class="aui-ellipsis-1 aui-text-info"><?=$row['type'],'/',$row['series_id']?></h2>
+                            <h2 class="aui-ellipsis-1 aui-text-info"><?=$row['brand_name'],$row['model_name']?></h2>
                             <p class="aui-ellipsis-1 aui-text-default">
                                 月租 : <span class="aui-red-color">¥<?= $row['monthly_rent']?></span>
                             </p>

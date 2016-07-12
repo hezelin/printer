@@ -7,9 +7,7 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\TblRentApply;
 
-/**
- * TblRentApplySearch represents the model behind the search form about `app\models\TblRentApply`.
- */
+
 class TblRentApplySearch extends TblRentApply
 {
     public $nickname;
@@ -32,21 +30,11 @@ class TblRentApplySearch extends TblRentApply
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
-        /*$query = TblRentApply::find()
-            ->where(['tbl_rent_apply.wx_id'=>Cache::getWid(),'tbl_rent_apply.status'=>1,'tbl_rent_apply.enable'=>'Y'])
-            ->joinWith('userInfo');*/
         $query = (new \yii\db\Query())
             ->select('t.id,t.name,t.phone,t.add_time,u.nickname,u.headimgurl,u.sex,
-                p.lowest_expense,p.black_white,p.colours,m.type,m.cover_images,m.is_color')
+                p.lowest_expense,p.black_white,p.colours,p.images,m.brand_name,m.model')
             ->from('tbl_rent_apply as t')
             ->where('t.wx_id=:wid and t.status=1 and t.enable="Y"',[':wid'=>Cache::getWid()])
             ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')

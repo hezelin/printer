@@ -29,4 +29,20 @@ class Tool
         }
         return join('&nbsp;&nbsp;',$tmp);
     }
+
+    /*
+     * 租赁价格转换 分钱转换
+     */
+    public static function schemePrice($price)
+    {
+        $data = $price * 100;
+        if(!$data)
+            return '无';
+        if($data<0)
+            return '无';
+        else if($data>=10)
+            return ($data/10).'毛/张';
+        else
+            return $data.'分/张';
+    }
 }

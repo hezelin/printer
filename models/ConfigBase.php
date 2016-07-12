@@ -167,13 +167,13 @@ class ConfigBase
     public static function getMachineInfo($id='',$is_from='')
     {
         $model = (new \yii\db\Query())
-            ->select('m.id,m.series_id, p.name, t.type')
-            ->from('tbl_machine as m')
-            ->leftJoin('tbl_machine_model as t','m.model_id=t.id')
-            ->leftJoin('tbl_brand as p','p.id=t.brand_id')
-            ->where('t.enable="Y" and m.status=1 and t.wx_id=:wid',[':wid'=>Cache::getWid()]);
+            ->select('id,brand_name,model_name')
+            ->from('tbl_machine')
+            ->where(['wx_id'=>Cache::getWid()])
+            ->andWhere(['<','status',11]);
+
         if($is_from)
-            $model->andWhere('t.come_from=:from',[':from'=>$is_from]);
+            $model->andWhere(['come_from'=>$is_from]);
 
         $model = $model->all();
 
@@ -181,7 +181,7 @@ class ConfigBase
         if($model){
             foreach($model as $m)
             {
-                $tmp[ $m['id'] ] = $m['name'].' / '.$m['type'].' / '.$m['series_id'];
+                $tmp[ $m['id'] ] = $m['brand_name'].' / '.$m['model_name'];
             }
         }
 
