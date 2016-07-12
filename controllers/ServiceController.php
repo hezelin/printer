@@ -45,7 +45,7 @@ class ServiceController extends \yii\web\Controller
         $openid = Yii::$app->request->post('openid');
 
         $model = TblMachineService::findOne($fid);
-        $model->enable = 'N';
+        $model->status = 11;
         $model->opera_time = time();
         $fromOpenid = $model->from_openid;
         $toOpenid = $model->openid;
@@ -192,7 +192,8 @@ class ServiceController extends \yii\web\Controller
             $model = (new \yii\db\Query())
                 ->select('name,address,phone')
                 ->from('tbl_rent_apply')
-                ->where(['machine_id'=>$machine_id,'enable'=>'Y'])
+                ->where(['machine_id'=>$machine_id])
+                ->andWhere(['<','status',11])
                 ->one();
 
             $tpl = new WxTemplate(Yii::$app->request->post('wid'));
@@ -277,7 +278,7 @@ class ServiceController extends \yii\web\Controller
             }
 
             // 为维修员推送消息
-            $model = TblRentApply::findOne(['machine_id'=>$machine_id,'enable'=>'Y']);
+            $model = TblRentApply::find()->where(['machine_id'=>$machine_id])->andWhere(['<','status',11])->one();
             $tpl = new WxTemplate(Yii::$app->request->post('wid'));
             $tpl->sendTask(
                 $rendId,

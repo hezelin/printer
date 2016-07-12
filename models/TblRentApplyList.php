@@ -23,7 +23,7 @@ class TblRentApplyList extends TblRentApply
     {
         return [
             [['id', 'wx_id', 'project_id', 'machine_id', 'due_time', 'status', 'add_time','first_rent_time', 'rent_period'], 'integer'],
-            [['openid', 'phone', 'name', 'address', 'apply_word', 'enable','type','series_id','come_from'], 'safe'],
+            [['openid', 'phone', 'name', 'address', 'apply_word', 'type','series_id','come_from'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
         ];
     }
@@ -49,7 +49,6 @@ class TblRentApplyList extends TblRentApply
         $query = TblRentApply::find()->where([
             'tbl_rent_apply.wx_id'=>Cache::getWid(),
             'tbl_rent_apply.status'=>[2,3],
-            'tbl_rent_apply.enable'=>'Y',
         ])->joinWith([
             'machine',
             'machineFault2'
@@ -93,8 +92,8 @@ class TblRentApplyList extends TblRentApply
             ->andFilterWhere(['like', 'tbl_rent_apply.name', $this->name])
             ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'apply_word', $this->apply_word])
-            ->andFilterWhere(['like', 'enable', $this->enable])
-            ->andFilterWhere(['like', 'tbl_machine_model.type', $this->type])
+            ->andFilterWhere(['like', 'tbl_machine_model.type',
+                $this->type])
             ->andFilterWhere(['like', 'tbl_machine.series_id', $this->series_id]);
 
         return $dataProvider;

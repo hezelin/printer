@@ -16,15 +16,10 @@ class TblRentApply extends \yii\db\ActiveRecord
         return $this->hasOne(TblMachine::className(),['id'=>'machine_id']);
     }
 
-    // 这个 维修列表 数据重复
-    public function getMachineFault()
-    {
-        return $this->hasOne(TblMachineService::className(),['machine_id'=>'machine_id'])->onCondition(['tbl_machine_service.enable' => 'Y']);
-    }
     // 去掉重复
     public function getMachineFault2()
     {
-        return $this->hasOne(TblMachineService::className(),['machine_id'=>'machine_id'])->onCondition('tbl_machine_service.enable = "Y" and tbl_machine_service.status < 9');
+        return $this->hasOne(TblMachineService::className(),['machine_id'=>'machine_id'])->onCondition('tbl_machine_service.status < 9');
     }
 
     public function getMachineProject()
@@ -43,7 +38,6 @@ class TblRentApply extends \yii\db\ActiveRecord
             [['wx_id', 'openid', 'project_id', 'due_time', 'phone', 'name', 'add_time'], 'required'],
             [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'rent_period'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
-            [['enable'], 'string'],
             [['colours','monthly_rent','black_white'], 'default','value'=>0],
             [['openid'], 'string', 'max' => 28],
             [['phone'], 'string', 'max' => 11],
@@ -77,7 +71,6 @@ class TblRentApply extends \yii\db\ActiveRecord
             'longitude' => '经度',
             'accuracy' => '精确度',
             'add_time' => '申请时间',
-            'enable' => '是否有效',
         ];
     }
 

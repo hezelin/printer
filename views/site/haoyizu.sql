@@ -6,8 +6,8 @@ t2.maintain_count,t2.series_id,t2.cover,t2.brand_name,t2.model_name,
 t3.id as user_id,t3.name as user_name
 FROM tbl_machine_service t1
 LEFT JOIN tbl_machine t2 ON t1.machine_id=t2.id
-LEFT JOIN tbl_rent_apply t3 ON t1.machine_id=t3.machine_id AND t3.enable='Y'
-WHERE t1.enable='Y'
+LEFT JOIN tbl_rent_apply t3 ON t1.machine_id=t3.machine_id AND t3.status<11
+WHERE t1.status<11
 
 
 -- 2、租赁方案，关联机型
@@ -22,5 +22,5 @@ t2.series_id,t2.cover,t2.brand_name,t2.model_name,t2.come_from,
 t3.status,t3.id as fault_id
 FROM tbl_rent_apply t1
 LEFT JOIN tbl_machine t2 ON t1.machine_id=t2.id
-LEFT JOIN tbl_machine_service t3 ON t1.machine_id=t3.machine_id AND t3.enable='Y'
-WHERE t1.enable='Y'
+LEFT JOIN tbl_machine_service t3 ON t1.machine_id=t3.machine_id AND t3.status < 11
+WHERE t1.status<11

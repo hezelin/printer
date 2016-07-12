@@ -103,7 +103,7 @@ class AdminRentController extends \yii\web\Controller
     public function actionNopass($rent_id)
     {
         $model = TblRentApply::findOne($rent_id);
-        $model->enable = 'N';
+        $model->status = 11;
         if(!$model->save())
             Yii::$app->end(json_encode(['status'=>0,'msg'=>'入库失败']));
 
@@ -177,7 +177,7 @@ class AdminRentController extends \yii\web\Controller
     public function actionDelete($id)
     {
         $model = TblRentApply::findOne($id);
-        $model->enable = 'N';
+        $model->enable = 11;
         if($model->save())
             $model->updateMachineStatus('delete');
 
@@ -277,7 +277,7 @@ class AdminRentController extends \yii\web\Controller
 
 
             // 为维修员推送消息
-            $model = TblRentApply::findOne(['machine_id'=>$machine_id,'enable'=>'Y']);
+            $model = TblRentApply::find()->where(['machine_id'=>$machine_id])->andWhere(['<','status',11])->one();
             $tpl = new WxTemplate(Yii::$app->request->post('wx_id'));
             $tpl->sendTask(
                 $fault_id,
