@@ -34,8 +34,8 @@ class TaskController extends Controller
                     m.address,m.name,m.phone
             ')
             ->from('tbl_machine_service as t')
-            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
-            ->where(['t.enable' => 'Y','t.status' => 1,'t.weixin_id'=>$id])
+            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.status<11')
+            ->where(['t.status' => 1,'t.weixin_id'=>$id])
             ->orderBy('t.id desc')
             ->all();
 

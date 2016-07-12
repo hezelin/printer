@@ -28,8 +28,8 @@ class FaultList
                     m.address,m.name,m.phone
             ')
             ->from('tbl_machine_service as t')
-            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.enable="Y"')
-            ->where(['t.openid' => $openid,'t.enable' => 'Y']);
+            ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.status<11')
+            ->where(['t.openid' => $openid]);
 
         if(Yii::$app->request->get('type') == 'evaluate')
             $model = $model->andWhere(['t.status'=>8]);

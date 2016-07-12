@@ -70,7 +70,7 @@ class FaultController extends Controller
     {
         if( Yii::$app->request->post() )
         {
-            $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->andWhere(['<','status',9])->one();
+            $model = TblMachineService::find()->where(['machine_id'=>$mid])->andWhere(['<','status',9])->one();
             if($model){
                 return $this->render('//tips/homestatus',[
                     'tips'=>'请不要重新申请维修！',
@@ -114,7 +114,7 @@ class FaultController extends Controller
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
 
-        $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->andWhere(['<','status',9])->one();
+        $model = TblMachineService::find()->where(['machine_id'=>$mid])->andWhere(['<','status',9])->one();
         if($model)
             $this->redirect(Url::toRoute(['detail','id'=>$id,'fault_id'=>$model->id]));
 
@@ -263,7 +263,7 @@ class FaultController extends Controller
     public function actionIrecord($id,$mid)
     {
         $this->layout = '/auicss';
-        $model = TblMachineService::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->orderBy('add_time desc')->asArray()->all();
+        $model = TblMachineService::find()->where(['machine_id'=>$mid])->andWhere(['<','status',9])->orderBy('add_time desc')->asArray()->all();
         foreach ($model as $i=>$m) {
             $content = json_decode($m['content'],true);
             $model[$i]['cover'] = $content['cover'][0];
@@ -278,11 +278,6 @@ class FaultController extends Controller
     public function actionCancel($id,$fid)
     {
         return $this->render('cancel',['id'=>$id,'fid'=>$fid,'openid'=>WxBase::openId($id)]);
-    }
-
-    public function actionMrecord()
-    {
-        return $this->render('mrecord');
     }
 
     /*
