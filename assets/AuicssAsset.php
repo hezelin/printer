@@ -12,7 +12,7 @@ class AuicssAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/aui/aui.min.css',
+        'css/aui/css/aui.css',
         'css/home_default.css',
     ];
     public $js = [

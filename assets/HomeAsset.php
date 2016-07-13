@@ -17,6 +17,7 @@ class HomeAsset extends AssetBundle
     ];
     public $js = [
 //        'js/home/button_menu.js'
+        'js/Swiper/dist/js/swiper.min.js'
     ];
     public $depends = [
 //        'app\assets\IscrollAsset',
