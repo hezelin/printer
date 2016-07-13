@@ -61,7 +61,7 @@ class CartController extends Controller
             $totalPrice += $m['price']*$m['item_nums'];
         }
         if(!$model)
-            return $this->render('//tips/homestatus',['tips'=>'购物车是空的！',
+            return $this->render('//tips/home-status',['tips'=>'购物车是空的！',
                 'btnText'=>'去商城购物','btnUrl'=>Url::toRoute(['/shop/item/list','id'=>$id])]);
 
         return $this->render('list',['model'=>$model,'total'=>$total,'totalPrice'=>$totalPrice,'id'=>$id]);

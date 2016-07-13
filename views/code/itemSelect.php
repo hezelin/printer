@@ -1,5 +1,7 @@
 <?php
     $this->title = '生成配件码';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <?php

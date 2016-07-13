@@ -88,12 +88,12 @@ class ServiceController extends \yii\web\Controller
         }catch(\Exception $e) {
             $transaction->rollBack();
             if($type == 2)
-                return $this->render('//tips/homestatus',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+                return $this->render('//tips/home-status',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
             return json_encode(['status'=>0,'msg'=>'入库失败!']);
         }
 
         if($type == 2)
-            return $this->render('//tips/homestatus',['tips'=>'维修申请取消成功！','btnText'=>'返回首页','btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])]);
+            return $this->render('//tips/home-status',['tips'=>'维修申请取消成功！','btnText'=>'返回首页','btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])]);
         return json_encode(['status'=>1]);
     }
 

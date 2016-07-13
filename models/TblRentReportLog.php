@@ -20,7 +20,7 @@ class TblRentReportLog extends TblRentReport
         return [
             [['id', 'wx_id', 'machine_id', 'colour', 'black_white', 'status', 'add_time'], 'integer'],
             [['total_money', 'exceed_money'], 'number'],
-            [['sign_img', 'name', 'enable'], 'safe'],
+            [['sign_img', 'name'], 'safe'],
         ];
     }
 
@@ -71,8 +71,7 @@ class TblRentReportLog extends TblRentReport
         ]);
 
         $query->andFilterWhere(['like', 'sign_img', $this->sign_img])
-            ->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'enable', $this->enable]);
+            ->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

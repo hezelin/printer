@@ -171,7 +171,7 @@ class WeixinController extends \yii\web\Controller
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();
-            return $this->render('//tips/homestatus',['tips'=>'开通失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+            return $this->render('//tips/home-status',['tips'=>'开通失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
         }
         return $this->redirect(['index']);
     }

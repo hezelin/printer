@@ -10,8 +10,7 @@ class TblRentReport extends \yii\db\ActiveRecord
 
     public function getRentApply()
     {
-        return $this->hasOne(TblRentApply::className(), ['machine_id' => 'machine_id'])
-            ->where('tbl_rent_apply.enable="Y"');
+        return $this->hasOne(TblRentApply::className(), ['machine_id' => 'machine_id'])->onCondition('tbl_rent_apply.status < 11');
     }
 
     public static function tableName()
@@ -25,7 +24,6 @@ class TblRentReport extends \yii\db\ActiveRecord
             [['wx_id', 'colour', 'black_white', 'status', 'machine_id', 'add_time'], 'integer'],
             [['wx_id', 'black_white', 'total_money', 'sign_img', 'name', 'machine_id', 'add_time','next_rent'], 'required'],
             [['total_money', 'exceed_money'], 'number'],
-            [['enable'], 'string'],
             [['colour'],'default','value'=>0],
             [['sign_img'], 'string', 'max' => 80],
             [['name'], 'string', 'max' => 100]
@@ -46,7 +44,6 @@ class TblRentReport extends \yii\db\ActiveRecord
             'name' => '经手人',
             'status' => '状态',
             'add_time' => '添加时间',
-            'enable' => '是否有效',
             'next_rent' => '下次收租时间'
         ];
     }

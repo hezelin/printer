@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\models\TblMachineService;
-use app\models\TblRentApply;
 use app\models\WxBase;
 use app\models\TblUserMaintain;
 use app\models\ConfigBase;
@@ -12,11 +11,7 @@ use yii\helpers\Url;
 
 class CodeapiController extends \yii\web\Controller
 {
-    public $layout = 'home';
-    public function actionBind()
-    {
-        return $this->render('bind');
-    }
+    public $layout = '/home';
 
     /*
      * 机器二维码扫描入口
@@ -28,10 +23,13 @@ class CodeapiController extends \yii\web\Controller
         $rent= (new \yii\db\Query())
             ->select('id,wx_id,project_id')
             ->from('tbl_rent_apply')
-            ->where(['machine_id'=>$id,'enable'=>'Y'])
+            ->where(['machine_id'=>$id])
+            ->andWhere(['<','status',11])
             ->one();
         if(!$rent)
-            return $this->render('//tips/homestatus',['tips'=>'租赁用户不存在']);
+        {
+            return $this->render('//tips/home-status',['tips'=>'租赁用户不存在']);
+        }
 
         $wid = $rent['wx_id'];
 
@@ -41,11 +39,11 @@ class CodeapiController extends \yii\web\Controller
         if(!$this->checkMaintain($openid)) {             // 维修员页面跳转
 //            查看维修状态
             $model = TblMachineService::find()
-                ->where(['machine_id' => $id, 'openid' => $openid, 'enable' => 'Y'])
+                ->where(['machine_id' => $id, 'openid' => $openid])
                 ->andWhere(['<', 'status', 9])
                 ->one();
             if (!$model) {                                 // 没有维修申请，机器信息、录入机器坐标
-                return $this->render('firstmachine', ['id' => $id, 'wid' => $wid,'rent_id'=>$rent['id'] ]);
+                return $this->render('first-machine', ['id' => $id, 'wid' => $wid,'rent_id'=>$rent['id'] ]);
             }
             $status = $model['status'];
             switch ($status) {
@@ -159,7 +157,7 @@ class CodeapiController extends \yii\web\Controller
         $data= (new \yii\db\Query())
             ->select('status,id')
             ->from('tbl_machine_service')
-            ->where(['machine_id' => $id, 'enable' => 'Y'])
+            ->where(['machine_id' => $id])
             ->andWhere(['<', 'status', 9])
             ->one();
 
@@ -188,19 +186,4 @@ class CodeapiController extends \yii\web\Controller
         return TblUserMaintain::findOne(['openid'=>$openid])? false:true;
     }
 
-    /*
-     * 跳转维修员页面
-     */
-    private function maintain()
-    {
-
-    }
-
-    /*
-     * 跳转客户扫描页面
-     */
-    private function user()
-    {
-
-    }
 }

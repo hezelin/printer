@@ -11,7 +11,7 @@ $this->title = '机器维修记录';
         <ul class="aui-list-view">
             <?php foreach($model as $row):?>
                 <li class="aui-list-view-cell aui-img">
-                    <a href="<?=url::toRoute(['/maintain/fault/detail','id'=>$id,'fault_id'=>$row['id']])?>">
+                    <a class="aui-arrow-right" href="<?=url::toRoute(['/maintain/fault/detail','id'=>$id,'fault_id'=>$row['id']])?>">
 
                         <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
                         <div class="aui-img-body">

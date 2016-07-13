@@ -11,7 +11,7 @@ $this->title = '任务记录';
         <ul class="aui-list-view">
             <?php foreach($model as $row):?>
                 <li class="aui-list-view-cell aui-img">
-                    <a href="<?=Url::toRoute(['/maintain/task/detail','id'=>$row['id']])?>">
+                    <a class="aui-arrow-right" href="<?=Url::toRoute(['/maintain/task/detail','id'=>$row['id']])?>">
 
                         <img class="aui-img-object aui-pull-left" src="<?=$row['fault_cover']?>">
                         <div class="aui-img-body">

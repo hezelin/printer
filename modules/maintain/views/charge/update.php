@@ -119,7 +119,7 @@ $this->title = '修改资料';
     ])?>;
 
     <?php $this->beginBlock('JS_END') ?>
-    var localId;
+    var localId = '<?=$model->sign_img?>';
     $(function(){
         $('.rent-num').change(function(){
             var money = 0;
@@ -148,6 +148,17 @@ $this->title = '修改资料';
             }
         });
 
+        wx.uploadImage({
+            localId: localId,
+            success: function (res) {
+                document.getElementById("sign-img").value = res.serverId;
+            },
+            fail: function (res) {
+                alert(JSON.stringify(res));
+            }
+        });
+
+
         $("#wechat-submit").click(function () {
             var step = 0;
             $.each( $('.check-btn'),function(){
@@ -158,23 +169,12 @@ $this->title = '修改资料';
                 }
             });
             if( step == 1) return false;
-            if( localId ==  undefined ){
+            if( localId ==  undefined || localId=='' ){
                 alert("请选择签名图片");
                 return false;
             }
 
-            wx.uploadImage({
-                localId: localId,
-                success: function (res) {
-                    document.getElementById("sign-img").value = res.serverId;
-                    document.getElementById("wechat-form").submit();
-                },
-                fail: function (res) {
-                    alert(JSON.stringify(res));
-                }
-            });
-
-            return false;
+            document.getElementById("wechat-form").submit();
         });
     });
     <?php $this->endBlock();?>

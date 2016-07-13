@@ -90,7 +90,7 @@ class ChartsController extends \yii\web\Controller
                 m.model_name,m.series_id,m.brand_name as brand')
             ->from('tbl_rent_apply t')
             ->leftJoin('tbl_machine m','t.machine_id=m.id')
-            ->where('t.machine_id=:mid and t.enable="Y"',[':mid'=>$machine_id])
+            ->where('t.machine_id=:mid and t.status<11',[':mid'=>$machine_id])
             ->orderBy('t.id desc')
             ->one();
 
