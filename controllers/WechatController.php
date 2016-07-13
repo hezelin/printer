@@ -44,7 +44,16 @@ class WechatController extends \yii\web\Controller
 
             return $this->render('maintain',['setting'=>$setting,'num'=>$num]);
         }
-        return $this->render('index',['setting'=>$setting]);
+        $phone = (new \yii\db\Query())
+            ->select('phone')
+            ->from('tbl_store_setting')
+            ->where(['wx_id'=>$id])
+            ->scalar();
+
+        return $this->render('index',[
+            'setting'=>$setting,
+            'phone'=>$phone
+        ]);
     }
 
     /*

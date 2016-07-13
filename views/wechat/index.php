@@ -1,7 +1,5 @@
 <?php
 use yii\helpers\Url;
-use app\components\CarouselWidget;
-use app\components\FixedmenuWidget;
 use app\assets\HomeAsset;
 HomeAsset::register($this);
 
@@ -157,7 +155,7 @@ $this->registerCssFile('/css/font-icon/im1/font-icon.css',['depends'=>['app\asse
         <div class="aui-col-xs-6 aui-text-center aui-padded-5-10">
             <a href="javascript:void(0);" class="aui-padded-5 border-r aui-block bgcolor-r-active">
                 <span class="icon-uniE905" ></span>
-                <span>客服</span>
+                <span>客服<?=$phone?></span>
             </a>
         </div>
     </div>
