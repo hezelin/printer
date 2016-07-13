@@ -37,7 +37,7 @@ class IController extends Controller
             ->where('openid=:openid and wx_id=:wid and enable="Y"',[':openid'=>$openid,':wid'=>$id])
             ->all();
         if(!$model)
-            return $this->render('//tips/homestatus',['tips'=>'还没有订单！',
+            return $this->render('//tips/home-status',['tips'=>'还没有订单！',
                 'btnText'=>'去商城购物','btnUrl'=>Url::toRoute(['/shop/item/list','id'=>$id])]);
 
         foreach($model as $k=>&$r){

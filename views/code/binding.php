@@ -1,5 +1,7 @@
 <?php
-$this->title = '维修员绑定吗';
+$this->title = '维修员绑定';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <div class="col-md-3 col-md-offset-1 bg-info">

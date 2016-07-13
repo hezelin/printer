@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\maintain\controllers;
 
 use app\models\TblRentApply;
 use app\models\TblRentReport;
@@ -32,7 +32,7 @@ class ChargeController extends \yii\web\Controller
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 $model->save();
-                $rent = TblRentApply::find()->where('enable="Y" and machine_id=:mid',[':mid'=>$machine_id])->one();
+                $rent = TblRentApply::find()->where('status<11 and machine_id=:mid',[':mid'=>$machine_id])->one();
                 $rent->first_rent_time = strtotime( $model->next_rent );
                 $rent->save();
                 $transaction->commit();
@@ -44,7 +44,7 @@ class ChargeController extends \yii\web\Controller
                     'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
                 ]);
             }
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'资料上传成功',
                 'btnText'=>'返回主页',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
@@ -56,13 +56,13 @@ class ChargeController extends \yii\web\Controller
         $rent = (new \yii\db\Query())
             ->select('monthly_rent,black_white,colours,black_amount,colours_amount,rent_period,name,address, first_rent_time')
             ->from('tbl_rent_apply')
-            ->where('machine_id=:mid and enable="Y"',[':mid'=>$machine_id])
+            ->where('machine_id=:mid and status<11',[':mid'=>$machine_id])
             ->orderBy('id desc')
             ->one();
         $lastCharge = (new \yii\db\Query())
             ->select('colour,black_white,total_money,exceed_money,add_time')
             ->from('tbl_rent_report')
-            ->where('enable="Y" and machine_id=:mid',[':mid'=>$machine_id])
+            ->where('machine_id=:mid and status<11',[':mid'=>$machine_id])
             ->orderBy('id desc')
             ->one();
 
@@ -92,7 +92,7 @@ class ChargeController extends \yii\web\Controller
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 $model->save();
-                $rent = TblRentApply::find()->where('enable="Y" and machine_id=:mid',[':mid'=>$model->machine_id])->one();
+                $rent = TblRentApply::find()->where('machine_id=:mid and status<11',[':mid'=>$model->machine_id])->one();
                 $rent->first_rent_time = strtotime( $model->next_rent );
                 $rent->save();
                 $transaction->commit();
@@ -104,7 +104,7 @@ class ChargeController extends \yii\web\Controller
                     'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
                 ]);
             }
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'资料上传成功',
                 'btnText'=>'返回主页',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
@@ -113,15 +113,15 @@ class ChargeController extends \yii\web\Controller
             ]);
         }
         $rent = (new \yii\db\Query())
-            ->select('monthly_rent,black_white,colours,rent_period,name,address, first_rent_time')
+            ->select('monthly_rent,black_white,colours,black_amount,colours_amount,rent_period,name,address, first_rent_time')
             ->from('tbl_rent_apply')
-            ->where('machine_id=:mid and enable="Y"',[':mid'=>$model->machine_id])
+            ->where('machine_id=:mid and status<11',[':mid'=>$model->machine_id])
             ->orderBy('id desc')
             ->one();
         $lastCharge = (new \yii\db\Query())
             ->select('colour,black_white,total_money,exceed_money,add_time')
             ->from('tbl_rent_report')
-            ->where('enable="Y" and machine_id=:mid',[':mid'=>$model->machine_id])
+            ->where('machine_id=:mid and status<11',[':mid'=>$model->machine_id])
             ->andWhere(['<','id',$model->id])
             ->orderBy('id desc')
             ->one();

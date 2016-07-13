@@ -3,6 +3,7 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 $this->title = '收租记录';
+$this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
@@ -16,16 +17,18 @@ $this->title = '收租记录';
         'colour',
         'total_money',
         'exceed_money',
-        [
+        'brand_name',
+        'model_name',
+        /*[
             'label'=>'机型',
             'format'=>'html',
             'value'=>function($model){
                 if( isset( $model->rentApply->machine->machineModel ) )
                 return $model->rentApply->machine->machineModel->brand->name . $model->rentApply->machine->machineModel->type;
             }
-        ],
-        'rentApply.name',
-        'rentApply.address',
+        ],*/
+        'user_name',
+        'address',
         [
             'attribute'=>'sign_img',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
@@ -49,10 +52,7 @@ $this->title = '收租记录';
         ],
         [
             'attribute'=>'add_time',
-            'label'=>'记录时间',
-            'value'=>function($model){
-                return date('Y-m-d H:i',$model->add_time);
-            }
+            'format'=>['date','Y-m-d H:i'],
         ],
         [
             'class' => 'yii\grid\ActionColumn',

@@ -4,8 +4,8 @@ use yii\helpers\Html;
 use yii\bootstrap\Modal;
 use yii\helpers\Url;
 
-
-$this->title = '租借列表';
+$this->title = '租赁列表';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <style>
     .high-remark{

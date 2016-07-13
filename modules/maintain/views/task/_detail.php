@@ -21,7 +21,7 @@ use yii\helpers\Url;
             </li>
 
             <li class="aui-list-view-cell">
-                <a class="aui-arrow-right" href="<?=Url::toRoute(['/s/detail2','id'=>$model['id']])?>">
+                <a class="aui-arrow-right" href="<?=Url::toRoute(['/maintain/fault/detail2','id'=>$model['id']])?>">
                     <div class="aui-col-xs-3 aui-text-default">故障类型</div>
                     <div class="aui-col-xs-9">
                         <?=\app\models\ConfigBase::getFaultStatus($model['fault_type'])?>

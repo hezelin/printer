@@ -293,7 +293,7 @@ use yii\bootstrap\Modal;
                             <span><?=$d['phone']?></span>
                         </div>
                         <div class="fault-data">
-                            <h4><?=$d['brand'],$d['type']?></h4>
+                            <h4><?=$d['brand_name'],$d['model']?></h4>
                             <span>月租:<b class="high-show"><?=$d['lowest_expense']?></b> , 黑白:<b class="high-show"><?=$d['black_white']?></b> , 彩色:<b class="high-show"><?=$d['colours']?></b></span>
                         </div>
                         <div class="fault-btn">

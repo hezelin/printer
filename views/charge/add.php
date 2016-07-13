@@ -1,5 +1,6 @@
 <?php
     $this->title = '添加收租';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <ul class="list-group">

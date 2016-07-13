@@ -6,6 +6,7 @@ use app\components\LoadingWidget;
 use kartik\grid\GridView;
 
 $this->title = '店铺装修';
+$this->params['breadcrumbs'][] = $this->title;
 $this->registerJsFile("/js/jquery.min.js",['position' => \yii\web\View::POS_HEAD]);
 $this->registerJsFile("/js/myjs.js");
 ?>

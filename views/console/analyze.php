@@ -3,7 +3,9 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\jui\DatePicker;
 
-    $this->title = '数据统计'
+    $this->title = '数据统计';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <style>
     .bg-1{
