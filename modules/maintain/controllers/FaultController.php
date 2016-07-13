@@ -51,7 +51,7 @@ class FaultController extends Controller
                     $transaction->rollBack();
                     Yii::$app->session->setFlash('error','入库失败!');
                 }
-                return $this->render('//tips/homestatus',[
+                return $this->render('//tips/home-status',[
                     'tips'=>'维修完成！',
                     'btnText'=>'返回维修列表',
                     'btnText2'=>'返回首页',
@@ -72,7 +72,7 @@ class FaultController extends Controller
         {
             $model = TblMachineService::find()->where(['machine_id'=>$mid])->andWhere(['<','status',9])->one();
             if($model){
-                return $this->render('//tips/homestatus',[
+                return $this->render('//tips/home-status',[
                     'tips'=>'请不要重新申请维修！',
                     'btnText'=>'返回主页',
                     'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
@@ -103,7 +103,7 @@ class FaultController extends Controller
             $model->load(Yii::$app->request->post());
             if( $model->save() ){
 
-                return $this->render('//tips/homestatus',[
+                return $this->render('//tips/home-status',[
                     'tips'=>'维修申请成功！',
                     'btnText'=>'正在返回主页...',
                     'jumpUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
@@ -198,7 +198,7 @@ class FaultController extends Controller
     {
         $model = TblMachineService::findOne($fault_id);
         if($model->status == 9 )
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'请不要重复评价！',
                 'btnText'=>'返回',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
@@ -223,7 +223,7 @@ class FaultController extends Controller
             if( !$model->save())
                 Yii::$app->end(json_encode(['status'=>0,'msg'=>'维修进度错误']));
 
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'感谢您的评价',
                 'btnText'=>'返回',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$wx_id])
@@ -246,7 +246,7 @@ class FaultController extends Controller
             ->where('id=:id and status="9"',[':id'=>$id])
             ->one();
         if(!$model)
-            return $this->render('//tips/homestatus',['tips'=>'不存在这个评价']);
+            return $this->render('//tips/home-status',['tips'=>'不存在这个评价']);
         return $this->render('showevaluate',['model'=>$model]);
     }
 

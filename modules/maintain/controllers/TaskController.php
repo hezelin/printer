@@ -229,7 +229,7 @@ class TaskController extends Controller
 
         if(  $model->status == $post['status'] )
         {
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'请不要重复提交！',
                 'btnText'=>'返回主页',
                 'btnUrl'=> Url::toRoute(['wechat/index','id'=>$model['weixin_id']])
@@ -240,7 +240,7 @@ class TaskController extends Controller
         // 确认接单时间记录, 计数距离  latitude、longitude
         if($model->openid && $model->openid != $openid)           // 任务已重新分配给其他维修员，接单失败！
         {
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'任务已重新分配给其他维修员！',
                 'btnText'=>'返回主页',
                 'btnUrl'=> Url::toRoute(['wechat/index','id'=>$model['weixin_id']])
@@ -285,10 +285,10 @@ class TaskController extends Controller
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();
-            return $this->render('//tips/homestatus',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+            return $this->render('//tips/home-status',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
         }
 
-        return $this->render('//tips/homestatus',[
+        return $this->render('//tips/home-status',[
             'tips'=>'接单成功',
             'btnText'=>'返回任务中 ...',
             'jumpUrl'=>Url::toRoute(['m/task','id'=>$wid]),
@@ -309,7 +309,7 @@ class TaskController extends Controller
         $model = TblMachineService::findOne($id);
         if(  $model->status ==  $status )
         {
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'请不要重复提交！',
                 'btnText'=>'返回主页',
                 'btnUrl'=> Url::toRoute(['wechat/index','id'=>$model['weixin_id']])

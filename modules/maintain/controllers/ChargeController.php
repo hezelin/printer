@@ -44,7 +44,7 @@ class ChargeController extends \yii\web\Controller
                     'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
                 ]);
             }
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'资料上传成功',
                 'btnText'=>'返回主页',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
@@ -104,7 +104,7 @@ class ChargeController extends \yii\web\Controller
                     'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
                 ]);
             }
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'资料上传成功',
                 'btnText'=>'返回主页',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),

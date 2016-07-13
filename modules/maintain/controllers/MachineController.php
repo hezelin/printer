@@ -25,7 +25,7 @@ class MachineController extends Controller
 
             if( $model->save() ) {
 
-                return $this->render('//tips/homestatus', [
+                return $this->render('//tips/home-status', [
                     'tips' => '机器位置录入成功！',
                     'btnUrl' => 'javascript:history.go(-1)',
                     'btnText' => '返回扫描页',

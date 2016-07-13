@@ -42,7 +42,7 @@ class OrderController extends Controller
                 ->orderBy('item_id')
                 ->all();
             if(!$items)
-                return $this->render('//tips/homestatus',['tips'=>'请不要重复提交！',
+                return $this->render('//tips/home-status',['tips'=>'请不要重复提交！',
                     'btnText'=>'返回','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
 
             $model->order_data = json_encode($items);
@@ -65,7 +65,7 @@ class OrderController extends Controller
                 $totalPrice -= $r['price']*$r['item_nums'];
             }
             if( $totalPrice)
-                return $this->render('//tips/homestatus',['tips'=>'价格出错！',
+                return $this->render('//tips/home-status',['tips'=>'价格出错！',
                     'btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
 
             $connection = Yii::$app->db;
@@ -82,7 +82,7 @@ class OrderController extends Controller
                 if($model->pay_score > 0){
                     $score = TblUserCount::findOne(['wx_id'=>$id,'openid'=>$openid]);
                     if($score->score < $model->pay_score)
-                        return $this->render('//tips/homestatus',['tips'=>'积分不够！',
+                        return $this->render('//tips/home-status',['tips'=>'积分不够！',
                             'btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
                     $score->score = $score->score - $model->pay_score;
                     $score->save();
@@ -95,12 +95,12 @@ class OrderController extends Controller
             } catch(\Exception $e) {
                 $transaction->rollBack();
 //                echo $e;
-                return $this->render('//tips/homestatus',['tips'=>'库存不足，下单失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+                return $this->render('//tips/home-status',['tips'=>'库存不足，下单失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
             }
 
             return $this->render('pay',['id'=>$id,'order_id'=>$model->order_id,'price'=>$model->total_price,'payStatus'=>$model->pay_status]);
 
-//            return $this->render('//tips/homestatus',['tips'=>'订单提交成功','btnText'=>'返回我的订单','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
+//            return $this->render('//tips/home-status',['tips'=>'订单提交成功','btnText'=>'返回我的订单','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
         }
 
 //        $openid = 'oXMyut8n0CaEuXxxKv2mkelk_uaY';
@@ -147,7 +147,7 @@ class OrderController extends Controller
             ->where('t.order_id=:order_id and t.enable="Y"',[':order_id'=>$order_id])
             ->one();
         if(!$model)
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'订单不存在！',
                 'btnText'=>'返回我的订单',
                 'btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]
@@ -165,7 +165,7 @@ class OrderController extends Controller
     {
         $model = TblShopOrder::findOne($order_id);
         if(!$model)
-            return $this->render('//tips/homestatus',['tips'=>'订单不存在!','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1)']);
+            return $this->render('//tips/home-status',['tips'=>'订单不存在!','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1)']);
         $price = $model->total_price;
         $payStatus = $model->pay_status;
         unset($model);

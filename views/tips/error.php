@@ -3,6 +3,7 @@
 use yii\bootstrap\Alert;
 use yii\helpers\Html;
 $this->title = '状态提示';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php
