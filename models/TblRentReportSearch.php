@@ -20,7 +20,7 @@ class TblRentReportSearch extends TblRentReport
         return [
             [['id', 'wx_id', 'machine_id', 'colour', 'black_white', 'status', 'add_time'], 'integer'],
             [['total_money', 'exceed_money'], 'number'],
-            [['sign_img', 'name', 'enable'], 'safe'],
+            [['sign_img', 'name'], 'safe'],
         ];
     }
 
@@ -45,11 +45,7 @@ class TblRentReportSearch extends TblRentReport
         $query = TblRentReport::find()
             ->joinWith([
                 'rentApply'=>function($query){
-                    $query->joinWith(['machine'=>function($query){
-                        $query->joinWith(['machineModel'=>function($query){
-                            $query->joinWith('brand');
-                        }]);
-                    }]);
+                    $query->joinWith(['machine']);
                 }
             ])
             ->where(['tbl_rent_report.wx_id'=>Cache::getWid()]);
@@ -81,8 +77,7 @@ class TblRentReportSearch extends TblRentReport
         ]);
 
         $query->andFilterWhere(['like', 'sign_img', $this->sign_img])
-            ->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'enable', $this->enable]);
+            ->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

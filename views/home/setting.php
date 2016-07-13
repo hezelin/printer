@@ -6,6 +6,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = '店铺设置';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <div class="alert alert-info" role="alert">

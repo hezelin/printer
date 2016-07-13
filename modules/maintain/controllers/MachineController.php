@@ -11,7 +11,7 @@ use Yii;
 
 class MachineController extends Controller
 {
-    public $layout = '/auicss';
+    public $layout = '/home';
 
     /*
      * 提交机器位置
@@ -20,7 +20,7 @@ class MachineController extends Controller
     public function actionPosition($mid)
     {
         if(Yii::$app->request->post()){
-            $model = TblRentApply::find()->where(['machine_id'=>$mid,'enable'=>'Y'])->one();
+            $model = TblRentApply::find()->where(['machine_id'=>$mid])->andWhere(['<','status',11])->one();
             $model->load(Yii::$app->request->post());
 
             if( $model->save() ) {

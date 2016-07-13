@@ -3,6 +3,7 @@ use yii\helpers\Url;
 use app\components\CarouselWidget;
 
 $this->title = $setting['store_name'];
+$this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCssFile('/css/home/'.$setting['style']);
 //$this->registerJsFile('/js/iscroll5.js');

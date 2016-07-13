@@ -1,5 +1,7 @@
 <?php
 $this->title = '公众号二维码';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <h4>公众号二维码</h4>

@@ -3,6 +3,7 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 $this->title = '收租记录';
+$this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
