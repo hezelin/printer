@@ -6,6 +6,7 @@
 namespace app\modules\shop\controllers;
 
 use app\models\WxBase;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use Yii;
 
@@ -47,6 +48,13 @@ class ItemController extends Controller
             ]):json_encode(['status'=>0,'msg'=>'没有数据了','startId'=>0]);
         }
 
+        $category = (new \yii\db\Query())
+            ->select('id,name')
+            ->from('tbl_category')
+            ->where(['wx_id'=>$id])
+            ->all();
+        $category = $category? ArrayHelper::map($category,'id','name'):[];
+
         $startId = $model? $model[count($model)-1]['id']:0;
 
         return $this->render('list',[
@@ -54,6 +62,7 @@ class ItemController extends Controller
             'startId'=>$startId,
             'id'=>$id,
             'len'=>$len,
+            'category'=>$category
         ]);
     }
 

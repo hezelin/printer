@@ -3,7 +3,6 @@ namespace app\controllers;
 use app\models\Cache;
 use app\models\WxBase;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Url;
 use app\models\ToolBase;
 use Yii;
 use app\models\Carousel;
@@ -11,7 +10,6 @@ use app\models\UploadForm;
 use yii\web\UploadedFile;
 use app\models\TblStoreSetting;
 use yii\web\NotFoundHttpException;
-use yii\web\YiiAsset;
 
 class HomeController extends \yii\web\Controller
 {

@@ -25,8 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
     'body' => Yii::$app->session->getFlash('error'),
     ]);
 ?>
-<hr>
-    <h4>&nbsp;店铺基础设置</h4>
 
 <hr>
     <?php
@@ -34,19 +32,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'id' => 'setting-form',
         'options' => ['id' => 'storesetting-form','class' => 'form-horizontal'],
         'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-5\">{input}</div>\n<div class=\"col-lg-5\">{error}</div>",
+            'template' => "{label}\n<div class=\"col-lg-5\">{input}</div>\n<div class=\"col-lg-5\">{hint}{error}</div>",
             'labelOptions' => ['class' => 'col-lg-2 control-label'],
         ],
     ])
     ?>
 
-    <?= Html::tag('div',
-        Html::label('微信绑定','websettingform-wechat',['class' => 'col-lg-2 control-label']).
-        Html::tag('div',Yii::$app->session['wechat']['name'],['id' => 'websettingform-wechat', 'class' => 'col-lg-5', 'style' => 'padding-top: 7px;']),
-        ['class' => 'form-group']) ?>
     <?= $form->field($model, 'store_name')->textInput(['value'=>$model->store_name?$model->store_name:Yii::$app->session['wechat']['name']]) ?>
-    <?= $form->field($model, 'menu_name')->textInput() ?>
-    <?= $form->field($model, 'phone')->textInput() ?>
+    <?= $form->field($model, 'menu_name')->textInput()->hint('公众号菜单名字') ?>
+    <?= $form->field($model, 'phone')->textInput(['placeholder'=>'用户微信端显示为客服电话'])->hint('公众号客服电话') ?>
     <?= $form->field($model, 'address')->textInput() ?>
     <?= $form->field($model, 'style')->dropDownList(['home-default.css'=>'默认']) ?>
 
