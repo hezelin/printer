@@ -39,7 +39,7 @@ class ViewFaultCancel extends \yii\db\ActiveRecord
             'opera' => '操作者',
             'opera_name' => '取消者',
             'type' => '系统/用户',
-            'add_time' => '添加时间',
+            'add_time' => '取消时间',
             'reason' => '取消原因',
             'fault_type' => '故障类型',
             'content' => '内容（cover,voice)',

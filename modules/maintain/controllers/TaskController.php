@@ -222,6 +222,7 @@ class TaskController extends Controller
      */
     public function actionProcess($id,$openid)
     {
+        $this->layout = '/home';
         set_time_limit(0);
         $post = Yii::$app->request->post('TblServiceProcess');
 
@@ -270,7 +271,7 @@ class TaskController extends Controller
             $tpl->sendProcess(
                 $fromOpenid,
                 url::toRoute(['/maintain/fault/detail','id'=>$wid,'fault_id'=>$fault_id],'http'),
-                '维修员：'.$maintainer['name'].'已接单，手机：'.$maintainer['phone'].'，距离：'.$respKm.'公里',
+                '维修员：'.$maintainer['name'].'已接单，'.($maintainer['phone']? '手机：'.$maintainer['phone'].',':'').'距离：'.$respKm.'公里',
                 $applyTime
             );
 

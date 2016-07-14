@@ -25,8 +25,8 @@ if($model["latitude"])
     $map = <<< MAP
 document.querySelector("#map-btn").onclick = function () {
             wx.openLocation({
-                latitude: '{$model["latitude"]}',
-                longitude: '{$model["longitude"]}',
+                latitude: {$model["latitude"]},
+                longitude: {$model["longitude"]},
                 name: "维修地点",
                 address: "'{$model["address"]}'",
                 scale: 16,
@@ -54,7 +54,6 @@ MAP;
         });
         return false;
     };
-
     document.querySelector("#previewImage").onclick = function () {
             wx.previewImage({
               current: "'.$model["fault_cover"].'",
