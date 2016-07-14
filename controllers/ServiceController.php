@@ -17,6 +17,7 @@ use app\models\TblUserMaintain;
 use app\models\views\ViewFaultDataSearch;
 use app\models\views\ViewRentFaultMachineSearch;
 use app\models\WxTemplate;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 
 use Yii;
@@ -54,7 +55,8 @@ class ServiceController extends \yii\web\Controller
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $model->save();                         // 更改维修资料表
+            if(!$model->save())                        // 更改维修资料表
+                throw new Exception('维修表');
 
             $faultStatus = $model->status;          // 维修进度状态
             $model = new TblFaultCancelLog();
@@ -64,8 +66,8 @@ class ServiceController extends \yii\web\Controller
             $model->add_time = time();
             $model->reason = $text;
             $model->wx_id = $id;
-            $model->save();
-
+            if(!$model->save())
+                throw new Exception('维修记录表');
 
             if($faultStatus < 8)   {
                 // 为管理员推送消息
@@ -76,11 +78,12 @@ class ServiceController extends \yii\web\Controller
 
                 if( $toOpenid ){
                     $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
-                    // 用户待修计数 减一
+                    // 维修员待修计数 减一
                     $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid]);
                     if( $model->wait_repair_count > 0)
-                        $model->wait_repair_count = $model->wait_repair_count - 1;
-                    $model->save();
+                        $model->wait_repair_count -= 1;
+                    if(!$model->save())
+                        throw new Exception('维修员待修计数');
                 }
             }
 
@@ -94,7 +97,7 @@ class ServiceController extends \yii\web\Controller
 
         if($type == 2)
             return $this->render('//tips/home-status',[
-                'tips'=>'维修申请取消成功！',
+                'tips'=>'维修申请取消成功,正在返回首页...',
                 'btnText'=>'返回首页',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
                 'jumpUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
