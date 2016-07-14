@@ -14,6 +14,7 @@ use app\models\TblRentApply;
 use app\models\TblRentApplyList;
 use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
+use app\models\views\ViewFaultCancelSearch;
 use app\models\views\ViewFaultDataSearch;
 use app\models\views\ViewRentFaultMachineSearch;
 use app\models\WxTemplate;
@@ -46,6 +47,7 @@ class ServiceController extends \yii\web\Controller
         $openid = Yii::$app->request->post('openid');
 
         $model = TblMachineService::findOne($fid);
+        $faultStatus = $model->status;                  // 维修进度状态
         $model->status = 11;
         $model->opera_time = time();
         $fromOpenid = $model->from_openid;
@@ -58,10 +60,11 @@ class ServiceController extends \yii\web\Controller
             if(!$model->save())                        // 更改维修资料表
                 throw new Exception('维修表');
 
-            $faultStatus = $model->status;          // 维修进度状态
             $model = new TblFaultCancelLog();
             $model->service_id = $serviceId;
             $model->opera = $openid? $openid:'user:'.(Yii::$app->user->id);
+            $model->status = $faultStatus;
+            $model->opera_name = Yii::$app->user->isGuest? null:Yii::$app->user->identity->name;
             $model->type = $type;
             $model->add_time = time();
             $model->reason = $text;
@@ -69,23 +72,23 @@ class ServiceController extends \yii\web\Controller
             if(!$model->save())
                 throw new Exception('维修记录表');
 
-            if($faultStatus < 8)   {
+//            if($faultStatus != 9)   {                   // 已经完成评价了，用户删除维修不影响维修员操作
                 // 为管理员推送消息
-                $tpl = new WxTemplate($id);
+            $tpl = new WxTemplate($id);
 //                $url = Url::toRoute(['cancel','id'=>$model->id],'http');
-                $url = '';
-                $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
+            $url = '';
+            $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
 
-                if( $toOpenid ){
-                    $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
-                    // 维修员待修计数 减一
-                    $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid]);
-                    if( $model->wait_repair_count > 0)
-                        $model->wait_repair_count -= 1;
-                    if(!$model->save())
-                        throw new Exception('维修员待修计数');
-                }
+            if( $toOpenid ){
+                $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
+                // 维修员待修计数 减一
+                $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid]);
+                if( $model->wait_repair_count > 0)
+                    $model->wait_repair_count -= 1;
+                if(!$model->save())
+                    throw new Exception('维修员待修计数');
             }
+//            }
 
             $transaction->commit();
         }catch(\Exception $e) {
@@ -307,7 +310,7 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionCancelList()
     {
-        $searchModel = new TblFaultCancelLogSearch();
+        $searchModel = new ViewFaultCancelSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('cancel-list',['dataProvider'=>$dataProvider,'searchModel' => $searchModel]);

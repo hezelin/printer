@@ -36,3 +36,11 @@ FROM tbl_rent_report t1
 LEFT JOIN tbl_rent_apply t2 ON t1.machine_id=t2.machine_id AND t2.status<11
 LEFT JOIN tbl_machine t3 ON t1.machine_id=t3.id
 WHERE t1.status<11
+
+
+-- 5、取消维修记录
+CREATE OR REPLACE view view_fault_cancel AS SELECT
+t1.*,
+t2.type as fault_type,t2.content,t2.desc,t2.add_time AS apply_time,t2.remark
+FROM tbl_fault_cancel_log t1
+LEFT JOIN tbl_machine_service t2 ON t1.service_id=t2.id

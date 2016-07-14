@@ -1,24 +1,31 @@
 <?php
 
-namespace app\models;
+namespace app\models\views;
 
 use Yii;
 
-class TblFaultCancelLog extends \yii\db\ActiveRecord
+class ViewFaultCancel extends \yii\db\ActiveRecord
 {
+    public static function primaryKey()
+    {
+        return ['id'];
+    }
+
     public static function tableName()
     {
-        return 'tbl_fault_cancel_log';
+        return 'view_fault_cancel';
     }
 
     public function rules()
     {
         return [
+            [['id', 'wx_id', 'service_id', 'status', 'type', 'add_time', 'fault_type', 'apply_time'], 'integer'],
             [['wx_id', 'service_id', 'opera', 'add_time'], 'required'],
-            [['wx_id', 'service_id', 'status', 'type', 'add_time'], 'integer'],
             [['opera'], 'string', 'max' => 28],
             [['opera_name'], 'string', 'max' => 50],
-            [['reason'], 'string', 'max' => 500],
+            [['reason', 'desc'], 'string', 'max' => 500],
+            [['content'], 'string', 'max' => 600],
+            [['remark'], 'string', 'max' => 100],
         ];
     }
 
@@ -34,6 +41,11 @@ class TblFaultCancelLog extends \yii\db\ActiveRecord
             'type' => '系统/用户',
             'add_time' => '添加时间',
             'reason' => '取消原因',
+            'fault_type' => '故障类型',
+            'content' => '内容（cover,voice)',
+            'desc' => '故障描述',
+            'apply_time' => '添加时间',
+            'remark' => '备注',
         ];
     }
 }

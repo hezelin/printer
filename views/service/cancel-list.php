@@ -41,13 +41,13 @@ echo GridView::widget([
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],               // 系列
         [
-            'attribute'=>'fault.cover',
+            'attribute'=>'content',
             'header'=>'故障图片',
             'headerOptions'=>['style'=>'width:180px'],
             'content'=>function($data)
             {
-                if( !isset($data->fault->content) ) return '<span class="not-set">（无设置）</span>';
-                $contents = json_decode($data->fault->content,true);
+                if( !isset($data->content) ) return '<span class="not-set">（无设置）</span>';
+                $contents = json_decode($data->content,true);
                 $html = [];
                 if(isset($contents['cover']) && is_array($contents['cover']) )
                     foreach($contents['cover'] as $cover){
@@ -71,14 +71,13 @@ echo GridView::widget([
             }
         ],
         [
-            'attribute'=>'faulttype',
+            'attribute'=>'fault_type',
             'header'=>'故障类型',
             'headerOptions'=>['style'=>'width:100px'],
             'filter'=>ConfigBase::$faultStatus,
             'value'=>function($data)
             {
-                if( !isset($data->fault->type) ) return;
-                return ConfigBase::getFaultStatus($data->fault->type);
+                return ConfigBase::getFaultStatus($data->type);
             }
         ],
         [
@@ -86,10 +85,10 @@ echo GridView::widget([
             'attribute' => 'desc',
             'content'=>function($data){
                 $li = [];
-                if( isset($data->fault->desc) )
-                    $li[] = '<li>'.$data->fault->desc.'</li>';
-                if( isset($data->fault->remark))
-                    $li[] = '<li class="li-highlight">留言：'.$data->fault->remark.'</li>';
+                if($data->desc)
+                    $li[] = '<li>'.$data->desc.'</li>';
+                if($data->remark)
+                    $li[] = '<li class="li-highlight">留言：'.$data->remark.'</li>';
                 return '<ul class="list-text">'.join("\n",$li).'</ul>';
             }
         ],
@@ -100,12 +99,11 @@ echo GridView::widget([
             'filter'=>ConfigBase::$fixStatus,
             'value'=>function($data)
             {
-                if( !isset($data->fault->status) ) return;
-                return ConfigBase::getFixStatus($data->fault->status);
+                return ConfigBase::getFixStatus($data->status);
             }
         ],
         [
-            'attribute' => 'fault.add_time',
+            'attribute' => 'apply_time',
             'header'=>'申请时间',
             'format' => ['date', 'php:Y-m-d H:i'],
         ],
@@ -114,7 +112,7 @@ echo GridView::widget([
             'format' => ['date', 'php:Y-m-d H:i'],
         ],
         'reason',
-        'opera'
+        'opera_name'
     ],
 ]);
 
