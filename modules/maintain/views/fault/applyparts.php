@@ -3,7 +3,7 @@ use yii\helpers\Url;
     $this->title = '申请配件';
 ?>
 <div class="h-center-wrap">
-    <a class="h-link" href="<?=Url::toRoute(['shop/parts/list','id'=>$id,'fault_id'=>$fault_id])?>">
+    <a class="h-link" href="<?=Url::toRoute(['/shop/parts/list','id'=>$id,'fault_id'=>$fault_id])?>">
         申请配件
     </a>
     <a class="process-btn h-link" href="javascript:void()">

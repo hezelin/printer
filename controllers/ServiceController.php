@@ -93,7 +93,12 @@ class ServiceController extends \yii\web\Controller
         }
 
         if($type == 2)
-            return $this->render('//tips/home-status',['tips'=>'维修申请取消成功！','btnText'=>'返回首页','btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])]);
+            return $this->render('//tips/home-status',[
+                'tips'=>'维修申请取消成功！',
+                'btnText'=>'返回首页',
+                'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
+                'jumpUrl'=>Url::toRoute(['/wechat/index','id'=>$id]),
+            ]);
         return json_encode(['status'=>1]);
     }
 
