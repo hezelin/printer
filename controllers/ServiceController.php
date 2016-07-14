@@ -310,11 +310,9 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionProcess($id)
     {
-        $model = TblMachineService::find()->with([
-                'machine'=>function($query){
-                    $query->joinWith('machineModel');
-                }
-            ])->where('tbl_machine_service.id=:id',[':id'=>$id])->one();
+        $model = TblMachineService::find()
+            ->with(['machine'])
+            ->where('tbl_machine_service.id=:id',[':id'=>$id])->one();
 
         if(!$model) {
             throw new NotFoundHttpException('这个页面不存在');

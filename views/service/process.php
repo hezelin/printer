@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use app\models\ConfigBase;
 
 $this->title = '维修进度';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <style>
@@ -21,12 +22,10 @@ $this->title = '维修进度';
 </style>
 <?php
 function getMachine($model){
-    if( !isset($model->machine->machineModel) ) return '<span class="not-set">（无设置）</span>';
-    return Html::a(Html::img($model->machine->machineModel->cover,['width'=>40]),str_replace('/s/','/m/',$model->machine->machineModel->cover),['class'=>'fancybox','rel'=>'group']) .
-//            ' , ' . $model->machine->brand .
-            ' , ' . $model->machine->machineModel->type .
-            ' , ' . $model->machine->series_id
-        ;
+    if( !isset($model->machine) ) return '<span class="not-set">（无设置）</span>';
+    return Html::a(Html::img($model->machine->cover,['width'=>40]),str_replace('/s/','/m/',$model->machine->cover),['class'=>'fancybox','rel'=>'group']) .
+            ' , ' . $model->machine->brand_name .
+            ' , ' . $model->machine->model_name;
 }
 
 function getProcess($model,$process)
