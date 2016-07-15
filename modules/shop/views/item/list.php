@@ -31,8 +31,8 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         background: #fff;
     }
     .swiper-pagination-bullet{
-        width:12px;
-        height:12px;
+        width:8px;
+        height:8px;
     }
 
     /*main*/
@@ -103,6 +103,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         border:1px solid #eee;
         overflow:hidden;
         background:#fff;
+        border-top:0 none;
     }
 
     .chat_cp .price{
@@ -140,7 +141,10 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
     .aui-loading-title{
         padding-top:3px;
     }
-
+    .img_in{
+        border: 1px solid #eee;
+        overflow:hidden;
+    }
     /*bug*/
     .it_support{
         margin-top:-65px;
@@ -150,6 +154,8 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         height:42px !important;
     }
 </style>
+
+
 <div class="aui-load-container">
     <div class="aui-load-wrap">
         <div class="re-circle aui-text-center"></div>
@@ -235,11 +241,11 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
                 <%= } %>
             </script>
             <div class="aui-hidden aui-text-center loading" style="font-size:12px;"><img src="/images/loading-4.gif" width="20"></div>
-            <?php if(count($model)>=$len):?>
-                <!--<div id="item-more" class="item-more-90">
-                    查看更多
-                </div>-->
-            <?php endif;?>
+                <?php if(count($model)>=$len):?>
+                    <!--<div id="item-more" class="item-more-90">
+                        查看更多
+                    </div>-->
+                <?php endif;?>
             <?php else:?>
                 <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span>没有数据</div>
             <?php endif;?>
@@ -249,17 +255,15 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
 <footer class="footer_wechat">
     <div class="wrap">
         <div class="aui-content aui-text-center aui-border-t" style="font-size:15px;color:#999;">
-            <a href="#" class="aui-col-xs-3 aui-padded-10 aui-border-r active-color"><span class="icon-uniE903"></span>首页</a>
+            <a href="<?=Url::toRoute(['/wechat/index','id'=>$id])?>" class="aui-col-xs-3 aui-border-r aui-text-danger" style="padding:10px;"><span class="icon-uniE903"></span>首页</a>
             <a href="#" class="aui-col-xs-3 aui-padded-10 aui-border-r"><span class="icon-uniE901"></span>分类</a>
-            <a href="#" class="aui-col-xs-3 aui-padded-10 aui-border-r"><span class="icon-uniE900"></span>订单</a>
-            <a href="#" class="aui-col-xs-3 aui-padded-10"><span class="icon-uniE902"></span>购物车</a>
+            <a href="<?=Url::toRoute(['/shop/i/order','id'=>$id])?>" class="aui-col-xs-3 aui-padded-10 aui-border-r"><span class="icon-uniE900"></span>订单</a>
+            <a href="<?=Url::toRoute(['/shop/cart/list','id'=>$id])?>" class="aui-col-xs-3 aui-padded-10"><span class="icon-uniE902"></span>购物车</a>
         </div>
     </div>
 </footer>
-
-<script> var q='',key='',len = <?=$len?>,startId = <?=$startId?>,action = '/shop/item/list?id=<?=$id?>'; </script>
-
 <?php \app\assets\ZeptoAsset::register($this); ?>
+<script> var q='',key='',len = <?=$len?>,startId = <?=$startId?>,action = '/shop/item/list?id=<?=$id?>'; </script>
 <script>
     <?php $this->beginBlock('JS_END') ?>
 
@@ -275,12 +279,18 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
     })()
 
     /*搜索*/
+
     ;+function(){
-        document.getElementsByClassName('icon-btn')[0].addEventListener('click', function(){
-            if($.trim(document.getElementsByClassName('search_input')[0].value) === "") return;
-            window.location.href = '' + val;
+        var val;
+        document.getElementsByClassName('icon-btn')[0].addEventListener('touchend', function(){
+            checkSearch();
         }, false)
-    }();
+
+        function checkSearch(){
+            if($.trim((val = document.getElementsByClassName('search_input')[0].value)) === "") return;
+            window.location.href = 'list?id=<?=$id?>' + '&q=' + val;
+        }
+    }()
 
     /*上拉加载*/
     ;!function(){
@@ -317,7 +327,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
                 }
             }
         }, false)
-    }();
+    }()
 
     /*下拉刷新*/
     ;+function(){

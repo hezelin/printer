@@ -2,6 +2,8 @@
 use yii\helpers\Url;
 
 $this->title = '查看资料';
+use app\assets\HomeAsset;
+HomeAsset::register($this);
 ?>
 
 <div class="aui-content">

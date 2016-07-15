@@ -3,9 +3,12 @@ $this->title = '我的购物车';
 $this->registerMetaTag(['http-equiv'=>'Cache-Control','content'=>'no-cache, no-store, must-revalidate']);
 $this->registerMetaTag(['http-equiv'=>'Pragma','content'=>'no-cache']);
 $this->registerMetaTag(['http-equiv'=>'Expires','content'=>'0']);
+use app\assets\AuicssAsset;
+
+AuicssAsset::register($this);
 ?>
 <style>
-    #cart-list li{  border-bottom: 1px solid #ccc;  height: 120px;  width: 90%;  margin: 0 5%;  color: #444;  }
+    /*#cart-list li{  border-bottom: 1px solid #ccc;  height: 120px;  width: 90%;  margin: 0 5%;  color: #444;  }
     #cart-list .item-li{  display: block;  height: 60px;  line-height: 30px;  font-size: 16px;  margin-top: 10px;  overflow: hidden;  vert-align: middle;  }
     #cart-list .item-li img{  height: 60px;  width: 60px;  float: left;  margin-right: 15px;  }
     #cart-list .sns{  height: 36px;  line-height: 32px;  text-align: right;  margin-top: 15px;  color: #b10000;  font-size: 16px;  }
@@ -14,36 +17,59 @@ $this->registerMetaTag(['http-equiv'=>'Expires','content'=>'0']);
     .btn-add{  display: block;  height: 36px;  width: 36px;  line-height: 28px;  text-align: center;  border: 1px #d7d7d7 solid;  float: left;  font-size: 1em;  cursor: pointer;  }
     .item-count{  width: 3em;  float: left;  text-align: center;  font-size: 1em;  border-top: 1px solid #d7d7d7;  border-bottom: 1px solid #d7d7d7;  border-left: none;  border-right: none;  height: 36px;  border-radius: 0;  }
     .cart-total{  text-align: right;  height: 50px;  line-height: 50px;  font-size: 18px;  margin-right: 5%;  }
-    .cart-money{  color: #b10000;  padding-left: 15px;  }
+    .cart-money{  color: #b10000;  padding-left: 15px;  }*/
+    .aui-counter-minus, .aui-counter-plus, input.aui-counter-input{
+        height:32px;
+    }
+    body,.aui-list-view{
+        background: #f8f8f8;
+    }
+    .aui-list-view .aui-img-object{
+        height:46px;
+        max-width:46px;
+        line-height: 46px;
+    }
+    .aui-overflow{
+        overflow:hidden;
+    }
 </style>
-<div id="cart-list">
-        <ul>
+<div id="cart-list" class="aui-content">
+    <ul class="aui-list-view">
     <?php foreach($model as $o):?>
-        <li data-id="<?=$o['id']?>" data-price="<?=$o['price']?>" data-nums="<?=$o['item_nums']?>">
-            <a class="item-li" href="<?=\yii\helpers\Url::toRoute(['/shop/item/detail','id'=>$id,'item_id'=>$o['item_id']])?>">
-                <img src="<?=$o['cover']?>" />
-                <span><?=$o['name']?></span>
+        <li data-id="<?=$o['id']?>" data-price="<?=$o['price']?>" data-nums="<?=$o['item_nums']?>" class="aui-list-view-cell aui-img aui-content" style="background: #fff; padding:11px 15px 10px 15px;">
+            <a class="item-li aui-border-b aui-block" href="<?=\yii\helpers\Url::toRoute(['/shop/item/detail','id'=>$id,'item_id'=>$o['item_id']])?>">
+                <div class="aui-arrow-right aui-ellipsis-1"></div>
+                <img class="aui-img-object aui-pull-left" src="<?=$o['cover']?>" />
+                <div class=aui-img-body">
+                    <p class="aui-ellipsis-1" style="color:#333;font-size:16px;"><?=$o['name']?></p>
+                    <div class="aui-text-danger" style="font-size:14px;">价格：￥<span class="item-price"> <?=$o['price']*$o['item_nums']?> </span></div>
+                </div>
             </a>
-            <div class="sns">
-                <span class="cart-left">
-                    <b class="btn-add" data-opera="minus">-</b>
-                    <input type="text" class="item-count" value="<?php echo $o['item_nums'];?>">
-                    <b class="btn-add" data-opera="add">+</b>
-                    <span class="item-del" data-opera="del">删除 </span>
-                </span>
-                <b>￥<span class="item-price"> <?=$o['price']*$o['item_nums']?> </span></b>
+            <div class="aui-clearfix"></div>
+            <div class="aui-counter-box aui-danger" style="margin-top:22px; padding:0;">
+                <div class="cart-left aui-counter aui-danger aui-pull-left">
+                    <div class="btn-add aui-counter-minus aui-disabled" data-opera="minus"></div>
+                    <input type="text" class="item-count aui-counter-input" value="<?php echo $o['item_nums'];?>">
+                    <div class="btn-add aui-counter-plus" data-opera="add"></div>
+                </div>
+                <div class="aui-pull-left aui-padded-0-20" style="font-size: 14px; line-height:32px;"><?php echo $o['item_nums'];?>件</div>
+                <div class="item-del aui-pull-right aui-bg-danger aui-padded-0-20" data-opera="del" style="color:#fff; border-radius:5px;">删除 </div>
             </div>
         </li>
     <?php endforeach;?>
-         </ul>
-    <br/>
-    <div class="cart-total">
-            共 <span id="cart-count"><?php echo $total;?></span> 件
-            <b class="cart-money">￥<span id="cart-money"><?php echo $totalPrice;?></span></b>
+    </ul>
+    <div class="cart-total aui-content aui-border-t aui-overflow" style="padding:10px 0; background:#fff; height:54px; position: fixed; bottom:0;left:0; width:100%; margin-bottom: 0;">
+        <div class="aui-col-xs-4 aui-text-center">
+            <div >共 <span id="cart-count"><?php echo $total;?></span> 件</div>
+            <div class="cart-money aui-text-danger">合计：￥<span id="cart-money"><?php echo $totalPrice;?></span></div>
+        </div>
+        <div class="aui-col-xs-4">
+            <a href="<?=\yii\helpers\Url::toRoute(['/shop/item/list','id'=>$id])?>" type="button" class="aui-col-xs-11 aui-btn aui-pull-left">继续添加</a>
+        </div>
+        <div class="aui-col-xs-4">
+            <button data-href="<?=\yii\helpers\Url::toRoute(['/shop/order/put','id'=>$id])?>" id="buy-btn" class="aui-col-xs-11 aui-btn-danger aui-pull-left">立即结算</button>
+        </div>
     </div>
-    <button data-href="<?=\yii\helpers\Url::toRoute(['/shop/order/put','id'=>$id])?>" id="buy-btn" class="h-button">立即结算</button>
-    <br/>
-    <a href="<?=\yii\helpers\Url::toRoute(['/shop/item/list','id'=>$id])?>" type="button" class="h-button-default">继续添加</a>
 </div>
 
 

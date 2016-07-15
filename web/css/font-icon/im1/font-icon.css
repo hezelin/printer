@@ -24,22 +24,25 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-uniE905:before {
-    content: "\e905";
-}
-.icon-uniE901:before {
+.icon-kefu:before {
     content: "\e901";
 }
-.icon-uniE902:before {
+.icon-useradmin:before {
+    content: "\e900";
+}
+.icon-fix:before {
     content: "\e902";
 }
-.icon-uniE903:before {
+.icon-com:before {
     content: "\e903";
 }
-.icon-uniE904:before {
+.icon-mechine:before {
     content: "\e904";
 }
-.icon-uniE900:before {
-    content: "\e900";
+.icon-get:before {
+    content: "\e905";
+}
+.icon-newactive:before {
+    content: "\e906";
 }
 
