@@ -5,6 +5,8 @@ $this->title = '任务列表';
 
 //$this->registerJsFile('/js/aui/api.js');
 //$this->registerJsFile('/js/aui/aui-tap.js');
+use app\assets\HomeAsset;
+HomeAsset::register($this);
 ?>
 
 <div class="aui-tab aui-color">
@@ -51,6 +53,6 @@ $this->title = '任务列表';
     <?php endforeach;?>
 </ul>
 <?php else:?>
-<div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 没有数据</div>
+    <div class="aui-padded-10 aui-text-center" style="font-size: 14px; margin-top:160px;">目前任何记录</div>
 <?php endif;?>
 </div>

@@ -36,8 +36,8 @@ $this->registerCssFile('/css/font-icon/im1/font-icon.css',['depends'=>['app\asse
         border-color:#eee;
     }
     .aui-grid-nine li .aui-iconfont{
-        font-size: 32px;
-        margin-bottom: 15px;
+        font-size: 36px;
+        margin-bottom: 10px;
     }
     .aui-text-cblue{
         color:#33b5e5;
@@ -87,15 +87,11 @@ $this->registerCssFile('/css/font-icon/im1/font-icon.css',['depends'=>['app\asse
     <div id="flash_rhome" class="aui-mg-b-15">
         <div class="swiper-container">
             <div class="swiper-wrapper">
+                <?php foreach($setting['carousel'] as $k):?>
                 <div class="swiper-slide">
-                    <a href="#"><img src="/images/flash.png" width="100%"></a>
+                    <a href="<?= $k['link'] === '' ? 'javascript:void(0)' : $k['link']  ?>"><img src="<?= $k['imgurl'] ?>" width="100%"></a>
                 </div>
-                <div class="swiper-slide">
-                    <a href="#"><img src="/images/flash.png" width="100%"></a>
-                </div>
-                <div class="swiper-slide">
-                    <a href="#"><img src="/images/flash.png" width="100%"></a>
-                </div>
+                <?php endforeach; ?>
             </div>
             <div class="swiper-pagination"></div>
         </div>
@@ -106,38 +102,38 @@ $this->registerCssFile('/css/font-icon/im1/font-icon.css',['depends'=>['app\asse
         <ul class="aui-grid-nine">
             <a class="aui-block" href="<?= Url::toRoute(['/user/i/machine','id'=>$setting['wx_id']]) ?>">
                 <li class="aui-col-xs-4 aui-text-center">
-                    <span class="aui-iconfont icon-uniE900 aui-text-cblue"></span>
+                    <span class="aui-iconfont icon-mechine aui-text-cblue"></span>
                     <p>我的机器</p>
                 </li>
 
             </a>
             <a class="aui-block" href="<?= Url::toRoute(['share/scheme','id'=>$setting['wx_id']]) ?>">
                 <li class="aui-col-xs-4 aui-text-center">
-                    <span class="aui-iconfont icon-uniE903 aui-text-cblue"></span>
+                    <span class="aui-iconfont icon-get aui-text-cblue"></span>
                     <p>赚取积分</p>
                 </li>
             </a>
-            <a class="aui-block" href="javascript:void(0);">
+            <a id="scan-btn" class="aui-block" href="javascript:void(0);">
                 <li class="aui-col-xs-4 aui-text-center">
-                    <span class="aui-iconfont icon-uniE901 aui-text-cblue"></span>
-                    <p>扫描报修</p>
+                    <span class="aui-iconfont icon-fix aui-text-cblue"></span>
+                    <p id="code-loading">加载中..</p>
                 </li>
             </a>
             <a class="aui-block" href="<?= Url::toRoute(['shop/item/list','id'=>$setting['wx_id']]) ?>">
                 <li class="aui-col-xs-4 aui-text-center">
-                    <span class="aui-iconfont icon-uniE902 aui-text-cblue"></span>
+                    <span class="aui-iconfont icon-com aui-text-cblue"></span>
                     <p>微商城</p>
                 </li>
             </a>
             <a class="aui-block" href="<?= Url::toRoute(['share/active','id'=>$setting['wx_id']]) ?>">
                 <li class="aui-col-xs-4 aui-text-center">
-                    <span class="aui-iconfont icon-uniE902 aui-text-cblue"></span>
+                    <span class="aui-iconfont icon-newactive aui-text-cblue"></span>
                     <p>最新活动</p>
                 </li>
             </a>
-            <a class="aui-block" href="<?= Url::toRoute(['i/index','id'=>$setting['wx_id']]) ?>">
+            <a class="aui-block" href="<?= Url::toRoute(['user/i/index','id'=>$setting['wx_id']]) ?>">
                 <li class="aui-col-xs-4 aui-text-center">
-                    <span class="aui-iconfont icon-uniE902 aui-text-cblue"></span>
+                    <span class="aui-iconfont icon-useradmin aui-text-cblue"></span>
                     <p>个人中心</p>
                 </li>
             </a>
@@ -147,15 +143,19 @@ $this->registerCssFile('/css/font-icon/im1/font-icon.css',['depends'=>['app\asse
 <footer class="footer_wechat">
     <div class="wrap aui-padded-5-10">
         <div class="aui-col-xs-6 aui-text-center aui-padded-5-10">
-            <a href="<?= Url::toRoute(['i/index','id'=>$setting['wx_id']]) ?>" class="aui-padded-5 border-r aui-block">
-                <span class="icon-uniE905"></span>
-                <span>个人中心</span>
+            <a href="<?= Url::toRoute(['user/i/index','id'=>$setting['wx_id']]) ?>" class="aui-padded-5 border-r aui-block">
+                <div style="margin:0 auto; overflow:hidden; width:87px;">
+                    <span class="icon-useradmin" style="display:inline-block; float:left; height:20px; width:20px; font-size: 22px; overflow:hidden; line-height: 20px;"></span>
+                    <span style="display:inline-block; height:20px;margin-left:5px; line-height: 20px;float:left; overflow:hidden;">个人中心</span>
+                </div>
             </a>
         </div>
         <div class="aui-col-xs-6 aui-text-center aui-padded-5-10">
-            <a href="javascript:void(0);" class="aui-padded-5 border-r aui-block bgcolor-r-active">
-                <span class="icon-uniE905" ></span>
-                <span>客服<?=$phone?></span>
+            <a href="tel:<?= $phone; ?>" class="aui-padded-5 border-r aui-block bgcolor-r-active">
+                <div style="margin:0 auto; overflow:hidden; width:65px;">
+                    <span class="icon-kefu" style="display:inline-block; float:left; height:20px; width:20px; font-size: 22px; overflow:hidden; line-height: 20px;"></span>
+                    <span style="margin-left:5px;display:inline-block; height:20px; line-height: 20px;float:left; overflow:hidden;">客服</span>
+                </div>
             </a>
         </div>
     </div>
@@ -171,7 +171,7 @@ $this->registerCssFile('/css/font-icon/im1/font-icon.css',['depends'=>['app\asse
                 autoplayDisableOnInteraction:false,
                 speed:500,
             })
-        })()
+        })();
     <?php $this->endBlock();?>
 </script>
 
@@ -179,7 +179,7 @@ $this->registerCssFile('/css/font-icon/im1/font-icon.css',['depends'=>['app\asse
 <?php $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY); ?>
 
 <?php
-\app\components\WxjsapiWidget::widget([
+\app\components\WxjsapiWidget:: widget([
     'wx_id'=>$setting['wx_id'],
     'apiList'=>['scanQRCode'],
     'jsReady'=>'

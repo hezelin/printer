@@ -2,7 +2,8 @@
 use yii\helpers\Url;
 
 $this->title = '我的业绩';
-
+use app\assets\HomeAsset;
+HomeAsset::register($this);
 ?>
 <div class="aui-padded-10"><p class="aui-border-left aui-p-l">今月份的统计</p></div>
 <div id="top">
