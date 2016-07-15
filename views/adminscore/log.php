@@ -3,6 +3,7 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 
 $this->title = '积分列表';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php

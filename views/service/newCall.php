@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use dosamigos\datepicker\DatePicker;
 $this->title = '电话维修';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <style>
     #all-input-head{ cursor: pointer;}

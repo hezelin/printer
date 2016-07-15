@@ -3,6 +3,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\bootstrap\Alert;
 $this->title = '修改密码';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php
     if( Yii::$app->session->hasFlash('error') )

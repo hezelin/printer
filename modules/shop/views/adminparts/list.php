@@ -5,6 +5,8 @@ use yii\helpers\Url;
 use yii\bootstrap\Modal;
 use app\models\ConfigBase;
 $this->title = '维修配件列表';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <style>
     .fault-box{ width: 180px; height: 80px; margin: 0;}

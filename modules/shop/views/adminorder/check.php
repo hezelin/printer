@@ -6,6 +6,7 @@ use yii\bootstrap\Modal;
 use yii\grid\CheckboxColumn;
 use app\modules\shop\models\Shop;
 $this->title = '订单管理';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <style>
 

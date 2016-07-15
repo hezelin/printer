@@ -1,6 +1,9 @@
 <?php
 use yii\helpers\Url;
-    $this->title = '商品详情';
+
+$this->title = '商品详情';
+$this->params['breadcrumbs'][] = $this->title;
+
 Yii::$app->params['layoutBottomHeight'] = 40;
 ?>
 

@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\jui\DatePicker;
     $this->title='机器库存数据';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <style>
     .input-group-addon{

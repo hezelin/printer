@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '配件记录';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 

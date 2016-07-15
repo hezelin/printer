@@ -114,9 +114,6 @@ WeixinAsset::register($this);
                     ],
                 ];
 
-                if(Yii::$app->user->id == 4)
-                    array_push($item,['label' => '报名表', 'url' => ['/console/zuji-apply'],'icon'=>'stats']);
-
                 echo SideNav::widget([
                     'type' => SideNav::TYPE_DEFAULT,
                     'containerOptions'=>['id' => 'my-left-nav'],
