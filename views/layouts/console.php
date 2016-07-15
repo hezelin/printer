@@ -192,14 +192,17 @@ WeixinAsset::register($this);
                                     ['label' => '积分操作记录','url' => ['/adminscore/log']],
                                 ],
                             ],
-                            [
+                            /*[
                                 'label' => '用户管理',
                                 'icon' => 'user',
                                 'items' => [
                                     ['label' => '用户列表','url' => ['/wxuser/list']],
                                     ['label' => '维修员列表','url' => ['/staff/list']],
                                 ]
-                            ],
+                            ],*/
+
+                            ['label' => '微信用户','icon' => 'user','url' => ['/wxuser/list']],
+                            ['label' => '维修员资料','icon' => 'magnet', 'url' => ['/staff/list']],
                             [
                                 'label' => '通知管理',
                                 'icon' => 'bell',

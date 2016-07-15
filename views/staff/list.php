@@ -5,7 +5,9 @@ use yii\helpers\Url;
 use app\models\ConfigBase;
 use app\components\LoadingWidget;
 
-$this->title = '我的公众号';
+$this->title = '维修员资料';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <?php

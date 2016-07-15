@@ -28,6 +28,7 @@ echo GridView::widget([
 //        ['class' => 'yii\grid\SerialColumn'],
         [
             'attribute'=>'machine_id',
+            'label'=>'机器编号',
             'format' => 'html',
             'content'=>function($model){
                 return Html::a($model->machine_id,['machine/view','id'=>$model->machine_id],[
@@ -102,7 +103,7 @@ echo GridView::widget([
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions' => ['style'=>'width:160px'],
-            'template' => '{fault} &nbsp; {update} &nbsp; {map} &nbsp; {charge} &nbsp; {delete} &nbsp; {rental} <br/>{qrcode}',
+            'template' => '{fault} &nbsp; {update} &nbsp; {map} &nbsp; {charge} &nbsp; {delete} &nbsp; {rental} <br/>{qrcode} &nbsp; {fault_log}',
             'buttons' => [
                 'update' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);
@@ -143,6 +144,9 @@ echo GridView::widget([
                 },
                 'qrcode' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['/code/machine','id'=>$model->machine_id]) ,['title'=>'机器二维码']);
+                },
+                'fault_log' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-screenshot"></span>',Url::toRoute(['/service/list','machine_id'=>$model->machine_id]) ,['title'=>'机器维修记录']);
                 },
             ]
         ]

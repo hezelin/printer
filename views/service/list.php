@@ -6,7 +6,7 @@ use app\models\ConfigBase;
 use yii\bootstrap\Modal;
 
 
-$this->title = '待维修列表';
+$this->title = '维修列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -25,16 +25,17 @@ $this->params['breadcrumbs'][] = $this->title;
         .voice-play .voice-image{background-position: -80px 0;}
     </style>
 
-<div >
+<?php if(!Yii::$app->request->get('machine_id')):?>
+<div>
     <ul class="nav nav-tabs" >
         <li <?php if(!Yii::$app->request->get('process')) echo 'class="active"';?>><a href="<?=Url::toRoute(['list'])?>" >维修中</a></li>
         <li <?php if(Yii::$app->request->get('process')==2) echo 'class="active"';?>><a href="<?=Url::toRoute(['list','process'=>2])?>" >等待评价</a></li>
         <li <?php if(Yii::$app->request->get('process')==3) echo 'class="active"';?>><a href="<?=Url::toRoute(['list','process'=>3])?>" >已完成</a></li>
         <li><a href="<?=Url::toRoute(['cancel-list'])?>" >已取消</a></li>
     </ul>
+    <p>&nbsp;</p>
 </div>
-<p>&nbsp;</p>
-
+<?php endif;?>
 <?php
 
 echo GridView::widget([
@@ -121,7 +122,7 @@ echo GridView::widget([
         ],
         [
             'attribute'=>'cover',
-            'header'=>'机器',
+            'header'=>'机器图片',
             'content'=>function($data)
             {
                 if( isset($data->cover )  )
@@ -130,6 +131,7 @@ echo GridView::widget([
         ],
         [
             'attribute'=>'model_name',
+            'label'=>'机型',
             'content'=>function($model) {
                 return $model->brand_name . $model->model_name;
             }
@@ -156,14 +158,14 @@ echo GridView::widget([
         ],
         [
             'attribute' => 'add_time',
-            'header'=>'申请时间',
+            'header'=>'维修时间',
             'format' => ['date', 'php:Y-m-d H:i'],
         ],
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions'=>['style'=>'width:110px'],
-            'template' => '{process} &nbsp; {switch} &nbsp; {delete} &nbsp; {qrcode}',
+            'template' => '{process} &nbsp; {switch} &nbsp; {delete} &nbsp; {qrcode} <br/>{fault}',
             'buttons' => [
                 'process'=>function($url,$model,$key){
                     return Html::a('<i class="glyphicon glyphicon-eye-open"></i>',$url,['title'=>'查看进度']);
@@ -190,6 +192,9 @@ echo GridView::widget([
                 },
                 'qrcode' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['/code/machine','id'=>$model->machine_id]) ,['title'=>'机器二维码']);
+                },
+                'fault' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-screenshot"></span>',Url::toRoute(['/service/list','machine_id'=>$model->machine_id]) ,['title'=>'机器维修记录']);
                 },
             ]
         ]
