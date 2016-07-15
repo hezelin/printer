@@ -3,7 +3,9 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\bootstrap\Alert;
 use yii\bootstrap\Modal;
-    $this->title = '修改资料'
+    $this->title = '修改资料';
+$this->params['breadcrumbs'][] = ['label'=>'租赁资料','url'=>['list']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="alert alert-info" role="alert">

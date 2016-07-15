@@ -3,15 +3,10 @@
 namespace app\controllers;
 
 use app\models\Cache;
-use app\models\TblBrand;
-use app\models\TblMachineModel;
-use app\models\TblMachineModelSearch;
 use app\models\TblMachineRentProject;
-use app\models\TblMachineRentProjectSearch;
 use app\models\ToolBase;
 use app\models\views\ViewSchemeModel;
 use app\models\views\ViewSchemeModelSearch;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;

@@ -38,7 +38,7 @@
     </ul>
 
 </div>
-<dib class="h-block-30">&nbsp;</dib>
+<div class="h-block-30">&nbsp;</div>
 <?php
     // 输出评价的按钮
     echo $model['btn'];

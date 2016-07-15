@@ -152,9 +152,13 @@ WeixinAsset::register($this);
                                 'label' => '租赁管理',
                                 'icon' => 'retweet',
                                 'items' => [
-                                    ['label' => '租赁列表','url' => ['/admin-rent/list']],
                                     ['label' => '租赁申请','url' => ['/admin-rent/apply']],
-                                    ['label' => '收租记录','url' => ['/charge/list']],
+                                    ['label' => '租赁资料','url' => ['/admin-rent/list'],
+                                        'active' => in_array(Yii::$app->controller->getRoute(),['admin-rent/list','admin-rent/update','admin-rent/pass']),
+                                    ],
+                                    ['label' => '收租记录','url' => ['/charge/list'],
+                                        'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'charge',
+                                    ],
                                 ],
                             ],
                             [
@@ -162,7 +166,9 @@ WeixinAsset::register($this);
                                 'icon' => 'wrench',
                                 'items' => [
                                     ['label' => '待分配维修','url' => ['/service/index']],
-                                    ['label' => '维修列表','url' => ['/service/list']],
+                                    ['label' => '维修资料','url' => ['/service/list'],
+                                        'active' => in_array(Yii::$app->controller->getRoute(),['service/list','service/process']),
+                                    ],
                                     ['label' => '电话维修','url' => ['/service/call']],
                                     ['label' => '维修配件管理', 'url' => ['/shop/adminparts/list']],
 

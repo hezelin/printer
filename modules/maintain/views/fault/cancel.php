@@ -10,7 +10,7 @@ if( Yii::$app->session->hasFlash('error') )
 ?>
     <div class="h-center-wrap">
         <div class="h-form">
-            <form method="post" id="wechat-form" action="<?=Url::toRoute(['service/delete','id'=>$id,'fid'=>$fid])?>">
+            <form method="post" id="wechat-form" action="<?=Url::toRoute(['/service/delete','id'=>$id,'fid'=>$fid])?>">
                 <input name="_csrf" type="hidden" value="<?=\Yii::$app->request->csrfToken?>"/>
                 <input type="hidden" name="openid" value="<?=$openid?>" />
                 <input type="hidden" name="type" value="2" />

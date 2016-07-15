@@ -9,6 +9,7 @@ use yii\bootstrap\Modal;
 //$this->registerCssFile('/css/console-task.css');
 ?>
 <link href="/css/console-task.css" rel="stylesheet">
+<p>&nbsp;</p>
 <div class="row">
     <div class="mod_navbar">
         <div class="title"> <h3><i class="icon glyphicon glyphicon-tasks"></i> 工作任务</h3>  </div>

@@ -2,10 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\Cache;
 use app\models\share\Score;
 use app\models\WxBase;
-use app\models\WxTemplate;
 use Yii;
 
 class ShareController extends \yii\web\Controller

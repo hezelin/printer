@@ -94,7 +94,7 @@ class TaskController extends Controller
             case 3: return $this->render('process-scan', [
                 'model' => $model,
                 'openid' => $openid,
-                'mUrl' => Url::toRoute(['codeapi/machine','id'=>$model['mid']],'http'),
+                'mUrl' => Url::toRoute(['/codeapi/machine','id'=>$model['mid']],'http'),
                 'btnHtml'=>Html::a(
                     ConfigBase::getFixMaintainStatus($status),
                     '#',
@@ -222,6 +222,7 @@ class TaskController extends Controller
      */
     public function actionProcess($id,$openid)
     {
+        $this->layout = '/home';
         set_time_limit(0);
         $post = Yii::$app->request->post('TblServiceProcess');
 
@@ -232,7 +233,7 @@ class TaskController extends Controller
             return $this->render('//tips/home-status',[
                 'tips'=>'请不要重复提交！',
                 'btnText'=>'返回主页',
-                'btnUrl'=> Url::toRoute(['wechat/index','id'=>$model['weixin_id']])
+                'btnUrl'=> Url::toRoute(['/wechat/index','id'=>$model['weixin_id']])
             ]);
         }
 
@@ -243,7 +244,7 @@ class TaskController extends Controller
             return $this->render('//tips/home-status',[
                 'tips'=>'任务已重新分配给其他维修员！',
                 'btnText'=>'返回主页',
-                'btnUrl'=> Url::toRoute(['wechat/index','id'=>$model['weixin_id']])
+                'btnUrl'=> Url::toRoute(['/wechat/index','id'=>$model['weixin_id']])
             ]);
         }
         $model->setKm($post['latitude'],$post['longitude']);
@@ -270,7 +271,7 @@ class TaskController extends Controller
             $tpl->sendProcess(
                 $fromOpenid,
                 url::toRoute(['/maintain/fault/detail','id'=>$wid,'fault_id'=>$fault_id],'http'),
-                '维修员：'.$maintainer['name'].'已接单，手机：'.$maintainer['phone'].'，距离：'.$respKm.'公里',
+                '维修员：'.$maintainer['name'].'已接单，'.($maintainer['phone']? '手机：'.$maintainer['phone'].',':'').'距离：'.$respKm.'公里',
                 $applyTime
             );
 
@@ -291,8 +292,8 @@ class TaskController extends Controller
         return $this->render('//tips/home-status',[
             'tips'=>'接单成功',
             'btnText'=>'返回任务中 ...',
-            'jumpUrl'=>Url::toRoute(['m/task','id'=>$wid]),
-            'btnUrl'=> Url::toRoute(['m/task','id'=>$wid])
+            'jumpUrl'=>Url::toRoute(['/maintain/task/list','id'=>$wid]),
+            'btnUrl'=> Url::toRoute(['/maintain/task/list','id'=>$wid])
         ]);
     }
 
@@ -312,7 +313,7 @@ class TaskController extends Controller
             return $this->render('//tips/home-status',[
                 'tips'=>'请不要重复提交！',
                 'btnText'=>'返回主页',
-                'btnUrl'=> Url::toRoute(['wechat/index','id'=>$model['weixin_id']])
+                'btnUrl'=> Url::toRoute(['/wechat/index','id'=>$model['weixin_id']])
             ]);
         }
 

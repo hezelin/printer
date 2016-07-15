@@ -5,7 +5,6 @@ namespace app\controllers;
 use app\models\Cache;
 use app\models\TblRentApply;
 use app\models\TblRentReport;
-use app\models\TblRentReportSearch;
 use app\models\TblRentReportLog;
 use app\models\views\ViewChargeReportSearch;
 use Yii;

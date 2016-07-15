@@ -48,7 +48,7 @@ class TblWechatMachine extends \yii\db\ActiveRecord
             'id' => 'ID',
             'wx_id' => '公众号id',
             'openid' => '用户id',
-            'machine_id' => '机器id',
+            'machine_id' => '机器编号',
             'status' => '状态',
             'due_time' => '过期时间',
             'add_time' => '申请时间',

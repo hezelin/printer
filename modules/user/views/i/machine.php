@@ -40,7 +40,7 @@ $this->title = '我的机器';
                         </div>
                     </a>
                     <p class="aui-ellipsis-1" style="margin-left: 95px;">
-                        <a class="aui-box aui-box-color aui-box-sm" href="<?=Url::toRoute(['i/service','id'=>$id,'mid'=>$row['id']])?>">维修记录</a>
+                        <a class="aui-box aui-box-color aui-box-sm" href="<?=Url::toRoute(['/user/i/service','id'=>$id,'mid'=>$row['id']])?>">维修记录</a>
                         <a class="aui-box aui-box-sm" href="<?=url::toRoute(['/maintain/fault/apply','id'=>$id,'mid'=>$row['id']])?>">维修申请</a>
                     </p>
                 </li>

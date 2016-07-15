@@ -44,9 +44,33 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],               // 系列
-        'user_id',
-        'user_name',
+//        ['class' => 'yii\grid\SerialColumn'],
+        [
+            'attribute'=>'machine_id',
+            'format' => 'html',
+            'content'=>function($model){
+                return Html::a($model->machine_id,['machine/view','id'=>$model->machine_id],[
+                    'title'=>'查看机器详情',
+                    'target'=>'_blank',
+                ]);
+            }
+        ],
+        [
+            'attribute'=>'series_id',
+            'format' => 'html',
+            'content'=>function($model){
+                if($model->series_id)
+                    return Html::a($model->machine_id,['machine/view','id'=>$model->machine_id],[
+                        'title'=>'查看机器详情',
+                        'target'=>'_blank',
+                    ]);
+                return '无';
+            }
+        ],
+        [
+            'attribute'=>'user_name',
+            'label'=>'用户姓名',
+        ],
         [
             'attribute'=>'cover',
             'header'=>'故障图片',
@@ -104,18 +128,10 @@ echo GridView::widget([
                     return Html::a(Html::img($data->cover,['width'=>40]),str_replace('/s/','/m/',$data->cover),['class'=>'fancybox','rel'=>'group1']);
             }
         ],
-
-        'brand_name',
-//        'machine.machineModel.type',
         [
-            'attribute'=>'series_id',
-            'format'=>'html',
-            'header'=>'机身系列号',
-            'headerOptions'=>['style'=>'width:100px'],
-            'value'=>function($model){
-                if( !isset($model->series_id)) return '无';
-                return Html::a($model->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
-                Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine_id]),['title'=>'查看机器二维码']);
+            'attribute'=>'model_name',
+            'content'=>function($model) {
+                return $model->brand_name . $model->model_name;
             }
         ],
         'maintain_count',
@@ -147,7 +163,7 @@ echo GridView::widget([
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions'=>['style'=>'width:110px'],
-            'template' => '{process} &nbsp; {switch} &nbsp; {delete}',
+            'template' => '{process} &nbsp; {switch} &nbsp; {delete} &nbsp; {qrcode}',
             'buttons' => [
                 'process'=>function($url,$model,$key){
                     return Html::a('<i class="glyphicon glyphicon-eye-open"></i>',$url,['title'=>'查看进度']);
@@ -171,6 +187,9 @@ echo GridView::widget([
                         'class'=>'close-model',
                         'key-id'=>$key
                     ]);
+                },
+                'qrcode' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['/code/machine','id'=>$model->machine_id]) ,['title'=>'机器二维码']);
                 },
             ]
         ]

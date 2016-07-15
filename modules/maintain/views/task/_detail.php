@@ -92,12 +92,19 @@ use yii\helpers\Url;
             </li>
             <?php endif;?>
 
+            <?php if($model["latitude"]):?>
             <li class="aui-list-view-cell">
                 <a class="aui-arrow-right" id="map-btn">
                     <div class="aui-col-xs-3 aui-text-default">地址坐标</div>
                     <div class="aui-col-xs-9 aui-text-primary">点击导航</div>
                 </a>
             </li>
+            <?php else:?>
+            <li class="aui-list-view-cell">
+                <div class="aui-col-xs-3 aui-text-default">地址坐标</div>
+                <div class="aui-col-xs-9 aui-text-danger">用户坐标未定位</div>
+            </li>
+            <?php endif;?>
 
             <li class="aui-list-view-cell">
                 <a class="aui-arrow-right" href="<?=url::toRoute(['/maintain/fault/irecord','id'=>$model['wx_id'],'mid'=>$model['mid']])?>">

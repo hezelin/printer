@@ -20,6 +20,21 @@ $this->title = '维修任务';
 
 
 <?php
+$map = '';
+if($model["latitude"])
+    $map = <<< MAP
+document.querySelector("#map-btn").onclick = function () {
+            wx.openLocation({
+                latitude: {$model["latitude"]},
+                longitude: {$model["longitude"]},
+                name: "维修地点",
+                address: "'{$model["address"]}'",
+                scale: 16,
+                infoUrl: ""
+            });
+        };
+MAP;
+
 \app\components\WxjsapiWidget::widget([
     'wx_id'=>$model['wx_id'],
     'apiList'=>['getLocation','openLocation','previewImage'],
@@ -39,7 +54,6 @@ $this->title = '维修任务';
         });
         return false;
     };
-
     document.querySelector("#previewImage").onclick = function () {
             wx.previewImage({
               current: "'.$model["fault_cover"].'",
@@ -47,16 +61,7 @@ $this->title = '维修任务';
             });
       };
 
-    document.querySelector("#map-btn").onclick = function () {
-            wx.openLocation({
-                latitude: '.$model["latitude"].',
-                longitude: '.$model["longitude"].',
-                name: "维修地点",
-                address: "'.$model["address"].'",
-                scale: 16,
-                infoUrl: ""
-            });
-        };'
-])
+      '.$map
+]);
 
 ?>

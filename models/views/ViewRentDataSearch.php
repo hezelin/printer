@@ -1,17 +1,17 @@
 <?php
-
+/*
+ * 后台租赁列表，和电话维修视图一样，共用同一个视图
+ * view_rent_fault_machine
+ */
 namespace app\models\views;
 
-use app\models\Cache;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\views\ViewRentFaultMachine;
+use app\models\Cache;
 
-/**
- * ViewRentFaultMachineSearch represents the model behind the search form about `app\models\views\ViewRentFaultMachine`.
- */
-class ViewRentFaultMachineSearch extends ViewRentFaultMachine
+
+class ViewRentDataSearch extends ViewRentFaultMachine
 {
     /**
      * @inheritdoc
@@ -43,7 +43,7 @@ class ViewRentFaultMachineSearch extends ViewRentFaultMachine
      */
     public function search($params)
     {
-        $query = ViewRentFaultMachine::find()->where(['wx_id'=>Cache::getWid(),'status'=>[2,3]]);;
+        $query = ViewRentFaultMachine::find()->where(['wx_id'=>Cache::getWid()]);
 
         // add conditions that should always apply here
 

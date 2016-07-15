@@ -25,17 +25,20 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],
+//        ['class' => 'yii\grid\SerialColumn'],
         [
-            'attribute'=>'id',
-            'header'=>'客户id',
+            'attribute'=>'machine_id',
+            'label' => '机器编号',
         ],
+        'series_id',
         [
             'attribute'=>'model_name',
             'header'=>'机型',
-            'value'=>'machine.model_name',
+            'value'=>function($model){
+                return $model->brand_name . $model->model_name;
+            },
         ],
-        [
+        /*[
             'attribute'=>'series_id',
             'header'=>'编号',
             'headerOptions'=>['style'=>'width:100px'],
@@ -45,15 +48,14 @@ echo GridView::widget([
                 return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
                         Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
             }
-        ],
+        ],*/
         [
             'attribute'=>'come_from',
             'header'=>'租借关系',
             'filter'=>\app\models\ConfigBase::$machineOrigin,
             'format'=>'html',
             'value'=>function($model){
-                if(!$model->machine) return '<span class="not-set">未设置</span>';
-                return \app\models\ConfigBase::getMachineOrigin($model->machine->come_from);
+                return \app\models\ConfigBase::getMachineOrigin($model->come_from);
             }
         ],
         [
@@ -61,11 +63,11 @@ echo GridView::widget([
             'format'=>'html',
             'value'=>function($model){
                 $data = [
-                    '月租：'.$model->monthly_rent,
-                    '黑白：'.$model->black_white,
+                    '月租：'.$model->monthly_rent.'元',
+                    '黑白：'.\app\models\config\Tool::schemePrice($model->black_white),
                 ];
                 if($model->colours)
-                    array_push($data,'彩色：'.$model->colours);
+                    array_push($data,'彩色：'.\app\models\config\Tool::schemePrice($model->colours));
                 return Html::ul($data,['class'=>'rent-price']);
             }
         ],
@@ -93,7 +95,7 @@ echo GridView::widget([
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions' => ['style'=>'width:160px'],
-            'template' => '{fault} &nbsp; {update} &nbsp; {map} &nbsp; {charge} &nbsp; {delete} &nbsp; {rental}',
+            'template' => '{fault} &nbsp; {update} &nbsp; {map} &nbsp; {charge} &nbsp; {delete} &nbsp; {rental} <br/>{qrcode}',
             'buttons' => [
                 'update' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);
@@ -112,8 +114,8 @@ echo GridView::widget([
                     ]);
                 },
                 'fault' => function($url,$model,$key){
-                    if(isset($model->machineFault2->status) && $model->machineFault2->status < 8)
-                        return Html::a('<i class="glyphicon glyphicon-eye-open"></i>',Url::toRoute(['service/process','id'=>$model->machineFault2->id]),
+                    if(isset($model->status) && $model->status < 8)
+                        return Html::a('<i class="glyphicon glyphicon-eye-open"></i>',Url::toRoute(['service/process','id'=>$model->fault_id]),
                             [
                                 'title'=>'查看维修进度',
                             ]);
@@ -131,7 +133,10 @@ echo GridView::widget([
                 },
                 'rental' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-stats"></span>',Url::toRoute(['/charts/machine-rental','machine_id'=>$model->machine_id]),['title'=>'租金统计']);
-                }
+                },
+                'qrcode' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['/code/machine','id'=>$model->machine_id]) ,['title'=>'机器二维码']);
+                },
             ]
         ]
 

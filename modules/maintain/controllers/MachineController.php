@@ -15,7 +15,7 @@ class MachineController extends Controller
 
     /*
      * 提交机器位置
-     * $mid 机器id
+     * $mid 机器编号
      */
     public function actionPosition($mid)
     {

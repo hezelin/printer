@@ -136,11 +136,11 @@ class FaultList
 
         if( $from == 1 ){
             if($model['status'] == 8)
-                $model['btn'] = Html::a('评价维修',Url::toRoute(['s/evaluate','id'=>$this->id,'fault_id'=>$model['fault_id']]),[
+                $model['btn'] = Html::a('评价维修',Url::toRoute(['/maintain/fault/evaluate','id'=>$this->id,'fault_id'=>$model['fault_id']]),[
                     'class'=>'h-fixed-bottom'
                 ]);
             if($model['status']== 1 || $model['status'] == 2)
-                $model['btn'] = Html::a('取消维修',Url::toRoute(['s/cancel','id'=>$this->id,'fid'=>$model['fault_id']]),[
+                $model['btn'] = Html::a('取消维修',Url::toRoute(['/maintain/fault/cancel','id'=>$this->id,'fid'=>$model['fault_id']]),[
                     'class'=>'h-fixed-bottom'
                 ]);
         }
@@ -205,11 +205,11 @@ class FaultList
 
         if( $from == 1 ){
             if($model['status'] == 8)
-                $model['btn'] = Html::a('评价维修',Url::toRoute(['s/evaluate','id'=>$this->id,'fault_id'=>$model['fault_id']]),[
+                $model['btn'] = Html::a('评价维修',Url::toRoute(['/maintain/fault/evaluate','id'=>$this->id,'fault_id'=>$model['fault_id']]),[
                     'class'=>'h-fixed-bottom'
                 ]);
             if($model['status']== 1 || $model['status'] == 2)
-                $model['btn'] = Html::a('取消维修',Url::toRoute(['s/cancel','id'=>$this->id,'fid'=>$model['fault_id']]),[
+                $model['btn'] = Html::a('取消维修',Url::toRoute(['/maintain/fault/cancel','id'=>$this->id,'fid'=>$model['fault_id']]),[
                     'class'=>'h-fixed-bottom'
                 ]);
         }

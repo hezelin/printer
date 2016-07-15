@@ -8,19 +8,24 @@ $this->title = '维修任务';
 <?=$btnHtml?>
 
 <style>
-    #fault-money-fixed{ position: fixed; z-index: 19999; background-color: #fff;
-        border-top: 1px solid #cccccc;  box-shadow: 0 2px 10px #ccc;
-        padding: 25px 0 10px; width: 100%; bottom: 0; display: none;
-        left: 0;
+    #fault-money-fixed{ position: fixed; z-index: 19999;bottom: 0;
+        left: 0;display: none;
     }
-    #fault-money-close{ position: absolute; top: 0; color: #666; text-align: center;
-        right: 0; width: 40px; height: 40px; font-size: 24px;}
 </style>
-<div id="fault-money-fixed">
-    <div id="fault-money-close">×</div>
-    <input type="text" class="h-input" placeholder="维修金额" name="fault-cost" id="fault-cost"/>
-    <button type="button" id="fault-money-sub" class="h-button">维修完成</button>
-</div>
+
+    <div id="fault-money-fixed" class="aui-content">
+        <div class="aui-form">
+            <div class="aui-input-row">
+                <label class="aui-input-addon">维修金额</label>
+                <input type="text" class="aui-input"  name="fault-cost" id="fault-cost" placeholder="输入"/>
+            </div>
+            <div class="aui-btn-row">
+                <div id="fault-money-sub" class="aui-btn aui-btn-success">维修完成</div>
+                &nbsp;&nbsp;&nbsp;<div id="fault-money-close" class="aui-btn aui-btn-warning">取消</div>
+            </div>
+        </div>
+    </div>
+
 <script>
 <?php $this->beginBlock('JS_END') ?>
     var ms = <?=$model['status']?>;
@@ -72,15 +77,16 @@ $this->title = '维修任务';
             var reg = /^(\d+)(\.\d{1,2})?$/;
             var val = $('#fault-cost').val();
             if($.trim(val) && !reg.test(val) ){
-                alert('请输入正确金额（2位小数）!');
+                alert('请输入正确金额!');
                 return false;
             }
             $this.addClass('h-loading').text('请求中...');
             $.post(
-                '<?=Url::toRoute(['/maintain/task/processajax','id'=>$model['id'],'openid'=>$openid])?>',
+                '<?=Url::toRoute(['/maintain/task/process-ajax','id'=>$model['id'],'openid'=>$openid])?>',
                 {'status':8,'fault_cost':val},
                 function(res){
                     if(res.status == 1){
+
                         location.href = '/wechat/index/<?=$model['wx_id']?>';
                     }else
                         alert(res.msg);

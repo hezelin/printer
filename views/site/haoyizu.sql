@@ -18,7 +18,8 @@ LEFT JOIN tbl_machine_model t2 ON t1.machine_model_id=t2.id
 
 -- 3、电话维修视图
 CREATE OR REPLACE view view_rent_fault_machine AS SELECT
-t1.machine_id,t1.wx_id,t1.openid,t1.monthly_rent,t1.black_white,t1.colours,t1.phone,t1.name,t1.address,t1.due_time,t1.first_rent_time,t1.add_time,
+t1.machine_id,t1.wx_id,t1.openid,t1.monthly_rent,t1.black_white,t1.colours,t1.phone,t1.name,
+t1.address,t1.due_time,t1.first_rent_time,t1.add_time,t1.latitude,t1.longitude,
 t2.series_id,t2.cover,t2.brand_name,t2.model_name,t2.come_from,
 t3.status,t3.id as fault_id
 FROM tbl_rent_apply t1
@@ -36,3 +37,11 @@ FROM tbl_rent_report t1
 LEFT JOIN tbl_rent_apply t2 ON t1.machine_id=t2.machine_id AND t2.status<11
 LEFT JOIN tbl_machine t3 ON t1.machine_id=t3.id
 WHERE t1.status<11
+
+
+-- 5、取消维修记录
+CREATE OR REPLACE view view_fault_cancel AS SELECT
+t1.*,
+t2.type as fault_type,t2.content,t2.desc,t2.add_time AS apply_time,t2.remark
+FROM tbl_fault_cancel_log t1
+LEFT JOIN tbl_machine_service t2 ON t1.service_id=t2.id

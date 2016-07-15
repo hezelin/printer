@@ -1,7 +1,6 @@
 <?php
 
 namespace app\controllers;
-use app\models\Cache;
 use app\models\TblUserMaintain;
 use app\models\ToolBase;
 use app\models\WxUser;

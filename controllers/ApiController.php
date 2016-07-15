@@ -5,10 +5,8 @@
  */
 namespace app\controllers;
 
-use app\models\Curl;
 use app\models\TblZujiApply;
 use app\models\WxBase;
-use yii\helpers\Url;
 use yii\web\Controller;
 
 

@@ -8,11 +8,11 @@ use app\models\TblRentApply;
 use app\models\TblRentApplyCollect;
 use app\models\TblRentApplyExpire;
 use app\models\TblRentApplySearch;
-use app\models\TblRentApplyList;
 use app\models\TblRentApplyWithMachine;
 use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
 use app\models\ToolBase;
+use app\models\views\ViewRentDataSearch;
 use app\models\WxTemplate;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -130,7 +130,7 @@ class AdminRentController extends \yii\web\Controller
                 return $this->render('//tips/success', [
                     'tips' => '资料修改成功',
                     'btnText' => '返回',
-                    'btnUrl' => Url::toRoute(['adminrent/list'])
+                    'btnUrl' => Url::toRoute(['/admin-rent/list'])
                 ]);
             }
             else
@@ -153,7 +153,7 @@ class AdminRentController extends \yii\web\Controller
 
     public function actionList()
     {
-        $searchModel = new TblRentApplyList();
+        $searchModel = new ViewRentDataSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $fixProvider = new ActiveDataProvider([

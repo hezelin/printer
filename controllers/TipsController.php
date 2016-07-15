@@ -4,19 +4,35 @@ namespace app\controllers;
 
 class TipsController extends \yii\web\Controller
 {
+    public $layout = '/home';
     public function actionError()
     {
-        return $this->render('error');
+        $data = [
+            'tips'=>'状态样式调整',
+            'btnText'=>'链接一',
+            'btnUrl'=>'#',
+        ];
+        return $this->render('error',$data);
     }
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $data = [
+            'tips'=>'状态样式调整',
+            'btnText'=>'链接一',
+            'btnUrl'=>'#',
+        ];
+        return $this->render('index',$data);
     }
 
     public function actionSuccess()
     {
-        return $this->render('success');
+        $data = [
+            'tips'=>'状态样式调整',
+            'btnText'=>'链接一',
+            'btnUrl'=>'#',
+        ];
+        return $this->render('success',$data);
     }
 
 }
