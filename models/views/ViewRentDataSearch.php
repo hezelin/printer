@@ -45,6 +45,8 @@ class ViewRentDataSearch extends ViewRentFaultMachine
     {
         $query = ViewRentFaultMachine::find()->where(['wx_id'=>Cache::getWid()]);
 
+        if($clientNo = Yii::$app->request->get('client_no'))
+            $query->andWhere(['series_id'=>$clientNo]);
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([

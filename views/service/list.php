@@ -60,11 +60,11 @@ echo GridView::widget([
             'format' => 'html',
             'content'=>function($model){
                 if($model->series_id)
-                    return Html::a($model->machine_id,['machine/view','id'=>$model->machine_id],[
-                        'title'=>'查看机器详情',
+                    return Html::a($model->series_id,['/service/list','client_no'=>$model->series_id],[
+                        'title'=>'查看编号所有维修',
                         'target'=>'_blank',
                     ]);
-                return '无';
+                return '<span class="not-set">(未设置)</span>';
             }
         ],
         [

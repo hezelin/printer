@@ -12,21 +12,35 @@ $this->params['breadcrumbs'][] = $this->title;
     'filterModel' => $searchModel,
     'tableOptions' => ['class' => 'table table-striped'],
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],
+//        ['class' => 'yii\grid\SerialColumn'],
+        [
+            'attribute'=>'machine_id',
+            'format' => 'html',
+            'content'=>function($model){
+                return Html::a($model->machine_id,['machine/view','id'=>$model->machine_id],[
+                    'title'=>'查看机器详情',
+                    'target'=>'_blank',
+                ]);
+            }
+        ],
+        [
+            'attribute'=>'series_id',
+            'format' => 'html',
+            'content'=>function($model){
+                if($model->series_id)
+                    return Html::a($model->series_id,['/charge/list','client_no'=>$model->series_id],[
+                        'title'=>'查看编号所有收租',
+                        'target'=>'_blank',
+                    ]);
+                return '<span class="not-set">(未设置)</span>';
+            }
+        ],
         'black_white',
         'colour',
         'total_money',
         'exceed_money',
         'brand_name',
         'model_name',
-        /*[
-            'label'=>'机型',
-            'format'=>'html',
-            'value'=>function($model){
-                if( isset( $model->rentApply->machine->machineModel ) )
-                return $model->rentApply->machine->machineModel->brand->name . $model->rentApply->machine->machineModel->type;
-            }
-        ],*/
         'user_name',
         'address',
         [

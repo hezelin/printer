@@ -28,9 +28,26 @@ echo GridView::widget([
 //        ['class' => 'yii\grid\SerialColumn'],
         [
             'attribute'=>'machine_id',
-            'label' => '机器编号',
+            'format' => 'html',
+            'content'=>function($model){
+                return Html::a($model->machine_id,['machine/view','id'=>$model->machine_id],[
+                    'title'=>'查看机器详情',
+                    'target'=>'_blank',
+                ]);
+            }
         ],
-        'series_id',
+        [
+            'attribute'=>'series_id',
+            'format' => 'html',
+            'content'=>function($model){
+                if($model->series_id)
+                    return Html::a($model->series_id,['/admin-rent/list','client_no'=>$model->series_id],[
+                        'title'=>'查看编号所有租赁',
+                        'target'=>'_blank',
+                    ]);
+                return '<span class="not-set">(未设置)</span>';
+            }
+        ],
         [
             'attribute'=>'model_name',
             'header'=>'机型',
@@ -38,17 +55,7 @@ echo GridView::widget([
                 return $model->brand_name . $model->model_name;
             },
         ],
-        /*[
-            'attribute'=>'series_id',
-            'header'=>'编号',
-            'headerOptions'=>['style'=>'width:100px'],
-            'format'=>'html',
-            'value'=>function($model) {
-                if(!$model->machine) return '<span class="not-set">未设置</span>';
-                return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
-                        Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
-            }
-        ],*/
+
         [
             'attribute'=>'come_from',
             'header'=>'租借关系',

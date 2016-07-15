@@ -22,7 +22,7 @@ class TipsController extends \yii\web\Controller
             'btnText'=>'链接一',
             'btnUrl'=>'#',
         ];
-        return $this->render('index',$data);
+        return $this->render('home-status',$data);
     }
 
     public function actionSuccess()

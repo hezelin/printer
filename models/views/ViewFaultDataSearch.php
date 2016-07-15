@@ -44,6 +44,9 @@ class ViewFaultDataSearch extends ViewFaultData
         if(Yii::$app->request->get('fromFault'))
             $query->andWhere(['openid'=>Yii::$app->request->get('fromFault')]);
 
+        if($clientNo = Yii::$app->request->get('client_no'))
+            $query->andWhere(['series_id'=>$clientNo]);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [

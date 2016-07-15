@@ -19,7 +19,7 @@ class ViewChargeReportSearch extends ViewChargeReport
         return [
             [['id', 'wx_id', 'machine_id', 'colour', 'black_white', 'status', 'add_time', 'first_rent_time', 'rent_period'], 'integer'],
             [['total_money', 'exceed_money'], 'number'],
-            [['sign_img', 'name', 'user_name', 'address', 'model_name', 'brand_name'], 'safe'],
+            [['sign_img', 'name', 'user_name', 'address', 'model_name', 'brand_name', 'series_id'], 'safe'],
         ];
     }
 
@@ -43,7 +43,8 @@ class ViewChargeReportSearch extends ViewChargeReport
     {
         $query = ViewChargeReport::find()->where(['wx_id'=>Cache::getWid()]);
 
-        // add conditions that should always apply here
+        if($clientNo = Yii::$app->request->get('client_no'))
+            $query->andWhere(['series_id'=>$clientNo]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -81,7 +82,8 @@ class ViewChargeReportSearch extends ViewChargeReport
             ->andFilterWhere(['like', 'user_name', $this->user_name])
             ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'model_name', $this->model_name])
-            ->andFilterWhere(['like', 'brand_name', $this->brand_name]);
+            ->andFilterWhere(['like', 'brand_name', $this->brand_name])
+            ->andFilterWhere(['like', 'series_id', $this->series_id]);
 
         return $dataProvider;
     }

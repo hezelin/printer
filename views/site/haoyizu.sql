@@ -32,7 +32,7 @@ WHERE t1.status<11
 CREATE OR REPLACE view view_charge_report AS SELECT
 t1.*,
 t2.name as user_name,t2.address,t2.first_rent_time,t2.rent_period,
-t3.model_name,t3.brand_name
+t3.model_name,t3.brand_name,t3.series_id
 FROM tbl_rent_report t1
 LEFT JOIN tbl_rent_apply t2 ON t1.machine_id=t2.machine_id AND t2.status<11
 LEFT JOIN tbl_machine t3 ON t1.machine_id=t3.id

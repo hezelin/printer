@@ -115,14 +115,6 @@ WeixinAsset::register($this);
                                 'icon' => 'stats',
                             ],
                             [
-                                'label' => '微官网',
-                                'icon' => 'home',
-                                'items' => [
-                                    ['label' => '店铺装修', 'url' => ['/home/fitment']],
-                                    ['label' => '店铺设置', 'url' => ['/home/setting']],
-                                ],
-                            ],
-                            [
                                 'label' => '机器管理',
                                 'icon' => 'print',
                                 'items' => [
@@ -132,20 +124,6 @@ WeixinAsset::register($this);
                                     ['label' => '租赁方案', 'url' => ['/rent-project/list'],
                                         'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'rent-project',
                                     ],
-                                ],
-                            ],
-                            [
-                                'label' => '二维码管理',
-                                'icon' => 'qrcode',
-                                'items' => [
-                                    ['label' => '积分二维码','url' => ['/code/score']],
-                                    [
-                                        'label' => '机器二维码','url' => ['/code/index'],
-                                        'active' => in_array(Yii::$app->controller->getRoute(),['code/index','code/machine','code/machineall']),
-                                    ],
-                                    ['label' => '预设机器二维码','url' => ['/code/ahead']],
-                                    ['label' => '配件二维码','url' => ['/code/parts']],
-                                    ['label' => '维修员绑定码','url' => ['/code/binding']],
                                 ],
                             ],
                             [
@@ -172,6 +150,28 @@ WeixinAsset::register($this);
                                     ['label' => '电话维修','url' => ['/service/call']],
                                     ['label' => '维修配件管理', 'url' => ['/shop/adminparts/list']],
 
+                                ],
+                            ],
+                            [
+                                'label' => '微官网',
+                                'icon' => 'home',
+                                'items' => [
+                                    ['label' => '店铺装修', 'url' => ['/home/fitment']],
+                                    ['label' => '店铺设置', 'url' => ['/home/setting']],
+                                ],
+                            ],
+                            [
+                                'label' => '二维码管理',
+                                'icon' => 'qrcode',
+                                'items' => [
+                                    ['label' => '积分二维码','url' => ['/code/score']],
+                                    [
+                                        'label' => '机器二维码','url' => ['/code/index'],
+                                        'active' => in_array(Yii::$app->controller->getRoute(),['code/index','code/machine','code/machineall']),
+                                    ],
+                                    ['label' => '预设机器二维码','url' => ['/code/ahead']],
+                                    ['label' => '配件二维码','url' => ['/code/parts']],
+                                    ['label' => '维修员绑定码','url' => ['/code/binding']],
                                 ],
                             ],
                             [

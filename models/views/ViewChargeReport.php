@@ -26,7 +26,7 @@ class ViewChargeReport extends \yii\db\ActiveRecord
             [['name', 'brand_name'], 'string', 'max' => 100],
             [['user_name'], 'string', 'max' => 30],
             [['address'], 'string', 'max' => 500],
-            [['model_name'], 'string', 'max' => 50],
+            [['model_name', 'series_id'], 'string', 'max' => 50],
         ];
     }
 
@@ -50,6 +50,7 @@ class ViewChargeReport extends \yii\db\ActiveRecord
             'rent_period' => '收租周期',
             'model_name' => '机型',
             'brand_name' => '品牌',
+            'series_id' => '客户编号',
         ];
     }
 }
