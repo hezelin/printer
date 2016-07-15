@@ -1,10 +1,7 @@
 <?php
 
 namespace app\controllers;
-use app\models\Cache;
 use app\models\TblMachineSearch;
-use app\models\TblRentApply;
-use app\models\views\ViewMachineModelSearch;
 use Yii;
 use app\models\TblMachine;
 use app\models\ToolBase;

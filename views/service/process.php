@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use app\models\ConfigBase;
 
 $this->title = '维修进度';
+$this->params['breadcrumbs'][] = ['label'=>'维修资料','url'=>['list']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

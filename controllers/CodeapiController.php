@@ -16,7 +16,7 @@ class CodeapiController extends \yii\web\Controller
     /*
      * 机器二维码扫描入口
      * 用户扫描 + 维修员扫描
-     * $id 机器id,
+     * $id 机器编号,
      */
     public function actionMachine($id)
     {

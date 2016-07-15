@@ -47,7 +47,7 @@ if( Yii::$app->session->hasFlash('error') )
     <div class="col-lg-12">
         <p class="col-lg-7 text-center">--------------------------- 机器资料 ---------------------------</p>
     </div>
-    <?= $form->field($machine, 'series_id')->textInput(['placeholder'=>'多个序列号用逗号","隔开']) ?>
+    <?= $form->field($machine, 'series_id')->textInput(['placeholder'=>'多个客户编号用逗号","隔开']) ?>
     <?= $form->field($machine, 'model_id')->widget(\kartik\select2\Select2::classname(), [
         'data' => [0=>'电话维修专用'] + app\models\ConfigBase::getMachineModel(),
         'language' => 'zh-CN',

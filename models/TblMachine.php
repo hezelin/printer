@@ -60,13 +60,13 @@ class TblMachine extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '机器id',
+            'id' => '机器编号',
             'wx_id' => '公众号id',
             'model_id' => '选择机型',
             'model_name' => '机型',
             'brand' => '品牌字母',
             'brand_name' => '品牌名字',
-            'series_id' => '机身序列号',
+            'series_id' => '客户编号',
             'buy_price' => '购买价格',
             'buy_date' => '购买时间',
             'cover' => '封面图片',
@@ -106,11 +106,12 @@ class TblMachine extends \yii\db\ActiveRecord
             $row[8] = time();
             $row[9] = $this->model_name;
             $row[10] = $this->remark;
+            $row[11] = $this->series_id;
             $rows[] = $row;
         }
 
         $row = Yii::$app->db->createCommand()->batchInsert('tbl_machine',
-            ['wx_id','model_id','brand','brand_name','cover','images','buy_date','buy_price','add_time','model_name','remark'],$rows
+            ['wx_id','model_id','brand','brand_name','cover','images','buy_date','buy_price','add_time','model_name','remark','series_id'],$rows
         )->execute();
 
         return $row;

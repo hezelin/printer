@@ -59,7 +59,7 @@ class TblParts extends \yii\db\ActiveRecord
             'item_id' => '商品',
             'openid' => 'Openid',
             'fault_id' => 'Fault ID',
-            'machine_id' => '机器id',
+            'machine_id' => '机器编号',
             'status' => '状态',
             'remark' => '备注',
             'apply_time' => '申请时间',

@@ -35,7 +35,7 @@ class ViewChargeReport extends \yii\db\ActiveRecord
         return [
             'id' => '自增id',
             'wx_id' => '公众号id',
-            'machine_id' => '机器id',
+            'machine_id' => '机器编号',
             'colour' => '彩色张数',
             'black_white' => '黑白张数',
             'total_money' => '收取租金',

@@ -258,7 +258,7 @@ class FaultController extends Controller
     /*
      * 机器维修记录
      * $id ，公众号id
-     * $mid , 机器id
+     * $mid , 机器编号
      */
     public function actionIrecord($id,$mid)
     {

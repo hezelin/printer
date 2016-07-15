@@ -42,7 +42,7 @@ if( Yii::$app->session->hasFlash('success') )
         ],
     ]); ?>
 
-    <?= $form->field($model, 'brand')->dropDownList([''=>'选择'] + \app\models\config\ConfigScheme::$brand)->hint('品牌不存在跟我们联系') ?>
+    <?= $form->field($model, 'brand')->dropDownList([''=>'选择'] + \app\models\config\ConfigScheme::$brand)->hint('品牌不存在跟我们联系')->label('选择品牌') ?>
 
     <?= $form->field($model, 'model_id')->widget(\app\components\ItemDependentWidget::className(),[
         'depend'=>'brand',
@@ -57,6 +57,8 @@ if( Yii::$app->session->hasFlash('success') )
             'format' => 'yyyy-mm-dd',
         ]
     ]) ?>
+
+    <?= $form->field($model, 'series_id')->textInput() ?>
 
     <?= $form->field($model, 'images')->widget(\app\components\UploadimageWidget::className(),[
         'serverUrl'=>Url::toRoute(['/site/image','pathName'=>'machine']),'imageLimit'=>5

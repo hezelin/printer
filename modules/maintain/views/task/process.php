@@ -86,7 +86,7 @@ $this->title = '维修任务';
                 {'status':8,'fault_cost':val},
                 function(res){
                     if(res.status == 1){
-                        
+
                         location.href = '/wechat/index/<?=$model['wx_id']?>';
                     }else
                         alert(res.msg);

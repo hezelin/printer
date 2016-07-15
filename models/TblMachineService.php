@@ -35,7 +35,7 @@ class TblMachineService extends \yii\db\ActiveRecord
         return [
             'id' => '自增id',
             'weixin_id' => '微信id',
-            'machine_id' => '机器id',
+            'machine_id' => '机器编号',
             'from_openid' => '申请者openid',
             'openid' => '维修员id',
             'type' => '故障类型',

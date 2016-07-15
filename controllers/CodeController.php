@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\models\Cache;
-use app\models\ConfigBase;
 use app\models\code\MachineAhead;
 use app\models\TblMachineSearch;
 use app\models\TblQrcodeSetting;
@@ -94,7 +93,7 @@ class CodeController extends \yii\web\Controller
     }
     /*
      * 批量打印机器码
-     * post 提交多个机器id,英文分号隔开
+     * post 提交多个机器编号,英文分号隔开
      */
     public function actionMachineall()
     {

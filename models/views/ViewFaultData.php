@@ -35,7 +35,7 @@ class ViewFaultData extends \yii\db\ActiveRecord
         return [
             'id' => '自增id',
             'weixin_id' => '微信id',
-            'machine_id' => '机器id',
+            'machine_id' => '机器编号',
             'type' => '故障类型',
             'status' => '状态',
             'desc' => '故障描述',
@@ -44,7 +44,7 @@ class ViewFaultData extends \yii\db\ActiveRecord
             'remark' => '备注',
             'add_time' => '添加时间',
             'maintain_count' => '维修次数',
-            'series_id' => '机身序列号',
+            'series_id' => '客户编号',
             'cover' => '封面图片',
             'brand_name' => '品牌名字',
             'model_name' => '机型名字',

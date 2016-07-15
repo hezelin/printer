@@ -29,7 +29,7 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['wx_id', 'openid', 'project_id', 'due_time', 'phone', 'name', 'add_time','machine_id','first_rent_time', 'rent_period'], 'required'],
+            [['wx_id', 'openid', 'black_white', 'project_id', 'due_time', 'phone', 'name', 'add_time','machine_id','first_rent_time', 'rent_period'], 'required'],
             [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'black_amount', 'colours_amount'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
             [['enable'], 'string'],
