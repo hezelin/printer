@@ -1,5 +1,6 @@
 <?php
-    $this->title = '积分赠送';
+$this->title = '积分赠送';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <h4>用户微信资料</h4>
 

@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'header' => '操作',
                 'headerOptions' => ['style'=>'width:140px'],
-                'template' => '{view} &nbsp; {update} &nbsp; {delete} &nbsp; {qrcode} &nbsp; {rental}',
+                'template' => '{view} &nbsp; {update} &nbsp; {delete} &nbsp; {qrcode} <br/>{rental} &nbsp; {fault}',
                 'buttons' => [
                     'update' => function($url,$model,$key){
                         return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::toRoute(['update','id'=>$model->id]) ,['title'=>'修改资料']);
@@ -113,7 +113,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'rental' => function($url,$model,$key){
                         return Html::a('<span class="glyphicon glyphicon-stats"></span>',Url::toRoute(['/charts/machine-rental','machine_id'=>$model->id]),['title'=>'租金统计']);
-                    }
+                    },
+                    'fault' => function($url,$model,$key){
+                        return Html::a('<span class="glyphicon glyphicon-screenshot"></span>',Url::toRoute(['/service/list','machine_id'=>$model->id]) ,['title'=>'机器维修记录']);
+                    },
                 ],
             ],
         ],

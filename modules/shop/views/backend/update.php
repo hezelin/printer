@@ -3,6 +3,8 @@
 use yii\bootstrap\Alert;
 
 $this->title = '修改商品';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <?php

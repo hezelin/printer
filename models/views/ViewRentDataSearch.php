@@ -43,7 +43,9 @@ class ViewRentDataSearch extends ViewRentFaultMachine
      */
     public function search($params)
     {
-        $query = ViewRentFaultMachine::find()->where(['wx_id'=>Cache::getWid()]);
+        $query = ViewRentFaultMachine::find()
+            ->where(['wx_id'=>Cache::getWid()])
+            ->andWhere(['>','status',1]);
 
         if($clientNo = Yii::$app->request->get('client_no'))
             $query->andWhere(['series_id'=>$clientNo]);

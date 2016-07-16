@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 $this->title = '商品列表';
+$this->params['breadcrumbs'][] = $this->title;
+
 
 ?>
 

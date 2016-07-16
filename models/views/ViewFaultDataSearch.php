@@ -31,12 +31,17 @@ class ViewFaultDataSearch extends ViewFaultData
         $query = ViewFaultData::find()->where(['weixin_id'=>Cache::getWid()]);
 
         $process = Yii::$app->request->get('process');
+        $machineId = Yii::$app->request->get('machine_id');
+
         if($process == 2)               // 等待评价
             $query->andWhere(['status'=>8]);
         elseif($process == 3)           // 完成中
             $query->andWhere(['status'=>9]);
-        else                            // 维修中
-            $query->andWhere(['<','status',8]);
+        elseif($machineId)
+            $query->andWhere(['machine_id'=>$machineId]);              // 查看同一台机器的微信
+        else
+            $query->andWhere(['<','status',8]);                        // 维修中
+
 
         if($status)
             $query->andWhere(['status'=>$status]);

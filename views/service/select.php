@@ -5,8 +5,8 @@ use yii\helpers\Url;
 use app\models\ConfigBase;
 use yii\bootstrap\Modal;
 
-
 $this->title = '选择维修';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php

@@ -3,7 +3,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 $this->title = '发送通知';
-
+$this->params['breadcrumbs'][] = $this->title;
 
 function getSex($sex){
     return $sex==1? '男':($sex==2? '女':'未知');

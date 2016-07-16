@@ -4,6 +4,8 @@ use yii\widgets\DetailView;
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '商品详情';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <?php
 
