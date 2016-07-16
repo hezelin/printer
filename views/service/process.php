@@ -22,6 +22,14 @@ $this->params['breadcrumbs'][] = $this->title;
 .voice-play .voice-image{background-position: -80px 0;}
 </style>
 <?php
+if( Yii::$app->session->hasFlash('error') )
+    echo \yii\bootstrap\Alert::widget([
+        'options' => [
+            'class' => 'alert-danger',
+        ],
+        'body' => Yii::$app->session->getFlash('error'),
+    ]);
+
 function getMachine($model){
     if( !isset($model->machine) ) return '<span class="not-set">（无设置）</span>';
     return Html::a(Html::img($model->machine->cover,['width'=>40]),str_replace('/s/','/m/',$model->machine->cover),['class'=>'fancybox','rel'=>'group']) .

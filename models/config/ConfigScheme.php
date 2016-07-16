@@ -29,6 +29,7 @@ class ConfigScheme
         'xd' => '兄弟',
         'xindu' => '新都',
         'jsdy' => '基士得耶',
+        'wsz' => '-',
     ];
 
     /*

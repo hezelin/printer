@@ -8,7 +8,6 @@ use yii\bootstrap\Modal;
 $this->title = '待维修列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
     <style>
         .list-text,.list-text li{  list-style: none;  padding: 0; margin: 0;  font-size: 14px;  }
         .list-text li{  height: 24px;  line-height: 24px;  width: 100%;  display: inline-block;  }
@@ -25,6 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
     </style>
 
 <?php
+if( Yii::$app->session->hasFlash('error') )
+    echo \yii\bootstrap\Alert::widget([
+        'options' => [
+            'class' => 'alert-danger',
+        ],
+        'body' => Yii::$app->session->getFlash('error'),
+    ]);
 
 echo GridView::widget([
     'id'=>'fix-list',
