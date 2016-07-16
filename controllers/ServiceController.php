@@ -410,7 +410,7 @@ class ServiceController extends \yii\web\Controller
         {
             if( $model->save() == 'success' ){
                 Yii::$app->session->setFlash('success','资料录入成功！，请更正用户坐标！');
-                return $this->redirect(['/adminrent/map','id'=>$model->rent->id]);
+                return $this->redirect(['/admin-rent/map','id'=>$model->rent->id]);
                 /*return $this->render('//tips/success',[
                     'tips'=>'资料录入成功',
                     'btnText'=>'返回维修列表',
@@ -420,7 +420,6 @@ class ServiceController extends \yii\web\Controller
                 Yii::$app->session->setFlash('error','资料录入失败！');
 
         }
-
         return $this->render('newCall',[
             'machine'=>$model->machine,
             'rent'=>$model->rent,

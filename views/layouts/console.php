@@ -147,7 +147,7 @@ WeixinAsset::register($this);
                                     ['label' => '维修资料','url' => ['/service/list'],
                                         'active' => in_array(Yii::$app->controller->getRoute(),['service/list','service/process']),
                                     ],
-                                    ['label' => '电话维修','url' => ['/service/call']],
+                                    ['label' => '电话报修','url' => ['/service/call']],
                                     ['label' => '维修配件管理', 'url' => ['/shop/adminparts/list']],
 
                                 ],

@@ -18,9 +18,12 @@ $this->params['breadcrumbs'][]= $this->title;
 </style>
 
 <div class="alert alert-success" role="alert">
-    1、在下面表格筛选用户资料，点击 “选择” ，发起一个维修单<br/>
-    2、如果不存在用户资料，请新建立维修资料 <a href="<?=Url::toRoute(['new-call'])?>" class="btn btn-info btn-sm">新建资料</a><br/>
-    3、一定要在下面表格筛选用户是否存在，因为系统要统计维修数据<br/>
+    <?php
+    echo Html::beginForm('/service/new-call','get',['class'=>'form-inline']);
+    echo Html::textInput('machine_id','',['class'=>'form-control','placeholder'=>'输入机器编号']);
+    echo Html::submitButton('点击报修',['class'=>'btn btn-info','style'=>'margin-left:15px']);
+    echo Html::endForm();
+    ?>
 </div>
 
 
@@ -33,21 +36,37 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],
+//        ['class' => 'yii\grid\SerialColumn'],
         [
-            'attribute'=>'id',
-            'header'=>'客户编号',
+            'attribute'=>'machine_id',
+            'label'=>'机器编号',
+            'format' => 'html',
+            'content'=>function($model){
+                return Html::a($model->machine_id,['machine/view','id'=>$model->machine_id],[
+                    'title'=>'查看机器详情',
+                    'target'=>'_blank',
+                ]);
+            }
         ],
-        /*'brand_name',
-        'model_name',
-        'series_id',*/
         [
-            'attribute'=>'brand_name',
-            'header'=>'机身资料',
+            'attribute'=>'series_id',
+            'format' => 'html',
+            'content'=>function($model){
+                if($model->series_id)
+                    return Html::a($model->series_id,['/admin-rent/list','client_no'=>$model->series_id],[
+                        'title'=>'查看编号所有租赁',
+                        'target'=>'_blank',
+                    ]);
+                return '<span class="not-set">(未设置)</span>';
+            }
+        ],
+        [
+            'attribute'=>'model_name',
+            'header'=>'机型',
             'headerOptions'=>['style'=>'width:100px'],
             'format'=>'html',
             'value'=>function($model) {
-                return Html::a($model->brand_name.$model->model_name.$model->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']);
+                return $model->brand_name.$model->model_name;
             }
         ],
         [
@@ -56,7 +75,6 @@ echo GridView::widget([
             'filter'=>\app\models\ConfigBase::$machineOrigin,
             'format'=>'html',
             'value'=>function($model){
-                if(!$model->machine) return '<span class="not-set">未设置</span>';
                 return \app\models\ConfigBase::getMachineOrigin($model->come_from);
             }
         ],
@@ -65,11 +83,11 @@ echo GridView::widget([
             'format'=>'html',
             'value'=>function($model){
                 $data = [
-                    '月租：'.$model->monthly_rent,
-                    '黑白：'.$model->black_white,
+                    '月租：'.$model->monthly_rent.'元',
+                    '黑白：'.\app\models\config\Tool::schemePrice($model->black_white),
                 ];
                 if($model->colours)
-                    array_push($data,'彩色：'.$model->colours);
+                    array_push($data,'彩色：'.\app\models\config\Tool::schemePrice($model->colours));
                 return Html::ul($data,['class'=>'rent-price']);
             }
         ],
@@ -100,7 +118,7 @@ echo GridView::widget([
             'template' => '{fault}',
             'buttons' => [
                 'fault' => function($url,$model,$key){
-                    if(isset($model->status) && $model->status < 8)
+                    if($model->status < 8)
                         return Html::a('维修中',Url::toRoute(['service/process','id'=>$model->fault_id]),
                             [
                                 'title'=>'查看维修进度',
@@ -113,7 +131,7 @@ echo GridView::widget([
                             'class'=>'my-grid-model btn btn-info',
                             'data-machine-id'=>$model->machine_id,
                             'data-openid'=>$model->openid
-                    ]);
+                        ]);
                 }
             ]
         ]
@@ -220,7 +238,7 @@ echo GridView::widget([
             var openid = $(this).attr('key-openid');
             var re_count = $(this).closest('tr').children('.repair-count');
             $.post(
-                '<?=Url::toRoute(['/adminrent/phonefault'])?>?machine_id='+machineId+'&from_openid='+fromOpenid,
+                '<?=Url::toRoute(['/admin-rent/phonefault'])?>?machine_id='+machineId+'&from_openid='+fromOpenid,
                 {'wx_id':<?=$wid?>,'fault_text':faultText,'fault_type':$('#fault-reason').val(),'openid':openid,'fault_remark':$('#fault-remark').val()},
                 function(res){
                     if(res.status == 1){
@@ -253,7 +271,7 @@ echo GridView::widget([
             $(this).html('<img src="/images/loading.gif">');
             var $this = $(this);
             $.post(
-                '<?=Url::toRoute(['/adminrent/phone-no-allot'])?>?machine_id='+machineId+'&from_openid='+fromOpenid,
+                '<?=Url::toRoute(['/admin-rent/phone-no-allot'])?>?machine_id='+machineId+'&from_openid='+fromOpenid,
                 {'wx_id':<?=$wid?>,'fault_text':faultText,'fault_type':$('#fault-reason').val(),'fault_remark':$('#fault-remark').val()},
                 function(res){
                     if(res.status == 1){

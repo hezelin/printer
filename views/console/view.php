@@ -212,10 +212,10 @@ use yii\bootstrap\Modal;
             <?php if($data['alert']):?>
             <ul class="box-list-ul">
                 <li class="box-list-li">
-                    <span class="m-tips" style="width:60%;">待收租机器</span><a href="<?=Url::toRoute(['/adminrent/collect'])?>" class="num-alert"><?=$data['alert']['collect_count']?></a>
+                    <span class="m-tips" style="width:60%;">待收租机器</span><a href="<?=Url::toRoute(['/admin-rent/collect'])?>" class="num-alert"><?=$data['alert']['collect_count']?></a>
                 </li>
                 <li class="box-list-li">
-                    <span class="m-tips" style="width:60%;">快到期租借</span><a href="<?=Url::toRoute(['/adminrent/expire'])?>" class="num-alert"><?=$data['alert']['expire_count']?></a>
+                    <span class="m-tips" style="width:60%;">快到期租借</span><a href="<?=Url::toRoute(['/admin-rent/expire'])?>" class="num-alert"><?=$data['alert']['expire_count']?></a>
                 </li>
             </ul>
             <?php else:?>
@@ -648,7 +648,7 @@ Modal::end();
             return false;
         }
         $.post(
-            '<?=Url::toRoute(['/adminrent/nopass'])?>?rent_id='+keyId,
+            '<?=Url::toRoute(['/admin-rent/nopass'])?>?rent_id='+keyId,
             {'text':text},
             function(res){
                 if(res.status == 1){

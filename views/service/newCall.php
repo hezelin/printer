@@ -49,7 +49,7 @@ if( Yii::$app->session->hasFlash('error') )
         <p class="col-lg-7 text-center">--------------------------- 机器资料 ---------------------------</p>
     </div>
     <?= $form->field($machine, 'series_id')->textInput(['placeholder'=>'多个客户编号用逗号","隔开']) ?>
-    <?= $form->field($machine, 'model_id')->widget(\kartik\select2\Select2::classname(), [
+    <?php  /*$form->field($machine, 'model_id')->widget(\kartik\select2\Select2::classname(), [
         'data' => [0=>'电话维修专用'] + app\models\ConfigBase::getMachineModel(),
         'language' => 'zh-CN',
         'options' => ['placeholder' => '选择机型 ...'],
@@ -66,7 +66,7 @@ if( Yii::$app->session->hasFlash('error') )
                 'asButton' => true
             ]
         ]
-    ]);?>
+    ]);*/?>
     <?= $form->field($machine, 'buy_price')->textInput() ?>
     <?= $form->field($machine, 'buy_date')->widget(\yii\jui\DatePicker::classname(), [
         'dateFormat' => 'yyyy-MM-dd',
@@ -75,7 +75,6 @@ if( Yii::$app->session->hasFlash('error') )
         ]
     ]) ?>
     <?= $form->field($machine, 'come_from')->dropDownList(\app\models\ConfigBase::$machineOrigin) ?>
-    <?= $form->field($machine, 'else_attr')->textInput(['placeholder'=>'属性名，属性值一一对应']) ?>
 
 <div class="col-lg-12">
     <p class="col-lg-7 text-center">--------------------------- 租借资料 --------------------------- </p>
@@ -110,8 +109,6 @@ if( Yii::$app->session->hasFlash('error') )
     <?php ActiveForm::end(); ?>
 
 </div>
-
-<?=\app\components\MoreattrWidget::widget(['targetId'=>'#tblmachine-else_attr','data'=>''])?>
 
 <script>
 <?php $this->beginBlock('JS_END') ?>

@@ -287,7 +287,7 @@ echo GridView::widget([
             $(this).html('<img src="/images/loading.gif">');
             var $this = $(this);
             $.post(
-                '<?=Url::toRoute(['/adminrent/phone-no-allot'])?>?machine_id='+machineId+'&from_openid='+fromOpenid,
+                '<?=Url::toRoute(['/admin-rent/phone-no-allot'])?>?machine_id='+machineId+'&from_openid='+fromOpenid,
                 {'wx_id':<?=$wid?>,'fault_text':faultText,'fault_type':$('#fault-reason').val(),'fault_remark':$('#fault-remark').val()},
                 function(res){
                     if(res.status == 1){
