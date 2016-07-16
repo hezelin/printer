@@ -32,6 +32,17 @@ AuicssAsset::register($this);
     .aui-overflow{
         overflow:hidden;
     }
+    .icon_dd{
+        background:#e6e6e6;
+        width:100px;
+        overflow:hidden;
+        font-size: 60px;
+        height:100px;
+        line-height:100px;
+        margin:0 auto;
+        border-radius:50%;
+        margin-top:90px;
+    }
 </style>
 <div id="cart-list" class="aui-content">
     <ul class="aui-list-view">
@@ -98,9 +109,10 @@ AuicssAsset::register($this);
                         $('#cart-count').text( parseInt( $('#cart-count').text()) + (num - oNum) );
                         $('#cart-money').text( parseFloat( $('#cart-money').text()) + diffPrice );
                         if( parseInt( $('#cart-count').text()) == 0){
-                            $('#cart-list').html(
-                                '<p class="h-hint">购物车是空的！</p>' +
-                                '<a class="h-button" href="<?=\yii\helpers\Url::toRoute(['/shop/item/list','id'=>$id])?>">去商城购物</a>'
+                            $('#cart-list').html('\
+                                    <div class="icon_dd aui-iconfont aui-icon-form aui-badge-danger aui-text-center"></div>\
+                                    <div class="aui-text-center aui-padded-10" style="font-size:14px; margin-top:10px;">购物车是空的！</div>\
+                                    <a class="aui-btn aui-btn-block aui-btn-outlined aui-bad-danger" style="width:100px; height:34px; line-height:30px; font-size:14px; margin:0 auto; padding:0; border-color:#999; color:#787878;" href="<?=\yii\helpers\Url::toRoute(['/shop/item/list','id'=>$id])?>">去商城购物</a>'
                             )
                         }
                     }else{

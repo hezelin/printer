@@ -358,7 +358,6 @@ h4 small,h5 small,h6 small {
 	-webkit-transform: scale(1);
 	pointer-events: none;
 	border: 1px solid #c8c7cc;
-	border-radius: 6px;
 	overflow: hidden;
 }
 .aui-card.aui-noborder:after {
@@ -2640,4 +2639,61 @@ input.aui-counter-input {
 @-webkit-keyframes fadeIn {
     from { opacity: 0.3; }
     to {  }
+}
+
+
+/*弹出框 2*/
+.aui-dialog-2{
+	height:100%;
+	width:100%;
+	top:0;
+	left:0;
+	position:fixed;
+	z-index:599999;
+	color:#202020;
+	text-align:center;
+	font-size:14px;
+}
+
+.aui-dialog-box-2{
+	position:absolute;
+	top:40%;
+	width:76%;
+	left:12%;
+	background:#fff;
+	z-index: 1000002;
+	border-radius:10px;
+	overflow:hidden;
+}
+
+.aui-dialog-2 .aui-dialog-title-2{
+	padding: 20px 0;
+	color:#000;
+	font-size:15px;
+	font-weight:700;
+}
+
+.aui-dialog-2 .aui-dialog-btn-2{
+	display:block;
+	width:50%;
+	float:left;
+	text-decoration:none;
+	color:#1786ff;
+	padding: 10px 0;
+	font-weight:700;
+}
+
+.aui-mask-2{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000001;
+}
+
+/**/
+.aui-overflow-hidden{
+	overflow:hidden;
 }

@@ -6,6 +6,7 @@ HomeAsset::register($this);
 
 $this->registerCssFile('/css/swiper/swiper.min.css',['depends'=>['app\assets\AuicssAsset']]);
 $this->registerCssFile('/css/font-icon/im2/font-icon.css',['depends'=>['app\assets\AuicssAsset']]);
+$this->registerCssFile('/css/font-icon/im3/font-icon.css',['depends'=>['app\assets\AuicssAsset']]);
 $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\assets\AuicssAsset']]);
 ?>
 
@@ -153,6 +154,25 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
     .footer_line{
         height:42px !important;
     }
+
+    /**/
+    .footer-icon span[class^="icon-"],.footer-icon span[class*=" icon-"]{
+        font-size: 20px;
+    }
+    .footer-icon{
+       padding:10px 0;
+    }
+
+    .aui-pull-center1{
+        margin:0 auto;
+        width:56px;
+        overflow:hidden;
+    }
+    .aui-pull-center2{
+        margin:0 auto;
+        width:70px;
+        overflow:hidden;
+    }
 </style>
 
 
@@ -208,8 +228,9 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
                             <div class="price">
                                 <div class="aui-pull-left" style="color:#ff0000;">￥<?=$row['price']?></div>
                                 <div class="aui-pull-right">
-                                    <span class="icon-uniE904" style="font-size:25px;">
+                                    <span class="icon-addgwc" style="font-size:25px;">
                                         <span class="path1"></span>
+                                        <span class="path2"></span>
                                     </span>
                                 </div>
                             </div>
@@ -230,8 +251,9 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
                             <div class="price">
                                 <div class="aui-pull-left" style="color:#ff0000;">￥<% data[i].price %></div>
                                 <div class="aui-pull-right">
-                                    <span class="icon-uniE904" style="font-size:25px;">
+                                    <span class="icon-addgwc" style="font-size:25px;">
                                         <span class="path1"></span>
+                                        <span class="path2"></span>
                                     </span>
                                 </div>
                             </div>
@@ -252,16 +274,38 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         </div>
     </div>
 </div>
+
 <footer class="footer_wechat">
     <div class="wrap">
-        <div class="aui-content aui-text-center aui-border-t" style="font-size:15px;color:#999;">
-            <a href="<?=Url::toRoute(['/wechat/index','id'=>$id])?>" class="aui-col-xs-3 aui-border-r aui-text-danger" style="padding:10px;"><span class="icon-uniE903"></span>首页</a>
-            <a href="#" class="aui-col-xs-3 aui-padded-10 aui-border-r"><span class="icon-uniE901"></span>分类</a>
-            <a href="<?=Url::toRoute(['/shop/i/order','id'=>$id])?>" class="aui-col-xs-3 aui-padded-10 aui-border-r"><span class="icon-uniE900"></span>订单</a>
-            <a href="<?=Url::toRoute(['/shop/cart/list','id'=>$id])?>" class="aui-col-xs-3 aui-padded-10"><span class="icon-uniE902"></span>购物车</a>
+        <div class="aui-content aui-text-center aui-border-t " style="font-size:15px;color:#999;">
+            <a href="<?=Url::toRoute(['/wechat/index','id'=>$id])?>" class="aui-col-xs-3 aui-block aui-border-r aui-text-danger footer-icon">
+                <div class="aui-pull-center1">
+                    <span class="icon-sy aui-pull-left"></span>
+                    <span class="aui-pull-left">首页</span>
+                </div>
+            </a>
+            <a href="#" class="aui-col-xs-3 aui-border-r footer-icon aui-block">
+                <div class="aui-pull-center1">
+                    <span class="icon-fl aui-pull-left"></span>
+                    <span class="aui-pull-left">分类</span>
+                </div>
+            </a>
+            <a href="<?=Url::toRoute(['/shop/i/order','id'=>$id])?>" class="aui-col-xs-3 aui-border-r footer-icon aui-block">
+                <div class="aui-pull-center1">
+                    <span class="icon-dd aui-pull-left"></span>
+                    <span class="aui-pull-left">订单</span>
+                </div>
+            </a>
+            <a href="<?=Url::toRoute(['/shop/cart/list','id'=>$id])?>" class="aui-col-xs-3 footer-icon aui-block">
+                <div class="aui-pull-center2">
+                    <span class="icon-gwc aui-pull-left"></span>
+                    <span class="aui-pull-left">购物车</span>
+                </div>
+            </a>
         </div>
     </div>
 </footer>
+
 <?php \app\assets\ZeptoAsset::register($this); ?>
 <script> var q='',key='',len = <?=$len?>,startId = <?=$startId?>,action = '/shop/item/list?id=<?=$id?>'; </script>
 <script>
@@ -283,13 +327,9 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
     ;+function(){
         var val;
         document.getElementsByClassName('icon-btn')[0].addEventListener('touchend', function(){
-            checkSearch();
-        }, false)
-
-        function checkSearch(){
-            if($.trim((val = document.getElementsByClassName('search_input')[0].value)) === "") return;
+            if((val = document.getElementsByClassName('search_input')[0].value.trim()) === "") return;
             window.location.href = 'list?id=<?=$id?>' + '&q=' + val;
-        }
+        }, false)
     }()
 
     /*上拉加载*/
@@ -299,7 +339,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         var noMessage = '<div class="aui-text-center">没有数据了</div>';
         var $loading = $('.loading');
         window.addEventListener('scroll', function(){
-            if(document.body.scrollTop+250 >= parseInt(getComputedStyle(document.getElementsByClassName('chat')[0]).height)){
+            if(document.body.scrollTop+300 >= parseInt(getComputedStyle(document.getElementsByClassName('chat')[0]).height)){
                 if(bhold){
                     bhold = false;
                     $.ajax({

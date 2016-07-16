@@ -21,11 +21,7 @@ AuicssAsset::register($this);
     a:visited{
         color: #262b31;
     }
-    #pd_scar{height:100%;width:100%; display: none; top:0; left:0; position:fixed;z-index:599999;color:#202020;text-align:center;font-size:1.2em;}
-    .pd_scar2{position:absolute;top:40%;width:80%;left:10%;background:#fff;z-index:3;border-radius:2px;}
-    .pd_scar_a{border-bottom:1px #d7d7d7 solid;line-height:3em;margin-top:0.25em; padding: 10px 0;}
-    .pd_scar_b a{display:block;width:50%;float:left;text-decoration:none;color:#202020; padding: 10px 0;}
-    .pd_bg{float:left;height:100%;width:100%;background:#000;opacity:0.5;}
+
 
     /*aui*/
     .aui-padded-10-0{
@@ -86,18 +82,21 @@ AuicssAsset::register($this);
     #carousel-nav{
         display: none !important;
     }
+
 </style>
 
-<div id="pd_scar">
-    <div class="pd_scar2">
-        <p class="pd_scar_a aui-border-0">商品已经成功加入购物车！</p>
+
+<div class="pd_scar aui-dialog-2 aui-hidden">
+    <div class="pd_scar2 aui-dialog-box-2">
+        <p class="pd_scar_a aui-dialog-title-2">商品已经成功加入购物车！</p>
         <p class="pd_scar_b aui-border-t">
-            <a class="aui-text-danger" href="<?=Url::toRoute(['/shop/item/list','id'=>$id])?>">继续逛逛</a>
-            <a class="aui-border-l aui-text-info" href="<?=Url::toRoute(['/shop/cart/list','id'=>$id])?>">去购物车结算</a>
+            <a class="aui-dialog-btn-2" href="<?=Url::toRoute(['/shop/item/list','id'=>$id])?>">继续逛逛</a>
+            <a class="aui-dialog-btn-2 aui-border-l" href="<?=Url::toRoute(['/shop/cart/list','id'=>$id])?>">查看购物车</a>
         </p>
     </div>
-    <div class="pd_bg pd-hide"></div>
+    <div class="pd_scar aui-mask-2 aui-hidden"></div>
 </div>
+
 
 <div class="aui-padded-10-0 aui-pd-b-del">
     <h3 class="aui-bg-white aui-padded-10 aui-pd-b-del"><?=$model['name']?></h3>
@@ -150,14 +149,14 @@ AuicssAsset::register($this);
                 {item_id:<?=$model['id']?>,openid:'<?=$openid;?>'},
                 function(resp){
                     if(resp.status == 1)
-                        $('#pd_scar').show();
+                        $('.pd_scar').removeClass('aui-hidden');
                     else alert( resp.msg );
                     hasClick = 0;
                 },'json'
             );
         });
-        $('.pd-hide').click(function(){
-            $('#pd_scar').hide();
+        $('.aui-mask-2').click(function(){
+            $('.pd_scar').addClass('aui-hidden');
         })
     });
     <?php $this->endBlock();?>
