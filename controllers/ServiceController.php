@@ -430,7 +430,7 @@ class ServiceController extends \yii\web\Controller
             'rent'=>$model->rent,
             'fault'=>$model->fault,
             'maintainer'=>$model->getMaintainer(),
-            'tips' => $model->tips,
+            'tips' => $model->getTips(),
         ]);
     }
 }

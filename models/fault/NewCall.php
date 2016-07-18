@@ -53,7 +53,8 @@ class NewCall
                 $this->rent = null;
             }
 
-        }
+        }else
+            $this->tips = ['机器型号不存在，将新建机器','客户资料不存在，将新建客户资料'];
 
         $this->machine || $this->machine = new TblMachine(['scenario'=>'new-call']);
         $this->rent || $this->rent = new TblRentApply(['scenario' => 'new-call']);
@@ -184,5 +185,16 @@ class NewCall
             $n -= $a * pow($base, $t);
         }
         return $ret;
+    }
+
+    /*
+     * 返回提醒
+     */
+    public function getTips()
+    {
+        $tmp = [];
+        foreach($this->tips as $k=>$p)
+            $tmp[] = ($k+1)."、$p";
+        return $tmp;
     }
 }
