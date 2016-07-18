@@ -25,7 +25,11 @@ $this->params['breadcrumbs'][] = $this->title;
         .voice-play .voice-image{background-position: -80px 0;}
     </style>
 
-<?php if(!Yii::$app->request->get('machine_id')):?>
+<?php if(Yii::$app->request->get('machine_id')):?>
+    <div class="alert alert-info">正在筛选机器编号 <span class="badge"><?=Yii::$app->request->get('machine_id')?></span> 数据</div>
+<?php elseif(Yii::$app->request->get('client_no')):?>
+    <div class="alert alert-info">正在筛选客户编号 <span class="badge"><?=Yii::$app->request->get('client_no')?></span> 数据</div>
+<?php else:?>
 <div>
     <ul class="nav nav-tabs" >
         <li <?php if(!Yii::$app->request->get('process')) echo 'class="active"';?>><a href="<?=Url::toRoute(['list'])?>" >维修中</a></li>
@@ -36,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>&nbsp;</p>
 </div>
 <?php endif;?>
+
 <?php
 
 echo GridView::widget([

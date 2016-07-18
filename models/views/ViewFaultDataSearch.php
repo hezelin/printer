@@ -38,10 +38,11 @@ class ViewFaultDataSearch extends ViewFaultData
         elseif($process == 3)           // 完成中
             $query->andWhere(['status'=>9]);
         elseif($machineId)
-            $query->andWhere(['machine_id'=>$machineId]);              // 查看同一台机器的微信
+            $query->andWhere(['machine_id'=>$machineId]);              // 查看同一台机器的维修
+        elseif($clientNo = Yii::$app->request->get('client_no'))       // 查看同一个客户编号 所有维修
+            $query->andWhere(['series_id'=>$clientNo]);
         else
             $query->andWhere(['<','status',8]);                        // 维修中
-
 
         if($status)
             $query->andWhere(['status'=>$status]);
@@ -49,8 +50,7 @@ class ViewFaultDataSearch extends ViewFaultData
         if(Yii::$app->request->get('fromFault'))
             $query->andWhere(['openid'=>Yii::$app->request->get('fromFault')]);
 
-        if($clientNo = Yii::$app->request->get('client_no'))
-            $query->andWhere(['series_id'=>$clientNo]);
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

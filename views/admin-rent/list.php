@@ -16,6 +16,12 @@ $this->params['breadcrumbs'][] = $this->title;
     }
     .rent-price li{ width: 100px; height: 20px; line-height: 20px;}
 </style>
+
+<?php
+if(Yii::$app->request->get('client_no')){
+    echo '<div class="alert alert-info">正在筛选客户编号 <span class="badge">'.Yii::$app->request->get('client_no').'</span> 数据</div>';
+}
+?>
 <?php
 
 echo GridView::widget([
