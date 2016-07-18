@@ -16,30 +16,49 @@ AuicssAsset::register($this);
     body{
         background: #f8f8f8;
     }
-    .icon_dd{
-        background:#e6e6e6;
-        width:100px;
-        overflow:hidden;
-        font-size: 60px;
-        height:100px;
-        line-height:100px;
-        margin:0 auto;
-        border-radius:50%;
-        margin-top:90px;
+    .tips-text{
+        padding: 30px 15px;
+        border: 1px dashed #ccc;
+        margin: 20px 10px;
+        font-size: 16px;
+        line-height: 24px;
+        color: #333;
     }
+    .tips-btn1{
+        background-color: #3498db;
+        color: #fff;
+        display: block;
+        padding: 8px;
+        text-align: center;
+        font-size: 18px;
+        margin: 15px 10px;
+        border-radius: 4px;
+        border: 1px solid #3498db;
+    }
+    .tips-btn2{
+        background-color: #fff;
+        color: #333;
+        border: 1px solid #ddd;
+        display: block;
+        padding: 8px;
+        text-align: center;
+        font-size: 18px;
+        margin: 15px 10px;
+        border-radius: 4px;
+    }
+
 </style>
-<div class="icon_dd aui-iconfont aui-icon-form aui-badge-danger aui-text-center"></div>
-<div class="aui-text-center aui-padded-10" style="font-size:14px; margin-top:10px;"><?=$tips?></div>
+<div class="tips-text">
+    <i class="aui-iconfont aui-icon-warn"></i> <?=$tips?>
+</div>
 <?php
 if(isset($btnText,$btnUrl) && $btnText && $btnUrl) {
-    echo Html::a($btnText, $btnUrl, ['class' => 'aui-btn aui-btn-block aui-btn-outlined aui-bad-danger', 'style'=> 'width:100px; height:34px; line-height:30px; font-size:14px; margin:0 auto; padding:0; border-color:#999; color:#787878;']);
+    echo Html::a($btnText, $btnUrl, ['class' => 'tips-btn1']);
 }
-echo '<p>&nbsp;</p>';
 if(isset($btnText2,$btnUrl2) && $btnText2 && $btnUrl2) {
-    echo Html::a($btnText2, $btnUrl2, ['class' => 'aui-btn aui-btn-block aui-btn-outlined aui-bad-danger', 'style'=> 'width:100px; height:34px; line-height:30px; font-size:14px; margin:0 auto; padding:0; border-color:#999; color:#787878;']);
+    echo Html::a($btnText2, $btnUrl2, ['class' => 'tips-btn2']);
 }
 ?>
-
 
 
 <?php if( isset($jumpUrl) && $jumpUrl ):?>

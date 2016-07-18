@@ -21,6 +21,8 @@ class TipsController extends \yii\web\Controller
             'tips'=>'状态样式调整',
             'btnText'=>'链接一',
             'btnUrl'=>'#',
+            'btnText2'=>'链接二',
+            'btnUrl2'=>'#',
         ];
         return $this->render('home-status',$data);
     }
