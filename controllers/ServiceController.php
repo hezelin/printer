@@ -213,13 +213,14 @@ class ServiceController extends \yii\web\Controller
                 Yii::$app->request->post('fault_remark')
             );
 
-            // 为申请者推送消息
-            $tpl->sendProcess(
-                $fromOpenid,
-                url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wid'),'fault_id'=>$rendId],'http'),
-                '任务分配中',
-                $applyTime
-            );
+            if($fromOpenid == 28)            // 为申请者推送消息
+                $tpl->sendProcess(
+                    $fromOpenid,
+                    url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wid'),'fault_id'=>$rendId],'http'),
+                    '任务分配中',
+                    $applyTime
+                );
+
             echo json_encode(['status'=>1]);
         }
         else

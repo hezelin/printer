@@ -267,13 +267,16 @@ class TaskController extends Controller
                 ->from('tbl_user_maintain')
                 ->where('wx_id=:wid and openid=:openid',[':wid'=>$wid,':openid'=>$openid])
                 ->one();
-            $tpl = new WxTemplate($wid);
-            $tpl->sendProcess(
-                $fromOpenid,
-                url::toRoute(['/maintain/fault/detail','id'=>$wid,'fault_id'=>$fault_id],'http'),
-                '维修员：'.$maintainer['name'].'已接单，'.($maintainer['phone']? '手机：'.$maintainer['phone'].',':'').'距离：'.$respKm.'公里',
-                $applyTime
-            );
+
+            if( $fromOpenid == 28){
+                $tpl = new WxTemplate($wid);
+                $tpl->sendProcess(
+                    $fromOpenid,
+                    url::toRoute(['/maintain/fault/detail','id'=>$wid,'fault_id'=>$fault_id],'http'),
+                    '维修员：'.$maintainer['name'].'已接单，'.($maintainer['phone']? '手机：'.$maintainer['phone'].',':'').'距离：'.$respKm.'公里',
+                    $applyTime
+                );
+            }
 
             // 维修进度保存
             $model = new TblServiceProcess();
@@ -366,13 +369,16 @@ class TaskController extends Controller
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
             case 8:             // 维修完成，为发起维修申请的客户 推送评价提醒
-                $tpl = new WxTemplate($wid);
-                $tpl->sendWaiting(
-                    $fromOpenid,
-                    url::toRoute(['/maintain/fault/evaluate','id'=>$wid,'fault_id'=>$id],'http'),
-                    time(),
-                    $applyTime
-                );
+                if( $fromOpenid == 28)
+                {
+                    $tpl = new WxTemplate($wid);
+                    $tpl->sendWaiting(
+                        $fromOpenid,
+                        url::toRoute(['/maintain/fault/evaluate','id'=>$wid,'fault_id'=>$id],'http'),
+                        time(),
+                        $applyTime
+                    );
+                }
 
                 $res['href'] = url::toRoute(['/maintain/fault/detail2','id'=>$id]);
                 $res['dataAjax'] = 0;

@@ -26,17 +26,27 @@ class CodeapiController extends \yii\web\Controller
             ->where(['machine_id'=>$id])
             ->andWhere(['<','status',11])
             ->one();
+
         if(!$rent)
         {
-            return $this->render('//tips/home-status',['tips'=>'租赁用户不存在']);
+            $wid = (new \yii\db\Query())
+                ->select('wx_id')
+                ->from('tbl_machine')
+                ->where(['id'=>$id])
+                ->scalar();
+            $openid = WxBase::openId($wid);
+
+            if( $this->checkMaintain($openid) )
+                return $this->redirect(['/maintain/rent/bind','id'=>$wid,'machine_id'=>$id]);
+            else
+                return $this->redirect(['/user/rent/bind','id'=>$wid,'machine_id'=>$id]);
         }
 
         $wid = $rent['wx_id'];
 
         $openid = WxBase::openId($wid);
 
-//        维修员操作
-        if(!$this->checkMaintain($openid)) {             // 维修员页面跳转
+        if($this->checkMaintain($openid)) {             // 维修员操作
 //            查看维修状态
             $model = TblMachineService::find()
                 ->where(['machine_id' => $id, 'openid' => $openid])
@@ -183,7 +193,7 @@ class CodeapiController extends \yii\web\Controller
      */
     private function checkMaintain($openid)
     {
-        return TblUserMaintain::findOne(['openid'=>$openid])? false:true;
+        return TblUserMaintain::findOne(['openid'=>$openid])? true:false;
     }
 
 }

@@ -66,8 +66,12 @@ class ConfigBase
      */
     public static $faultStatus = [
         1 => '卡纸',
-        2 => '坏晒鼓',
-        3 => '其他'
+        2 => '黑线',
+        3 => '重影',
+        4 => '不清晰',
+        5 => '底灰',
+        6 => '开不了机',
+        10 => '其他'
     ];
 
     public static function getFaultStatus($id){
