@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{update} &nbsp; {delete} &nbsp; {qrcode}',
                 'buttons' => [
                     'update' => function($url,$model,$key){
-                        return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::toRoute(['update','id'=>$model->id]) ,['title'=>'修改资料']);
+                        return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::toRoute(['update-rent','id'=>$model->id]) ,['title'=>'修改资料']);
                     },
                     'qrcode' => function($url,$model,$key){
                         return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['code/machine','id'=>$model->id]) ,['title'=>'机器二维码']);

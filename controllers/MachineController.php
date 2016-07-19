@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\MachineRent;
 use app\models\TblMachineSearch;
 use Yii;
 use app\models\TblMachine;
@@ -153,6 +154,24 @@ class MachineController extends \yii\web\Controller
         } else
             return $this->render('update', [ 'model' => $model ]);
 
+    }
+
+    public function actionUpdateRent($id)
+    {
+        $model = new MachineRent($id);
+        if(Yii::$app->request->post())
+        {
+            if( $model->save() == 'success' ){
+                Yii::$app->session->setFlash('success','资料录入成功！，请更正用户坐标！');
+                return $this->redirect(['/admin-rent/map','id'=>$model->rent->id]);
+            }else
+                Yii::$app->session->setFlash('error','资料录入失败！');
+        }
+
+        return $this->render('machine-rent',[
+            'machine'=>$model->machine,
+            'rent'=>$model->rent,
+        ]);
     }
 
     public function actionView($id)

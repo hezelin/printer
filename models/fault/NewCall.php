@@ -11,6 +11,7 @@ use app\models\TblUserMaintain;
 use app\models\ToolBase;
 use app\models\WxTemplate;
 use Yii;
+use yii\web\HttpException;
 
 class NewCall
 {
@@ -142,13 +143,8 @@ class NewCall
 
             $transaction->commit();
         } catch(\Exception $e) {
-
             $transaction->rollBack();
-            echo '<pre>';
-            print_r($error);
-            echo $e;
-            exit;
-//            return 'fail';
+            throw new HttpException(401,'系统出错');
         }
 
         return 'success';
