@@ -225,8 +225,9 @@ class FaultController extends Controller
 
             return $this->render('//tips/home-status',[
                 'tips'=>'感谢您的评价',
-                'btnText'=>'返回',
-                'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$wx_id])
+                'btnText'=>'返回主页',
+                'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$wx_id]),
+                'jumpUrl'=>Url::toRoute(['/wechat/index','id'=>$wx_id]),
             ]);
         }
 
