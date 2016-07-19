@@ -63,7 +63,7 @@ AuicssAsset::register($this);
                     <input type="text" class="item-count aui-counter-input" value="<?php echo $o['item_nums'];?>">
                     <div class="btn-add aui-counter-plus" data-opera="add"></div>
                 </div>
-                <div class="aui-pull-left aui-padded-0-20" style="font-size: 14px; line-height:32px;"><?php echo $o['item_nums'];?>件</div>
+                <div class="aui-pull-left aui-padded-0-20 numtext" style="font-size: 14px; line-height:32px;"><?php echo $o['item_nums'];?>件</div>
                 <div class="item-del aui-pull-right aui-bg-danger aui-padded-0-20" data-opera="del" style="color:#fff; border-radius:5px;">删除 </div>
             </div>
         </li>
@@ -86,50 +86,58 @@ AuicssAsset::register($this);
 
 <script>
     <?php $this->beginBlock('JS_END') ?>
-    function cartOpera(wrap,num)
-    {
+    function cartOpera(wrap, num, del){
+
+        if(num <= 0){
+            return;
+        }
+
         var id = wrap.attr('data-id');
         var price = parseFloat( wrap.attr('data-price') );
-        var oNum = parseInt( wrap.attr('data-nums') );
-
+        var oNum = parseInt(wrap.attr('data-nums'));
+        var all = parseInt($('#cart-count').text());
         $.ajax({
             url:'/shop/cart/opera',
-            data:{id:id,num:num},
+            data:{id:id,num: del ? 0 : num},
             type:'post',
             dataType:'json',
             sync:true,
             success:function(res){
-                if(res.status == 1){
-                    if(num == 0){
-                        var totalNum = parseInt( $('#cart_count').text()) - oNum;
-                        $('#cart_count').text( totalNum );
-                        $('#cart_money').text( parseFloat( $('#cart_money').text())- price*oNum );
-                        wrap.remove();
-                        var diffPrice = (num - oNum)*price
-                        $('#cart-count').text( parseInt( $('#cart-count').text()) + (num - oNum) );
-                        $('#cart-money').text( parseFloat( $('#cart-money').text()) + diffPrice );
-                        if( parseInt( $('#cart-count').text()) == 0){
-                            $('#cart-list').html('\
-                                    <div class="icon_dd aui-iconfont aui-icon-form aui-badge-danger aui-text-center"></div>\
-                                    <div class="aui-text-center aui-padded-10" style="font-size:14px; margin-top:10px;">购物车是空的！</div>\
-                                    <a class="aui-btn aui-btn-block aui-btn-outlined aui-bad-danger" style="width:100px; height:34px; line-height:30px; font-size:14px; margin:0 auto; padding:0; border-color:#999; color:#787878;" href="<?=\yii\helpers\Url::toRoute(['/shop/item/list','id'=>$id])?>">去商城购物</a>'
-                            )
-                        }
-                    }else{
-                        var diffPrice = (num - oNum)*price
-                        wrap.find('.item-price').text( parseFloat(wrap.find('.item-price').text()) + diffPrice );
-                        wrap.find('.item-count').val(num);
-                        $('#cart-count').text( parseInt( $('#cart-count').text()) + (num - oNum) );
-                        $('#cart-money').text( parseFloat( $('#cart-money').text()) + diffPrice );
-                        wrap.attr('data-nums',num);
+
+                if(del){
+                    var totalNum = all - oNum;
+
+                    $('#cart-count').text(totalNum);
+                    $('#cart-money').text(parseFloat($('#cart-money').text())-parseFloat(wrap.attr('data-price'))*oNum)
+                    wrap.remove();
+                    if( parseInt( $('#cart-count').text()) == 0) {
+                        $('#cart-list').html('\
+                            <div class="icon_dd aui-iconfont aui-icon-form aui-badge-danger aui-text-center"></div>\
+                            <div class="aui-text-center aui-padded-10" style="font-size:14px; margin-top:10px;">购物车是空的！</div>\
+                            <a class="aui-btn aui-btn-block aui-btn-outlined aui-bad-danger" style="width:100px; height:34px; line-height:30px; font-size:14px; margin:0 auto; padding:0; border-color:#999; color:#787878;" href="<?=\yii\helpers\Url::toRoute(['/shop/item/list','id'=>$id])?>">去商城购物</a>'
+                        )
                     }
-                    hasClick = 0;
-                }else
-                    alert(res.error);
+                    return;
+                }
+
+                var diffPrice = (num - oNum)*price;
+                wrap.find('.item-price').text( parseFloat(wrap.find('.item-price').text()) + diffPrice );
+                wrap.find('.item-count').val(num);
+                wrap.find('.numtext').text(num + '件');
+                $('#cart-count').text( parseInt( $('#cart-count').text()) + (num - oNum) );
+                $('#cart-money').text( parseFloat( $('#cart-money').text()) + diffPrice );
+                wrap.attr('data-nums',num);
+                hasClick = 0;
+
             }
         });
     }
 
+    function isEmptyElem(){
+        if( parseInt( $('#cart-count').text()) == 0){
+
+        }
+    }
 
     /*
      * 初始化购物车数据
@@ -151,22 +159,26 @@ AuicssAsset::register($this);
     var hasClick = 0;
     $(function(){
         init(0);
-
         $('.btn-add,.item-del').click(function(){
             if( hasClick == 1 ) return false;
             var opera = $(this).attr('data-opera');
             var wrap = $(this).closest('li');
             var $input = $(this).parent().children('input');
-            if(opera == 'del')
-                cartOpera(wrap,0);
-            else if(opera == 'add')
-                cartOpera(wrap, parseInt($input.val()) + 1);
-            else if(opera == 'minus')
-                cartOpera(wrap, parseInt($input.val()) - 1);
+
+           if(opera == 'add'){
+               cartOpera(wrap, parseInt($input.val())+1);
+           }else if(opera == 'minus'){
+               cartOpera(wrap, parseInt($input.val())-1);
+           }else{
+               cartOpera(wrap, 'del', true);
+           }
+
         });
+
         $('#cart-list .item-count').change(function(){
             var wrap = $(this).closest('li');
-            cartOpera(wrap, $(this).val());
+            $(this).val() <= 0 && $(this).val(1);
+            cartOpera(wrap, $(this).val() );
         });
 
         $('#buy-btn').click(function(){
