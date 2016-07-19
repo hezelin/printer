@@ -28,6 +28,9 @@ class MachineController extends \yii\web\Controller
         ];
     }
 
+    /*
+     * 机器图片不能为空，机器的品牌不能为空
+     */
     public function actionEditable()
     {
         $model = TblMachine::findOne($_POST['editableKey']);
@@ -39,6 +42,13 @@ class MachineController extends \yii\web\Controller
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             $value = $_POST['TblMachine'][$_POST['editableIndex']][$_POST['editableAttribute']];
             $model->$_POST['editableAttribute'] = $value;
+            if(!$model->cover){                             // 封面图片不存在
+                $model->images = json_encode(['/img/haoyizu.png']);
+                $model->cover = '/img/haoyizu.png';
+            }
+            $model->model_id || $model->model_id = 1664;        //-
+            $model->brand || $model->brand = 'wsz';             //-
+
             if($model->save())
                 return ['output'=>$value, 'message'=>''];
             return ['output'=>'','message'=>'数据库错误'];
