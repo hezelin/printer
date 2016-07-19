@@ -341,12 +341,27 @@ class AdminRentController extends \yii\web\Controller
         if(!$model) throw new NotFoundHttpException();
 
         if( Yii::$app->request->post('lat') && Yii::$app->request->post('lng')){
-            $model->latitude = number_format(Yii::$app->request->post('lat'),6,'.','');
-            $model->longitude = number_format(Yii::$app->request->post('lng'),6,'.','');
+            $data = ToolBase::bd_decrypt(Yii::$app->request->post('lat'),Yii::$app->request->post('lng'));
+            $model->latitude = number_format($data['lat'],6,'.','');
+            $model->longitude = number_format($data['lon'],6,'.','');
+
+            if(Yii::$app->request->post('address-name'))
+                $model->address = Yii::$app->request->post('address-name');
+
             if($model->save()){
                 return $this->redirect(Url::toRoute('list'));
             }
         }
+
+        if($model->latitude > 0)
+        {
+            $data  = ToolBase::bd_encrypt($model->latitude,$model->longitude);
+            $model->latitude = $data['lat'];
+            $model->longitude = $data['lon'];
+        }
+
+//        $model->latitude = 0.000000;
+//        $model->longitude = 0.000000;
         return $this->render('map',['model'=>$model]);
     }
 

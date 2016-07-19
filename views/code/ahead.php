@@ -44,7 +44,7 @@ if( Yii::$app->session->hasFlash('error') )
                 return ['value'=> $model->id];
             }
         ],
-        ['class' => 'yii\grid\SerialColumn'],               // 系列
+//        ['class' => 'yii\grid\SerialColumn'],               // 系列
         'id',
         [
             'attribute'=>'add_time',
