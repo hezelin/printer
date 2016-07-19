@@ -33,9 +33,9 @@ class ChargeController extends \yii\web\Controller
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();
-                return $this->render('//tips/error',['tips'=>$e,'btnText'=>'返回租借列表','btnUrl'=>Url::toRoute(['/adminrent/list'])]);
+                return $this->render('//tips/error',['tips'=>$e,'btnText'=>'返回租借列表','btnUrl'=>Url::toRoute(['/admin-rent/list'])]);
             }
-            return $this->redirect('/adminrent/list');
+            return $this->redirect('/admin-rent/list');
         }
 
         $rent = (new \yii\db\Query())
@@ -88,7 +88,7 @@ class ChargeController extends \yii\web\Controller
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();
-                return $this->render('//tips/error',['tips'=>$e,'btnText'=>'返回租借列表','btnUrl'=>Url::toRoute(['/adminrent/list'])]);
+                return $this->render('//tips/error',['tips'=>$e,'btnText'=>'返回租借列表','btnUrl'=>Url::toRoute(['/admin-rent/list'])]);
             }
             return $this->redirect('/admin-rent/list');
         }

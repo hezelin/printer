@@ -6,16 +6,11 @@ use app\models\Cache;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\views\ViewRentFaultMachine;
 
-/**
- * ViewRentFaultMachineSearch represents the model behind the search form about `app\models\views\ViewRentFaultMachine`.
- */
+
 class ViewRentFaultMachineSearch extends ViewRentFaultMachine
 {
-    /**
-     * @inheritdoc
-     */
+
     public function rules()
     {
         return [
@@ -34,18 +29,9 @@ class ViewRentFaultMachineSearch extends ViewRentFaultMachine
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
-        $query = ViewRentFaultMachine::find()->where(['wx_id'=>Cache::getWid(),'status'=>[2,3]]);;
-
-        // add conditions that should always apply here
+        $query = ViewRentFaultMachine::find()->where(['wx_id'=>Cache::getWid()]);;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

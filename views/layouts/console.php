@@ -82,6 +82,14 @@ WeixinAsset::register($this);
                     ],
                 ],
             ]);
+
+        echo Html::beginForm('/service/new-call','get',['class'=>'navbar-form navbar-left','role'=>'search']);
+        echo Html::beginTag('div',['class'=>'form-group']);
+        echo Html::textInput('machine_id','',['class'=>'form-control','placeholder'=>'输入机器编号,可省略']);
+        echo Html::endTag('div');
+        echo Html::submitButton('电话报修',['class'=>'btn btn-primary','style'=>'margin-left:15px']);
+        echo Html::endForm();
+
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
@@ -147,7 +155,7 @@ WeixinAsset::register($this);
                                     ['label' => '维修资料','url' => ['/service/list'],
                                         'active' => in_array(Yii::$app->controller->getRoute(),['service/list','service/process']),
                                     ],
-                                    ['label' => '电话维修','url' => ['/service/call']],
+                                    ['label' => '电话报修','url' => ['/service/call']],
                                     ['label' => '维修配件管理', 'url' => ['/shop/adminparts/list']],
 
                                 ],

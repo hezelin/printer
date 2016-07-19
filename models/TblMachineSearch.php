@@ -29,7 +29,7 @@ class TblMachineSearch extends TblMachine
         $query = TblMachine::find()
             ->where(['wx_id'=>Cache::getWid()])
             ->andWhere(['<','status',11])
-            ->orderBy('add_time desc');
+            ->orderBy('id desc');
 
         // add conditions that should always apply here
 

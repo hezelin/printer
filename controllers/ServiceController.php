@@ -318,9 +318,14 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionProcess($id)
     {
-        $model = TblMachineService::find()
-            ->with(['machine'])
-            ->where('tbl_machine_service.id=:id',[':id'=>$id])->one();
+        if($machineId = Yii::$app->request->get('machine_id'))
+            $model = TblMachineService::find()
+                ->with(['machine'])
+                ->where('tbl_machine_service.machine_id=:id',[':id'=>$machineId])->one();
+        else
+            $model = TblMachineService::find()
+                ->with(['machine'])
+                ->where('tbl_machine_service.id=:id',[':id'=>$id])->one();
 
         if(!$model) {
             throw new NotFoundHttpException('这个页面不存在');
@@ -382,22 +387,7 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionCall()
     {
-        $searchModel = new ViewRentFaultMachineSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        $fixProvider = new ActiveDataProvider([
-            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
-
-        return $this->render('call',[
-            'dataProvider'=>$dataProvider,
-            'searchModel' => $searchModel,
-            'fixProvider'=>$fixProvider,
-            'wid'=>Cache::getWid()
-        ]);
+        return $this->render('call');
     }
 
     /*
@@ -405,12 +395,13 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionNewCall()
     {
+
         $model = new NewCall();
         if(Yii::$app->request->post())
         {
             if( $model->save() == 'success' ){
                 Yii::$app->session->setFlash('success','资料录入成功！，请更正用户坐标！');
-                return $this->redirect(['/adminrent/map','id'=>$model->rent->id]);
+                return $this->redirect(['/admin-rent/map','id'=>$model->rent->id]);
                 /*return $this->render('//tips/success',[
                     'tips'=>'资料录入成功',
                     'btnText'=>'返回维修列表',
@@ -421,11 +412,25 @@ class ServiceController extends \yii\web\Controller
 
         }
 
-        return $this->render('newCall',[
+        if($model->faultStatus){
+            if($model->faultStatus == 1)
+            {
+                Yii::$app->session->setFlash('error','机器编号 '.Yii::$app->request->get('machine_id').' 已申请维修，等待分配中...');
+                return $this->redirect(['index']);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error','机器编号 '.Yii::$app->request->get('machine_id').' 正在维修中...');
+                return $this->redirect(['process','id'=>1,'machine_id'=>Yii::$app->request->get('machine_id')]);
+            }
+        }
+
+        return $this->render('new-call',[
             'machine'=>$model->machine,
             'rent'=>$model->rent,
             'fault'=>$model->fault,
-            'maintainer'=>$model->getMaintainer()
+            'maintainer'=>$model->getMaintainer(),
+            'tips' => $model->tips,
         ]);
     }
 }
