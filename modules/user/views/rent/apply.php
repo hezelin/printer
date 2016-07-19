@@ -13,12 +13,13 @@ AuicssAsset::register($this);
         padding:0 10px; !important;
     }
 </style>
+
 <!-- aui dialog index start! -->
 <div class="aui-dialog-2 aui-hidden" id="dialog">
     <div class="aui-dialog-box-2">
         <div class="aui-dialog-title-2"></div>
         <div class="aui-border-t">
-            <a class="aui-dialog-btn-2 aui-block aui-pull-left aui-text-info delete_true aui-border-r delete_true">取消</a>
+            <a class="aui-dialog-btn-2 aui-block aui-pull-left aui-text-info aui-border-r delete_true">取消</a>
             <a class="aui-dialog-btn-2 aui-text-info delete_true">确定</a>
         </div>
     </div>
@@ -51,6 +52,7 @@ AuicssAsset::register($this);
 <script>
     <?php $this->beginBlock('JS_END') ?>
         ;!function(){
+
             var isMobile = /^(13|14|15|17|18)\d{9}$/;//手机号码验证规则
             var isPhone=/^((0\d{2,3})-)?(\d{7,8})(-(\d{3,}))?$/;   //座机验证规则
             with(document){
@@ -92,6 +94,13 @@ AuicssAsset::register($this);
                     $api.removeCls($bthTrue, 'aui-hidden');
                     $api.text(document.getElementsByClassName('aui-dialog-title-2')[0], text);
                 }
+            }
+
+            var err = String(<?= $error ?>);
+            if(err !== ''){
+                $api.removeCls($dialog, 'aui-hidden');
+                $api.removeCls($bthTrue, 'aui-hidden');
+                $api.text(document.getElementsByClassName('aui-dialog-title-2')[0], err);
             }
         }()
 
