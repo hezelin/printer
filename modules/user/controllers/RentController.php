@@ -102,15 +102,27 @@ class RentController extends \yii\web\Controller
         $model->due_time = time();
 
         $error = false;
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->render('//tips/home-status',[
-                'tips'=>'感谢您的申请，我们会在1~2个工作日处理！',
-                'btnText'=>'返回',
-//                'btnUrl'=>url::toRoute(['/user/rent/list','id'=>$id])
-                'btnUrl'=>'javascript:history.go(-2)'
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save())
+                return $this->render('//tips/home-status',[
+                    'tips'=>'感谢您的申请，我们会在1~2个工作日处理！',
+                    'btnText'=>'返回',
+                    'btnUrl'=>'javascript:history.go(-2)'
+                ]);
+            else{
+                $error = ToolBase::arrayToString( $model->errors );
+            }
         }else{
-            $error = ToolBase::arrayToString( $model->errors );
+            $data = (new \yii\db\Query())
+                ->select('phone,name')
+                ->from('tbl_rent_apply')
+                ->where(['wx_id'=>$id,'openid'=>$model->openid])
+                ->one();
+            if($data)
+            {
+                $model->name = $data['name'];
+                $model->phone = $data['phone'];
+            }
         }
 
         return $this->render('apply',['model'=>$model,'error'=>$error]);
