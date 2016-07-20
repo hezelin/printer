@@ -32,7 +32,6 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
             [['wx_id', 'openid', 'black_white', 'project_id', 'due_time', 'phone', 'name', 'add_time','machine_id','first_rent_time', 'rent_period'], 'required'],
             [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'black_amount', 'colours_amount'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
-            [['enable'], 'string'],
             [['openid'], 'string', 'max' => 28],
             [['phone'], 'string', 'max' => 11],
             [['colours','black_amount','colours_amount'], 'default', 'value' => 0],
@@ -67,7 +66,6 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
             'longitude' => '经度',
             'accuracy' => '精确度',
             'add_time' => '申请时间',
-            'enable' => '是否有效',
         ];
     }
 

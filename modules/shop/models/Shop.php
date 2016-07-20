@@ -16,9 +16,10 @@ class Shop {
      */
     public static function getCategory($id='',$wx_id='')
     {
-        $category = TblCategory::findAll(['wx_id'=>$wx_id? :Cache::getWid()]);
-        $category = $category? ArrayHelper::map($category,'id','name'):[];
-        return $id? $category[$id]:$category;
+        $category = ArrayHelper::map(TblCategory::findAll(['wx_id'=>$wx_id? :Cache::getWid()]),'id','name');
+        if($id)
+            return isset($category[$id])? $category[$id]:'未知';
+        return $category;
     }
 
     /*

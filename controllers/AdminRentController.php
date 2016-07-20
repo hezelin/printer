@@ -18,6 +18,7 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 
 class AdminRentController extends \yii\web\Controller
@@ -117,10 +118,16 @@ class AdminRentController extends \yii\web\Controller
 
     /*
      * 租借申请审核，资料录入
+     * $id 为机器 id
      */
     public function actionUpdate($id)
     {
-        $model = TblRentApply::findOne($id);
+        $model = TblRentApply::find()
+            ->where(['machine_id'=>$id])
+            ->andWhere(['<','status',11])
+            ->one();
+        if(!$model)
+            throw new HttpException(401,'机器不存在');
 
         if($model->load( Yii::$app->request->post()))
         {
@@ -177,7 +184,7 @@ class AdminRentController extends \yii\web\Controller
     public function actionDelete($id)
     {
         $model = TblRentApply::findOne($id);
-        $model->enable = 11;
+        $model->status = 11;
         if($model->save())
             $model->updateMachineStatus('delete');
 
@@ -187,12 +194,13 @@ class AdminRentController extends \yii\web\Controller
     /*
      * 为机器 和 用户 绑定 租赁关系，第一次资料录入
      */
-    public function actionBings($machine_id,$openid)
+    public function actionBings($machine_id,$openid='')
     {
         $model = new TblRentApply();
 
         if($model->load( Yii::$app->request->post()))
         {
+            $openid || $openid = uniqid('dh_');
             $model->openid = $openid;
             $model->machine_id = $machine_id;
             $model->project_id = 0;

@@ -1,11 +1,16 @@
 <?php
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = '微信用户列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<div class="alert alert-info">
+    1、选择微信关注的用户租赁，不需要用户扫描绑定微信<br/>
+    2、新建用户资料，需要用户扫描绑定微信 <a href="<?=$fromUrl?>" class="btn btn-sm btn-success">新建资料</a>
+</div>
 <?php
 
 echo GridView::widget([
