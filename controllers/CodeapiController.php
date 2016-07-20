@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\TblMachineService;
+use app\models\TblRentApply;
 use app\models\WxBase;
 use app\models\TblUserMaintain;
 use app\models\ConfigBase;
@@ -21,7 +22,7 @@ class CodeapiController extends \yii\web\Controller
     public function actionMachine($id)
     {
         $rent= (new \yii\db\Query())
-            ->select('id,wx_id,project_id')
+            ->select('id,wx_id,project_id,openid')
             ->from('tbl_rent_apply')
             ->where(['machine_id'=>$id])
             ->andWhere(['<','status',11])
@@ -163,6 +164,19 @@ class CodeapiController extends \yii\web\Controller
                 ->scalar();
             return $this->render('subscribe',['wx_num'=>$wx_num]);
         }
+
+        if( strlen($rent['openid']) < 28){                          // 危险动作，非维修员扫描会自动更新 openid 值
+            $rentData = TblRentApply::find()
+                ->where(['machine_id'=>$id])
+                ->andWhere(['<','status',11])
+                ->one();
+            if($rentData)
+            {
+                $rentData->openid = $openid;
+                $rentData->save();
+            }
+        }
+
 //        用户维修操作
         $data= (new \yii\db\Query())
             ->select('status,id')
