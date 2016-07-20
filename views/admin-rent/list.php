@@ -111,22 +111,6 @@ echo GridView::widget([
             'headerOptions' => ['style'=>'width:160px'],
             'template' => '{fault} &nbsp; {update} &nbsp; {map} &nbsp; {charge} &nbsp; {delete} &nbsp; {rental} <br/>{qrcode} &nbsp; {fault_log}',
             'buttons' => [
-                'update' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);
-                },
-                'map' => function($url,$model,$key){
-                    if((int)$model->latitude && (int)$model->longitude )
-                        return Html::a('<span class="glyphicon glyphicon-map-marker"></span>',$url,['title'=>'定位']);
-                    return Html::a('<span class="glyphicon glyphicon-map-marker"></span>',$url,['title'=>'定位','class'=>'high-remark']);
-                },
-                'delete' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-remove"></span>',$url,[
-                        'title'=>'删除关系',
-                        'data-method'=>'post',
-                        'data-confirm'=>'确定删除吗？',
-                        'data-pjax'=>0
-                    ]);
-                },
                 'fault' => function($url,$model,$key){
                     if(isset($model->status) && $model->status < 8)
                         return Html::a('<i class="glyphicon glyphicon-eye-open"></i>',Url::toRoute(['service/process','id'=>$model->fault_id]),
@@ -140,10 +124,26 @@ echo GridView::widget([
                             'class'=>'my-grid-model',
                             'data-machine-id'=>$model->machine_id,
                             'data-openid'=>$model->openid
-                    ]);
+                        ]);
+                },
+                'update' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-edit"></span>',$url,['title'=>'修改']);
+                },
+                'map' => function($url,$model,$key){
+                    if((int)$model->latitude && (int)$model->longitude )
+                        return Html::a('<span class="glyphicon glyphicon-map-marker"></span>',Url::toRoute(['/admin-rent/map','id'=>$model->rent_id]),['title'=>'定位']);
+                    return Html::a('<span class="glyphicon glyphicon-map-marker"></span>',Url::toRoute(['/admin-rent/map','id'=>$model->rent_id]),['title'=>'定位','class'=>'high-remark']);
                 },
                 'charge' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-yen"></span>',Url::toRoute(['charge/add','machine_id'=>$model->machine_id]),['title'=>'收租录入']);
+                },
+                'delete' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-remove"></span>',Url::toRoute(['/admin-rent/delete','id'=>$model->rent_id]),[
+                        'title'=>'删除关系',
+                        'data-method'=>'post',
+                        'data-confirm'=>'确定删除吗？',
+                        'data-pjax'=>0
+                    ]);
                 },
                 'rental' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-stats"></span>',Url::toRoute(['/charts/machine-rental','machine_id'=>$model->machine_id]),['title'=>'租金统计']);

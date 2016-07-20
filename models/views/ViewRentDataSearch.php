@@ -19,7 +19,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
     public function rules()
     {
         return [
-            [['machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id'], 'integer'],
+            [['rent_id','machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id'], 'integer'],
             [['openid', 'phone', 'name', 'address', 'series_id', 'cover', 'brand_name', 'model_name'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude'], 'number'],
         ];
@@ -65,6 +65,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
 
         // grid filtering conditions
         $query->andFilterWhere([
+            'rent_id' => $this->rent_id,
             'machine_id' => $this->machine_id,
             'wx_id' => $this->wx_id,
             'monthly_rent' => $this->monthly_rent,
