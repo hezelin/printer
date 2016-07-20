@@ -31,7 +31,7 @@ class ViewRentFaultMachineSearch extends ViewRentFaultMachine
 
     public function search($params)
     {
-        $query = ViewRentFaultMachine::find()->where(['wx_id'=>Cache::getWid()]);;
+        $query = ViewRentFaultMachine::find()->where(['wx_id'=>Cache::getWid()]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

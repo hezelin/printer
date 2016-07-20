@@ -16,10 +16,10 @@ FROM tbl_machine_rent_project t1
 LEFT JOIN tbl_machine_model t2 ON t1.machine_model_id=t2.id
 
 
--- 3、电话维修视图
+-- 3、电话维修视图(租赁资料视图)
 CREATE OR REPLACE view view_rent_fault_machine AS SELECT
 t1.machine_id,t1.wx_id,t1.openid,t1.monthly_rent,t1.black_white,t1.colours,t1.phone,t1.name,
-t1.address,t1.due_time,t1.first_rent_time,t1.add_time,t1.latitude,t1.longitude,
+t1.address,t1.due_time,t1.first_rent_time,t1.add_time,t1.latitude,t1.longitude,t1.status as apply_status,
 t2.series_id,t2.cover,t2.brand_name,t2.model_name,t2.come_from,
 t3.status,t3.id as fault_id
 FROM tbl_rent_apply t1

@@ -19,7 +19,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
     public function rules()
     {
         return [
-            [['machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'fault_id'], 'integer'],
+            [['machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id'], 'integer'],
             [['openid', 'phone', 'name', 'address', 'series_id', 'cover', 'brand_name', 'model_name'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude'], 'number'],
         ];
@@ -45,7 +45,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
     {
         $query = ViewRentFaultMachine::find()
             ->where(['wx_id'=>Cache::getWid()])
-            ->andWhere(['>','status',1]);
+            ->andWhere(['>','apply_status',1]);
 
         if($clientNo = Yii::$app->request->get('client_no'))
             $query->andWhere(['series_id'=>$clientNo]);
@@ -77,6 +77,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
             'longitude' => $this->longitude,
             'come_from' => $this->come_from,
             'status' => $this->status,
+            'apply_status' => $this->apply_status,
             'fault_id' => $this->fault_id,
         ]);
 

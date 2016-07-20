@@ -13,7 +13,6 @@ use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
 use app\models\views\ViewFaultCancelSearch;
 use app\models\views\ViewFaultDataSearch;
-use app\models\views\ViewRentFaultMachineSearch;
 use app\models\WxTemplate;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
