@@ -364,7 +364,7 @@ Modal::end();
                         setTimeout(function(){
                             $this.html('<i class="glyphicon glyphicon-ok"></i>');
                             $('#my-modal').modal('hide');
-                            allotTr.remove();
+//                            allotTr.remove();
                         },1000);
                     }
                     else

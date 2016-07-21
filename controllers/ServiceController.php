@@ -237,16 +237,19 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionSwitch()
     {
+        $error = [];
         if( Yii::$app->request->post())
         {
-            $connection = Yii::$app->db;
-            $transaction = $connection->beginTransaction();
+            $fault = TblMachineService::findOne( Yii::$app->request->post('id') );
+            $reason = ConfigBase::getFaultStatus($fault->type);
+            $machine_id = $fault->machine_id;
+            $rendId = $fault->id;
+            if( $fault->openid == Yii::$app->request->post('openid'))
+                return json_encode(['status'=>1]);
 
+            $transaction = Yii::$app->db->beginTransaction();
             try {
-                $fault = TblMachineService::findOne( Yii::$app->request->post('id') );
-                $reason = ConfigBase::getFaultStatus($fault->type);
-                $machine_id = $fault->machine_id;
-                $rendId = $fault->id;
+
 
                 // 旧维修员 计数减一
                 $old = TblUserMaintain::findOne([
@@ -256,11 +259,19 @@ class ServiceController extends \yii\web\Controller
                 $oldName = $old->name;
                 if( $old->wait_repair_count > 0){
                     $old->wait_repair_count = $old->wait_repair_count - 1;
-                    $old->save();
+                    if(!$old->save())
+                    {
+                        $error[] = $old->errors;
+                        throw new Exception('维修员计算统计出错');
+                    }
                 }
 
                 $fault->openid = Yii::$app->request->post('openid');
-                $fault->save();
+                if(!$fault->save())
+                {
+                    $error[] = $fault->errors;
+                    throw new Exception('维修员计数错误');
+                }
 
                 $new = TblUserMaintain::findOne([
                     'wx_id'=>Yii::$app->request->post('wid'),
@@ -268,39 +279,46 @@ class ServiceController extends \yii\web\Controller
                 ]);
                 $newName = $new->name;
                 $new->wait_repair_count = $new->wait_repair_count + 1;
-                $new->save();                 // 新维修员计数 加一
+                if(!$new->save())                                   // 新维修员计数 加一
+                {
+                    $error[] = $fault->errors;
+                    throw new Exception('新维修员计数错误');
+                }
 
 
                 $process = new TblServiceProcess();
                 $process->service_id = Yii::$app->request->post('id');
                 $process->content = '任务重新分配给 '.$newName;
                 $process->add_time = time();
-                $process->save();
+                if(!$process->save())
+                {
+                    $error[] = $process->errors;
+                    throw new Exception('维修过程出错');
+                }
 
                 $transaction->commit();
             }catch(\Exception $e) {
                 $transaction->rollBack();
-                echo $e;
-                echo json_encode(['status'=>0,'msg'=>'参数错误']);
-                exit;
+//                print_r($error);
+                return json_encode(['status'=>0,'msg'=>'参数错误'.$e]);
             }
 
             // 为维修员推送消息
             $model = TblRentApply::find()->where(['machine_id'=>$machine_id])->andWhere(['<','status',11])->one();
-            $tpl = new WxTemplate(Yii::$app->request->post('wid'));
-            $tpl->sendTask(
-                $rendId,
-                Yii::$app->request->post('openid'),
-                $newName,$oldName.'转派。故障：'.$reason,$model->address,
-                $model->name.','.$model->phone,$model->add_time,
-                $fault->remark
-            );
 
-            echo json_encode(['status'=>1]);
+            if($model){
+                $tpl = new WxTemplate(Yii::$app->request->post('wid'));
+                $tpl->sendTask(
+                    $rendId,
+                    Yii::$app->request->post('openid'),
+                    $newName,$oldName.'转派。故障：'.$reason,$model->address,
+                    $model->name.','.$model->phone,$model->add_time,
+                    $fault->remark
+                );
+            }
+            return json_encode(['status'=>1]);
         }
-        else
-            echo json_encode(['status'=>0,'msg'=>'参数错误']);
-
+        return json_encode(['status'=>0,'msg'=>'参数错误']);
     }
     /*
      * 维修任务取消任务列表
@@ -402,11 +420,6 @@ class ServiceController extends \yii\web\Controller
             if( $model->save() == 'success' ){
                 Yii::$app->session->setFlash('success','资料录入成功！，请更正用户坐标！');
                 return $this->redirect(['/admin-rent/map','id'=>$model->rent->id]);
-                /*return $this->render('//tips/success',[
-                    'tips'=>'资料录入成功',
-                    'btnText'=>'返回维修列表',
-                    'btnUrl'=>Url::toRoute(['list'])
-                ]);*/
             }else
                 Yii::$app->session->setFlash('error','资料录入失败！');
 
