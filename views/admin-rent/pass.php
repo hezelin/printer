@@ -40,7 +40,7 @@ if( $type =='allot' )
     echo $form->field($model, 'machine_id')->widget(\kartik\select2\Select2::classname(), [
         'data' => app\models\ConfigBase::getMachineInfo(),
         'language' => 'zh-CN',
-        'options' => ['placeholder' => '输入 机器品牌/机器型号/机器系列号'],
+        'options' => ['placeholder' => '输入 机器品牌/机器型号/机器编号'],
         'pluginOptions' => [
             'allowClear' => true
         ]

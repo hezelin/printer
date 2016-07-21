@@ -171,10 +171,10 @@ class ConfigBase
     public static function getMachineInfo($id='',$is_from='')
     {
         $model = (new \yii\db\Query())
-            ->select('id,brand_name,model_name')
+            ->select('id,brand_name,model_name,come_from')
             ->from('tbl_machine')
             ->where(['wx_id'=>Cache::getWid()])
-            ->andWhere(['<','status',11]);
+            ->andWhere(['status'=>1]);
 
         if($is_from)
             $model->andWhere(['come_from'=>$is_from]);
@@ -185,7 +185,10 @@ class ConfigBase
         if($model){
             foreach($model as $m)
             {
-                $tmp[ $m['id'] ] = $m['brand_name'].' / '.$m['model_name'];
+                if($m['come_from'] == 4)
+                    $tmp[ $m['id'] ] = '预设机器 / '.$m['id'];
+                else
+                    $tmp[ $m['id'] ] = $m['brand_name'].' / '.$m['model_name'].' / '.$m['id'];
             }
         }
 

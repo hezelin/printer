@@ -108,7 +108,7 @@ WeixinAsset::register($this);
                         'label' => '我的账号',
                         'icon' => 'user',
                         'items' => [
-                            ['label' => '修改密码', 'url' => ['/user/reset']],
+                            ['label' => '修改密码', 'url' => ['/auth/reset']],
 //                                        ['label' => '查看日志', 'url' => '/user/log'],
                         ],
                     ],

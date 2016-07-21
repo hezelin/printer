@@ -95,9 +95,13 @@ WeixinAsset::register($this);
                 'items' => [
                     Yii::$app->user->isGuest ?
                         ['label' => '登录', 'url' => ['/auth/login']]:
-                        ['label' => '退出 (' . Yii::$app->user->identity->username . ')',
-                            'url' => ['/auth/logout'],
-                            'linkOptions' => ['data-method' => 'post']
+                        [
+                            'label' => Yii::$app->user->identity->username,
+                            'url' => '#',
+                            'items' => [
+                                ['label'=>'修改密码','url'=>['/auth/reset']],
+                                ['label'=>'退出','url' => ['/auth/logout'], 'linkOptions' => ['data-method' => 'post']],
+                            ]
                         ],
                 ],
             ]);

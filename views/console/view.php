@@ -298,7 +298,7 @@ use yii\bootstrap\Modal;
                             <span>月租:<b class="high-show"><?=$d['lowest_expense']?></b> , 黑白:<b class="high-show"><?=$d['black_white']?></b> , 彩色:<b class="high-show"><?=$d['colours']?></b></span>
                         </div>
                         <div class="fault-btn">
-                            <a href="<?=Url::toRoute(['adminrent/pass','id'=>$d['id']])?>" class="btn btn-info btn-sm">通过</a>
+                            <a href="<?=Url::toRoute(['/admin-rent/pass','id'=>$d['id']])?>" class="btn btn-info btn-sm">通过</a>
                             <button type="button" key-id="<?=$d['id']?>" modal-type="modal-rent-apply" class="order-modal btn btn-danger btn-sm">不通过</button>
                         </div>
                     </li>

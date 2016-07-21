@@ -51,7 +51,7 @@ HomeAsset::register($this);
                         <a class="aui-arrow-right" href="<?=url::toRoute(['/user/rent/machine-detail','id'=>$id,'rent_id'=>$row['rent_id'],'from'=>'machine'])?>">
                             <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
                             <div class="aui-img-body">
-                                <h2 class="aui-ellipsis-1"><?=$row['brand_name'],$row['model_name']?></h2>
+                                <h2 class="aui-ellipsis-1"><?=$row['brand_name'],'/',$row['model_name'],'/',$row['id']?></h2>
                                 <p class="aui-ellipsis-1 aui-text-default">
                                     月租 : <span class="aui-red-color">¥<?= $row['monthly_rent']?></span>
                                 </p>
@@ -65,7 +65,7 @@ HomeAsset::register($this);
                         </a>
                         <p class="aui-ellipsis-1" style="margin-left: 95px;">
                             <a class="aui-box aui-box-color aui-box-sm" href="<?=Url::toRoute(['/user/i/service','id'=>$id,'mid'=>$row['id']])?>">维修记录</a>
-                            <a class="aui-box aui-box-color aui-box-sm" href="<?=url::toRoute(['/maintain/fault/apply','id'=>$id,'mid'=>$row['id']])?>">维修申请</a>
+                            <a class="aui-box aui-box-color aui-box-sm" href="<?=url::toRoute(['/maintain/fault/apply','id'=>$id,'mid'=>$row['id']])?>">维修申请<?=$row['fault_status']?'中':''?></a>
                         </p>
                     </li>
                 </div>

@@ -37,7 +37,7 @@ HomeAsset::register($this);
                             echo $row['name'],' ',$row['phone'];
                         }
                         else
-                            echo '电话维修用户';
+                            echo '未设置';
                         ?>
                     </p>
                     <p class="aui-ellipsis-1"><span class="iconfont icon-dizhi aui-color"></span> <?=$row['address']? :'未设置'?></p>
