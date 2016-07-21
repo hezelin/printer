@@ -58,7 +58,7 @@ WeixinAsset::register($this);
         <?php
             NavBar::begin([
                 'brandLabel' => Yii::$app->name,
-                'brandUrl' => '#',
+                'brandUrl' => '/console/view',
                 'brandOptions' => [
                     'style' => 'color:#ffffff',
                 ],

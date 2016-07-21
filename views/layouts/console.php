@@ -61,7 +61,7 @@ WeixinAsset::register($this);
         <?php
             NavBar::begin([
                 'brandLabel' => Yii::$app->name,
-                'brandUrl' => '#',
+                'brandUrl' => '/console/view',
                 'brandOptions' => [
                     'style' => 'color:#ffffff',
                 ],
@@ -72,15 +72,6 @@ WeixinAsset::register($this);
                 'innerContainerOptions' => [
                     'class' => 'container-fluid'
                 ]
-            ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav'],
-                'items' => [
-                    [
-                        'label' => '返回实例',
-                        'url' => ['/weixin/index'],
-                    ],
-                ],
             ]);
 
         echo Html::beginForm('/service/new-call','get',['class'=>'navbar-form navbar-left','role'=>'search']);
@@ -99,6 +90,7 @@ WeixinAsset::register($this);
                             'label' => Yii::$app->user->identity->username,
                             'url' => '#',
                             'items' => [
+                                ['label'=>'我的公众号','url'=>['/weixin/index']],
                                 ['label'=>'修改密码','url'=>['/auth/reset']],
                                 ['label'=>'退出','url' => ['/auth/logout'], 'linkOptions' => ['data-method' => 'post']],
                             ]
