@@ -80,18 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <a href="<?=Url::toRoute(['charts/machine'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
     </div>
     <div class="col-md-6">
-        <div id="stock">
-            <?php if($stock):?>
-                <table class="table">
-                    <tr><th>商品名称</th><th>库存数量</th></tr>
-                    <?php foreach($stock as $s):?>
-                        <tr><td><?=$s['name']?></td><td><?=$s['amount']?></td></tr>
-                    <?php endforeach;?>
-                </table>
-            <?php endif;?>
-        </div>
-    </div>
-    <div class="col-md-6">
         <div id="rent" class="chart-box"></div>
         <a href="<?=Url::toRoute(['charts/rent'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
     </div>
@@ -113,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <a href="<?=Url::toRoute(['charts/order'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
     </div>
 
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div id="rental" class="chart-box"></div>
         <a href="<?=Url::toRoute(['charts/rental'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
     </div>

@@ -5,17 +5,11 @@ use yii\bootstrap\Modal;
 use yii\captcha\Captcha;
 use yii\helpers\Url;
 
-
-
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model app\models\LoginForm */
-
 $this->title = '注册';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="site-login">
+<div class="site-login" style="padding:0 15px;">
     <h1><?= Html::encode($this->title) ?></h1>
 
 

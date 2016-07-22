@@ -142,7 +142,7 @@ class ConsoleController extends \yii\web\Controller
 
         return $this->render('analyze',[
             'item'=>$item->getCharts(),
-            'stock'=>$item->getItemStock(),
+//            'stock'=>$item->getItemStock(),
             'machine'=>$machine->getCharts(),
             'charts'=>$ana->getCharts(),
             'rent'=>$rent->getCharts(),
