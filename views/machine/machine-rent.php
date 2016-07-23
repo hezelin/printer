@@ -34,7 +34,7 @@ if( Yii::$app->session->hasFlash('error') )
     <?= $form->field($rent, 'phone')->textInput(['placeholder'=>'手机 / 电话'])->label('客户手机')->hint('手机号码/电话号码') ?>
     <?= $form->field($rent, 'address')->hint('越详细越方便维修员')?>
 
-    <?= $form->field($machine, 'come_from')->dropDownList(\app\models\ConfigBase::$machineOrigin)->hint('尽量完善机型资料') ?>
+    <?= $form->field($machine, 'come_from')->dropDownList(\app\models\ConfigBase::getMachineFrom())->hint('尽量完善机型资料') ?>
 
     <?= $form->field($rent, 'apply_word')->textarea()->label('客户备注')->textInput(['placeholder'=>'客户备注'])->hint('例如：30岁，很礼貌')?>
 
@@ -51,9 +51,12 @@ if( Yii::$app->session->hasFlash('error') )
         'serverUrl'=>\yii\helpers\Url::toRoute(['/site/image','pathName'=>'machine']),'imageLimit'=>5
     ])?>
 
-    <?= $form->field($rent, 'monthly_rent')->label('租借月租')->textInput(['placeholder'=>'0']) ?>
-    <?= $form->field($rent, 'black_white')->textInput(['placeholder'=>'0']) ?>
-    <?= $form->field($rent, 'colours')->textInput(['placeholder'=>'0']) ?>
+    <?= $form->field($rent, 'monthly_rent')->label('租借月租')->textInput(['placeholder'=>'0'])->hint('多少元 / 每月,不用填单位') ?>
+    <?= $form->field($rent, 'black_white')->textInput(['placeholder'=>'0'])->hint('多少元 / 每张,不用填单位') ?>
+    <?= $form->field($rent, 'colours')->textInput(['placeholder'=>'0'])->hint('多少元 / 每张,不用填单位') ?>
+    <?= $form->field($rent, 'black_amount')->textInput(['placeholder'=>'必填'])->hint('机器黑白读数初始值')->label('黑白读数')?>
+    <?= $form->field($rent, 'colours_amount')->textInput(['placeholder'=>'彩色机必填'])->hint('机器彩色读数初始值')->label('彩色读数')?>
+
 
     <?= $form->field($rent, 'due_time')->widget(\yii\jui\DatePicker::classname(), [
         'dateFormat' => 'yyyy-MM-dd',

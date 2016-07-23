@@ -38,8 +38,8 @@ class MachineRent
         $this->rent || $this->rent = new TblRentApply(['scenario' => 'new-call']);
 
         $this->machine->wx_id || $this->machine->wx_id = $this->wid;
-        $this->machine->model_id || $this->machine->model_id = 1664;        //-
-        $this->machine->brand || $this->machine->brand = 'wsz';             //-
+        $this->machine->model_id || $this->machine->model_id = 1664;        // -
+        $this->machine->brand || $this->machine->brand = 'wsz';             // -
         $this->machine->status = 2;                                         // 更改为已租借、已维修
         $this->machine->come_from || $this->machine->come_from = 2;         // 电话维修
 

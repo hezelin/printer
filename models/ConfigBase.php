@@ -213,6 +213,16 @@ class ConfigBase
     }
 
     /*
+     *
+     */
+    public static function getMachineFrom()
+    {
+        $data = self::$machineOrigin;
+        unset($data[4]);
+        return $data;
+    }
+
+    /*
      * 二维码获取英文缩写
      */
     public static function machineComeFrom($id){

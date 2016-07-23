@@ -53,7 +53,6 @@ class AuthController extends \yii\web\Controller
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->gotoBack();
-
         } else {
             return $this->render('login', [
                 'model' => $model,
