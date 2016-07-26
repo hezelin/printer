@@ -296,12 +296,15 @@ class AdminRentController extends \yii\web\Controller
             );
 
             // 为申请者推送消息
-            $tpl->sendProcess(
-                $from_openid,
-                url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$fault_id],'http'),
-                '任务已分配',
-                $applyTime
-            );
+            if(strlen($from_openid) == 28)
+            {
+                $tpl->sendProcess(
+                    $from_openid,
+                    url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$fault_id],'http'),
+                    '任务已分配',
+                    $applyTime
+                );
+            }
             echo json_encode(['status'=>1]);
         }
         else
@@ -326,13 +329,16 @@ class AdminRentController extends \yii\web\Controller
                 exit(json_encode(['status'=>0,'msg'=>'错误100']));
 
             // 为申请者推送消息
-            $tpl = new WxTemplate(Yii::$app->request->post('wx_id'));
-            $tpl->sendProcess(
-                $from_openid,
-                url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$model->id],'http'),
-                '电话维修成功！',
-                $model->add_time
-            );
+            if(strlen($from_openid) == 28) {
+                $tpl = new WxTemplate(Yii::$app->request->post('wx_id'));
+                $tpl->sendProcess(
+                    $from_openid,
+                    url::toRoute(['/maintain/fault/detail', 'id' => Yii::$app->request->post('wx_id'), 'fault_id' => $model->id], 'http'),
+                    '电话维修成功！',
+                    $model->add_time
+                );
+            }
+
             echo json_encode(['status'=>1]);
         }
         else

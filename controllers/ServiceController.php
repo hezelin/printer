@@ -161,7 +161,6 @@ class ServiceController extends \yii\web\Controller
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,100']) );
             $model->wait_repair_count = $model->wait_repair_count + 1;
 
-
             $connection = Yii::$app->db;
             $transaction = $connection->beginTransaction();
 
@@ -212,13 +211,15 @@ class ServiceController extends \yii\web\Controller
                 Yii::$app->request->post('fault_remark')
             );
 
-            if($fromOpenid == 28)            // 为申请者推送消息
+            if(strlen($fromOpenid) == 28)            // 为申请者推送消息
+            {
                 $tpl->sendProcess(
                     $fromOpenid,
                     url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wid'),'fault_id'=>$rendId],'http'),
                     '任务分配中',
                     $applyTime
                 );
+            }
 
             echo json_encode(['status'=>1]);
         }

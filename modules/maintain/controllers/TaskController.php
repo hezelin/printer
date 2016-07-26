@@ -268,7 +268,7 @@ class TaskController extends Controller
                 ->where('wx_id=:wid and openid=:openid',[':wid'=>$wid,':openid'=>$openid])
                 ->one();
 
-            if( $fromOpenid == 28){
+            if( strlen($fromOpenid) == 28){
                 $tpl = new WxTemplate($wid);
                 $tpl->sendProcess(
                     $fromOpenid,
@@ -369,7 +369,7 @@ class TaskController extends Controller
                 $res['btnText'] = ConfigBase::getFixMaintainStatus($status);
                 break;
             case 8:             // 维修完成，为发起维修申请的客户 推送评价提醒
-                if( $fromOpenid == 28)
+                if( strlen($fromOpenid) == 28)
                 {
                     $tpl = new WxTemplate($wid);
                     $tpl->sendWaiting(
