@@ -28,7 +28,7 @@ class MachineRent
         if(!$this->machine)
             throw new HttpException(401,'机器不存在');
 
-        $this->rent = TblRentApply::find()->where(['id'=>$machineId,'wx_id'=>$this->wid])->one();
+        $this->rent = TblRentApply::find()->where(['machine_id'=>$machineId,'wx_id'=>$this->wid])->one();
         if(!$this->rent || $this->rent->status == 11)
         {
             $this->tips[] = '客户资料不存在，将新建客户资料';

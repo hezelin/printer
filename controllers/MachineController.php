@@ -166,6 +166,9 @@ class MachineController extends \yii\web\Controller
 
     }
 
+    /*
+     * $id  为机器 machine_id
+     */
     public function actionUpdateRent($id)
     {
         $model = new MachineRent($id);
