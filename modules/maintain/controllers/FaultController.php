@@ -5,6 +5,8 @@
  */
 namespace app\modules\maintain\controllers;
 
+use app\models\TblUserMaintain;
+use yii\base\Exception;
 use yii\web\Controller;
 use app\models\TblMachineService;
 use app\models\TblServiceProcess;
@@ -210,22 +212,41 @@ class FaultController extends Controller
             $model->fault_score = $score;                  //  增加评价数据
             $model->opera_time = time();
             $wx_id = $model->weixin_id;
+            $toOpenid = $model->openid;
 
-            if( !$model->save())
-                Yii::$app->end(json_encode(['status'=>0,'msg'=>'更改状态错误']));
-            $model->updateMachineCount();
+            $transaction= Yii::$app->db->beginTransaction();
+            try {
+                if( !$model->save())
+                    throw new Exception('维修状态错误');
+                if(!$model->updateMachineCount())
+                    throw new Exception('机器数量统计出错');
 
-            $model = new TblServiceProcess();
-            $model->service_id = $fault_id;
-            $model->process = 9;
-            $model->content = '评价完成';
-            $model->add_time = time();
-            if( !$model->save())
-                Yii::$app->end(json_encode(['status'=>0,'msg'=>'维修进度错误']));
+                $model = new TblServiceProcess();
+                $model->service_id = $fault_id;
+                $model->process = 9;
+                $model->content = '评价完成';
+                $model->add_time = time();
+                if( !$model->save())
+                    throw new Exception('维修进度错误');
+
+
+                $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid]);
+                if($model &&  $model->wait_repair_count > 0)
+                {
+                    $model->wait_repair_count -= 1;
+                    if(!$model->save())
+                        throw new Exception('维修员待修计数');
+                }
+
+                $transaction->commit();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+                throw new Exception('系统出错');
+            }
 
             return $this->render('//tips/home-status',[
                 'tips'=>'感谢您的评价',
-                'btnText'=>'返回主页',
+                'btnText'=>'正在返回主页...',
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$wx_id]),
                 'jumpUrl'=>Url::toRoute(['/wechat/index','id'=>$wx_id]),
             ]);

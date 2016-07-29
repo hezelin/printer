@@ -53,7 +53,7 @@ class TaskController extends Controller
     public function actionList($id)
     {
         $data = new FaultList($id);
-        return $this->render('list',['model'=>$data->task(),'id'=>$id]);
+        return $this->render('list',['model'=>$data->task(),'count'=>$data->taskCount(),'id'=>$id]);
     }
 
     /*

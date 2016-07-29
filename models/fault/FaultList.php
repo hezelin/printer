@@ -31,12 +31,12 @@ class FaultList
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.status<11')
             ->where(['t.openid' => $openid]);
 
-        if(Yii::$app->request->get('type') == 'evaluate')
+        if(Yii::$app->request->get('type') == 'evaluate')                       // 待评价状态
             $model = $model->andWhere(['t.status'=>8]);
-        elseif( Yii::$app->request->get('type') == 'history')
+        elseif( Yii::$app->request->get('type') == 'history')                   // 历史记录状态
             $model = $model->andWhere(['t.status'=>9]);
         else
-            $model = $model->andWhere(['<','t.status',8]);
+            $model = $model->andWhere(['<','t.status',8]);                      // 维修中
 
         $model = $model->orderBy('t.add_time desc')
             ->all();
@@ -47,16 +47,21 @@ class FaultList
         }
 
         return $model;
+    }
 
-        /*$tmp = [];
-        foreach($model as $m){
-            if($m['status'] == 8){
-                $tmp['evaluate'][] = $m;
-            }else
-                $tmp['process'][] = $m;
-        }
-        unset($model);
-        return $tmp;*/
+    /*
+     * 维修员统计批量查询
+     */
+    public function taskCount()
+    {
+        $openid = WxBase::openId($this->id);
+
+        $count = (new \yii\db\Query())
+            ->select(['SUM(CASE WHEN status=8 THEN 1 ELSE 0 END) as wait_evaluate','SUM(CASE WHEN status=9 THEN 1 ELSE 0 END) as history','SUM(CASE WHEN status<8 THEN 1 ELSE 0 END) as ing'])
+            ->from('tbl_machine_service')
+            ->where(['openid' => $openid])
+            ->one();
+        return $count;
     }
 
     /*
