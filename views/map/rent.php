@@ -61,6 +61,20 @@ $this->params['breadcrumbs'][] = $this->title;
         height:hei-130
     });
 
+
+    var wid = $('#my-left-nav').width();
+    $('#my-left-nav').css({
+        height:hei-51,
+        width:wid,
+        position:'fixed',
+        top:51,
+        left:0
+    });
+    $('#my-header-nav .navbar-brand').css({
+        width:wid
+    });
+
+
     var map = new BMap.Map("map_canvas", {enableMapClick: false});
 
     var initLat = <?=isset($mapData[0]['lat']) && $mapData[0]['lat'] ? $mapData[0]['lat']:39.916527 ?>;
@@ -90,12 +104,16 @@ $this->params['breadcrumbs'][] = $this->title;
         marker.addEventListener("click", function (e) {
 
 //            map.centerAndZoom(new BMap.Point($('#point-' + pointId).attr('lng'),$('#point-' + pointId).attr('lat')), 13);
-            
+
             $('.point-li').hide();
             $('#point-' + pointId).show();
         });
     }
 
+    map.addEventListener("zoomend", function () {
+        $('.point-li').hide();
+    });
+    
     for (var i in mapData) {
         if( parseFloat(mapData[i]['lng'])>0 &&  parseFloat(mapData[i]['lat']) > 0) {
             pt = new BMap.Point(mapData[i]['lng'], mapData[i]['lat']);
@@ -114,6 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     var markerCluster = new BMapLib.MarkerClusterer(map, {markers:markers});
+
 
     <?php $this->endBlock();?>
 </script>

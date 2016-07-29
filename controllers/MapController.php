@@ -27,7 +27,7 @@ class MapController extends \yii\web\Controller
         foreach($points  as &$m)
             if($m['lat'] && $m['lng'])
             {
-                $data = ToolBase::bd_decrypt($m['lat'],$m['lng']);
+                $data = ToolBase::bd_encrypt($m['lat'],$m['lng']);
                 $m['lng'] = number_format($data['lon'],6,'.','');
                 $m['lat'] = number_format($data['lat'],6,'.','');
 
