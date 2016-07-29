@@ -141,6 +141,7 @@ WeixinAsset::register($this);
                                     ['label' => '收租记录','url' => ['/charge/list'],
                                         'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'charge',
                                     ],
+                                    ['label' => '地图分布','url' => ['/map/rent']],
                                 ],
                             ],
                             [
