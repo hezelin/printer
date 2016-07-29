@@ -9,14 +9,49 @@ $this->params['breadcrumbs'][] = $this->title;
     #map_canvas {
         width:100%;
     }
-
+    .BMapLabel{ border: none !important;}
+    .point-li{
+        width: 150px;
+        height: 150px;
+        border: none;
+        border-top: 2px solid #F1327A;
+        margin-left: -76px;
+        padding: 10px;
+        background-color: #fff !important;
+        box-shadow: 0 1px 4px #999;
+        margin-top: -180px;
+        display: none;
+    }
+    .point-row{
+        padding-bottom:5px;
+    }
+    .point-row span{
+        display: block;
+    }
+    .point-name {
+        display: block;
+        padding: 3px 0;
+        font-weight: 600;
+    }
+    .point-li .point-icon {
+        width: 28px;
+        height: 15px;
+        background: url(/img/login-auth.png) -50px -40px no-repeat;
+        position: absolute;
+        left: -12px;
+        bottom: 18px;
+    }
 </style>
 
 <div id="map_canvas"></div>
 
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+
 <script type="text/javascript">
 
-    var data = <?=$points? json_encode($points):'[]'?>;
+    var mapData = <?=$points? json_encode($points,JSON_UNESCAPED_UNICODE):'[]'?>;
 
     <?php $this->beginBlock('JS_END') ?>
 
@@ -26,59 +61,63 @@ $this->params['breadcrumbs'][] = $this->title;
         height:hei-130
     });
 
-    var initLat = <?=isset($points[0][0]) && $points[0][0] ? $points[0][0]:39.916527 ?>;
-    var initLng = <?=isset($points[0][1]) && $points[0][1] ? $points[0][1]:116.397128 ?>;
-    var latLng = new qq.maps.LatLng(initLat,initLng);
-    var options = {
-        'zoom':13,
-        'center':latLng,
-        'mapTypeId':"roadmap"
-    };
+    var map = new BMap.Map("map_canvas", {enableMapClick: false});
 
-    var map = new qq.maps.Map( document.getElementById('map_canvas'), options);
+    var initLat = <?=isset($mapData[0]['lat']) && $mapData[0]['lat'] ? $mapData[0]['lat']:39.916527 ?>;
+    var initLng = <?=isset($mapData[0]['lng']) && $mapData[0]['lng'] ? $mapData[0]['lng']:116.397128 ?>;
+    var city,
+        marker,
+        markers = [];
 
-
-    //根据 用户浏览器ip 定位
+    //初始化中心地图
     if( initLat == 39.916527 )
     {
-        var citylocation = new qq.maps.CityService({
-            complete : function(result){
-                map.setCenter(result.detail.latLng);
-            }
-        });
-        citylocation.searchLocalCity();
-
-    }
-    var markers = new qq.maps.MVCArray();
-
-    function createCluster() {
-        for (var i = 0; i < data.length; i++) {
-            var latLng = new qq.maps.LatLng( data[i][0], data[i][1]);
-            var marker = new qq.maps.Marker({
-                'position':latLng,
-                map:map
-            });
-            markers.push(marker);
+        function myFun(result){
+            city = result.name;
+            map.centerAndZoom(city,13);
         }
+        var myCity = new BMap.LocalCity();
+        myCity.get(myFun);
 
-        markerClusterer = new qq.maps.MarkerCluster({
-            map:map,
-            minimumClusterSize:2,       //默认2
-            markers:markers,
-            zoomOnClick:true,           //默认为true
-            gridSize:30,                //默认60
-            averageCenter:true,         //默认false
-            maxZoom:18                  //默认18
+    }else
+        map.centerAndZoom(new BMap.Point(initLng,initLat), 13);
+
+    map.enableScrollWheelZoom();                            // 启用滚轮放大缩小 map.enableContinuousZoom();                             // 启用地图惯性拖拽，默认禁用 map.enableInertialDragging();                           // 启用连续缩放效果，默认禁用。 map.addControl(new BMap.NavigationControl());           // 添加平移缩放控件
+    map.addControl(new BMap.NavigationControl());           // 启用放大缩小 尺
+
+
+    function addClickHandler(marker, pointId) {
+        marker.addEventListener("click", function (e) {
+
+//            map.centerAndZoom(new BMap.Point($('#point-' + pointId).attr('lng'),$('#point-' + pointId).attr('lat')), 13);
+            
+            $('.point-li').hide();
+            $('#point-' + pointId).show();
         });
-
     }
 
-    createCluster();
+    for (var i in mapData) {
+        if( parseFloat(mapData[i]['lng'])>0 &&  parseFloat(mapData[i]['lat']) > 0) {
+            pt = new BMap.Point(mapData[i]['lng'], mapData[i]['lat']);
+
+            var icon = new BMap.Icon('/img/map_zu.png', new BMap.Size(30, 36));
+            if(mapData[i]['status'] == 3)
+                var icon = new BMap.Icon('/img/map_xiu.png', new BMap.Size(30, 36));
+
+            marker = new BMap.Marker(pt,{icon: icon});
+            addClickHandler(marker, mapData[i]['id']);
+            markers.push(marker);
+
+            var defaultLabel = new BMap.Label(mapData[i]['html'], {position: pt});
+            map.addOverlay(defaultLabel);
+        }
+    }
+
+    var markerCluster = new BMapLib.MarkerClusterer(map, {markers:markers});
 
     <?php $this->endBlock();?>
 </script>
 
 <?php
-    $this->registerJsFile('http://map.qq.com/api/js?v=2.exp',['depends'=>['yii\web\JqueryAsset']]);
     $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 ?>
