@@ -115,54 +115,86 @@ class TblAnalyzeMachine
      */
     public function getCharts()
     {
-        if(Yii::$app->request->get('start') && Yii::$app->request->get('end') ){
-            $start = strtotime( Yii::$app->request->get('start') );
-            $end = strtotime( Yii::$app->request->get('end') );
-        }else{
-            $start = strtotime(date('Y-m-d',strtotime('-10 day')));
-            $end = strtotime(date('Y-m-d',strtotime('-1 day')));
-        }
-
-        $data = (new \yii\db\Query())
-            ->select('date_time,free_count,rent_count,scrap_count')
-            ->from('tbl_analyze_machine')
-            ->where(['between','date_time',$start,$end])
-            ->andWhere('wx_id=:wid',[':wid'=>Cache::getWid()])
-            ->all();
-        $chart['start'] = date('Y-m-d',$start);
-        $chart['end'] = date('Y-m-d',$end);
-        $tmp = [];
-        if($data){
-            foreach($data as $d){
-                $chart['cate'][] = date('Y-m-d',$d['date_time']);
-                $tmp['free'][] = (int)$d['free_count'];
-                $tmp['rent'][] = (int)$d['rent_count'];
-                $tmp['scrap'][] = (int)$d['scrap_count'];
-//                $tmp['total'][] = $d['free_count'] + $d['rent_count'] + $d['scrap_count'];
-            }
-        }else
-            $chart['cate'] = [];
-
-        $chart['series'] = [
-            /*[
-                'name'=>'总数量',
-                'data'=> isset($tmp['total'])? $tmp['total']:[]
-            ],*/[
-                'name'=>'租赁数量',
-//                'color'=>'#b10000',
-                'data'=> isset($tmp['rent'])? $tmp['rent']:[]
-            ],[
-                'name'=>'闲置数量',
-                'color'=>'rgb(144, 237, 125)',
-
-                'data'=> isset($tmp['free'])? $tmp['free']:[]
-            ],[
-                'name'=>'报废数量',
-                'color'=>'rgb(255, 188, 117)',
-                'data'=> isset($tmp['scrap'])? $tmp['scrap']:[]
-            ],
+        $initFrom = [
+            1 => '出租',
+            2 => '销售',
+            3 => '维修',
+            4 => '预设',
         ];
 
+        $data = (new \yii\db\Query())
+            ->select('count(*) as num,come_from')
+            ->from('tbl_machine')
+            ->where(['wx_id'=>Cache::getWid()])
+            ->andWhere(['<','status',11])
+            ->groupBy('come_from')
+            ->all();
+
+        $data = ArrayHelper::map($data,'come_from','num');
+        arsort($data);                              // 根据值降排序
+        $chart['total'] = array_sum($data);
+
+        $tmp = [];
+        foreach($data as $k=>$v)
+        {
+            $tmp[] = [
+                'name' => $initFrom[$k],
+                'y' => (int)$v,
+            ];
+            unset($initFrom[$k]);
+        }
+        if($chart['total'] && $initFrom)
+            foreach($initFrom as $f)
+                $tmp[] = [
+                    'name' => $f,
+                    'y' => 0,
+                ];
+
+        $chart['series'][] = [
+            'name'=>'数量',
+            'colorByPoint'=>true,
+            'data' => $tmp
+        ];
+
+        $initStatus = [
+            1 => '闲置中',
+            2 => '已租借',
+            3 => '已报废',
+        ];
+
+        $data = (new \yii\db\Query())
+            ->select('count(*) as num,status')
+            ->from('tbl_machine')
+            ->where(['wx_id'=>Cache::getWid()])
+            ->andWhere(['<','status',11])
+            ->groupBy('status')
+            ->all();
+
+        $data = ArrayHelper::map($data,'status','num');
+        arsort($data);                              // 根据值降排序
+        $chart['total2'] = array_sum($data);
+
+        $tmp = [];
+        foreach($data as $k=>$v)
+        {
+            $tmp[] = [
+                'name' => $initStatus[$k],
+                'y' => (int)$v,
+            ];
+            unset($initStatus[$k]);
+        }
+        if($chart['total2'] && $initStatus)
+            foreach($initStatus as $f)
+                $tmp[] = [
+                    'name' => $f,
+                    'y' => 0,
+                ];
+
+        $chart['series2'][] = [
+            'name'=>'数量',
+            'colorByPoint'=>true,
+            'data' => $tmp
+        ];
         unset($data);
         unset($tmp);
         return $chart;

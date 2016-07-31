@@ -1,13 +1,10 @@
 <?php
 use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\jui\DatePicker;
 
-    $this->title = '数据统计';
-$this->params['breadcrumbs'][] = $this->title;
-
+$this->title = '数据统计';
 ?>
 <style>
+    body{ background-color: #f5f5f5 !important; padding-top:20px;}
     .bg-1{
         background-color: #94afff;
     }
@@ -35,8 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
         display: block;
     }
     .chart-box{
-        border-radius: 4px !important;
+        border-radius: 6px !important;
         margin-bottom: 30px;
+        box-shadow: 0 1px 4px #ccc;
+        background-color: #fff;
     }
     .ana-box:hover{
         color: #FFFFFF;
@@ -65,54 +64,65 @@ $this->params['breadcrumbs'][] = $this->title;
     }
     .ana-fixed-btn{
         position: absolute;
-        top: 5px;
-        left: 30px;
+        top: 12px;
+        right: 55px;
         z-index: 999;
     }
+    .ana-fixed-btn:hover{color: orange;}
 </style>
+<!--<pre>
+    <?php /*echo json_encode($machine,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT)*/?>
+</pre>-->
 <div class="row">
     <div class="col-md-6">
         <div id="item" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/item'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
+        <a href="<?=Url::toRoute(['charts/item'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
     <div class="col-md-6">
-        <div id="machine" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/machine'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
+        <div class="chart-box">
+            <div class="row">
+                <div class="col-md-6"><div id="machine"></div></div>
+                <div class="col-md-6"><div id="machine2"></div></div>
+            </div>
+        </div>
     </div>
+
     <div class="col-md-6">
         <div id="rent" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/rent'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
+        <a href="<?=Url::toRoute(['charts/rent'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
     <div class="col-md-6">
         <div id="container" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/fault'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
+        <a href="<?=Url::toRoute(['charts/fault'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
     <div class="col-md-6">
         <div id="order" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/order'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
+        <a href="<?=Url::toRoute(['charts/order'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
     <div class="col-md-6">
         <div id="maintain" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/maintainer'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
+        <a href="<?=Url::toRoute(['charts/maintainer'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
 
     <div class="col-md-6">
         <div id="order2" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/order'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
+        <a href="<?=Url::toRoute(['charts/order'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
 
     <div class="col-md-6">
         <div id="rental" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/rental'])?>"  class="btn btn-default btn-sm ana-fixed-btn">查看</a>
+        <a href="<?=Url::toRoute(['charts/rental'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
 
 
 </div>
 <script>
     <?php $this->beginBlock('JS_END') ?>
+
     $('#item').highcharts({
         chart: {
-            zoomType: 'xy'
+            zoomType: 'xy',
+            height: 300
         },
         title: {
             text: '耗材库存走势'
@@ -193,41 +203,66 @@ $this->params['breadcrumbs'][] = $this->title;
 
     $('#machine').highcharts({
         chart: {
-            type: 'column'
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            height: 300,
+            type: 'pie'
+        },
+        exporting: {
+            enabled: false
         },
         title: {
-            text: '机器库存数据'
-        },
-        xAxis: {
-            categories: <?=json_encode($machine['cate'])?>,
-            tickmarkPlacement: 'on',
-            title: {
-                'text':'日期'
-            }
-        },
-        yAxis: {
-            title: {
-                text: '数量'
-            }
+            text: '机器来源(<?=$machine['total']?>台)'
         },
         tooltip: {
-            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: {point.y}<br/>',
             shared: true,
             valueSuffix: ' 台'
         },
         plotOptions: {
-            column: {
-                stacking: 'normal',
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
                 dataLabels: {
-                    enabled: true,
-                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
-                    style: {
-                        textShadow: '0 0 3px black'
-                    }
-                }
+                    enabled: false
+                },
+                showInLegend: true
             }
         },
         series: <?=json_encode($machine['series'])?>
+    });
+
+    $('#machine2').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            height: 300,
+            type: 'pie'
+        },
+        exporting: {
+            enabled: false
+        },
+        title: {
+            text: '机器状态'
+        },
+        tooltip: {
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: {point.y}<br/>',
+            shared: true,
+            valueSuffix: ' 台'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        },
+        series: <?=json_encode($machine['series2'])?>
     });
 
     $('#rent').highcharts({
