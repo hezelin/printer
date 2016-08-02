@@ -75,9 +75,10 @@ $this->title = '数据统计';
 </pre>-->
 <div class="row">
     <div class="col-md-6">
-        <div id="item" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/item'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
+        <div id="maintain" class="chart-box"></div>
+        <a href="<?=Url::toRoute(['charts/maintainer'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
+
     <div class="col-md-6">
         <div class="chart-box">
             <div class="row">
@@ -99,9 +100,10 @@ $this->title = '数据统计';
         <div id="order" class="chart-box"></div>
         <a href="<?=Url::toRoute(['charts/order'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
+
     <div class="col-md-6">
-        <div id="maintain" class="chart-box"></div>
-        <a href="<?=Url::toRoute(['charts/maintainer'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
+        <div id="item" class="chart-box"></div>
+        <a href="<?=Url::toRoute(['charts/item'])?>"  class="ana-fixed-btn" title="查看详情"><i class="glyphicon glyphicon-resize-full"></i></a>
     </div>
 
     <div class="col-md-6">
@@ -122,7 +124,8 @@ $this->title = '数据统计';
     $('#item').highcharts({
         chart: {
             zoomType: 'xy',
-            height: 300
+            height: 400,
+            x: -20
         },
         title: {
             text: '耗材库存走势'
@@ -138,20 +141,10 @@ $this->title = '数据统计';
                     color: Highcharts.getOptions().colors[1]
                 }
             },
-            title: {
-                text: '总量',
-                style: {
-                    color: Highcharts.getOptions().colors[1]
-                }
-            },
+            title: null,
             opposite: true
         }, {
-            title: {
-                text: '金额',
-                style: {
-                    color: Highcharts.getOptions().colors[0]
-                }
-            },
+            title: null,
             labels: {
                 format: '{value} 元',
                 style: {
@@ -297,22 +290,7 @@ $this->title = '数据统计';
             categories: <?=json_encode($order['cate'])?>,
             crosshair: true
         }],
-        yAxis: [ {
-            gridLineWidth: 0,
-            title: {
-                text: '总积分',
-                style: {
-                    color: Highcharts.getOptions().colors[2]
-                }
-            },
-            labels: {
-                format: '{value} 分',
-                style: {
-                    color: Highcharts.getOptions().colors[2]
-                }
-            },
-            opposite: true
-        },{
+        yAxis: [{
             labels: {
                 format: '{value} 个',
                 style: {
@@ -320,17 +298,15 @@ $this->title = '数据统计';
                 }
             },
             title: {
-                text: '数量',
+                text: null,
                 style: {
                     color: Highcharts.getOptions().colors[0]
                 }
-            },
-            opposite: true
-
+            }
         },{
             gridLineWidth: 0,
             title: {
-                text: '总金额',
+                text: null,
                 style: {
                     color: Highcharts.getOptions().colors[1]
                 }
@@ -340,7 +316,8 @@ $this->title = '数据统计';
                 style: {
                     color: Highcharts.getOptions().colors[1]
                 }
-            }
+            },
+            opposite: true
         }],
         tooltip: {
             shared: true
@@ -411,15 +388,18 @@ $this->title = '数据统计';
     });
 
     $('#maintain').highcharts({
+        chart:{
+            height: 300
+        },
         title: {
             text: '<?=$maintainer['tips']['title']?>'
         },
         xAxis: {
             categories: <?=json_encode($maintainer['cate'])?>,
-            tickmarkPlacement: 'on',
-            title: {
+            tickmarkPlacement: 'on'
+            /*title: {
                 'text':'月份'
-            }
+            }*/
         },
         yAxis: {
             title: {

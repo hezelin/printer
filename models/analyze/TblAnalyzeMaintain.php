@@ -153,8 +153,6 @@ class TblAnalyzeMaintain
                 $tmp['data'] = array_values($tmp['data']);
                 $chart['series'][] = $tmp;
             }
-
-
         }
         unset($data);
         unset($tmp);

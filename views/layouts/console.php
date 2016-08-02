@@ -117,6 +117,7 @@ WeixinAsset::register($this);
                                 'label' => '数据统计',
                                 'url' => ['/console/analyze'],
                                 'icon' => 'stats',
+                                'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'charts' || Yii::$app->controller->getRoute()=='console/analyze'
                             ],
                             [
                                 'label' => '机器管理',
