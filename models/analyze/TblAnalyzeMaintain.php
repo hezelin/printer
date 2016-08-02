@@ -167,6 +167,7 @@ class TblAnalyzeMaintain
      */
     private function getCate($s,$e)
     {
+//        return range(1,10);
         $y1 = substr($s,0,4);
         $y2 = substr($e,0,4);
         if($d = ( $y2 - $y1 )){

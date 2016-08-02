@@ -185,7 +185,7 @@ class TblAnalyzeFault
         $tmp = [];
         if($data){
             foreach($data as $d){
-                $chart['cate'][] = date('Y-m-d',$d['date_time']);
+                $chart['cate'][] = date('md',$d['date_time']);
                 $tmp['add'][] = (int)$d['add_count'];
                 $tmp['cancel'][] = (int)$d['cancel_count'];
                 $tmp['total'][] = (int)$d['total_count'];
@@ -196,16 +196,13 @@ class TblAnalyzeFault
         $chart['series'] = [
             [
                 'name'=>'累计维修',
-                'type'=>'column',
                 'data'=> isset($tmp['total'])? $tmp['total']:[]
             ],[
                 'name'=>'新增维修',
-                'type'=>'column',
                 'color'=>'rgb(144, 237, 125)',
                 'data'=> isset($tmp['add'])? $tmp['add']:[]
             ],[
                 'name'=>'取消维修',
-                'type'=>'column',
                 'color'=>'rgb(255, 188, 117)',
                 'data'=> isset($tmp['cancel'])? $tmp['cancel']:[]
             ],

@@ -166,17 +166,14 @@ $this->title = '数据统计';
     });
     $('#container').highcharts({
         chart: {
-            type: 'column'
+            height: 340
         },
         title: {
             text: '维修统计'
         },
         xAxis: {
             categories: <?=json_encode($charts['cate'])?>,
-            tickmarkPlacement: 'on',
-            title: {
-                'text':'日期'
-            }
+            tickmarkPlacement: 'on'
         },
         yAxis: {
             title: {
@@ -267,51 +264,26 @@ $this->title = '数据统计';
 
     $('#rent').highcharts({
         chart: {
-            zoomType: 'xy'
+            height: 340
         },
         title: {
-            text: '租借统计'
+            text: '租借统计',
+            x: -10
         },
         xAxis: {
             categories: <?=json_encode($rent['cate'])?>,
-            tickmarkPlacement: 'on',
+            tickmarkPlacement: 'on'
+        },
+        yAxis: {
             title: {
-                'text':'日期'
+                text: '次数'
             }
         },
-        yAxis: [{
-            labels: {
-                format: '{value}次',
-                style: {
-                    color: Highcharts.getOptions().colors[1]
-                }
-            },
-            title: {
-                text: '累计租借',
-                style: {
-                    color: Highcharts.getOptions().colors[1]
-                }
-            },
-            opposite: true
-        }, {
-            title: {
-                text: '次数',
-                style: {
-                    color: Highcharts.getOptions().colors[0]
-                }
-            },
-            labels: {
-                format: '{value} 次',
-                style: {
-                    color: Highcharts.getOptions().colors[0]
-                }
-            }
-        }],
         tooltip: {
             shared: true,
             valueSuffix: '次'
         },
-        series: <?=json_encode($rent['series'])?>
+        series: <?=json_encode($rent['series'],JSON_UNESCAPED_UNICODE)?>
     });
 
     $('#order').highcharts({
