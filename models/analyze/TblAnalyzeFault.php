@@ -22,7 +22,7 @@ class TblAnalyzeFault
         $data = (new \yii\db\Query())
             ->select('weixin_id as wx_id,count(id) as add_count')
             ->from('tbl_machine_service')
-            ->where(['enable'=>'Y'])
+            ->where(['<','status',11])
             ->andWhere(['between','add_time',$this->startTime,$this->endTime])
             ->groupBy('wx_id')
             ->all();
@@ -36,7 +36,7 @@ class TblAnalyzeFault
         $data = (new \yii\db\Query())
             ->select('weixin_id as wx_id,count(id) as total_count')
             ->from('tbl_machine_service')
-            ->where(['enable'=>'Y'])
+            ->where(['<','status',11])
             ->andWhere(['<','add_time',$this->endTime])
             ->groupBy('wx_id')
             ->all();
@@ -57,7 +57,7 @@ class TblAnalyzeFault
         $data = (new \yii\db\Query())
             ->select('weixin_id as wx_id,count(id) as cancel_count')
             ->from('tbl_machine_service')
-            ->where(['enable'=>'N'])
+            ->where(['status'=>'11'])
             ->andWhere(['between','opera_time',$this->startTime,$this->endTime])
             ->groupBy('wx_id')
             ->all();

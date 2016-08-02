@@ -22,7 +22,7 @@ class TblAnalyzeMachine
         $data = (new \yii\db\Query())
             ->select('wx_id,status,count(id) as machine_count')
             ->from('tbl_machine')
-            ->where(['enable'=>'Y'])
+            ->where(['<','status',11])
             ->andWhere(['<','add_time',$this->endTime])
             ->groupBy('wx_id,status')
             ->all();

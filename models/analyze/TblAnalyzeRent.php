@@ -22,7 +22,7 @@ class TblAnalyzeRent
         $all = (new \yii\db\Query())
             ->select('wx_id,count(id) as total_count')
             ->from('tbl_rent_apply')
-            ->where(['enable'=>'Y','status'=>'2'])
+            ->where(['status'=>'2'])
             ->andWhere(['<','add_time',$this->endTime])
             ->groupBy('wx_id')
             ->all();
@@ -30,7 +30,7 @@ class TblAnalyzeRent
         $add = (new \yii\db\Query())
             ->select('wx_id,count(id) as add_count')
             ->from('tbl_rent_apply')
-            ->where(['enable'=>'Y'])
+            ->where(['<','status',11])
             ->andWhere(['between','add_time',$this->startTime,$this->endTime])
             ->groupBy('wx_id')
             ->all();
@@ -38,14 +38,14 @@ class TblAnalyzeRent
         $expire = (new \yii\db\Query())
                 ->select('wx_id,count(id) as expire_count')
                 ->from('tbl_rent_apply')
-                ->where(['enable'=>'Y'])
+                ->where(['<','status',11])
                 ->andWhere(['<','due_time',$this->endTime+86400*7])
                 ->groupBy('wx_id')
                 ->all();
         $collect = (new \yii\db\Query())
             ->select('wx_id,count(id) as collect_count')
             ->from('tbl_rent_apply')
-            ->where(['enable'=>'Y'])
+            ->where(['<','status',11])
             ->andWhere(['<','first_rent_time',$this->endTime+86400*3])
             ->groupBy('wx_id')
             ->all();
