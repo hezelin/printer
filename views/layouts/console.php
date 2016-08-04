@@ -194,11 +194,11 @@ WeixinAsset::register($this);
                                 'label' => '积分管理',
                                 'icon' => 'gift',
                                 'items' => [
-                                    ['label' => '赠送积分','url' => ['/adminscore/send']],
-                                    ['label' => '积分操作记录','url' => ['/adminscore/log']],
+                                    ['label' => '赠送积分','url' => ['/admin-score/send']],
+                                    ['label' => '积分操作记录','url' => ['/admin-score/log']],
                                 ],
                             ],
-                            /*[
+                            /*[-
                                 'label' => '用户管理',
                                 'icon' => 'user',
                                 'items' => [

@@ -267,7 +267,7 @@ use yii\bootstrap\Modal;
         <a href="<?=Url::toRoute(['service/call'])?>" class="box-panel-header">
             <h4><i class="icon glyphicon glyphicon-phone-alt"></i>电话报修</h4>
         </a>
-        <a href="<?=Url::toRoute(['adminscore/send'])?>" class="box-panel-header">
+        <a href="<?=Url::toRoute(['admins-core/send'])?>" class="box-panel-header">
             <h4><i class="icon glyphicon glyphicon-gift"></i>赠送积分</h4>
         </a>
         <a href="<?=Url::toRoute(['machine/list'])?>" class="box-panel-header">
