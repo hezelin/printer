@@ -30,17 +30,17 @@ echo GridView::widget([
             'value' => function($model){
                 $sex=[1=>'男',2=>'女','0'=>'未知'];
                 return Html::tag('span',$model['nickname'].'&nbsp;,&nbsp;').
-                       Html::tag('span',$sex[ $model['sex']].'&nbsp;,&nbsp;').
+//                       Html::tag('span',$sex[ $model['sex']].'&nbsp;,&nbsp;').
                        Html::a(Html::img( substr($model['headimgurl'],0,-1).'46',['style'=>'width:40px']),$model['headimgurl'].'?.jpg',
                            ['rel'=>'group1','class' => 'fancybox']);
             }
         ],
         [
-            'attribute'=>'cover_images',
+            'attribute'=>'images',
             'label'=>'机型图片',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
             'value'=>function($model){
-                $covers = json_decode($model['cover_images'],true);
+                $covers = json_decode($model['images'],true);
                 if(!$covers) return '无机器';
                 $html = [];
                 foreach($covers as $cover){
@@ -50,8 +50,12 @@ echo GridView::widget([
             }
         ],
         [
-            'attribute'=>'type',
+            'attribute'=>'model_name',
             'label'=>'机器型号',
+            'value' => function($model)
+            {
+                return $model['brand_name']? $model['brand_name'] . '/' . $model['model_name']:'';
+            }
         ],
         [
             'attribute'=>'project_id',
@@ -59,9 +63,9 @@ echo GridView::widget([
             'format'=>'html',
             'value'=>function($model)
             {
-                $row[] = Html::tag('div','最低消费：'.$model['lowest_expense'].'元');
+                $row[] = Html::tag('div','最低消费：'.$model['monthly_rent'].'元');
                 $row[] = Html::tag('div','黑白：'.$model['black_white'].'元/张');
-                if($model['is_color'] == 2)
+                if($model['colours'])
                     $row[] = Html::tag('div','彩色：'.$model['colours'].'元/张');
                 return join("\n",$row);
             }

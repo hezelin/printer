@@ -52,8 +52,8 @@ class RentController extends \yii\web\Controller
     public function actionMachineDetail($id,$rent_id)
     {
         $model = (new \yii\db\Query())
-            ->select('t.id,t.monthly_rent,t.black_white,t.colours,t.add_time,m.series_id,m.come_from,
-                m.brand_name,m.model_name as model,m.images,p.describe
+            ->select('t.id,t.machine_id,t.monthly_rent,t.black_white,t.colours,t.add_time,m.series_id,m.come_from,
+                m.brand_name,m.model_name as model,m.images,p.id as project_id,p.describe
             ')
             ->from('tbl_rent_apply as t')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')

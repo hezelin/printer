@@ -58,7 +58,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
     </div>
     <?php if( Yii::$app->request->get('from') == 'machine'):?>
         <div class="h-fixed-bottom">
-            <a  href="<?=url::toRoute(['/maintain/fault/apply','id'=>$id,'mid'=>$model['id']])?>">
+            <a  href="<?=url::toRoute(['/maintain/fault/apply','id'=>$id,'mid'=>$model['machine_id']])?>">
                 维修申请
             </a>
         </div>
@@ -66,7 +66,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
 
     <?php else:?>
         <div class="h-fixed-bottom">
-            <a href="<?=url::toRoute(['/user/rent/apply','id'=>$id,'mid'=>$model['id']])?>">
+            <a href="<?=url::toRoute(['/user/rent/apply','id'=>$id,'mid'=>$model['project_id']])?>">
                 租借机器
             </a>
         </div>
