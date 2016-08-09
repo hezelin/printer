@@ -19,6 +19,7 @@ echo GridView::widget([
         'brand_name',
         'model',
         'lowest_expense',
+        'contain_paper',
         'black_white',
         'colours',
         [

@@ -13,7 +13,7 @@ class ViewSchemeModelSearch extends ViewSchemeModel
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'machine_model_id', 'is_show', 'add_time'], 'integer'],
+            [['id', 'wx_id', 'machine_model_id', 'contain_paper', 'is_show', 'add_time'], 'integer'],
             [['lowest_expense', 'black_white', 'colours'], 'number'],
             [['cover', 'images', 'describe', 'brand_name', 'model'], 'safe'],
         ];
@@ -49,6 +49,7 @@ class ViewSchemeModelSearch extends ViewSchemeModel
             'wx_id' => $this->wx_id,
             'machine_model_id' => $this->machine_model_id,
             'lowest_expense' => $this->lowest_expense,
+            'contain_paper' => $this->contain_paper,
             'black_white' => $this->black_white,
             'colours' => $this->colours,
             'is_show' => $this->is_show,
