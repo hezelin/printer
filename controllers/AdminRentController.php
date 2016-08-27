@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Cache;
+use app\models\TblMachine;
 use app\models\TblMachineService;
 use app\models\TblRentApply;
 use app\models\TblRentApplyCollect;
@@ -15,6 +16,7 @@ use app\models\ToolBase;
 use app\models\views\ViewRentDataSearch;
 use app\models\WxTemplate;
 use Yii;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -62,26 +64,34 @@ class AdminRentController extends \yii\web\Controller
             ->joinWith('machineProject')
             ->one();
 
+        if(!$model)
+            throw new HttpException(401,'资料不存在');
+
         if($model->load( Yii::$app->request->post()))
         {
             $model->due_time = ($_POST['TblRentApplyWithMachine']['due_time'] && $_POST['TblRentApplyWithMachine']['due_time'] != '1970-01-01')? strtotime($_POST['TblRentApplyWithMachine']['due_time']):0;
             $model->first_rent_time = ($_POST['TblRentApplyWithMachine']['first_rent_time'] && $_POST['TblRentApplyWithMachine']['first_rent_time'] != '1970-01-01')? strtotime($_POST['TblRentApplyWithMachine']['first_rent_time']):0;
             $model->status = 2;
-            if($model->save()) {
-                // 如果是审核通过，改版机器的状态 和 出租次数
-                $model->updateMachineStatus();
-                return $this->redirect(Url::toRoute(['map','id'=>$model->id]));
-            }
-            else
-                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
 
-            return $this->render('pass',['model'=>$model,'type'=>'update']);
+            $transaction= Yii::$app->db->beginTransaction();
+            try {
+                if(!$model->save())
+                    throw new Exception('租赁入库失败');
+                if(!$model->updateMachineStatus())
+                    throw new Exception('机器');
+                    $transaction->commit();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+                throw new HttpException(401,'分配机器失败'.$e);
+            }
+            return $this->redirect(Url::toRoute(['map','id'=>$model->id]));
         }
 
         $model->black_white = $model->machineProject->black_white;
         $model->colours = $model->machineProject->colours;
-        $model->first_rent_time = $model->first_rent_time? :'';
+        $model->first_rent_time = $model->first_rent_time? :strtotime('3 month');
         $model->monthly_rent = $model->machineProject->lowest_expense;
+        $model->contain_paper = $model->machineProject->contain_paper;
         $model->machine_id = '';
 
         if( $model->due_time < time() )

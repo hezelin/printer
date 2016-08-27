@@ -37,6 +37,7 @@ if( Yii::$app->session->hasFlash('error') )
 <?php
 
 if( $type =='allot' )
+{
     echo $form->field($model, 'machine_id')->widget(\kartik\select2\Select2::classname(), [
         'data' => app\models\ConfigBase::getMachineInfo(),
         'language' => 'zh-CN',
@@ -45,9 +46,14 @@ if( $type =='allot' )
             'allowClear' => true
         ]
     ])->hint('给用户分配机器');
+    echo $form->field($model, 'machine_series_id')->textInput(['placeholder'=>'客户编号（可省略）'])->hint('例如：GZ001，广州001');
+    echo $form->field($model, 'machine_come_from')->dropDownList(\app\models\ConfigBase::getMachineFrom())->hint('机器来源');
+
+}
 ?>
 
     <?= $form->field($model, 'monthly_rent')->textInput(['placeholder'=>'多少元 / 每月'])->hint('多少元 / 每月') ?>
+    <?= $form->field($model, 'contain_paper')->textInput(['placeholder'=>'月租包含黑白张数'])->hint('包含黑白多少张') ?>
     <?= $form->field($model, 'black_white')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.02  代表2分钱'])->hint('多少元 / 每张')?>
 
     <?= $form->field($model, 'colours')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.04  代表4分钱'])->hint('多少元 / 每张')?>

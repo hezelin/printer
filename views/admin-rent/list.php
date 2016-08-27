@@ -82,6 +82,9 @@ echo GridView::widget([
                 ];
                 if($model->colours)
                     array_push($data,'彩色：'.\app\models\config\Tool::schemePrice($model->colours));
+                if($model->contain_paper)
+                    array_push($data,'包含张数：'.\app\models\config\Tool::paperNum($model->contain_paper));
+
                 return Html::ul($data,['class'=>'rent-price']);
             }
         ],

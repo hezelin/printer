@@ -54,11 +54,10 @@ echo GridView::widget([
         ],
         [
             'attribute'=>'brand_name',
-            'label'=>'品牌',
-        ],
-        [
-            'attribute'=>'model',
             'label'=>'机器型号',
+            'value' => function($model){
+                return $model['brand_name'] . ' / ' . $model['model'];
+            }
         ],
         [
             'attribute'=>'project_id',
@@ -70,6 +69,9 @@ echo GridView::widget([
                 $row[] = Html::tag('div','黑白：'.\app\models\config\Tool::schemePrice($model['black_white']));
                 if($model['colours'])
                     $row[] = Html::tag('div','彩色：'.\app\models\config\Tool::schemePrice($model['colours']));
+                if($model['contain_paper'])
+                    $row[] = Html::tag('div','包含张数：'.\app\models\config\Tool::paperNum($model['contain_paper']));
+
                 return join("\n",$row);
             }
         ],

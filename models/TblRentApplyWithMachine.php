@@ -6,6 +6,8 @@ use Yii;
 
 class TblRentApplyWithMachine extends \yii\db\ActiveRecord
 {
+    public $machine_series_id;
+    public $machine_come_from;
     public function getUserInfo()
     {
         return $this->hasOne(TblUserWechat::className(), ['wx_id' => 'wx_id','openid'=>'openid']);
@@ -30,12 +32,13 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'openid', 'black_white', 'project_id', 'due_time', 'phone', 'name', 'add_time','machine_id','first_rent_time', 'rent_period'], 'required'],
-            [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'black_amount', 'colours_amount'], 'integer'],
+            [['wx_id', 'project_id', 'machine_id', 'contain_paper', 'status', 'add_time', 'black_amount', 'colours_amount', 'machine_come_from'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
             [['openid'], 'string', 'max' => 28],
             [['phone'], 'string', 'max' => 11],
             [['colours','black_amount','colours_amount'], 'default', 'value' => 0],
             [['name'], 'string', 'max' => 30],
+            [['machine_series_id'], 'string', 'max' => 50],
             [['address'], 'string', 'max' => 500],
             [['apply_word'], 'string', 'max' => 200]
         ];
@@ -50,6 +53,7 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
             'project_id' => '租借方案',
             'machine_id' => '分配机器',
             'monthly_rent' => '月租',
+            'contain_paper' => '包含张数',
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
             'black_amount' => '黑板读数',
@@ -66,6 +70,8 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
             'longitude' => '经度',
             'accuracy' => '精确度',
             'add_time' => '申请时间',
+            'machine_come_from' => '机器来源',
+            'machine_series_id' => '客户编号',
         ];
     }
 
@@ -78,6 +84,16 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
 
         if($type == 'rent'){
             $machine->rent_count = $machine->rent_count + 1;
+            if($this->machine_come_from)
+            {
+                $machine->come_from = $this->machine_come_from;
+                $machine->add_time = time();
+                $machine->brand = 'wsz';
+                $machine->model_id = 1664;
+                $machine->images = json_encode(['/img/haoyizu.png']);
+                $machine->cover = '/img/haoyizu.png';
+            }
+            $this->machine_series_id && $machine->series_id = $this->machine_series_id;
             $machine->status = 2;
         }else{
             $machine->rent_count = $machine->rent_count - 1;

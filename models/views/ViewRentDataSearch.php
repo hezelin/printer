@@ -19,7 +19,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
     public function rules()
     {
         return [
-            [['rent_id','machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id'], 'integer'],
+            [['rent_id','machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id', 'contain_paper'], 'integer'],
             [['openid', 'phone', 'name', 'address', 'series_id', 'cover', 'brand_name', 'model_name'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude'], 'number'],
         ];
@@ -69,6 +69,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
             'machine_id' => $this->machine_id,
             'wx_id' => $this->wx_id,
             'monthly_rent' => $this->monthly_rent,
+            'contain_paper' => $this->contain_paper,
             'black_white' => $this->black_white,
             'colours' => $this->colours,
             'due_time' => $this->due_time,

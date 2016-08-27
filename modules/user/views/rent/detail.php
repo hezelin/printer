@@ -124,6 +124,12 @@ AuicssAsset::register($this);
             <h5 class="aui-col-xs-4">彩色价格</h5>
             <h5 class="aui-col-xs-8"><?=\app\models\config\Tool::schemePrice($model['colours'])?></h5>
         </div>
+        <?php if($model['contain_paper']):?>
+        <div class="aui-col-xs-12">
+            <h5 class="aui-col-xs-4">包含张数</h5>
+            <h5 class="aui-col-xs-8"><?=\app\models\config\Tool::paperNum($model['contain_paper'])?></h5>
+        </div>
+        <?php endif;?>
         <div class="aui-col-xs-12">
             <h5 class="aui-col-xs-4">品牌</h5>
             <h5 class="aui-col-xs-8"><?=$model['brand_name']?></h5>

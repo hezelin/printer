@@ -57,6 +57,7 @@ class TblRentApply extends \yii\db\ActiveRecord
             'project_id' => '租借方案',
             'machine_id' => '分配机器',
             'monthly_rent' => '月租',
+            'contain_paper' => '包含张数',
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
             'due_time' => '合同到期时间',

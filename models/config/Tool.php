@@ -45,4 +45,15 @@ class Tool
         else
             return $data.'分/张';
     }
+
+    /*
+     * 张数转换
+     */
+    public static function paperNum($num)
+    {
+        if($num>1000)
+            return $num/1000 .'千张';
+        else
+            return $num .'张';
+    }
 }

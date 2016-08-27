@@ -49,6 +49,11 @@ $config = [
             'identityClass' => 'app\models\User',
             'loginUrl' => '/auth/login',
             'enableAutoLogin' => true,
+            'identityCookie' => [
+                'name'     => '_hyizu',
+                'path'     => '/',
+                'httpOnly' => true,
+            ],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
