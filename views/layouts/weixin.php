@@ -4,6 +4,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use app\assets\WeixinAsset;
 use kartik\sidenav\SideNav;
+use yii\widgets\Breadcrumbs;
 
 WeixinAsset::register($this);
 ?>
@@ -87,7 +88,6 @@ WeixinAsset::register($this);
 
     <div class="container-fluid">
         <div class="row my-content">
-
             <div class="col-sm-3 col-md-2">
                 <?php
                 $item = [
@@ -112,6 +112,14 @@ WeixinAsset::register($this);
 //                                        ['label' => '查看日志', 'url' => '/user/log'],
                         ],
                     ],
+                    [
+                        'label' => '权限管理',
+                        'icon' => '',
+                        'items' => [
+                            ['label' => '角色管理', 'url' => ['/admin-rbac/role']],
+                            ['label' => '权限管理', 'url' => ['/admin-rabc/permission']],
+                        ],
+                    ],
                 ];
 
                 echo SideNav::widget([
@@ -123,7 +131,9 @@ WeixinAsset::register($this);
                 ?>
             </div>
             <div class="col-sm-9 col-md-10">
-                <p style="height: 20px">&nbsp;</p>
+                <?= Breadcrumbs::widget([
+                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                ]) ?>
                 <?= $content ?>
             </div>
         </div>

@@ -77,11 +77,12 @@ class AppController extends \yii\web\Controller
                     $maintain = new TblUserMaintain();
                     $maintain->wx_id = $id;
                     $maintain->name = (new \yii\db\Query())->select('nickname')->from('tbl_user_wechat')->where(['wx_id'=>$id,'openid'=>$wx->msg->FromUserName])->scalar();
+                    $maintain->name || $maintain->name = '未知';
                     $maintain->openid = (string)$wx->msg->FromUserName;
                     $maintain->add_time = time();
                     if($maintain->save())
                         return $wx->makeText('成功绑定为维修员！');
-                    return $wx->makeText( ToolBase::arrayToString($maintain->errors));
+                    return $wx->makeText(ToolBase::arrayToString($maintain->errors));
                 }
             }elseif($key == 2 )          // 扫描积分二维码
             {

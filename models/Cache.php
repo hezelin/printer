@@ -12,7 +12,6 @@ use yii\helpers\Url;
 
 class Cache
 {
-
     /*
      * 设置过期时间 秒
      */
@@ -33,6 +32,8 @@ class Cache
     {
         return Yii::$app->cache->delete($key);
     }
+
+
     /*
      * 获取 微信id
      * 跳转登录

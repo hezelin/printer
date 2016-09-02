@@ -39,11 +39,8 @@ $config = [
         'fileCache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'redis' => [
-            'class' => 'yii\redis\Connection',
-            'hostname' => 'localhost',
-            'port' => 6379,
-            'database' => 2,
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
