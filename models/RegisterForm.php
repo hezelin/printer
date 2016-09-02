@@ -6,10 +6,9 @@ use Yii;
 
 class RegisterForm extends \yii\db\ActiveRecord
 {
-    public $pswd;
+    public $password;
     public $acpassword;
     public $verifyCode;
-    public $areaText;
 
     public static function tableName()
     {
@@ -22,15 +21,12 @@ class RegisterForm extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['email', 'phone', 'name' ,'area','areaText', 'pswd', 'acpassword'], 'required'],
-            [['area', 'create_time'], 'integer'],
-            [['enable'], 'string'],
-            [['email', 'name'], 'string', 'max' => 40],
-            [['email'],'email'],
-            [['email'],'unique'],
-            [['phone'],'match','pattern'=>'/^1[0-9]{10}$/','message'=>'{attribute}格式错误'],
-            [['pswd'], 'string', 'length'=>[6,16]],
-            [['acpassword'],'compare', 'compareAttribute'=>'pswd','message'=>'确认密码必须与设置密码相同'],
+            [['phone', 'name' ,'password', 'acpassword'], 'required'],
+            [['name'], 'string', 'max' => 40],
+            [['phone'],'unique'],
+            [['phone'],'match','pattern'=>'/^(13|15|17|18)\d{9}$/','message'=>'{attribute}格式错误'],
+            [['password'], 'string', 'length'=>[6,16]],
+            [['acpassword'],'compare', 'compareAttribute'=>'password','message'=>'确认密码必须与设置密码相同'],
             ['verifyCode', 'captcha'],
         ];
     }
@@ -41,26 +37,33 @@ class RegisterForm extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'uid' => '用户id',
-            'email' => '邮箱',
+            'id' => '用户id',
             'phone' => '手机',
-            'name' => '昵称',
+            'name' => '姓名',
             'password' => '密码',
-            'pswd' => '密码',
             'acpassword' => '确认密码',
-            'salt' => '加密盐',
-            'area' => '地区id',
-            'areaText' => '地区',
-            'ip' => 'ip地址',
-            'create_time' => '注册时间',
-            'enable' => '是否有效',
             'verifyCode' => '验证码',
         ];
     }
 
+    public function signup()
+    {
+        if ($this->validate()) {
+            $user = new User();
+            $user->name = $this->name;
+            $user->phone = $this->phone;
+            $user->setPassword($this->password);
+            $user->generateAuthKey();
+            if ($user->save()) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
 
     public function getUser()
     {
-        return User::findOne($this->uid);
+        return User::findOne($this->id);
     }
 }

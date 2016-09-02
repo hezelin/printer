@@ -4,8 +4,6 @@ namespace app\controllers;
 use Yii;
 use app\models\RegisterForm;
 use app\models\LoginForm;
-use app\models\ToolBase;
-use app\models\DataCity;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\TblUserBase;
@@ -98,25 +96,14 @@ class AuthController extends \yii\web\Controller
 
         if ( $model->load(Yii::$app->request->post()) ) {
 
-            $model->salt = ToolBase::getSalt();
-            $model->ip = Yii::$app->request->userIP;
-            $model->create_time = time();
-            $model->password = md5($model->pswd.$model->salt.$model->salt);
-
             // 注册成功
-            if($model->save()){
-                Yii::$app->getUser()->login( $model->getUser() );
+            if($user = $model->signup()){
+                Yii::$app->getUser()->login( $user );
                 $this->gotoBack();
-            }else{
-                print_r($model->errors);
             }
         }
-
         return $this->render('register',array(
-            'model'=>$model,
-            'province'=>DataCity::$province,
-            'city' => DataCity::$city,
-            'region' => DataCity::$region,
+            'model'=>$model
         ));
     }
 
