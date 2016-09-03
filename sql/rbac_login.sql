@@ -8,7 +8,7 @@
 CREATE TABLE `tbl_user` (
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '用户id',
   `phone` char(20) COLLATE utf8_unicode_ci NOT NULL COMMENT '手机',
-  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '手机',
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '姓名',
   `ip` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'ip 地址',
   `access_token` char(60) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '令牌',
   `auth_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE `tbl_user` (
 -- 登录记录表
 --
 
-CREATE TABLE `log_user_login2` (
+CREATE TABLE `log_user_login` (
   `id` int(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '自增id',
   `user_id` int(11) NOT NULL COMMENT '用户id',
   `group_id` int(11) NOT NULL COMMENT '群组 id',
@@ -37,3 +37,14 @@ CREATE TABLE `log_user_login2` (
   KEY `server_id` (`group_id`),
   KEY `login_time` (`login_time`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='租赁商登录记录';
+
+
+--
+-- 修改维修员最后坐标地址
+--
+ALTER TABLE tbl_user_maintain change `latitude` `latitude` decimal(9,6) DEFAULT NULL COMMENT '纬度',
+change `longitude` `longitude` decimal(9,6) DEFAULT NULL COMMENT '经度',
+change `accuracy` `point_time` int(11) DEFAULT NULL COMMENT '地址更新时间';
+
+UPDATE `tbl_user_maintain` SET `longitude`=NULL ,`latitude`=NULL ,`point_time`=NULL WHERE 1
+
