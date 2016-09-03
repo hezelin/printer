@@ -5,6 +5,7 @@ use yii\bootstrap\NavBar;
 use app\assets\WeixinAsset;
 use kartik\sidenav\SideNav;
 use yii\widgets\Breadcrumbs;
+use app\models\Alert;
 
 WeixinAsset::register($this);
 ?>
@@ -114,10 +115,12 @@ WeixinAsset::register($this);
                     ],
                     [
                         'label' => '权限管理',
-                        'icon' => '',
+                        'icon' => 'star',
                         'items' => [
-                            ['label' => '角色管理', 'url' => ['/admin-rbac/role']],
-                            ['label' => '权限管理', 'url' => ['/admin-rabc/permission']],
+                            ['label' => '成员管理', 'url' => ['/admin-rbac/member'],
+                                'active' => in_array(Yii::$app->controller->getRoute(),['admin-rbac/member','admin-rbac/update','admin-rbac/create']),
+                            ],
+                            ['label' => '登录日志', 'url' => ['/admin-rbac/log']],
                         ],
                     ],
                 ];
@@ -134,6 +137,7 @@ WeixinAsset::register($this);
                 <?= Breadcrumbs::widget([
                     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                 ]) ?>
+                <?= Alert::widget() ?>
                 <?= $content ?>
             </div>
         </div>

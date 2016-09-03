@@ -21,12 +21,16 @@ class WeixinController extends \yii\web\Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-//                'only' => ['add', 'update', 'index','view','delete','start','stop'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open','select','createmenu','console'],
-                        'roles' => ['@'],
+                        'actions' => ['index','view','start','stop','open','select','createmenu','console'],
+                        'roles' => ['manager'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['add', 'update','delete'],
+                        'roles' => ['super'],
                     ],
                 ],
             ],

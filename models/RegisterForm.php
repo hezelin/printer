@@ -12,7 +12,7 @@ class RegisterForm extends \yii\db\ActiveRecord
 
     public static function tableName()
     {
-        return 'tbl_user_base';
+        return 'tbl_user';
     }
 
     /**
@@ -52,6 +52,7 @@ class RegisterForm extends \yii\db\ActiveRecord
             $user = new User();
             $user->name = $this->name;
             $user->phone = $this->phone;
+            $user->created_at = $user->updated_at = time();
             $user->setPassword($this->password);
             $user->generateAuthKey();
             if ($user->save()) {

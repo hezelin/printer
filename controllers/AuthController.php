@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\common\CommonLog;
 use Yii;
 use app\models\RegisterForm;
 use app\models\LoginForm;
@@ -12,7 +13,7 @@ use app\models\ResetpswdForm;
 
 class AuthController extends \yii\web\Controller
 {
-    public $layout = 'console';
+    public $layout = '/console';
 
     public function behaviors()
     {
@@ -50,6 +51,7 @@ class AuthController extends \yii\web\Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            CommonLog::login();
             return $this->gotoBack();
         } else {
             return $this->render('login', [
@@ -81,7 +83,6 @@ class AuthController extends \yii\web\Controller
         }
         return $this->render('reset',['model'=>$model]);
     }
-
 
     public function actionLogout()
     {

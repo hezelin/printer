@@ -14,7 +14,7 @@ CREATE TABLE `tbl_user` (
   `auth_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '10' COMMENT '10为有效',
-  `role` char(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'super' COMMENT '角色',
+  `role` char(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'boss' COMMENT '角色',
   `group_id` int(11) NOT NULL DEFAULT '-1' COMMENT '群组id',
   `weixin_id` int(11) NOT NULL DEFAULT '-1' COMMENT '微信id',
   `created_at` int(11) DEFAULT NULL COMMENT '创建时间',
@@ -22,3 +22,18 @@ CREATE TABLE `tbl_user` (
   UNIQUE KEY `phone` (`phone`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+--
+-- 登录记录表
+--
+
+CREATE TABLE `log_user_login2` (
+  `id` int(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '自增id',
+  `user_id` int(11) NOT NULL COMMENT '用户id',
+  `group_id` int(11) NOT NULL COMMENT '群组 id',
+  `login_ip` char(25) COLLATE utf8_bin DEFAULT NULL COMMENT '登录ip',
+  `user_agent` varchar(300) COLLATE utf8_bin DEFAULT NULL COMMENT '来源',
+  `login_time` int(11) NOT NULL COMMENT '登录时间',
+  KEY `server_id` (`group_id`),
+  KEY `login_time` (`login_time`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='租赁商登录记录';
