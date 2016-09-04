@@ -9,7 +9,7 @@ $this->params['breadcrumbs'][] = $this->title;
     #map_canvas {
         width:100%;
     }
-    .BMapLabel{ border: none !important;}
+    .BMapLabel{ border: none !important; background-color: inherit !important;}
     .point-li{
         width: 150px;
         height: 150px;
