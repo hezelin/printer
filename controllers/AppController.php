@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\config\Tool;
 use app\models\TblUserMaintain;
 use app\models\ToolBase;
 use app\models\WxUser;
@@ -25,7 +26,7 @@ class AppController extends \yii\web\Controller
 
         $wx->init();
 
-        $msgType = empty($wx->msg->MsgType) ? '' : strtolower($wx->msg->MsgType);
+        /*$msgType = empty($wx->msg->MsgType) ? '' : strtolower($wx->msg->MsgType);
 
         switch ($msgType)
         {
@@ -34,6 +35,15 @@ class AppController extends \yii\web\Controller
                 break;
             case 'image':
                 //你要处理图文消息代码
+                break;
+            case 'voice':
+                //你要处理音频消息代码
+                break;
+            case 'video':
+                //你要处理视频消息代码
+                break;
+            case 'shortvideo':
+                //你要处理小视频消息代码
                 break;
             case 'location':
                 //你要处理位置消息代码
@@ -47,7 +57,7 @@ class AppController extends \yii\web\Controller
             default:
                 //无效消息情况下的处理方式
                 break;
-        }
+        }*/
 
         /*
          * 用户关注，保存资料
@@ -89,6 +99,12 @@ class AppController extends \yii\web\Controller
                 Yii::$app->cache->set('score:'.$id,(string)$wx->msg->FromUserName,60*30);
                 return $wx->makeText( '等待获得积分中...');
             }
+        }
+
+        if($wx->msg->Event == 'LOCATION')
+        {
+            Tool::location($wx->msg->FromUserName,$id,$wx->msg->Longitude,$wx->msg->Latitude);
+            return 'success';
         }
 
 //        $wx->reply($reply);

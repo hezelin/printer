@@ -20,8 +20,8 @@ class TblUserMaintain extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'openid', 'add_time'], 'required'],
-            [['wx_id', 'wait_repair_count', 'add_time'], 'integer'],
-            [['latitude', 'longitude', 'accuracy'], 'number'],
+            [['wx_id', 'wait_repair_count', 'add_time', 'point_time'], 'integer'],
+            [['latitude', 'longitude'], 'number'],
             [['openid'], 'string', 'max' => 28],
             [['name'], 'string', 'max' => 30],
             [['phone'], 'string', 'max' => 11],
@@ -43,7 +43,7 @@ class TblUserMaintain extends \yii\db\ActiveRecord
             'wait_repair_count' => '待修',
             'latitude' => '纬度',
             'longitude' => '经度',
-            'accuracy' => '精确度',
+            'point_time' => '地址更新时间',
             'add_time' => '添加时间',
         ];
     }

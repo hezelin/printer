@@ -5,6 +5,7 @@
  */
 
 namespace app\models;
+use app\models\config\Tool;
 use app\models\Curl;
 use Yii;
 use yii\helpers\Url;
@@ -297,7 +298,8 @@ class WxTemplate extends WxBase {
             $curl = new Curl();
             $res = $curl->postJson($this->sendUrl,json_encode($tpl),['access_token'=>$this->accessToken()]);
             if( $res['errcode'] )
-                Yii::$app->end(json_encode(['status'=>0,'msg'=>$res['errmsg']]));
+//                Yii::$app->end(json_encode(['status'=>0,'msg'=>$res['errmsg']]));
+                return false;
             return true;
         }
         return false;

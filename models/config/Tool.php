@@ -56,4 +56,44 @@ class Tool
         else
             return $num .'张';
     }
+
+    public static function log($data)
+    {
+        $message = '';
+        if(is_object($data))
+        {
+            foreach( get_object_vars($data) as  $k=>$v)
+            {
+                if(is_array($v))
+                    $message .= self::log($v);
+                else
+                    $message .= "$k=>$v\n";
+            }
+        }
+        elseif(is_array($data))
+        {
+            foreach($data as $k=>$v)
+            {
+                if(is_array($v))
+                    $message .= self::log($v);
+                else
+                    $message .= "$k=>$v\n";
+            }
+        }else
+            $message = $data;
+
+        $dir = \Yii::getAlias('@runtime');
+        $name = '/weixin.log';
+        file_put_contents($dir.$name,$message,FILE_APPEND);
+    }
+
+    public static function location($openid,$wx_id,$longitude,$latitude)
+    {
+        if(strlen($openid) == 28)
+        {
+            $t = time();
+            $sql = "UPDATE `tbl_user_maintain` SET `longitude`=$longitude ,`latitude`=$latitude ,`point_time`=$t WHERE openid='$openid' and wx_id=$wx_id";
+            \Yii::$app->db->createCommand($sql)->execute();
+        }
+    }
 }

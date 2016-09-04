@@ -5,6 +5,8 @@
  */
 namespace app\modules\maintain\controllers;
 
+use app\models\TblUserMaintain;
+use yii\base\Exception;
 use yii\web\Controller;
 use app\models\fault\FaultList;
 use app\models\ConfigBase;
@@ -257,23 +259,32 @@ class TaskController extends Controller
         $applyTime = $model->add_time;
         $respKm = $model->resp_km;
 
+        $maintainer = TblUserMaintain::find()->where(['wx_id'=>$wid,'openid'=>$openid])->one();
+        if(!$maintainer)
+            return $this->render('//tips/home-status',[
+                'tips'=>'维修员不存在',
+                'btnText'=>'返回任务中 ...',
+                'jumpUrl'=>Url::toRoute(['/maintain/task/list','id'=>$wid]),
+                'btnUrl'=> Url::toRoute(['/maintain/task/list','id'=>$wid])
+            ]);
+
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $model->save();
+            if(!$model->save())
+                throw new Exception('维修状态表');
 
-            // 主动接单、电话维修、维修员确认接单
-            $maintainer = (new \yii\db\Query())
-                ->select('name,phone')
-                ->from('tbl_user_maintain')
-                ->where('wx_id=:wid and openid=:openid',[':wid'=>$wid,':openid'=>$openid])
-                ->one();
+            $maintainer->latitude = $post['latitude'];
+            $maintainer->longitude = $post['longitude'];
+            $maintainer->point_time = time();
+            if(!$maintainer->save())
+                throw new Exception('保存位置出错');
 
             if( strlen($fromOpenid) == 28){
                 $tpl = new WxTemplate($wid);
                 $tpl->sendProcess(
                     $fromOpenid,
                     url::toRoute(['/maintain/fault/detail','id'=>$wid,'fault_id'=>$fault_id],'http'),
-                    '维修员：'.$maintainer['name'].'已接单，'.($maintainer['phone']? '手机：'.$maintainer['phone'].',':'').'距离：'.$respKm.'公里',
+                    '维修员：'.$maintainer->name.'已接单，'.($maintainer->phone? '手机：'.$maintainer->phone.',':'').'距离：'.$respKm.'公里',
                     $applyTime
                 );
             }
@@ -282,10 +293,10 @@ class TaskController extends Controller
             $model = new TblServiceProcess();
             $model->service_id = $id;
             $model->process = $post['status'];
-            $model->content = $maintainer['name'].' 已接单,距离：'.$respKm.'公里';
+            $model->content = $maintainer->name.' 已接单,距离：'.$respKm.'公里';
             $model->add_time = time();
-            $model->save();
-
+            if(!$model->save())
+                throw new Exception('维修进度出错');
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();

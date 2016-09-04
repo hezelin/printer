@@ -27,6 +27,10 @@ $this->title = '维修任务';
     </div>
 
 <script>
+
+    var wxId = <?=$model['wx_id']?>;
+    var openId = '<?=$openid?>';
+
 <?php $this->beginBlock('JS_END') ?>
     var ms = <?=$model['status']?>;
     var hasClick = 0;
@@ -101,7 +105,7 @@ $this->title = '维修任务';
     $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_END);
     \app\components\WxjsapiWidget::widget([
         'wx_id'=>$model['wx_id'],
-        'apiList'=>['previewImage','openLocation'],
+        'apiList'=>['previewImage','openLocation','getLocation'],
         'jsReady'=>'
          document.querySelector("#previewImage").onclick = function () {
             wx.previewImage({
@@ -119,6 +123,21 @@ $this->title = '维修任务';
                 scale: 16,
                 infoUrl: ""
             });
-        };'
+        };
+
+        wx.getLocation({
+            success: function (res) {
+                $.ajax({
+                    type:"get",
+                    url:"/ajax-data/location",
+                    cache:false,
+                    async:false,
+                    data:{longitude:res.longitude,latitude:res.latitude,wx_id:wxId,openid:openId},
+                    dataType:"json",
+                    success:function(respData){
+                    }
+                })
+            }
+        });'
     ]);
 ?>

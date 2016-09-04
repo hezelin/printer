@@ -163,9 +163,9 @@ class ServiceController extends \yii\web\Controller
 
             $connection = Yii::$app->db;
             $transaction = $connection->beginTransaction();
-
             try {
-                $model->save();                 // 维修员计算 加一
+                if(!$model->save())
+                    throw new Exception('维修员计算 加一');
 
                 $fault = TblMachineService::findOne( Yii::$app->request->post('id') );
                 $reason = ConfigBase::getFaultStatus($fault->type);
@@ -174,24 +174,23 @@ class ServiceController extends \yii\web\Controller
                 $fromOpenid = $fault->from_openid;
                 $applyTime = $fault->add_time;
 
-
                 $fault->openid = Yii::$app->request->post('openid');
                 $fault->status = 2;
                 $fault->remark = Yii::$app->request->post('fault_remark');
-                $fault->save();
+                if(!$fault->save())
+                    throw new Exception('维修资料表');
 
                 $process = new TblServiceProcess();
                 $process->service_id = Yii::$app->request->post('id');
                 $process->content = '任务分配中';
                 $process->add_time = time();
-                $process->save();
+                if(!$process->save())
+                    throw new Exception('维修进度表');
 
                 $transaction->commit();
             }catch(\Exception $e) {
                 $transaction->rollBack();
-//                echo $e;
-                echo json_encode(['status'=>0,'msg'=>'参数错误']);
-                exit;
+                return json_encode(['status'=>0,'msg'=>'参数错误'.$e]);
             }
 
             // 为维修员推送消息
@@ -211,7 +210,7 @@ class ServiceController extends \yii\web\Controller
                 Yii::$app->request->post('fault_remark')
             );
 
-            if(strlen($fromOpenid) == 28)            // 为申请者推送消息
+            if(strlen($fromOpenid) == 28)            // 为申请者推送消息,如果申请者取消关注发送失败
             {
                 $tpl->sendProcess(
                     $fromOpenid,
