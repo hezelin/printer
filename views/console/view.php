@@ -357,7 +357,7 @@ echo newerton\fancybox\FancyBox::widget([
 Modal::begin([
     'header' => '分配任务',
     'id' => 'modal-fault-allot',
-    'size' => 'modal-md',
+    'size' => 'modal-lg',
     'toggleButton' => false,
     'footer' => '
         <button id="go-back" type="button" class="btn btn-default">上一步</button>
@@ -370,12 +370,8 @@ echo Html::beginForm('','',['class'=>'form-horizontal','id'=>'fault-text-form'])
 echo Html::textarea('fault_remark','',['placeholder'=>'备注留言(可省略)','class'=>'form-control','id'=>'fault-remark']);
 echo Html::endForm();
 
-echo Html::beginTag('table',['class'=>'table table-striped','id'=>'my-fix-model']);
-echo '<tr><th>名字</th><th>手机</th><th>待修</th><th>分配</th></tr>';
-foreach($data['maintainer'] as $d){
-    echo '<tr><td>',$d['name'],'</td><td>',$d['phone'],'</td><td class="repair-count">',$d['wait_repair_count'],'</td><td><a class="select-maintain" href="javascript:void(0);" title="分配维修" key-wid="',$d['wx_id'],'" key-openid="',$d['openid'],'" data-method="post"><i class="glyphicon glyphicon-ok"></i></a></td></tr>';
-}
-echo Html::endTag('table');
+echo Html::tag('div','',['id'=>'my-fix-model','style'=>'display:none']);
+
 Modal::end();
 
 
@@ -466,12 +462,83 @@ Modal::end();
 
 ?>
 
+<script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
 
 <script>
-    <?php $this->beginBlock('JS_END') ?>
     // 共用key,fault
-    var keyId;
-    var $li;
+    var keyId,
+        $li;
+
+    var myMarker,
+        mySite,
+        mpoints = [],
+        mapHasShow = 0,
+        mapHei,
+        mapFaultData = <?=json_encode($data['maintainer'],JSON_UNESCAPED_UNICODE)?> || [];
+
+    function addClickHandler(marker, openId) {
+        marker.addEventListener("click", function (e) {
+            var before = $('#'+openId).html();
+            $('#'+openId).html('<img src="/images/loading.gif">');
+            var $this = $('#'+openId);
+            var wid = $(this).attr('key-wid');
+            var openid = $(this).attr('key-openid');
+            $.post(
+                '<?=Url::toRoute(['/service/allot'])?>',
+                {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
+                function(res){
+                    if(res.status == 1){
+                        setTimeout(function(){
+                            $('#modal-fault-allot').modal('hide');
+                            $li.slideUp();
+                        },1000);
+                    }
+                    else
+                        alert(res.msg);
+                },'json'
+            );
+        });
+    }
+
+    function showMap()
+    {
+        $('#my-fix-model').show();
+        if(mapHasShow == 0)
+        {
+            mapHei = mapHei || $(window).height();
+            $('#my-fix-model').css({
+                height:mapHei-250
+            });
+            setTimeout(function(){
+                if(mySite== undefined){
+                    mySite = new BMap.Map("my-fix-model", {enableMapClick: false}); // 创建Map实例
+                    mySite.enableScrollWheelZoom();                            // 启用滚轮放大缩小 map.enableContinuousZoom();                             // 启用地图惯性拖拽，默认禁用 map.enableInertialDragging();                           // 启用连续缩放效果，默认禁用。 map.addControl(new BMap.NavigationControl());           // 添加平移缩放控件
+                    mySite.addControl(new BMap.NavigationControl());
+
+                    for (var i = 0; i < mapFaultData.length; i++) {
+                        var lat = mapFaultData[i]['latitude'];
+                        var lng = mapFaultData[i]['longitude'];
+                        var content = '<div id="openid-'+i+'" class="map-point-label" key-wid="'+mapFaultData[i]['wx_id']+'" key-openid="'+mapFaultData[i]['openid']+'"><span class="map-point-name">'+mapFaultData[i]['name']+'&nbsp;'+mapFaultData[i]['phone']+'</span><span class="map-point-name"><i class="glyphicon glyphicon-time"></i> '+mapFaultData[i]['point_time']+',待修'+mapFaultData[i]['wait_repair_count']+'个</span></div>';
+                        var clickId = 'openid'+i;
+                        var point = new BMap.Point(lng, lat);
+                        mpoints.push(point);
+                        var labelOpts = {
+                            position: point
+                        };
+
+                        var defaultLabel = new BMap.Label(content, labelOpts);
+                        mySite.addOverlay(defaultLabel);
+//                        addClickHandler(defaultLabel, 'clickId');
+                    }
+                    mySite.setViewport(mpoints);
+                }
+            },500);
+            mapHasShow = 1;
+        }
+
+    }
+    <?php $this->beginBlock('JS_END') ?>
+
 
     ///////////  展开 收起  功能
     var listClsoe = '<i class="glyphicon glyphicon-menu-up"></i> 收起';
@@ -539,29 +606,34 @@ Modal::end();
         $('#my-fix-model').hide();
     });
     //        下一步
-    $('#my-fix-model').hide();
+//    $('#my-fix-model').hide();
     $('#next-step').click(function(){
         $(this).hide();
-        $('#fault-text-form').slideUp();
-        $('#my-fix-model').show();
+        $('#fault-text-form').hide();
+//        $('#my-fix-model').show();
+        showMap();
     });
 
 //    维修分配
-    $('#modal-fault-allot .select-maintain').click(function(){
-        $(this).html('<img src="/images/loading.gif">');
+    $('#modal-fault-allot').on('click','.map-point-label',function(){
+
+        var before = $(this).html();
+        $(this).html('提交中...<br/><img src="/images/loading.gif">');
         var $this = $(this);
         var wid = $(this).attr('key-wid');
         var openid = $(this).attr('key-openid');
-        var re_count = $(this).closest('tr').children('.repair-count');
+        console.log('post 提交之前');
+        console.log(wid,openid);
         $.post(
             '<?=Url::toRoute(['/service/allot'])?>',
             {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
             function(res){
+                console.log('结果',res);
+
                 if(res.status == 1){
-                    re_count.text( parseInt(re_count.text()) + 1 );
                     setTimeout(function(){
-                        $this.html('<i class="glyphicon glyphicon-ok"></i>');
                         $('#modal-fault-allot').modal('hide');
+                        $this.html(before);
                         $li.slideUp();
                     },1000);
                 }
