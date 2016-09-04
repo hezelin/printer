@@ -476,30 +476,6 @@ Modal::end();
         mapHei,
         mapFaultData = <?=json_encode($data['maintainer'],JSON_UNESCAPED_UNICODE)?> || [];
 
-    function addClickHandler(marker, openId) {
-        marker.addEventListener("click", function (e) {
-            var before = $('#'+openId).html();
-            $('#'+openId).html('<img src="/images/loading.gif">');
-            var $this = $('#'+openId);
-            var wid = $(this).attr('key-wid');
-            var openid = $(this).attr('key-openid');
-            $.post(
-                '<?=Url::toRoute(['/service/allot'])?>',
-                {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
-                function(res){
-                    if(res.status == 1){
-                        setTimeout(function(){
-                            $('#modal-fault-allot').modal('hide');
-                            $li.slideUp();
-                        },1000);
-                    }
-                    else
-                        alert(res.msg);
-                },'json'
-            );
-        });
-    }
-
     function showMap()
     {
         $('#my-fix-model').show();
@@ -519,8 +495,10 @@ Modal::end();
                         var lat = mapFaultData[i]['latitude'];
                         var lng = mapFaultData[i]['longitude'];
                         var content = '<div id="openid-'+i+'" class="map-point-label" key-wid="'+mapFaultData[i]['wx_id']+'" key-openid="'+mapFaultData[i]['openid']+'"><span class="map-point-name">'+mapFaultData[i]['name']+'&nbsp;'+mapFaultData[i]['phone']+'</span><span class="map-point-name"><i class="glyphicon glyphicon-time"></i> '+mapFaultData[i]['point_time']+',待修'+mapFaultData[i]['wait_repair_count']+'个</span></div>';
-                        var clickId = 'openid'+i;
                         var point = new BMap.Point(lng, lat);
+                        console.log(lat,lng,point);
+                        if(lng == null)
+                            continue;
                         mpoints.push(point);
                         var labelOpts = {
                             position: point
@@ -528,7 +506,6 @@ Modal::end();
 
                         var defaultLabel = new BMap.Label(content, labelOpts);
                         mySite.addOverlay(defaultLabel);
-//                        addClickHandler(defaultLabel, 'clickId');
                     }
                     mySite.setViewport(mpoints);
                 }
@@ -622,14 +599,10 @@ Modal::end();
         var $this = $(this);
         var wid = $(this).attr('key-wid');
         var openid = $(this).attr('key-openid');
-        console.log('post 提交之前');
-        console.log(wid,openid);
         $.post(
             '<?=Url::toRoute(['/service/allot'])?>',
             {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
             function(res){
-                console.log('结果',res);
-
                 if(res.status == 1){
                     setTimeout(function(){
                         $('#modal-fault-allot').modal('hide');
