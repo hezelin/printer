@@ -116,7 +116,7 @@ class ServiceController extends \yii\web\Controller
         return $this->render('index',[
             'dataProvider'=>$dataProvider,
             'searchModel' => $searchModel,
-            'fixProvider'=> $searchModel->fixProvider(),
+            'maintainer'=> $searchModel->mapMaintainer(),
             'wid'=>Cache::getWid()
         ]);
     }
@@ -126,16 +126,10 @@ class ServiceController extends \yii\web\Controller
         $searchModel = new ViewFaultDataSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $fixProvider = new ActiveDataProvider([
-            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
         return $this->render('list',[
             'dataProvider'=>$dataProvider,
             'searchModel' => $searchModel,
-            'fixProvider'=> $fixProvider,
+            'maintainer'=> $searchModel->mapMaintainer(),
             'wid'=>Cache::getWid()
         ]);
     }

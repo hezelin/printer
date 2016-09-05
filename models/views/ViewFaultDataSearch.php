@@ -105,4 +105,16 @@ class ViewFaultDataSearch extends ViewFaultData
             ],
         ]);
     }
+
+    /*
+     * 返回维修员坐标
+     */
+    public function mapMaintainer()
+    {
+        return (new \yii\db\Query())
+            ->select(['name','phone','openid','wx_id','wait_repair_count','longitude','latitude','FROM_UNIXTIME(`point_time`,"%m-%d %H:%i") as point_time'])
+            ->from('tbl_user_maintain')
+            ->where(['wx_id' => Cache::getWid()])
+            ->all();
+    }
 }
