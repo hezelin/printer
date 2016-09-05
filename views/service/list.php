@@ -397,9 +397,8 @@ Modal::end();
                 function(res){
                     if(res.status == 1){
                         setTimeout(function(){
-                            $('#modal-fault-allot').modal('hide');
+                            $('#my-modal').modal('hide');
                             $this.html(before);
-                            allotTr.slideUp();
                         },1000);
                     }
                     else

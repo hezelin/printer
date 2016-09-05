@@ -70,15 +70,15 @@ class ServiceController extends \yii\web\Controller
 
 //            if($faultStatus != 9)   {                   // 已经完成评价了，用户删除维修不影响维修员操作
                 // 为管理员推送消息
-            $tpl = new WxTemplate($id);
+            $tpl = new WxTemplate($id);                                         // 为用户发送通知
 //                $url = Url::toRoute(['cancel','id'=>$model->id],'http');
             $url = '';
             $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
 
-            if( $toOpenid ){
+            // 维修员存在，则为维修员 计数减一
+            if( $toOpenid &&  ($model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid])) ){
                 $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
                 // 维修员待修计数 减一
-                $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid]);
                 if( $model->wait_repair_count > 0)
                     $model->wait_repair_count -= 1;
                 if(!$model->save())
@@ -241,22 +241,24 @@ class ServiceController extends \yii\web\Controller
             if( $fault->openid == Yii::$app->request->post('openid'))
                 return json_encode(['status'=>1]);
 
+            $oldName = '--';
             $transaction = Yii::$app->db->beginTransaction();
             try {
-
 
                 // 旧维修员 计数减一
                 $old = TblUserMaintain::findOne([
                     'wx_id'=>Yii::$app->request->post('wid'),
                     'openid'=>$fault->openid
                 ]);
-                $oldName = $old->name;
-                if( $old->wait_repair_count > 0){
-                    $old->wait_repair_count = $old->wait_repair_count - 1;
-                    if(!$old->save())
-                    {
-                        $error[] = $old->errors;
-                        throw new Exception('维修员计算统计出错');
+                if($old){
+                    $oldName = $old->name;
+                    if( $old->wait_repair_count > 0){
+                        $old->wait_repair_count = $old->wait_repair_count - 1;
+                        if(!$old->save())
+                        {
+                            $error[] = $old->errors;
+                            throw new Exception('维修员计算统计出错');
+                        }
                     }
                 }
 
@@ -370,8 +372,8 @@ class ServiceController extends \yii\web\Controller
     }
 
     /*
- * 处理 url
- */
+     * 处理 url
+     */
     private function dealUrl($url)
     {
         if(strpos($url,'?') !== false){                     // 如果路径存在 问号 ？

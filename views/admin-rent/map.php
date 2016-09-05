@@ -22,7 +22,7 @@ if( Yii::$app->session->hasFlash('success') )
             <input type="text" id="address-name" name="address-name" class="form-control" style="width:350px;" value="<?=$model->address?>" />
             <span style="margin-left: 10px;">输入地址定位坐标</span>
         </div>
-        <div style="margin:10px 0;">操作提示：放大地图，拖动地图上的点，校正坐标</div>
+        <div style="margin:10px 0;">操作提示：放大地图，拖动地图上的点，校正坐标（首次设置需要输入地址）</div>
         <div id="show-address" style="margin:10px 0;"></div>
 
         <button id="save-location" type="button" class="btn btn-primary">保存定位</button>
