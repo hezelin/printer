@@ -21,12 +21,16 @@ class WeixinController extends \yii\web\Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-//                'only' => ['add', 'update', 'index','view','delete','start','stop'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open','select','createmenu','console'],
-                        'roles' => ['@'],
+                        'actions' => ['index','view','start','stop','open','select','createmenu','console'],
+                        'roles' => ['manager'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['add', 'update','delete'],
+                        'roles' => ['super'],
                     ],
                 ],
             ],
@@ -66,8 +70,9 @@ class WeixinController extends \yii\web\Controller
 
     public function actionIndex()
     {
+        $uid = Yii::$app->user->identity->group_id == -1? Yii::$app->user->id:Yii::$app->user->identity->group_id;
         $dataProvider = new ActiveDataProvider([
-            'query' => TblWeixin::find()->where(['enable'=>'Y','uid'=>Yii::$app->user->id]),
+            'query' => TblWeixin::find()->where(['enable'=>'Y','uid'=>$uid]),
             'pagination' => [
                 'pageSize' => 15,
             ],

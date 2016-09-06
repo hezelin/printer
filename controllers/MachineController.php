@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\MachineRent;
 use app\models\TblMachineSearch;
 use Yii;
 use app\models\TblMachine;
@@ -27,6 +28,9 @@ class MachineController extends \yii\web\Controller
         ];
     }
 
+    /*
+     * 机器图片不能为空，机器的品牌不能为空
+     */
     public function actionEditable()
     {
         $model = TblMachine::findOne($_POST['editableKey']);
@@ -38,6 +42,13 @@ class MachineController extends \yii\web\Controller
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             $value = $_POST['TblMachine'][$_POST['editableIndex']][$_POST['editableAttribute']];
             $model->$_POST['editableAttribute'] = $value;
+            if(!$model->cover){                             // 封面图片不存在
+                $model->images = json_encode(['/img/haoyizu.png']);
+                $model->cover = '/img/haoyizu.png';
+            }
+            $model->model_id || $model->model_id = 1664;        //-
+            $model->brand || $model->brand = 'wsz';             //-
+
             if($model->save())
                 return ['output'=>$value, 'message'=>''];
             return ['output'=>'','message'=>'数据库错误'];
@@ -153,6 +164,27 @@ class MachineController extends \yii\web\Controller
         } else
             return $this->render('update', [ 'model' => $model ]);
 
+    }
+
+    /*
+     * $id  为机器 machine_id
+     */
+    public function actionUpdateRent($id)
+    {
+        $model = new MachineRent($id);
+        if(Yii::$app->request->post())
+        {
+            if( $model->save() == 'success' ){
+                Yii::$app->session->setFlash('success','资料录入成功！，请更正用户坐标！');
+                return $this->redirect(['/admin-rent/map','id'=>$model->rent->id]);
+            }else
+                Yii::$app->session->setFlash('error','资料录入失败！');
+        }
+
+        return $this->render('machine-rent',[
+            'machine'=>$model->machine,
+            'rent'=>$model->rent,
+        ]);
     }
 
     public function actionView($id)

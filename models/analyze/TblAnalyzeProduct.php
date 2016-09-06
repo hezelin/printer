@@ -117,11 +117,10 @@ class TblAnalyzeProduct
         $tmp = [];
         if($data){
             foreach($data as $d){
-                $chart['cate'][] = date('Y-m-d',$d['date_time']);
+                $chart['cate'][] = date('md',$d['date_time']);
                 $tmp['cost'][] = (float)$d['cost_price'];
                 $tmp['sell'][] = (float)$d['sell_price'];
                 $tmp['item'][] = (int)$d['item_count'];
-//                $tmp['cate'][] = (int)$d['cate_count'];
             }
         }else
             $chart['cate'] = [];

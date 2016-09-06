@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Cache;
+use app\models\TblMachine;
 use app\models\TblMachineService;
 use app\models\TblRentApply;
 use app\models\TblRentApplyCollect;
@@ -15,9 +16,11 @@ use app\models\ToolBase;
 use app\models\views\ViewRentDataSearch;
 use app\models\WxTemplate;
 use Yii;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 
 class AdminRentController extends \yii\web\Controller
@@ -61,26 +64,34 @@ class AdminRentController extends \yii\web\Controller
             ->joinWith('machineProject')
             ->one();
 
+        if(!$model)
+            throw new HttpException(401,'资料不存在');
+
         if($model->load( Yii::$app->request->post()))
         {
             $model->due_time = ($_POST['TblRentApplyWithMachine']['due_time'] && $_POST['TblRentApplyWithMachine']['due_time'] != '1970-01-01')? strtotime($_POST['TblRentApplyWithMachine']['due_time']):0;
             $model->first_rent_time = ($_POST['TblRentApplyWithMachine']['first_rent_time'] && $_POST['TblRentApplyWithMachine']['first_rent_time'] != '1970-01-01')? strtotime($_POST['TblRentApplyWithMachine']['first_rent_time']):0;
             $model->status = 2;
-            if($model->save()) {
-                // 如果是审核通过，改版机器的状态 和 出租次数
-                $model->updateMachineStatus();
-                return $this->redirect(Url::toRoute(['map','id'=>$model->id]));
-            }
-            else
-                Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
 
-            return $this->render('pass',['model'=>$model,'type'=>'update']);
+            $transaction= Yii::$app->db->beginTransaction();
+            try {
+                if(!$model->save())
+                    throw new Exception('租赁入库失败');
+                if(!$model->updateMachineStatus())
+                    throw new Exception('机器');
+                    $transaction->commit();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+                throw new HttpException(401,'分配机器失败'.$e);
+            }
+            return $this->redirect(Url::toRoute(['map','id'=>$model->id]));
         }
 
         $model->black_white = $model->machineProject->black_white;
         $model->colours = $model->machineProject->colours;
-        $model->first_rent_time = $model->first_rent_time? :'';
+        $model->first_rent_time = $model->first_rent_time? :strtotime('3 month');
         $model->monthly_rent = $model->machineProject->lowest_expense;
+        $model->contain_paper = $model->machineProject->contain_paper;
         $model->machine_id = '';
 
         if( $model->due_time < time() )
@@ -117,10 +128,16 @@ class AdminRentController extends \yii\web\Controller
 
     /*
      * 租借申请审核，资料录入
+     * $id 为机器 id
      */
     public function actionUpdate($id)
     {
-        $model = TblRentApply::findOne($id);
+        $model = TblRentApply::find()
+            ->where(['machine_id'=>$id])
+            ->andWhere(['<','status',11])
+            ->one();
+        if(!$model)
+            throw new HttpException(401,'机器不存在');
 
         if($model->load( Yii::$app->request->post()))
         {
@@ -177,7 +194,7 @@ class AdminRentController extends \yii\web\Controller
     public function actionDelete($id)
     {
         $model = TblRentApply::findOne($id);
-        $model->enable = 11;
+        $model->status = 11;
         if($model->save())
             $model->updateMachineStatus('delete');
 
@@ -187,12 +204,13 @@ class AdminRentController extends \yii\web\Controller
     /*
      * 为机器 和 用户 绑定 租赁关系，第一次资料录入
      */
-    public function actionBings($machine_id,$openid)
+    public function actionBings($machine_id,$openid='')
     {
         $model = new TblRentApply();
 
         if($model->load( Yii::$app->request->post()))
         {
+            $openid || $openid = uniqid('dh_');
             $model->openid = $openid;
             $model->machine_id = $machine_id;
             $model->project_id = 0;
@@ -288,12 +306,15 @@ class AdminRentController extends \yii\web\Controller
             );
 
             // 为申请者推送消息
-            $tpl->sendProcess(
-                $from_openid,
-                url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$fault_id],'http'),
-                '任务已分配',
-                $applyTime
-            );
+            if(strlen($from_openid) == 28)
+            {
+                $tpl->sendProcess(
+                    $from_openid,
+                    url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$fault_id],'http'),
+                    '任务已分配',
+                    $applyTime
+                );
+            }
             echo json_encode(['status'=>1]);
         }
         else
@@ -318,13 +339,16 @@ class AdminRentController extends \yii\web\Controller
                 exit(json_encode(['status'=>0,'msg'=>'错误100']));
 
             // 为申请者推送消息
-            $tpl = new WxTemplate(Yii::$app->request->post('wx_id'));
-            $tpl->sendProcess(
-                $from_openid,
-                url::toRoute(['/maintain/fault/detail','id'=>Yii::$app->request->post('wx_id'),'fault_id'=>$model->id],'http'),
-                '电话维修成功！',
-                $model->add_time
-            );
+            if(strlen($from_openid) == 28) {
+                $tpl = new WxTemplate(Yii::$app->request->post('wx_id'));
+                $tpl->sendProcess(
+                    $from_openid,
+                    url::toRoute(['/maintain/fault/detail', 'id' => Yii::$app->request->post('wx_id'), 'fault_id' => $model->id], 'http'),
+                    '电话维修成功！',
+                    $model->add_time
+                );
+            }
+
             echo json_encode(['status'=>1]);
         }
         else
@@ -341,12 +365,27 @@ class AdminRentController extends \yii\web\Controller
         if(!$model) throw new NotFoundHttpException();
 
         if( Yii::$app->request->post('lat') && Yii::$app->request->post('lng')){
-            $model->latitude = number_format(Yii::$app->request->post('lat'),6,'.','');
-            $model->longitude = number_format(Yii::$app->request->post('lng'),6,'.','');
+            $data = ToolBase::bd_decrypt(Yii::$app->request->post('lat'),Yii::$app->request->post('lng'));
+            $model->latitude = number_format($data['lat'],6,'.','');
+            $model->longitude = number_format($data['lon'],6,'.','');
+
+            if(Yii::$app->request->post('address-name'))
+                $model->address = Yii::$app->request->post('address-name');
+
             if($model->save()){
                 return $this->redirect(Url::toRoute('list'));
             }
         }
+
+        if($model->latitude > 0)
+        {
+            $data  = ToolBase::bd_encrypt($model->latitude,$model->longitude);
+            $model->latitude = $data['lat'];
+            $model->longitude = $data['lon'];
+        }
+
+//        $model->latitude = 0.000000;
+//        $model->longitude = 0.000000;
         return $this->render('map',['model'=>$model]);
     }
 

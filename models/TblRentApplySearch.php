@@ -34,7 +34,7 @@ class TblRentApplySearch extends TblRentApply
     {
         $query = (new \yii\db\Query())
             ->select('t.id,t.name,t.phone,t.add_time,u.nickname,u.headimgurl,u.sex,
-                p.lowest_expense,p.black_white,p.colours,p.images,m.brand_name,m.model')
+                p.lowest_expense,p.contain_paper,p.black_white,p.colours,p.images,m.brand_name,m.model')
             ->from('tbl_rent_apply as t')
             ->where('t.wx_id=:wid and t.status=1',[':wid'=>Cache::getWid()])
             ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
@@ -62,6 +62,7 @@ class TblRentApplySearch extends TblRentApply
             'project_id' => $this->project_id,
             'machine_id' => $this->machine_id,
             'monthly_rent' => $this->monthly_rent,
+            'contain_paper' => $this->contain_paper,
             'black_white' => $this->black_white,
             'colours' => $this->colours,
             'due_time' => $this->due_time,

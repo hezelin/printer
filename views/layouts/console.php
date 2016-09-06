@@ -61,7 +61,7 @@ WeixinAsset::register($this);
         <?php
             NavBar::begin([
                 'brandLabel' => Yii::$app->name,
-                'brandUrl' => '#',
+                'brandUrl' => '/console/view',
                 'brandOptions' => [
                     'style' => 'color:#ffffff',
                 ],
@@ -72,15 +72,6 @@ WeixinAsset::register($this);
                 'innerContainerOptions' => [
                     'class' => 'container-fluid'
                 ]
-            ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav'],
-                'items' => [
-                    [
-                        'label' => '返回实例',
-                        'url' => ['/weixin/index'],
-                    ],
-                ],
             ]);
 
         echo Html::beginForm('/service/new-call','get',['class'=>'navbar-form navbar-left','role'=>'search']);
@@ -95,9 +86,14 @@ WeixinAsset::register($this);
                 'items' => [
                     Yii::$app->user->isGuest ?
                         ['label' => '登录', 'url' => ['/auth/login']]:
-                        ['label' => '退出 (' . Yii::$app->user->identity->username . ')',
-                            'url' => ['/auth/logout'],
-                            'linkOptions' => ['data-method' => 'post']
+                        [
+                            'label' => Yii::$app->user->identity->username,
+                            'url' => '#',
+                            'items' => [
+                                ['label'=>'我的公众号','url'=>['/weixin/index']],
+                                ['label'=>'修改密码','url'=>['/auth/reset']],
+                                ['label'=>'退出','url' => ['/auth/logout'], 'linkOptions' => ['data-method' => 'post']],
+                            ]
                         ],
                 ],
             ]);
@@ -121,6 +117,7 @@ WeixinAsset::register($this);
                                 'label' => '数据统计',
                                 'url' => ['/console/analyze'],
                                 'icon' => 'stats',
+                                'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'charts' || Yii::$app->controller->getRoute()=='console/analyze'
                             ],
                             [
                                 'label' => '机器管理',
@@ -145,6 +142,7 @@ WeixinAsset::register($this);
                                     ['label' => '收租记录','url' => ['/charge/list'],
                                         'active' => substr( Yii::$app->controller->getRoute(),0,strpos(Yii::$app->controller->getRoute(),'/')) == 'charge',
                                     ],
+                                    ['label' => '地图分布','url' => ['/map/rent']],
                                 ],
                             ],
                             [
@@ -196,11 +194,11 @@ WeixinAsset::register($this);
                                 'label' => '积分管理',
                                 'icon' => 'gift',
                                 'items' => [
-                                    ['label' => '赠送积分','url' => ['/adminscore/send']],
-                                    ['label' => '积分操作记录','url' => ['/adminscore/log']],
+                                    ['label' => '赠送积分','url' => ['/admin-score/send']],
+                                    ['label' => '积分操作记录','url' => ['/admin-score/log']],
                                 ],
                             ],
-                            /*[
+                            /*[-
                                 'label' => '用户管理',
                                 'icon' => 'user',
                                 'items' => [

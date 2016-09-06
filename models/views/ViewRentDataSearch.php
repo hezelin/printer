@@ -19,7 +19,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
     public function rules()
     {
         return [
-            [['machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'fault_id'], 'integer'],
+            [['rent_id','machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id', 'contain_paper'], 'integer'],
             [['openid', 'phone', 'name', 'address', 'series_id', 'cover', 'brand_name', 'model_name'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude'], 'number'],
         ];
@@ -45,7 +45,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
     {
         $query = ViewRentFaultMachine::find()
             ->where(['wx_id'=>Cache::getWid()])
-            ->andWhere(['>','status',1]);
+            ->andWhere(['>','apply_status',1]);
 
         if($clientNo = Yii::$app->request->get('client_no'))
             $query->andWhere(['series_id'=>$clientNo]);
@@ -65,9 +65,11 @@ class ViewRentDataSearch extends ViewRentFaultMachine
 
         // grid filtering conditions
         $query->andFilterWhere([
+            'rent_id' => $this->rent_id,
             'machine_id' => $this->machine_id,
             'wx_id' => $this->wx_id,
             'monthly_rent' => $this->monthly_rent,
+            'contain_paper' => $this->contain_paper,
             'black_white' => $this->black_white,
             'colours' => $this->colours,
             'due_time' => $this->due_time,
@@ -77,6 +79,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
             'longitude' => $this->longitude,
             'come_from' => $this->come_from,
             'status' => $this->status,
+            'apply_status' => $this->apply_status,
             'fault_id' => $this->fault_id,
         ]);
 

@@ -10,7 +10,7 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
-    public $username;
+    public $phone;
     public $password;
     public $rememberMe = true;
 
@@ -23,8 +23,8 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
-            [['username'], 'email'],
+            [['phone', 'password'], 'required'],
+//            [['phone'],'match','pattern'=>'/^(13|15|17|18)\d{9}$/','message'=>'{attribute}格式错误'],
             ['rememberMe', 'boolean'],
             ['password', 'validatePassword'],
         ];
@@ -33,7 +33,7 @@ class LoginForm extends Model
     public function attributeLabels()
     {
         return [
-            'username' => '登录名',
+            'phone' => '登录名',
             'password' => '密码',
             'rememberMe' => '记住登录',
         ];
@@ -59,7 +59,7 @@ class LoginForm extends Model
     }
 
     /**
-     * Logs in a user using the provided username and password.
+     * Logs in a user using the provided phone and password.
      * @return boolean whether the user is logged in successfully
      * 默认记住密码 10天
      */
@@ -73,14 +73,14 @@ class LoginForm extends Model
     }
 
     /**
-     * Finds user by [[username]]
+     * Finds user by [[phone]]
      *
      * @return User|null
      */
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user = User::findByPhone($this->phone);
         }
 
         return $this->_user;

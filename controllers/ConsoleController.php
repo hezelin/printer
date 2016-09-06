@@ -42,7 +42,7 @@ class ConsoleController extends \yii\web\Controller
         }
 
         $data['maintainer'] = (new \yii\db\Query())
-            ->select('name,phone,openid,wx_id,wait_repair_count')
+            ->select(['name','phone','openid','wx_id','wait_repair_count','longitude','latitude','FROM_UNIXTIME(`point_time`,"%m-%d %H:%i") as point_time'])
             ->from('tbl_user_maintain')
             ->where('wx_id=:wid',[':wid'=>$wx_id])
             ->all();
@@ -142,7 +142,7 @@ class ConsoleController extends \yii\web\Controller
 
         return $this->render('analyze',[
             'item'=>$item->getCharts(),
-            'stock'=>$item->getItemStock(),
+//            'stock'=>$item->getItemStock(),
             'machine'=>$machine->getCharts(),
             'charts'=>$ana->getCharts(),
             'rent'=>$rent->getCharts(),

@@ -18,7 +18,7 @@ class TblRentApplyExpire extends TblRentApply
     {
         return [
             [['id', 'wx_id', 'project_id', 'machine_id', 'due_time', 'status', 'add_time','first_rent_time', 'rent_period'], 'integer'],
-            [['openid', 'phone', 'name', 'address', 'apply_word', 'enable'], 'safe'],
+            [['openid', 'phone', 'name', 'address', 'apply_word'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
         ];
     }
@@ -42,14 +42,14 @@ class TblRentApplyExpire extends TblRentApply
     public function search($params)
     {
         $query = (new \yii\db\Query())
-            ->select('t.id,t.name,t.phone,t.add_time,t.due_time,u.nickname,u.headimgurl,u.sex,
-                p.lowest_expense,p.black_white,p.colours,m.type,m.cover_images,m.is_color')
+            ->select('t.id,t.name,t.phone,t.add_time,t.first_rent_time,u.nickname,u.headimgurl,u.sex,
+                t.monthly_rent,t.black_white,t.colours,t.due_time,m.brand_name,m.model_name,m.images')
             ->from('tbl_rent_apply as t')
             ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
-            ->leftJoin('tbl_machine_rent_project as p','p.id=t.project_id')
-            ->leftJoin('tbl_machine_model as m','p.machine_model_id=m.id')
-            ->where('t.wx_id=:wid and t.enable="Y"',[':wid'=>Cache::getWid()])
-            ->andWhere(['<','t.due_time',time()+86400*7]);
+            ->leftJoin('tbl_machine as m','t.machine_id=m.id')
+            ->where(['t.wx_id'=>Cache::getWid()])
+            ->andWhere(['<','t.due_time',time()+86400*7])
+            ->andWhere(['<','t.status',11]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -89,7 +89,6 @@ class TblRentApplyExpire extends TblRentApply
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'apply_word', $this->apply_word])
-            ->andFilterWhere(['like', 'enable', $this->enable])
             ->andFilterWhere(['like', 'tbl_user_wechat.nickname', $this->nickname]);
 
         return $dataProvider;

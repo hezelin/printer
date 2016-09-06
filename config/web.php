@@ -39,16 +39,18 @@ $config = [
         'fileCache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'redis' => [
-            'class' => 'yii\redis\Connection',
-            'hostname' => 'localhost',
-            'port' => 6379,
-            'database' => 2,
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
             'loginUrl' => '/auth/login',
             'enableAutoLogin' => true,
+            'identityCookie' => [
+                'name'     => '_hyizu',
+                'path'     => '/',
+                'httpOnly' => true,
+            ],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

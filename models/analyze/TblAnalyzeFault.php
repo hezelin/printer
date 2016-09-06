@@ -22,7 +22,7 @@ class TblAnalyzeFault
         $data = (new \yii\db\Query())
             ->select('weixin_id as wx_id,count(id) as add_count')
             ->from('tbl_machine_service')
-            ->where(['enable'=>'Y'])
+            ->where(['<','status',11])
             ->andWhere(['between','add_time',$this->startTime,$this->endTime])
             ->groupBy('wx_id')
             ->all();
@@ -36,7 +36,7 @@ class TblAnalyzeFault
         $data = (new \yii\db\Query())
             ->select('weixin_id as wx_id,count(id) as total_count')
             ->from('tbl_machine_service')
-            ->where(['enable'=>'Y'])
+            ->where(['<','status',11])
             ->andWhere(['<','add_time',$this->endTime])
             ->groupBy('wx_id')
             ->all();
@@ -57,7 +57,7 @@ class TblAnalyzeFault
         $data = (new \yii\db\Query())
             ->select('weixin_id as wx_id,count(id) as cancel_count')
             ->from('tbl_machine_service')
-            ->where(['enable'=>'N'])
+            ->where(['status'=>'11'])
             ->andWhere(['between','opera_time',$this->startTime,$this->endTime])
             ->groupBy('wx_id')
             ->all();
@@ -185,7 +185,7 @@ class TblAnalyzeFault
         $tmp = [];
         if($data){
             foreach($data as $d){
-                $chart['cate'][] = date('Y-m-d',$d['date_time']);
+                $chart['cate'][] = date('md',$d['date_time']);
                 $tmp['add'][] = (int)$d['add_count'];
                 $tmp['cancel'][] = (int)$d['cancel_count'];
                 $tmp['total'][] = (int)$d['total_count'];
@@ -196,16 +196,13 @@ class TblAnalyzeFault
         $chart['series'] = [
             [
                 'name'=>'累计维修',
-                'type'=>'column',
                 'data'=> isset($tmp['total'])? $tmp['total']:[]
             ],[
                 'name'=>'新增维修',
-                'type'=>'column',
                 'color'=>'rgb(144, 237, 125)',
                 'data'=> isset($tmp['add'])? $tmp['add']:[]
             ],[
                 'name'=>'取消维修',
-                'type'=>'column',
                 'color'=>'rgb(255, 188, 117)',
                 'data'=> isset($tmp['cancel'])? $tmp['cancel']:[]
             ],

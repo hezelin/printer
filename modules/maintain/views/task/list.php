@@ -11,9 +11,15 @@ HomeAsset::register($this);
 
 <div class="aui-tab aui-color">
     <ul class="aui-tab-nav">
-        <li <?=Yii::$app->request->get('type')? '':'class="active"'?>><a href="<?=Url::toRoute(['/maintain/task/list','id'=>$id])?>">维修中</a></li>
-        <li <?=Yii::$app->request->get('type')=='evaluate'? 'class="active"':''?>><a href="<?=Url::toRoute(['/maintain/task/list','id'=>$id,'type'=>'evaluate'])?>">待评价</a></li>
-        <li <?=Yii::$app->request->get('type')=='history'? 'class="active"':''?>><a href="<?=Url::toRoute(['/maintain/task/list','id'=>$id,'type'=>'history'])?>">历史记录</a></li>
+        <li <?=Yii::$app->request->get('type')? '':'class="active"'?>><a href="<?=Url::toRoute(['/maintain/task/list','id'=>$id])?>">维修中
+            </a>                <span class="aui-badge aui-badge-danger aui-extend-circle"><?=$count['ing'];?></span>
+        </li>
+        <li <?=Yii::$app->request->get('type')=='evaluate'? 'class="active"':''?>><a href="<?=Url::toRoute(['/maintain/task/list','id'=>$id,'type'=>'evaluate'])?>">待评价</a>
+            <span class="aui-badge aui-badge-danger aui-extend-circle"><?=$count['wait_evaluate'];?></span>
+        </li>
+        <li <?=Yii::$app->request->get('type')=='history'? 'class="active"':''?>><a href="<?=Url::toRoute(['/maintain/task/list','id'=>$id,'type'=>'history'])?>">历史记录</a>
+            <span class="aui-badge aui-badge-danger aui-extend-circle"><?=$count['history'];?></span>
+        </li>
     </ul>
 </div>
 
@@ -37,7 +43,7 @@ HomeAsset::register($this);
                             echo $row['name'],' ',$row['phone'];
                         }
                         else
-                            echo '电话维修用户';
+                            echo '未设置';
                         ?>
                     </p>
                     <p class="aui-ellipsis-1"><span class="iconfont icon-dizhi aui-color"></span> <?=$row['address']? :'未设置'?></p>
@@ -53,6 +59,6 @@ HomeAsset::register($this);
     <?php endforeach;?>
 </ul>
 <?php else:?>
-    <div class="aui-padded-10 aui-text-center" style="font-size: 14px; margin-top:160px;">目前任何记录</div>
+    <div class="aui-padded-10 aui-text-center" style="font-size: 14px; margin-top:160px;">无任何记录</div>
 <?php endif;?>
 </div>

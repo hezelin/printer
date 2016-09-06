@@ -146,3 +146,18 @@ ul li:last-child{border-bottom: none;}
 .list-all .box-panel-body{
     height: auto;
 }
+
+label.BMapLabel{
+    background-color: #eb5c67 !important;
+    padding: 5px !important;
+    color: #fff;
+    border-radius: 2px;
+    max-width: 200px !important;
+}
+.map-point-label{
+    height: 48px;
+}
+.map-point-name{
+    line-height: 24px;
+    display: block;
+}

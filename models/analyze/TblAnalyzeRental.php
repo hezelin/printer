@@ -21,7 +21,7 @@ class TblAnalyzeRental
         $data = (new \yii\db\Query())
             ->select('wx_id,sum(total_money) as total_money,sum(exceed_money) as exceed_money')
             ->from('tbl_rent_report')
-            ->where(['enable'=>'Y'])
+            ->where(['<','status',11])
             ->andWhere(['between','add_time',$this->startTime,$this->endTime])
             ->groupBy('wx_id')
             ->all();

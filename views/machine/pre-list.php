@@ -1,8 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\grid\GridView;
-use app\models\ConfigBase;
+use kartik\grid\GridView;
 
 $this->title = '机器列表';
 $this->params['breadcrumbs'][] = $this->title;
@@ -32,16 +31,36 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],               // 系列
             'id',
             [
-                'attribute'=>'add_time',
-                'format'=>['date','php:Y-m-d H:i'],
+                'class'=>'kartik\grid\EditableColumn',
+                'attribute'=> 'series_id',
+                'headerOptions' => ['style'=>'width:60px'],
+                'pageSummary'=>true,
+                'editableOptions'=> [
+                    'formOptions' => ['action' => ['/machine/editable']],
+                    'showButtonLabels' => true,
+                    'submitButton' => [
+                        'label' => '保存',
+                        'class' => 'btn btn-primary btn-sm',
+                    ],
+                ],
             ],
             [
-                'attribute'=>'come_from',
-                'label'=>'机器分类',
-                'filter'=>ConfigBase::$machineOrigin,
-                'value'=>function($data){
-                    return ConfigBase::getMachineOrigin($data->come_from);
-                }
+                'class'=>'kartik\grid\EditableColumn',
+                'attribute'=> 'remark',
+                'headerOptions' => ['style'=>'width:60px'],
+                'pageSummary'=>true,
+                'editableOptions'=> [
+                    'formOptions' => ['action' => ['/machine/editable']],
+                    'showButtonLabels' => true,
+                    'submitButton' => [
+                        'label' => '保存',
+                        'class' => 'btn btn-primary btn-sm',
+                    ],
+                ],
+            ],
+            [
+                'attribute'=>'add_time',
+                'format'=>['date','php:Y-m-d H:i'],
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
@@ -50,7 +69,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{update} &nbsp; {delete} &nbsp; {qrcode}',
                 'buttons' => [
                     'update' => function($url,$model,$key){
-                        return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::toRoute(['update','id'=>$model->id]) ,['title'=>'修改资料']);
+                        return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::toRoute(['update-rent','id'=>$model->id]) ,['title'=>'修改资料']);
+                    },
+                    'qrcode' => function($url,$model,$key){
+                        return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['code/machine','id'=>$model->id]) ,['title'=>'机器二维码']);
                     },
                 ],
             ],

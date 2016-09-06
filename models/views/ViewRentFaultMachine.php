@@ -19,7 +19,7 @@ class ViewRentFaultMachine extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'fault_id'], 'integer'],
+            [['rent_id', 'machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id', 'contain_paper'], 'integer'],
             [['wx_id', 'openid', 'phone', 'name', 'due_time', 'add_time'], 'required'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude'], 'number'],
             [['openid'], 'string', 'max' => 28],
@@ -34,10 +34,12 @@ class ViewRentFaultMachine extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'rent_id' => '租赁id',
             'machine_id' => '分配机器',
             'wx_id' => '公众号id',
             'openid' => 'Openid',
             'monthly_rent' => '月租',
+            'contain_paper' => '包含张数',
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
             'phone' => '手机',
@@ -54,6 +56,7 @@ class ViewRentFaultMachine extends \yii\db\ActiveRecord
             'model_name' => '机型名字',
             'come_from' => '来源',
             'status' => '状态',
+            'apply_status' => '租赁状态',
             'fault_id' => '自增id',
         ];
     }

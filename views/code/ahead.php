@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\grid\CheckboxColumn;
 use yii\bootstrap\Alert;
 
@@ -44,8 +44,35 @@ if( Yii::$app->session->hasFlash('error') )
                 return ['value'=> $model->id];
             }
         ],
-        ['class' => 'yii\grid\SerialColumn'],               // 系列
         'id',
+        [
+            'class'=>'kartik\grid\EditableColumn',
+            'attribute'=> 'series_id',
+            'headerOptions' => ['style'=>'width:60px'],
+            'pageSummary'=>true,
+            'editableOptions'=> [
+                'formOptions' => ['action' => ['/machine/editable']],
+                'showButtonLabels' => true,
+                'submitButton' => [
+                    'label' => '保存',
+                    'class' => 'btn btn-primary btn-sm',
+                ],
+            ],
+        ],
+        [
+            'class'=>'kartik\grid\EditableColumn',
+            'attribute'=> 'remark',
+            'headerOptions' => ['style'=>'width:60px'],
+            'pageSummary'=>true,
+            'editableOptions'=> [
+                'formOptions' => ['action' => ['/machine/editable']],
+                'showButtonLabels' => true,
+                'submitButton' => [
+                    'label' => '保存',
+                    'class' => 'btn btn-primary btn-sm',
+                ],
+            ],
+        ],
         [
             'attribute'=>'add_time',
             'format'=>['date','php:Y-m-d H:i'],
@@ -54,7 +81,7 @@ if( Yii::$app->session->hasFlash('error') )
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions' => ['style'=>'width:120px'],
-            'template' => '{qrcode} &nbsp; {delete} &nbsp; {update}',
+            'template' => '{update} &nbsp; {delete} &nbsp; {qrcode}',
             'buttons' => [
                 'qrcode' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::to(['code/machine','id'=>$model->id]) ,['title'=>'机器码']);
@@ -68,7 +95,7 @@ if( Yii::$app->session->hasFlash('error') )
                     ]);
                 },
                 'update' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::to(['machine/update','id'=>$model->id]) );
+                    return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::to(['machine/update-rent','id'=>$model->id]) );
                 }
             ],
         ],

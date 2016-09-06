@@ -125,6 +125,11 @@ class RentProjectController extends Controller
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors) );
         }
 
+        $model->brand = (new \yii\db\Query())
+            ->select('brand')
+            ->from('tbl_machine_model')
+            ->where(['id'=>$model->machine_model_id])
+            ->scalar();
         return $this->render('update',['model'=>$model]);
     }
 

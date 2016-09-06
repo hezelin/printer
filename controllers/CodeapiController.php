@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\TblMachineService;
+use app\models\TblRentApply;
 use app\models\WxBase;
 use app\models\TblUserMaintain;
 use app\models\ConfigBase;
@@ -21,22 +22,32 @@ class CodeapiController extends \yii\web\Controller
     public function actionMachine($id)
     {
         $rent= (new \yii\db\Query())
-            ->select('id,wx_id,project_id')
+            ->select('id,wx_id,project_id,openid')
             ->from('tbl_rent_apply')
             ->where(['machine_id'=>$id])
             ->andWhere(['<','status',11])
             ->one();
+
         if(!$rent)
         {
-            return $this->render('//tips/home-status',['tips'=>'租赁用户不存在']);
+            $wid = (new \yii\db\Query())
+                ->select('wx_id')
+                ->from('tbl_machine')
+                ->where(['id'=>$id])
+                ->scalar();
+            $openid = WxBase::openId($wid);
+
+            if( $this->checkMaintain($openid) )
+                return $this->redirect(['/maintain/rent/bind','id'=>$wid,'machine_id'=>$id]);
+            else
+                return $this->redirect(['/user/rent/bind','id'=>$wid,'machine_id'=>$id]);
         }
 
         $wid = $rent['wx_id'];
 
         $openid = WxBase::openId($wid);
 
-//        维修员操作
-        if(!$this->checkMaintain($openid)) {             // 维修员页面跳转
+        if($this->checkMaintain($openid)) {             // 维修员操作
 //            查看维修状态
             $model = TblMachineService::find()
                 ->where(['machine_id' => $id, 'openid' => $openid])
@@ -153,6 +164,19 @@ class CodeapiController extends \yii\web\Controller
                 ->scalar();
             return $this->render('subscribe',['wx_num'=>$wx_num]);
         }
+
+        if( strlen($rent['openid']) < 28){                          // 危险动作，非维修员扫描会自动更新 openid 值
+            $rentData = TblRentApply::find()
+                ->where(['machine_id'=>$id])
+                ->andWhere(['<','status',11])
+                ->one();
+            if($rentData)
+            {
+                $rentData->openid = $openid;
+                $rentData->save();
+            }
+        }
+
 //        用户维修操作
         $data= (new \yii\db\Query())
             ->select('status,id')
@@ -183,7 +207,7 @@ class CodeapiController extends \yii\web\Controller
      */
     private function checkMaintain($openid)
     {
-        return TblUserMaintain::findOne(['openid'=>$openid])? false:true;
+        return TblUserMaintain::findOne(['openid'=>$openid])? true:false;
     }
 
 }

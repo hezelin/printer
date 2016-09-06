@@ -18,7 +18,7 @@ class ViewSchemeModel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'machine_model_id', 'is_show', 'add_time'], 'integer'],
+            [['id', 'wx_id', 'machine_model_id', 'contain_paper', 'is_show', 'add_time'], 'integer'],
             [['wx_id', 'machine_model_id', 'lowest_expense', 'black_white', 'cover', 'images', 'add_time'], 'required'],
             [['lowest_expense', 'black_white', 'colours'], 'number'],
             [['describe'], 'string'],
@@ -35,6 +35,7 @@ class ViewSchemeModel extends \yii\db\ActiveRecord
             'wx_id' => '微信id',
             'machine_model_id' => '机型',
             'lowest_expense' => '月租金',
+            'contain_paper' => '包含张数',
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
             'cover' => '封面图片',

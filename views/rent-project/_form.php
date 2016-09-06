@@ -38,6 +38,7 @@ if( Yii::$app->session->hasFlash('error') )
     ])->hint('型号不存在跟我们联系')?>
 
 <?= $form->field($model, 'lowest_expense')->textInput(['placeholder'=>'每月最低消费/元，没有最低消费请填0']) ?>
+<?= $form->field($model, 'contain_paper')->textInput(['placeholder'=>'月消费包含黑白张数（可省略）']) ?>
 <?= $form->field($model, 'black_white')->textInput(['placeholder'=>'黑板纸张多少元每张，例如 0.05']) ?>
 <?= $form->field($model, 'colours')->textInput(['placeholder'=>'彩色纸张多少钱每张，机器不支持彩色可不填']) ?>
 

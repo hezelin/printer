@@ -11,6 +11,8 @@ $this->title = '维修任务';
 <?=$btnHtml?>
 
 <script>
+    var wxId = <?=$model['wx_id']?>;
+    var openId = '<?=$openid?>';
     var isScan = 0;
     var mUrl = '<?=$mUrl?>';
     var hasClick = 0;
@@ -50,7 +52,7 @@ $this->title = '维修任务';
 <?php
     \app\components\WxjsapiWidget::widget([
         'wx_id'=>$model['wx_id'],
-        'apiList'=>['scanQRCode','previewImage','openLocation'],
+        'apiList'=>['scanQRCode','previewImage','openLocation','getLocation'],
         'jsReady'=>'
         document.querySelector(".process-btn").onclick = function () {
             if(isScan == 1){
@@ -89,6 +91,21 @@ $this->title = '维修任务';
                 scale: 16,
                 infoUrl: ""
             });
-        };'
+        };
+
+        wx.getLocation({
+            success: function (res) {
+                $.ajax({
+                    type:"get",
+                    url:"/ajax-data/location",
+                    cache:false,
+                    async:false,
+                    data:{longitude:res.longitude,latitude:res.latitude,wx_id:wxId,openid:openId},
+                    dataType:"json",
+                    success:function(respData){
+                    }
+                })
+            }
+        });'
     ])
 ?>

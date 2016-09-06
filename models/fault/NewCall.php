@@ -11,6 +11,7 @@ use app\models\TblUserMaintain;
 use app\models\ToolBase;
 use app\models\WxTemplate;
 use Yii;
+use yii\web\HttpException;
 
 class NewCall
 {
@@ -46,14 +47,15 @@ class NewCall
                 $this->machine = null;
             }
 
-            $this->rent = TblRentApply::find()->where(['id'=>$machineId,'wx_id'=>$this->wid])->one();
+            $this->rent = TblRentApply::find()->where(['machine_id'=>$machineId,'wx_id'=>$this->wid])->one();
             if(!$this->rent || $this->rent->status == 11)
             {
                 $this->tips[] = '客户资料不存在，将新建客户资料';
                 $this->rent = null;
             }
 
-        }
+        }else
+            $this->tips = ['机器型号不存在，将新建机器','客户资料不存在，将新建客户资料'];
 
         $this->machine || $this->machine = new TblMachine(['scenario'=>'new-call']);
         $this->rent || $this->rent = new TblRentApply(['scenario' => 'new-call']);
@@ -141,13 +143,8 @@ class NewCall
 
             $transaction->commit();
         } catch(\Exception $e) {
-
             $transaction->rollBack();
-            echo '<pre>';
-            print_r($error);
-            echo $e;
-            exit;
-//            return 'fail';
+            throw new HttpException(401,'系统出错');
         }
 
         return 'success';
@@ -184,5 +181,16 @@ class NewCall
             $n -= $a * pow($base, $t);
         }
         return $ret;
+    }
+
+    /*
+     * 返回提醒
+     */
+    public function getTips()
+    {
+        $tmp = [];
+        foreach($this->tips as $k=>$p)
+            $tmp[] = ($k+1)."、$p";
+        return $tmp;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\config\Tool;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
@@ -23,6 +24,12 @@ class AjaxDataController extends \yii\web\Controller
                 $html[] = Html::tag('option',$v,['value'=>$k]);
 
         return implode("\n",$html);
+    }
+
+    public function actionLocation($openid,$wx_id,$longitude,$latitude)
+    {
+        Tool::location($openid,$wx_id,$longitude,$latitude);
+        return json_encode(['status'=>0]);
     }
 
 }

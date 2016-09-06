@@ -21,6 +21,20 @@ $this->params['breadcrumbs'][] = $this->title;
         .voice-stop .voice-image{background-position: -40px 0;}
         .voice-playing .voice-image{background-position: -120px 0;}
         .voice-play .voice-image{background-position: -80px 0;}
+        label.BMapLabel{
+            background-color: #eb5c67 !important;
+            padding: 5px !important;
+            color: #fff;
+            border-radius: 2px;
+            max-width: 200px !important;
+        }
+        .map-point-label{
+            height: 48px;
+        }
+        .map-point-name{
+            line-height: 24px;
+            display: block;
+        }
     </style>
 
 <?php
@@ -131,8 +145,21 @@ echo GridView::widget([
 
 ?>
 
+<script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
 <script>
-    var playtime,myAudio,voiceWrap;
+    var myMarker,
+        mySite,
+        mpoints = [],
+        mapHasShow = 0,
+        mapHei,
+        mapFaultData = <?=json_encode($maintainer,JSON_UNESCAPED_UNICODE)?> || [];
+
+    var allotTr,                                //  公共变量
+        keyId;
+
+    var playtime,                               //  录音控制
+        myAudio,
+        voiceWrap;
     function get_less_time(){
         var second = voiceWrap.find('.voice-second')
 
@@ -152,9 +179,44 @@ echo GridView::widget([
         voiceWrap.find('.voice-second').text( voiceWrap.attr('data-time'));
     }
 
+    function showMap()
+    {
+        $('#my-fix-model').show();
+        if(mapHasShow == 0)
+        {
+            mapHei = mapHei || $(window).height();
+            $('#my-fix-model').css({
+                height:mapHei-250
+            });
+            setTimeout(function(){
+                if(mySite== undefined){
+                    mySite = new BMap.Map("my-fix-model", {enableMapClick: false}); // 创建Map实例
+                    mySite.enableScrollWheelZoom();                            // 启用滚轮放大缩小 map.enableContinuousZoom();                             // 启用地图惯性拖拽，默认禁用 map.enableInertialDragging();                           // 启用连续缩放效果，默认禁用。 map.addControl(new BMap.NavigationControl());           // 添加平移缩放控件
+                    mySite.addControl(new BMap.NavigationControl());
+
+                    for (var i = 0; i < mapFaultData.length; i++) {
+                        var lat = mapFaultData[i]['latitude'];
+                        var lng = mapFaultData[i]['longitude'];
+                        var content = '<div id="openid-'+i+'" class="map-point-label" key-wid="'+mapFaultData[i]['wx_id']+'" key-openid="'+mapFaultData[i]['openid']+'"><span class="map-point-name">'+mapFaultData[i]['name']+'&nbsp;'+mapFaultData[i]['phone']+'</span><span class="map-point-name"><i class="glyphicon glyphicon-time"></i> '+mapFaultData[i]['point_time']+',待修'+mapFaultData[i]['wait_repair_count']+'个</span></div>';
+                        var point = new BMap.Point(lng, lat);
+                        if(lng == null)
+                            continue;
+                        mpoints.push(point);
+                        var labelOpts = {
+                            position: point
+                        };
+
+                        var defaultLabel = new BMap.Label(content, labelOpts);
+                        mySite.addOverlay(defaultLabel);
+                    }
+                    mySite.setViewport(mpoints);
+                }
+            },500);
+            mapHasShow = 1;
+        }
+
+    }
     <?php $this->beginBlock('JS_END') ?>
-        var allotTr;
-        var keyId;
 
         $('#fix-list .allot-model').click(function(){
             allotTr = $(this).closest('tr');
@@ -164,22 +226,22 @@ echo GridView::widget([
         });
 
 //        分配
-        $('#my-modal .select-maintain').click(function(){
-            $(this).html('<img src="/images/loading.gif">');
+        $('#my-modal').on('click','.map-point-label',function(){
+
+            var before = $(this).html();
+            $(this).html('提交中...<br/><img src="/images/loading.gif">');
             var $this = $(this);
             var wid = $(this).attr('key-wid');
             var openid = $(this).attr('key-openid');
-            var re_count = $(this).closest('tr').children('.repair-count');
             $.post(
-                '<?=Url::toRoute(['allot'])?>',
+                '<?=Url::toRoute(['/service/allot'])?>',
                 {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
                 function(res){
                     if(res.status == 1){
-                        re_count.text( parseInt(re_count.text()) + 1 );
                         setTimeout(function(){
-                            $this.html('<i class="glyphicon glyphicon-ok"></i>');
-                            $('#my-modal').modal('hide');
-                            allotTr.remove();
+                            $('#modal-fault-allot').modal('hide');
+                            $this.html(before);
+                            allotTr.slideUp();
                         },1000);
                     }
                     else
@@ -199,8 +261,8 @@ echo GridView::widget([
         $('#my-fix-model').hide();
         $('#next-step').click(function(){
             $(this).hide();
-            $('#fault-text-form').slideUp();
-            $('#my-fix-model').show();
+            $('#fault-text-form').hide();
+            showMap();
         });
 
 
@@ -277,7 +339,7 @@ $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 Modal::begin([
     'header' => '分配任务',
     'id' => 'my-modal',
-    'size' => 'modal-md',
+    'size' => 'modal-lg',
     'toggleButton' => false,
     'footer' => '
         <button id="go-back" type="button" class="btn btn-default">上一步</button>
@@ -292,39 +354,7 @@ echo Html::textarea('fault_remark','',['placeholder'=>'备注留言(可省略)',
 
 echo Html::endForm();
 
-echo GridView::widget([
-    'dataProvider'=> $fixProvider,
-    'tableOptions' => ['class' => 'table table-striped'],
-    'layout' => "{items}\n{pager}",
-    'id' => 'my-fix-model',
-    'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],               // 系列
-        'name',
-        'phone',
-        [
-            'attribute'=>'wait_repair_count',
-            'contentOptions'=>['class'=>'repair-count'],
-        ],
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'header' => '分配',
-            'headerOptions'=>['style'=>'width:120px'],
-            'template' => '{select}',
-            'buttons' => [
-                'select'=>function($url,$model,$key){
-
-                    return Html::button('<i class="glyphicon glyphicon-arrow-right"></i>分配',[
-                        'title'=>'分配维修',
-                        'class'=>'select-maintain btn btn-info btn-sm',
-                        'key-wid'=>$key['wx_id'],
-                        'key-openid'=>$key['openid'],
-                        'data-method'=>'post',
-                    ]);
-                },
-            ]
-        ]
-    ],
-]);
+echo Html::tag('div','',['id'=>'my-fix-model','style'=>'display:none']);
 
 Modal::end();
 

@@ -22,7 +22,7 @@ class TblAnalyzeMaintain
         $data = (new \yii\db\Query())
             ->select('weixin_id,openid,sum(fault_time) as fault_time,sum(resp_time) as resp_time,sum(resp_km) as total_km,count(id) as total_fault,sum(fault_score) as total_score')
             ->from('tbl_machine_service')
-            ->where(['enable'=>'Y'])
+            ->where(['<','status',11])
             ->andWhere(['>','status',7])
             ->andWhere(['between','add_time',$this->startTime,$this->endTime])
             ->groupBy('weixin_id,openid')
@@ -153,8 +153,6 @@ class TblAnalyzeMaintain
                 $tmp['data'] = array_values($tmp['data']);
                 $chart['series'][] = $tmp;
             }
-
-
         }
         unset($data);
         unset($tmp);
@@ -167,6 +165,7 @@ class TblAnalyzeMaintain
      */
     private function getCate($s,$e)
     {
+//        return range(1,10);
         $y1 = substr($s,0,4);
         $y2 = substr($e,0,4);
         if($d = ( $y2 - $y1 )){

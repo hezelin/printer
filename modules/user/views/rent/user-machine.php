@@ -40,7 +40,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
         </li>
         <?php if($model['series_id']):?>
         <li class="de-row">
-            <span class="de-label">系列号</span>
+            <span class="de-label">客户编号</span>
             <span class="de-value"><?=$model['series_id']?></span>
         </li>
         <?php endif;?>

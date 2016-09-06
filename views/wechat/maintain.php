@@ -52,3 +52,31 @@ $this->title = '维修主页';
         </li>
     </ul>
 </div>
+
+<script src="/js/zepto.min.js"></script>
+<script>
+    var wxId = <?=$setting['wx_id']?>;
+    var openId = '<?=$openid?>';
+</script>
+<?php
+\app\components\WxjsapiWidget::widget([
+    'wx_id'=>$setting['wx_id'],
+    'apiList'=>['getLocation'],
+    'jsReady'=>'
+        wx.getLocation({
+            success: function (res) {
+                $.ajax({
+                    type:"get",
+                    url:"/ajax-data/location",
+                    cache:false,
+                    async:false,
+                    data:{longitude:res.longitude,latitude:res.latitude,wx_id:wxId,openid:openId},
+                    dataType:"json",
+                    success:function(respData){
+                    }
+                })
+            }
+        });'
+
+    ]);
+?>

@@ -39,7 +39,7 @@ class TblUserScoreLogSearch extends TblUserScoreLog
      */
     public function search($params)
     {
-        $query = TblUserScoreLog::find(['tbl_user_score_log.wx_id'=>Cache::getWid()]);
+        $query = TblUserScoreLog::find()->where(['wx_id'=>Cache::getWid()]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

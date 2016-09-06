@@ -33,11 +33,11 @@ AuicssAsset::register($this);
         <div class="aui-form">
             <div class="aui-input-row aui-border-t" style="padding:0; margin-bottom:10px;">
                 <span class="aui-input-addon aui-padded-0-10">您的姓名</span>
-                <input type="text" id="apply-name" class="aui-input" name="TblRentApply[name]" placeholder="请填入您的姓名">
+                <input type="text" id="apply-name" class="aui-input" name="TblRentApply[name]" placeholder="请填入您的姓名" value="<?=$model->name?>">
             </div>
             <div class="aui-input-row aui-border-t"  style="padding:0;">
                 <span class="aui-input-addon aui-padded-0-10">手机号码</span>
-                <input type="text" id="apply-phone" class="aui-input" name="TblRentApply[phone]" placeholder="请填入您的手机号码">
+                <input type="text" id="apply-phone" class="aui-input" name="TblRentApply[phone]" placeholder="请填入您的手机号码" value="<?=$model->phone?>">
             </div>
         </div>
     </div>

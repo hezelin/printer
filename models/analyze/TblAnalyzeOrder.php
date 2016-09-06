@@ -164,25 +164,26 @@ class TblAnalyzeOrder
 
         $chart['series'] = [
             [
-                'name'=>'累计数量',
+                'name'=>'累计金额',
                 'type'=>'column',
                 'yAxis'=>1,
-                'tooltip'=>['valueSuffix'=>'个'],
-                'data'=> isset($tmp['num'])? $tmp['num']:[]
-            ],
-            [
-                'name'=>'累计金额',
-                'type'=>'spline',
-                'yAxis'=>2,
                 'tooltip'=>['valueSuffix'=>'元'],
                 'data'=> isset($tmp['money'])? $tmp['money']:[]
-            ],[
+            ],
+            [
+                'name'=>'累计数量',
+                'type'=>'spline',
+//                'yAxis'=>2,
+                'tooltip'=>['valueSuffix'=>'个'],
+                'data'=> isset($tmp['num'])? $tmp['num']:[]
+            ]/*,[
                 'name'=>'累计积分',
                 'type'=>'spline',
                 'tooltip'=>['valueSuffix'=>'个'],
                 'data'=> isset($tmp['score'])? $tmp['score']:[]
-            ]
+            ]*/
         ];
+
         $chart['day'] = [
             [
                 'name'=>'新增数量',

@@ -28,9 +28,11 @@ class IController extends \yii\web\Controller
         $openid = WxBase::openId($id);
         $model = (new \yii\db\Query())
             ->select('t.id as rent_id,t.wx_id,t.project_id,t.due_time,t.status,t.monthly_rent,m.id,m.maintain_count,
-                m.buy_date,m.cover,m.brand_name,m.model_name,m.series_id')
+                m.buy_date,m.cover,m.brand_name,m.model_name,m.series_id,
+                s.status as fault_status')
             ->from('tbl_rent_apply as t')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')
+            ->leftJoin('tbl_machine_service s','s.machine_id=t.machine_id and s.status<9')
             ->where(['t.wx_id' => $id, 't.openid' => $openid,'t.status'=>2])
             ->orderBy('t.id desc')
             ->all();

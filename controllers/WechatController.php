@@ -42,7 +42,7 @@ class WechatController extends \yii\web\Controller
                 ->where('status<9 and openid=:openid and weixin_id=:wid',[':openid'=>$openid,':wid'=>$id])
                 ->scalar();
 
-            return $this->render('maintain',['setting'=>$setting,'num'=>$num]);
+            return $this->render('maintain',['setting'=>$setting,'num'=>$num,'openid'=>$openid]);
         }
         $phone = (new \yii\db\Query())
             ->select('phone')

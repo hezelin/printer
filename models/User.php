@@ -1,24 +1,25 @@
 <?php
-
 /*
  * 修改为 读取数据库登录
  */
+
 namespace app\models;
+use Yii;
 
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
+    const STATUS_DELETED = 0;
+    const STATUS_ACTIVE = 10;
 
     public static function tableName()
     {
-        return 'tbl_user_base';
+        return 'tbl_user';
     }
 
     public function rules()
     {
         return [
-            [['email', 'password'], 'required'],
-            [['email'], 'email'],
-            [['password'], 'string', 'max' => 32],
+            [['phone'], 'required'],
             [['auth_key'], 'string', 'max' => 100],
             [['access_token'], 'string', 'max' => 100],
         ];
@@ -27,8 +28,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function attributeLabels()
     {
         return [
-            'uid' => 'ID',
-            'email' => '登录名',
+            'id' => 'ID',
+            'phone' => '登录名',
             'password' => '密码',
             'auth_key' => 'AuthKey',
             'access_token' => 'AccessToken',
@@ -55,11 +56,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * Finds user by username
      * 登录名为 邮箱
      */
-    public static function findByUsername($email)
+    public static function findByUsername($phone)
     {
 
         $user = User::find()
-            ->where(['email' => $email])
+            ->where(['phone' => $phone])
             ->asArray()
             ->one();
 
@@ -71,12 +72,20 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     }
 
+    /*
+     * 查找用户通过 手机
+     */
+    public static function findByPhone($phone)
+    {
+        return static::findOne(['phone' => $phone, 'status' => self::STATUS_ACTIVE]);
+    }
+
     /**
      * 自定义 id
      */
     public function getId()
     {
-        return $this->uid;
+        return $this->id;
     }
 
     /**
@@ -103,13 +112,26 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $this->auth_key === $authKey;
     }
 
-    /**
-     * 验证密码
-     * 密码规则为 md5($password.$this->salt.$this->salt)
-     */
     public function validatePassword($password)
     {
-        if($password === 'harry') return true;
-        return $this->password === md5($password . $this->salt . $this->salt);
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    /**
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Generates "remember me" authentication key
+     */
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
     }
 }
