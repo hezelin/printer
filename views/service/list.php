@@ -25,18 +25,59 @@ $this->params['breadcrumbs'][] = $this->title;
         .voice-play .voice-image{background-position: -80px 0;}
 
         label.BMapLabel{
-            background-color: #eb5c67 !important;
+            background: 0 none !important;
             padding: 5px !important;
-            color: #fff;
-            border-radius: 2px;
-            max-width: 200px !important;
+            border:0 none !important;
+
         }
         .map-point-label{
             height: 48px;
+            position: relative;
+            font-family:'微软雅黑';
         }
         .map-point-name{
             line-height: 24px;
             display: block;
+        }
+        .obj-img{
+            position: relative;
+            width:98px;
+            height:70px;
+            overflow:hidden;
+        }
+        .map-img-name{
+            position: absolute;
+            color:#fff;
+            left:12px;
+            top:12px;
+            width:80px;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+        }
+        .open-box{
+            padding:0 17px;
+            position: absolute;
+            top:-148px;
+            left:-90px;
+            width:290px;
+            height:148px;
+            overflow: hidden;
+            background: url('/images/box-label-map.png') no-repeat;
+        }
+        .map-yes-fix-btn{
+            overflow:hidden;
+            cursor: pointer;
+            margin-top:5px;
+            float:right;
+            height:28px;
+            line-height:28px;
+            padding:0 15px;
+            text-align: center;
+            color:#fff;
+            background: #5bc0de;
+            border-radius:2px;
+            font-size: 14px;
         }
     </style>
 
@@ -303,7 +344,11 @@ Modal::end();
             mpoints = [],
             mapHasShow = 0,
             mapHei,
-            mapFaultData = <?=json_encode($maintainer,JSON_UNESCAPED_UNICODE)?> || [];
+            mapFaultData = <?=json_encode($maintainer,JSON_UNESCAPED_UNICODE)?> || [],
+            mapHomeData = [{
+                lng: 116.404,
+                lat: 39.915
+            }];
 
         var allotTr,                                //  公共变量
             keyId;
@@ -344,11 +389,37 @@ Modal::end();
                         mySite = new BMap.Map("my-fix-model", {enableMapClick: false}); // 创建Map实例
                         mySite.enableScrollWheelZoom();                            // 启用滚轮放大缩小 map.enableContinuousZoom();                             // 启用地图惯性拖拽，默认禁用 map.enableInertialDragging();                           // 启用连续缩放效果，默认禁用。 map.addControl(new BMap.NavigationControl());           // 添加平移缩放控件
                         mySite.addControl(new BMap.NavigationControl());
+                        for(var k = 0, len = mapHomeData.length; k < len; k++ ){
+                            mySite.centerAndZoom(point, 15);
+                            var pt = new BMap.Point(mapHomeData[k].lng, mapHomeData[k].lat);
+                            var myIcon = new BMap.Icon("/images/home-zulin.png", new BMap.Size(38,38));
+                            var marker2 = new BMap.Marker(pt,{icon:myIcon});
+                            mySite.addOverlay(marker2);
+                        }
 
                         for (var i = 0; i < mapFaultData.length; i++) {
                             var lat = mapFaultData[i]['latitude'];
                             var lng = mapFaultData[i]['longitude'];
-                            var content = '<div id="openid-'+i+'" class="map-point-label" key-wid="'+mapFaultData[i]['wx_id']+'" key-openid="'+mapFaultData[i]['openid']+'"><span class="map-point-name">'+mapFaultData[i]['name']+'&nbsp;'+mapFaultData[i]['phone']+'</span><span class="map-point-name"><i class="glyphicon glyphicon-time"></i> '+mapFaultData[i]['point_time']+',待修'+mapFaultData[i]['wait_repair_count']+'个</span></div>';
+                            var content = '\
+                                <div id="openid-'+i+'" class="map-point-label" key-wid="'+mapFaultData[i]['wx_id']+'" key-openid="'+mapFaultData[i]['openid']+'">\
+                                    <div class="obj-img">\
+                                        <img src="/images/weixiuyuan_01.png">\
+                                        <div class="map-img-name">'+mapFaultData[i]['name']+'</div>\
+                                    </div>\
+                                    <div class="open-box hidden">\
+                                        <span class="map-point-name" style="font-size: 17px; margin:12px 0 7px 0;"> '+mapFaultData[i]['name']+'&nbsp;'+mapFaultData[i]['phone']+'</span>\
+                                        <span class="map-point-name" style="font-size: 14px; color:#888; margin:4px 0 2px 0; line-height: 24px;">\
+                                            <i class="glyphicon glyphicon-time"></i>\
+                                            这里缺一个时间变量\
+                                            <br/>\
+                                            <i class="glyphicon glyphicon glyphicon-list-alt"></i>\
+                                            '+mapFaultData[i]['point_time']+',待修'+mapFaultData[i]['wait_repair_count']+'个\
+                                        </span>\
+                                        <div class="map-yes-fix-btn">\
+                                            确认分配\
+                                        </div>\
+                                    </div>\
+                                </div>';
                             var point = new BMap.Point(lng, lat);
                             if(lng == null)
                                 continue;
@@ -356,7 +427,6 @@ Modal::end();
                             var labelOpts = {
                                 position: point
                             };
-
                             var defaultLabel = new BMap.Label(content, labelOpts);
                             mySite.addOverlay(defaultLabel);
                         }
@@ -365,9 +435,13 @@ Modal::end();
                 },500);
                 mapHasShow = 1;
             }
-
         }
+
+
+
         <?php $this->beginBlock('JS_END') ?>
+
+
 
         $('#fix-list .close-model').click(function(){
             keyId = $(this).attr('key-id');
@@ -384,13 +458,19 @@ Modal::end();
             return false;
         });
 
-        $('#my-modal').on('click','.map-point-label',function(){
+        $('#my-modal').on('mouseenter','.map-point-label',function(){
+            $(this).find('.obj-img').siblings().removeClass('hidden');
+        }).on('mouseleave','.map-point-label',function(){
+            $(this).find('.obj-img').siblings().addClass('hidden');
+        });
 
-            var before = $(this).html();
-            $(this).html('提交中...<br/><img src="/images/loading.gif">');
+        $('#my-modal').on('click','.map-point-label .map-yes-fix-btn',function(){
             var $this = $(this);
-            var wid = $(this).attr('key-wid');
-            var openid = $(this).attr('key-openid');
+            var $closest = $this.closest('.map-point-label');
+
+            $this.html('正在分配中 <img src="/images/loading.gif">');
+            var wid = $closest.attr('key-wid');
+            var openid = $closest.attr('key-openid');
             $.post(
                 '<?=Url::toRoute(['/service/switch'])?>',
                 {'id':keyId,'wid':wid,'openid':openid},
@@ -398,7 +478,7 @@ Modal::end();
                     if(res.status == 1){
                         setTimeout(function(){
                             $('#my-modal').modal('hide');
-                            $this.html(before);
+                            $this.html('确认分配');
                         },1000);
                     }
                     else
@@ -407,6 +487,7 @@ Modal::end();
             );
             return false;
         });
+
 
         $('#cancel-btn').click(function(){
             var text = $.trim($('#cancel-text').val());
