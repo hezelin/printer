@@ -8,6 +8,8 @@ $this->registerCssFile('/css/swiper/swiper.min.css',['depends'=>['app\assets\Aui
 $this->registerCssFile('/css/font-icon/im2/font-icon.css',['depends'=>['app\assets\AuicssAsset']]);
 $this->registerCssFile('/css/font-icon/im3/font-icon.css',['depends'=>['app\assets\AuicssAsset']]);
 $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\assets\AuicssAsset']]);
+
+print_r($category);
 ?>
 
 <style type="text/css">
@@ -173,6 +175,21 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         width:70px;
         overflow:hidden;
     }
+
+    /**/
+    .pagelets-ab-box{
+        position: absolute;
+        left:-15%;
+        width:130%;
+        background: #fff;
+        bottom:50px;
+        border-radius:3px;
+        border:1px solid #ccc;
+    }
+
+    .aui-padded-10-0{
+        padding:5px 0;
+    }
 </style>
 
 
@@ -214,7 +231,9 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
             </div>
         </div>
         <div class="chat aui-clearfix">
-            <h3 class="chat_title aui-text-center"><span>打印机晒鼓</span></h3>
+            <h3 class="chat_title aui-text-center">
+                <span>所有商品</span>
+            </h3>
             <?php if( is_array($model) && $model ):?>
             <div class="sp aui-row-10" style="overflow:hidden;">
                 <?php foreach($model as $row):?>
@@ -269,7 +288,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
                     </div>-->
                 <?php endif;?>
             <?php else:?>
-                <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span>没有数据</div>
+                <h3 class="blank-text" style="font-size: 14px; padding-top:65px;">暂时没有此商品</h3>
             <?php endif;?>
         </div>
     </div>
@@ -284,12 +303,21 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
                     <span class="aui-pull-left">首页</span>
                 </div>
             </a>
-            <a href="#" class="aui-col-xs-3 aui-border-r footer-icon aui-block">
+            <span id="pagelets" class="aui-col-xs-3 aui-border-r footer-icon aui-block" style="position: relative;">
                 <div class="aui-pull-center1">
                     <span class="icon-fl aui-pull-left"></span>
                     <span class="aui-pull-left">分类</span>
                 </div>
-            </a>
+                <!--Url::toRoute(['list', 'id'=>$id, 'q'=>$val);-->
+                <div class="pagelets-ab-box aui-padded-0-10 aui-hidden">
+                    <a class="aui-block aui-padded-10-0 aui-border-b page-b-text" href="<?=Url::toRoute(['/shop/item/list','id'=>$id])?>">所有商品</a>
+                    <?php foreach($category as $key => $value ){ ?>
+                    <a class="aui-block aui-padded-10-0 aui-border-b page-b-text" href="<?=Url::toRoute(['/shop/item/list','id'=>$id, 'category_id'=>$key])?>">
+                        <?=$value?>
+                    </a>
+                    <?php } ?>
+                </div>
+            </span>
             <a href="<?=Url::toRoute(['/shop/i/order','id'=>$id])?>" class="aui-col-xs-3 aui-border-r footer-icon aui-block">
                 <div class="aui-pull-center1">
                     <span class="icon-dd aui-pull-left"></span>
@@ -311,8 +339,9 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
 <script>
     <?php $this->beginBlock('JS_END') ?>
 
+
     /*swiper*/
-    (function(){
+    ;(function(){
         new Swiper('.swiper-container', {
             pagination: '.swiper-pagination',
             autoplay:5000,
@@ -323,7 +352,6 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
     })()
 
     /*搜索*/
-
     ;+function(){
         var val;
         document.getElementsByClassName('icon-btn')[0].addEventListener('touchend', function(){
@@ -339,7 +367,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         var noMessage = '<div class="aui-text-center">没有数据了</div>';
         var $loading = $('.loading');
         window.addEventListener('scroll', function(){
-            if(document.body.scrollTop+300 >= parseInt(getComputedStyle(document.getElementsByClassName('chat')[0]).height)){
+            if(document.body.scrollTop + 400 <= parseInt(getComputedStyle(document.getElementsByClassName('chat')[0]).height)){
                 if(bhold){
                     bhold = false;
                     $.ajax({
@@ -386,6 +414,18 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
             }
         })
     }();
+
+    ;(function(){
+        var pageBox = $('.pagelets-ab-box');
+        $('#pagelets').on('click', function(){
+            if(pageBox.hasClass('aui-hidden')){
+                pageBox.removeClass('aui-hidden');
+            }else{
+                pageBox.addClass('aui-hidden');
+            }
+        })
+    })()
+
 
     <?php $this->endBlock(); ?>
 </script>

@@ -41,6 +41,6 @@ HomeAsset::register($this);
             <?php endforeach;?>
         </ul>
     <?php else:?>
-        <div class="blank-text"> <span class="aui-iconfont aui-icon-warn"></span> 没有数据</div>
+        <h3 class="blank-text" style="font-size: 16px; padding-top:80px;">暂时没有维修记录</h3>
     <?php endif;?>
 </div>

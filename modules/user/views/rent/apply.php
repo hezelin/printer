@@ -98,9 +98,9 @@ AuicssAsset::register($this);
 
             var err = String(<?= $error ?>);
             if(err !== ''){
+                $api.text(document.getElementsByClassName('aui-dialog-title-2')[0], err);
                 $api.removeCls($dialog, 'aui-hidden');
                 $api.removeCls($bthTrue, 'aui-hidden');
-                $api.text(document.getElementsByClassName('aui-dialog-title-2')[0], err);
             }
         }()
 

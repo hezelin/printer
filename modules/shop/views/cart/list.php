@@ -178,7 +178,7 @@ AuicssAsset::register($this);
         $('#cart-list .item-count').change(function(){
             var wrap = $(this).closest('li');
             $(this).val() <= 0 && $(this).val(1);
-            cartOpera(wrap, $(this).val() );
+            cartOpera(wrap, parseInt($(this).val()));
         });
 
         $('#buy-btn').click(function(){
