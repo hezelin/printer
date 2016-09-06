@@ -6,6 +6,7 @@
 namespace app\modules\maintain\controllers;
 
 use app\models\TblUserMaintain;
+use app\models\ToolBase;
 use yii\base\Exception;
 use yii\web\Controller;
 use app\models\fault\FaultList;
@@ -272,9 +273,9 @@ class TaskController extends Controller
         try {
             if(!$model->save())
                 throw new Exception('维修状态表');
-
-            $maintainer->latitude = $post['latitude'];
-            $maintainer->longitude = $post['longitude'];
+            $latLng = ToolBase::bd_encrypt($post['latitude'],$post['longitude']);
+            $maintainer->latitude = $latLng['lat'];
+            $maintainer->longitude = $latLng['lon'];
             $maintainer->point_time = time();
             if(!$maintainer->save())
                 throw new Exception('保存位置出错');

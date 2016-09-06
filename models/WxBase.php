@@ -69,6 +69,7 @@ class WxBase {
 
         if($isCache && isset( Yii::$app->session['openid_'.$id]) )
             return Yii::$app->session['openid_'.$id];
+
         /*
          * 这里可以加入判断 是否微信来源
          * 如果是 请求下面的链接

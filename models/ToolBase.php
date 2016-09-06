@@ -231,12 +231,12 @@ class ToolBase {
      */
     public static function bd_encrypt($gcjLat, $gcjLon) {
         $x_pi = 3.14159265358979324 * 3000.0 / 180.0;
-        $x = $gcjLon; $y = $gcjLat;
+        $x = (float)$gcjLon; $y = (float)$gcjLat;
         $z = sqrt($x * $x + $y * $y) + 0.00002 * sin($y * $x_pi);
         $theta = atan2($y, $x) + 0.000003 * cos($x * $x_pi);
         $bdLon = $z * cos($theta) + 0.0065;
         $bdLat = $z * sin($theta) + 0.006;
-        return ['lat' => $bdLat,'lon' => $bdLon];
+        return ['lat' => round($bdLat,6),'lon' => round($bdLon,6)];
     }
 
     /*
@@ -246,12 +246,12 @@ class ToolBase {
     {
         $x_pi = 3.14159265358979324 * 3000.0 / 180.0;
 
-        $x = $bdLon - 0.0065; $y = $bdLat - 0.006;
+        $x = (float)$bdLon - 0.0065; $y = (float)$bdLat - 0.006;
         $z = sqrt($x * $x + $y * $y) - 0.00002 * sin($y * $x_pi);
         $theta = atan2($y, $x) - 0.000003 * cos($x * $x_pi);
         $gcjLon = $z * cos($theta);
         $gcjLat = $z * sin($theta);
-        return ['lat' => $gcjLat, 'lon' => $gcjLon];
+        return ['lat' => round($gcjLat,6), 'lon' => round($gcjLon,6)];
     }
 
 } 

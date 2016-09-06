@@ -33,7 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
         .map-point-label{
             height: 48px;
             position: relative;
-            font-family:'微软雅黑';
+            margin-left: -35px;
+            margin-top: -55px;
         }
         .map-point-name{
             line-height: 24px;
@@ -284,7 +285,6 @@ echo Html::endForm();
 
 Modal::end();
 
-
 // fancybox 图片预览插件
 
 echo newerton\fancybox\FancyBox::widget([
@@ -345,10 +345,10 @@ Modal::end();
             mapHasShow = 0,
             mapHei,
             mapFaultData = <?=json_encode($maintainer,JSON_UNESCAPED_UNICODE)?> || [],
-            mapHomeData = [{
+            mapHomeData = {
                 lng: 116.404,
                 lat: 39.915
-            }];
+            };
 
         var allotTr,                                //  公共变量
             keyId;
@@ -389,13 +389,12 @@ Modal::end();
                         mySite = new BMap.Map("my-fix-model", {enableMapClick: false}); // 创建Map实例
                         mySite.enableScrollWheelZoom();                            // 启用滚轮放大缩小 map.enableContinuousZoom();                             // 启用地图惯性拖拽，默认禁用 map.enableInertialDragging();                           // 启用连续缩放效果，默认禁用。 map.addControl(new BMap.NavigationControl());           // 添加平移缩放控件
                         mySite.addControl(new BMap.NavigationControl());
-                        for(var k = 0, len = mapHomeData.length; k < len; k++ ){
-                            mySite.centerAndZoom(point, 15);
-                            var pt = new BMap.Point(mapHomeData[k].lng, mapHomeData[k].lat);
-                            var myIcon = new BMap.Icon("/images/home-zulin.png", new BMap.Size(38,38));
-                            var marker2 = new BMap.Marker(pt,{icon:myIcon});
-                            mySite.addOverlay(marker2);
-                        }
+
+                        // 维修任务坐标
+                        /*var pt = new BMap.Point(mapHomeData.lng, mapHomeData.lat);
+                        var myIcon = new BMap.Icon("/images/home-zulin.png", new BMap.Size(38,38));
+                        var marker2 = new BMap.Marker(pt,{icon:myIcon});
+                        mySite.addOverlay(marker2);*/
 
                         for (var i = 0; i < mapFaultData.length; i++) {
                             var lat = mapFaultData[i]['latitude'];
@@ -407,13 +406,13 @@ Modal::end();
                                         <div class="map-img-name">'+mapFaultData[i]['name']+'</div>\
                                     </div>\
                                     <div class="open-box hidden">\
-                                        <span class="map-point-name" style="font-size: 17px; margin:12px 0 7px 0;"> '+mapFaultData[i]['name']+'&nbsp;'+mapFaultData[i]['phone']+'</span>\
+                                        <span class="map-point-name" style="font-size: 17px; margin:12px 0 7px 0;"> '+mapFaultData[i]['name']+'&nbsp;'+(mapFaultData[i]['phone'] == null? '':mapFaultData[i]['phone'])+'</span>\
                                         <span class="map-point-name" style="font-size: 14px; color:#888; margin:4px 0 2px 0; line-height: 24px;">\
                                             <i class="glyphicon glyphicon-time"></i>\
-                                            这里缺一个时间变量\
+                                            '+mapFaultData[i]['point_time']+'\
                                             <br/>\
                                             <i class="glyphicon glyphicon glyphicon-list-alt"></i>\
-                                            '+mapFaultData[i]['point_time']+',待修'+mapFaultData[i]['wait_repair_count']+'个\
+                                            待维修'+mapFaultData[i]['wait_repair_count']+'个\
                                         </span>\
                                         <div class="map-yes-fix-btn">\
                                             确认分配\
@@ -464,7 +463,7 @@ Modal::end();
             $(this).find('.obj-img').siblings().addClass('hidden');
         });
 
-        $('#my-modal').on('click','.map-point-label .map-yes-fix-btn',function(){
+        $('#my-modal').on('click','.map-yes-fix-btn',function(){
             var $this = $(this);
             var $closest = $this.closest('.map-point-label');
 

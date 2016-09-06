@@ -27,7 +27,7 @@
             {
                 echo '黑白：',$rent['black_amount'],'张';
                 if($rent['colours'])
-                    echo '，彩色：',$lastCharge['colour_amount'],'张';
+                    echo '，彩色：',$rent['colours_amount'],'张';
             }
             ?>
         </span>

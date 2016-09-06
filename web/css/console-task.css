@@ -148,16 +148,58 @@ ul li:last-child{border-bottom: none;}
 }
 
 label.BMapLabel{
-    background-color: #eb5c67 !important;
+    background: 0 none !important;
     padding: 5px !important;
-    color: #fff;
-    border-radius: 2px;
-    max-width: 200px !important;
+    border:0 none !important;
+
 }
 .map-point-label{
     height: 48px;
+    position: relative;
+    margin-left: -35px;
+    margin-top: -55px;
 }
 .map-point-name{
     line-height: 24px;
     display: block;
+}
+.obj-img{
+    position: relative;
+    width:98px;
+    height:70px;
+    overflow:hidden;
+}
+.map-img-name{
+    position: absolute;
+    color:#fff;
+    left:12px;
+    top:12px;
+    width:80px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.open-box{
+    padding:0 17px;
+    position: absolute;
+    top:-148px;
+    left:-90px;
+    width:290px;
+    height:148px;
+    overflow: hidden;
+    background: url('/images/box-label-map.png') no-repeat;
+}
+.map-yes-fix-btn{
+    overflow:hidden;
+    cursor: pointer;
+    margin-top:5px;
+    float:right;
+    height:28px;
+    line-height:28px;
+    padding:0 15px;
+    text-align: center;
+    color:#fff;
+    background: #5bc0de;
+    border-radius:2px;
+    font-size: 14px;
 }

@@ -13,7 +13,7 @@ Yii::$app->params['layoutBottomHeight'] = 40;
 
 <div id="rent-detail">
     <hr class="de-line">
-    <div class="de-row-b-2">
+    <div class="de-row" style="padding-top: 10px;">
         <span class="de-label">月租</span>
         <em class="de-yan">¥</em>
         <span class="de-price"><?=$model['monthly_rent']?></span>

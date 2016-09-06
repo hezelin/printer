@@ -474,7 +474,11 @@ Modal::end();
         mpoints = [],
         mapHasShow = 0,
         mapHei,
-        mapFaultData = <?=json_encode($data['maintainer'],JSON_UNESCAPED_UNICODE)?> || [];
+        mapFaultData = <?=json_encode($data['maintainer'],JSON_UNESCAPED_UNICODE)?> || [],
+        mapHomeData = {
+            lng: 116.404,
+            lat: 39.915
+        };
 
     function showMap()
     {
@@ -491,19 +495,42 @@ Modal::end();
                     mySite.enableScrollWheelZoom();                            // 启用滚轮放大缩小 map.enableContinuousZoom();                             // 启用地图惯性拖拽，默认禁用 map.enableInertialDragging();                           // 启用连续缩放效果，默认禁用。 map.addControl(new BMap.NavigationControl());           // 添加平移缩放控件
                     mySite.addControl(new BMap.NavigationControl());
 
+                    // 维修任务坐标
+                    /*var pt = new BMap.Point(mapHomeData.lng, mapHomeData.lat);
+                     var myIcon = new BMap.Icon("/images/home-zulin.png", new BMap.Size(38,38));
+                     var marker2 = new BMap.Marker(pt,{icon:myIcon});
+                     mySite.addOverlay(marker2);*/
+
                     for (var i = 0; i < mapFaultData.length; i++) {
                         var lat = mapFaultData[i]['latitude'];
                         var lng = mapFaultData[i]['longitude'];
-                        var content = '<div id="openid-'+i+'" class="map-point-label" key-wid="'+mapFaultData[i]['wx_id']+'" key-openid="'+mapFaultData[i]['openid']+'"><span class="map-point-name">'+mapFaultData[i]['name']+'&nbsp;'+mapFaultData[i]['phone']+'</span><span class="map-point-name"><i class="glyphicon glyphicon-time"></i> '+mapFaultData[i]['point_time']+',待修'+mapFaultData[i]['wait_repair_count']+'个</span></div>';
+                        var content = '\
+                                <div id="openid-'+i+'" class="map-point-label" key-wid="'+mapFaultData[i]['wx_id']+'" key-openid="'+mapFaultData[i]['openid']+'">\
+                                    <div class="obj-img">\
+                                        <img src="/images/weixiuyuan_01.png">\
+                                        <div class="map-img-name">'+mapFaultData[i]['name']+'</div>\
+                                    </div>\
+                                    <div class="open-box hidden">\
+                                        <span class="map-point-name" style="font-size: 17px; margin:12px 0 7px 0;"> '+mapFaultData[i]['name']+'&nbsp;'+(mapFaultData[i]['phone'] == null? '':mapFaultData[i]['phone'])+'</span>\
+                                        <span class="map-point-name" style="font-size: 14px; color:#888; margin:4px 0 2px 0; line-height: 24px;">\
+                                            <i class="glyphicon glyphicon-time"></i>\
+                                            '+mapFaultData[i]['point_time']+'\
+                                            <br/>\
+                                            <i class="glyphicon glyphicon glyphicon-list-alt"></i>\
+                                            待维修'+mapFaultData[i]['wait_repair_count']+'个\
+                                        </span>\
+                                        <div class="map-yes-fix-btn">\
+                                            确认分配\
+                                        </div>\
+                                    </div>\
+                                </div>';
                         var point = new BMap.Point(lng, lat);
-                        console.log(lat,lng,point);
                         if(lng == null)
                             continue;
                         mpoints.push(point);
                         var labelOpts = {
                             position: point
                         };
-
                         var defaultLabel = new BMap.Label(content, labelOpts);
                         mySite.addOverlay(defaultLabel);
                     }
@@ -591,14 +618,21 @@ Modal::end();
         showMap();
     });
 
-//    维修分配
-    $('#modal-fault-allot').on('click','.map-point-label',function(){
+    $('#modal-fault-allot').on('mouseenter','.map-point-label',function(){
+        $(this).find('.obj-img').siblings().removeClass('hidden');
+    }).on('mouseleave','.map-point-label',function(){
+        $(this).find('.obj-img').siblings().addClass('hidden');
+    });
 
-        var before = $(this).html();
-        $(this).html('提交中...<br/><img src="/images/loading.gif">');
+//    维修分配
+    $('#modal-fault-allot').on('click','.map-yes-fix-btn',function(){
+
         var $this = $(this);
-        var wid = $(this).attr('key-wid');
-        var openid = $(this).attr('key-openid');
+        var $closest = $this.closest('.map-point-label');
+
+        $this.html('正在分配中 <img src="/images/loading.gif">');
+        var wid = $closest.attr('key-wid');
+        var openid = $closest.attr('key-openid');
         $.post(
             '<?=Url::toRoute(['/service/allot'])?>',
             {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
@@ -606,7 +640,7 @@ Modal::end();
                 if(res.status == 1){
                     setTimeout(function(){
                         $('#modal-fault-allot').modal('hide');
-                        $this.html(before);
+                        $this.html('确认分配');
                         $li.slideUp();
                     },1000);
                 }

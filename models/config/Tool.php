@@ -3,6 +3,7 @@
  * 全局功能 工具
  */
 namespace app\models\config;
+use app\models\ToolBase;
 use yii\helpers\Html;
 
 
@@ -91,8 +92,9 @@ class Tool
     {
         if(strlen($openid) == 28)
         {
+            $latLng = ToolBase::bd_encrypt($latitude,$longitude);
             $t = time();
-            $sql = "UPDATE `tbl_user_maintain` SET `longitude`=$longitude ,`latitude`=$latitude ,`point_time`=$t WHERE openid='$openid' and wx_id=$wx_id";
+            $sql = "UPDATE `tbl_user_maintain` SET `longitude`={$latLng['lon']} ,`latitude`={$latLng['lat']} ,`point_time`=$t WHERE openid='$openid' and wx_id=$wx_id";
             \Yii::$app->db->createCommand($sql)->execute();
         }
     }
