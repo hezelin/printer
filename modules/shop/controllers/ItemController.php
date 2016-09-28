@@ -39,6 +39,9 @@ class ItemController extends Controller
 
         $model = $model->all();
 
+        foreach($model as &$m)
+            $m['cover'] = str_replace('/s/','/m/',$m['cover']);
+
         if(Yii::$app->request->get('format') == 'json'){
             return $model? json_encode([
                 'status'=>1,

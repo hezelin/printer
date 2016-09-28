@@ -34,7 +34,6 @@ echo GridView::widget([
         'wait_repair_count',
         'latitude',
         'longitude',
-        'accuracy',
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',

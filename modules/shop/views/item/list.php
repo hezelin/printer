@@ -8,8 +8,6 @@ $this->registerCssFile('/css/swiper/swiper.min.css',['depends'=>['app\assets\Aui
 $this->registerCssFile('/css/font-icon/im2/font-icon.css',['depends'=>['app\assets\AuicssAsset']]);
 $this->registerCssFile('/css/font-icon/im3/font-icon.css',['depends'=>['app\assets\AuicssAsset']]);
 $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\assets\AuicssAsset']]);
-
-print_r($category);
 ?>
 
 <style type="text/css">
