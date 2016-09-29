@@ -31,8 +31,8 @@ HomeAsset::register($this);
                             <h2 class="aui-ellipsis-1">(<?=$row['category']?>)</h2>
                             <p class="aui-ellipsis-2"><?=$row['name']?></p>
                             <p class="aui-ellipsis-1">
-                                <span class="aui-bg-info parts-cancel-btn  aui-box aui-box-color" style="border:0; padding:2px 10px;"><?=\app\modules\shop\models\Shop::getParts($row['status'])?></span>
-                                <span class="parts-cancel-btn aui-box" style="border:0; padding:2px 17px;" parts-id="<?=$row['parts_id']?>" href="javascript:void(0)">取消</span>
+                                <span class="aui-box aui-box-color aui-bg-default"  style="border:0; color:#333; padding:2px 10px;"><?=\app\modules\shop\models\Shop::getParts($row['status'])?></span>
+                                <span class="parts-cancel-btn aui-box aui-bg-danger" style="color:#fff;border:0; padding:2px 17px;" parts-id="<?=$row['parts_id']?>" href="javascript:void(0)">取消</span>
                             </p>
                         </div>
                     </div>

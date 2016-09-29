@@ -230,7 +230,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         </div>
         <div class="chat aui-clearfix">
             <h3 class="chat_title aui-text-center">
-                <span>所有商品</span>
+                <span><?= $categoryName ?></span>
             </h3>
             <?php if( is_array($model) && $model ):?>
             <div class="sp aui-row-10" style="overflow:hidden;">
@@ -310,7 +310,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
                 <div class="pagelets-ab-box aui-padded-0-10 aui-hidden">
                     <a class="aui-block aui-padded-10-0 aui-border-b page-b-text" href="<?=Url::toRoute(['/shop/item/list','id'=>$id])?>">所有商品</a>
                     <?php foreach($category as $key => $value ){ ?>
-                    <a class="aui-block aui-padded-10-0 aui-border-b page-b-text" href="<?=Url::toRoute(['/shop/item/list','id'=>$id, 'category_id'=>$key])?>">
+                    <a class="aui-block aui-padded-10-0 aui-border-b page-b-text" href="<?=Url::toRoute(['/shop/item/list','id'=>$id, 'category'=>$key])?>">
                         <?=$value?>
                     </a>
                     <?php } ?>
@@ -364,8 +364,9 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         var $sp = $('.sp');
         var noMessage = '<div class="aui-text-center">没有数据了</div>';
         var $loading = $('.loading');
+        var $chat = document.getElementsByClassName('chat')[0];
         window.addEventListener('scroll', function(){
-            if(document.body.scrollTop + 400 <= parseInt(getComputedStyle(document.getElementsByClassName('chat')[0]).height)){
+            if(document.body.scrollTop >= document.body.scrollHeight - window.innerHeight){
                 if(bhold){
                     bhold = false;
                     $.ajax({
@@ -377,17 +378,20 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
                             $loading.removeClass('aui-hidden');
                         },
                         success:function(data){
-                            $loading.addClass('aui-hidden');
                             if(data.status === 1){
                                 startId = data.startId;
-                                if( data.len < len ) return $sp.append(noMessage);
+                                if( data.len < len ) {
+                                    bhold = false;
+                                    $sp.append(noMessage);
+                                    return
+                                }
                                 $sp.append(LANG('show_cp').formatTpl(data.data).end())
-                            }else{
-                                $sp.append(noMessage);
-                            }
-                            setTimeout(function(){
                                 bhold = true;
-                            },50)
+                            }else if(data.status === 0){
+                                $sp.append(noMessage);
+                                bhold = false;
+                            }
+                            $loading.addClass('aui-hidden');
                         }
                     });
                 }
