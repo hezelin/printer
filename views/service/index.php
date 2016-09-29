@@ -162,20 +162,18 @@ echo GridView::widget([
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions'=>['style'=>'width:120px'],
-            'template' => '{allot} &nbsp; {delete}',
+            'headerOptions'=>['style'=>'width:140px'],
+            'template' => '{allot}&nbsp;{delete}',
             'buttons' => [
                 'allot'=>function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-repeat"></i>','javascript:void(0);',[
-                        'title'=>'分配维修',
-                        'class'=>'allot-model',
+                    return Html::a('分配','javascript:void(0);',[
+                        'class'=>'btn btn-info btn-sm allot-model',
                         'key-id'=>$key
                     ]);
                 },
                 'delete'=>function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-remove"></i>',$url,[
-                        'title'=>'关闭维修申请',
-                        'class'=>'close-model',
+                    return Html::a('关闭',$url,[
+                        'class'=>'btn btn-danger btn-sm close-model',
                         'key-id'=>$key
                     ]);
                 },

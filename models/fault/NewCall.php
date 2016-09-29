@@ -57,7 +57,7 @@ class NewCall
         }else
             $this->tips = ['机器型号不存在，将新建机器','客户资料不存在，将新建客户资料'];
 
-        $this->machine || $this->machine = new TblMachine(['scenario'=>'new-call']);
+        $this->machine || $this->machine = new TblMachine();
         $this->rent || $this->rent = new TblRentApply(['scenario' => 'new-call']);
         $this->fault = new TblMachineService();
 

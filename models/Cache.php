@@ -18,19 +18,19 @@ class Cache
     public static function setValue($key,$value,$expire = 0)
     {
         if ($expire == 0)
-            return Yii::$app->redis->set($key,$value);
+            return Yii::$app->cache->set($key,$value);
         else
-            return Yii::$app->redis->set($key,$value,$expire);
+            return Yii::$app->cache->set($key,$value,$expire);
     }
 
     public static function getValue($key)
     {
-        return Yii::$app->redis->get($key);
+        return Yii::$app->cache->get($key);
     }
 
     public static function delValue($key)
     {
-        return Yii::$app->redis->delete($key);
+        return Yii::$app->cache->delete($key);
     }
 
 
@@ -45,17 +45,17 @@ class Cache
         if( Yii::$app->user->isGuest )
             return Yii::$app->getResponse()->redirect(['auth/login','url'=>Yii::$app->request->url])->send();
 
-        $value = Yii::$app->redis->get('u:'.Yii::$app->user->id.':wid');
+        $value = Yii::$app->cache->get('u:'.Yii::$app->user->id.':wid');
         if( empty($value) )
         {
             if( Yii::$app->user->identity->group_id > 0)
             {
-                Yii::$app->redis->set('u:'.Yii::$app->user->id.':wid',Yii::$app->user->identity->weixin_id);
+                Yii::$app->cache->set('u:'.Yii::$app->user->id.':wid',Yii::$app->user->identity->weixin_id);
                 return Yii::$app->user->identity->weixin_id;
             }else{
                 if( Yii::$app->request->get('wx_id') )
                 {
-                    Yii::$app->redis->set('u:'.Yii::$app->user->id.':wid',Yii::$app->request->get('wx_id'));
+                    Yii::$app->cache->set('u:'.Yii::$app->user->id.':wid',Yii::$app->request->get('wx_id'));
                     return Yii::$app->request->get('wx_id');
                 }
             }

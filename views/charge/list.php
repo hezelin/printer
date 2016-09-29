@@ -71,11 +71,14 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions' => ['style'=>'width:100px'],
+            'headerOptions' => ['style'=>'width:140px'],
             'template' => '{log} &nbsp;{update}',
             'buttons' => [
                 'log' => function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-info-sign"></i>',Url::toRoute(['log','machine_id'=>$model->machine_id]),['title'=>'收租记录'] );
+                    return Html::a('收租记录',Url::toRoute(['log','machine_id'=>$model->machine_id]),['class'=>'btn btn-default btn-sm'] );
+                },
+                'update' => function($url,$model,$key){
+                    return Html::a('修改',$url,['class'=>'btn btn-primary btn-sm'] );
                 },
             ]
         ]

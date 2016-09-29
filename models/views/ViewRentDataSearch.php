@@ -53,6 +53,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=>['defaultOrder'=>['add_time' => SORT_DESC]]
         ]);
 
         $this->load($params);
