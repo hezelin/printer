@@ -82,7 +82,13 @@ AuicssAsset::register($this);
     #carousel-nav{
         display: none !important;
     }
-
+    .spxq_in{
+        width:100%;overflow-x:scroll;
+    }
+    .spxq_in > p > img{
+        width:100% !important;
+        height:auto !important;
+    }
 </style>
 
 
@@ -126,7 +132,7 @@ AuicssAsset::register($this);
         <div class="aui-pull-left" style="border-left:3px solid #ff4400; height:22px; margin-right:8px;"></div>
         <div class="aui-pull-left">商品详情</div>
     </h5>
-    <div class="aui-content">
+    <div class="aui-content spxq_in">
         <?=$model['describe']?>
     </div>
 </div>
