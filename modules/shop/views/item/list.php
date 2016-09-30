@@ -205,16 +205,10 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
                         <a href="#"><img src="/images/flash2.png" width="100%"></a>
                     </div>
                     <div class="swiper-slide">
-                        <a href="#"><img src="/images/flash2.png" width="100%"></a>
+                        <a href="#"><img src="/images/wsc_flash_1.jpg" width="100%"></a>
                     </div>
                     <div class="swiper-slide">
-                        <a href="#"><img src="/images/flash2.png" width="100%"></a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="#"><img src="/images/flash2.png" width="100%"></a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="#"><img src="/images/flash2.png" width="100%"></a>
+                        <a href="#"><img src="/images/wsc_flash_2.jpg" width="100%"></a>
                     </div>
                 </div>
                 <div class="swiper-pagination"></div>
@@ -362,7 +356,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
     ;!function(){
         var bhold = true;
         var $sp = $('.sp');
-        var noMessage = '<div class="aui-text-center">没有数据了</div>';
+        var noMessage = '<div class="aui-text-center" style="clear: both;">没有数据了</div>';
         var $loading = $('.loading');
         var $chat = document.getElementsByClassName('chat')[0];
         window.addEventListener('scroll', function(){
