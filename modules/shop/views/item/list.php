@@ -22,7 +22,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         vertical-align:bottom;
     }
 
-    /*swiper*/
+    /*swiper2*/
     .swiper-pagination-bullet{
         border:2px solid #fff;
         background: none;
