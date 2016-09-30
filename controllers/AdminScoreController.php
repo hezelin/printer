@@ -45,7 +45,6 @@ class AdminScoreController extends \yii\web\Controller
 
         $openid = Cache::getValue('score:'.$id);
 
-//        exit($openid);
         if( Yii::$app->request->post('score') ) {
 
             $score = Yii::$app->request->post('score');

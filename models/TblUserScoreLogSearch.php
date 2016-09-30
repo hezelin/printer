@@ -43,6 +43,9 @@ class TblUserScoreLogSearch extends TblUserScoreLog
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => ['add_time'=>SORT_DESC]
+            ]
         ]);
 
         $this->load($params);

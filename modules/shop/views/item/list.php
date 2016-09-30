@@ -202,16 +202,10 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
             <div class="swiper-container">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
-                        <a href="#"><img src="/images/flash2.png" width="100%"></a>
+                        <a href="#"><img src="/images/home/one.jpg" width="100%"></a>
                     </div>
                     <div class="swiper-slide">
-                        <a href="#"><img src="/images/flash2.png" width="100%"></a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="#"><img src="/images/flash2.png" width="100%"></a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="#"><img src="/images/flash2.png" width="100%"></a>
+                        <a href="#"><img src="/images/home/two.jpg" width="100%"></a>
                     </div>
                     <div class="swiper-slide">
                         <a href="#"><img src="/images/flash2.png" width="100%"></a>
