@@ -100,17 +100,16 @@ $this->registerCssFile('/css/font-icon/im1/font-icon.css',['depends'=>['app\asse
 <div class="main_wechat">
     <div class="aui-content">
         <ul class="aui-grid-nine">
+            <a class="aui-block" href="<?= Url::toRoute(['/user/rent/list','id'=>$setting['wx_id']]) ?>">
+                <li class="aui-col-xs-4 aui-text-center">
+                    <span class="aui-iconfont icon-kefu aui-text-cblue"></span>
+                    <p>机器租赁</p>
+                </li>
+            </a>
             <a class="aui-block" href="<?= Url::toRoute(['/user/i/machine','id'=>$setting['wx_id']]) ?>">
                 <li class="aui-col-xs-4 aui-text-center">
                     <span class="aui-iconfont icon-mechine aui-text-cblue"></span>
                     <p>我的机器</p>
-                </li>
-
-            </a>
-            <a class="aui-block" href="<?= Url::toRoute(['share/scheme','id'=>$setting['wx_id']]) ?>">
-                <li class="aui-col-xs-4 aui-text-center">
-                    <span class="aui-iconfont icon-get aui-text-cblue"></span>
-                    <p>赚取积分</p>
                 </li>
             </a>
             <a id="scan-btn" class="aui-block" href="javascript:void(0);">
@@ -125,18 +124,19 @@ $this->registerCssFile('/css/font-icon/im1/font-icon.css',['depends'=>['app\asse
                     <p>微商城</p>
                 </li>
             </a>
+            <a class="aui-block" href="<?= Url::toRoute(['share/scheme','id'=>$setting['wx_id']]) ?>">
+                <li class="aui-col-xs-4 aui-text-center">
+                    <span class="aui-iconfont icon-get aui-text-cblue"></span>
+                    <p>赚取积分</p>
+                </li>
+            </a>
             <a class="aui-block" href="<?= Url::toRoute(['share/active','id'=>$setting['wx_id']]) ?>">
                 <li class="aui-col-xs-4 aui-text-center">
                     <span class="aui-iconfont icon-newactive aui-text-cblue"></span>
                     <p>最新活动</p>
                 </li>
             </a>
-            <a class="aui-block" href="<?= Url::toRoute(['user/i/index','id'=>$setting['wx_id']]) ?>">
-                <li class="aui-col-xs-4 aui-text-center">
-                    <span class="aui-iconfont icon-useradmin aui-text-cblue"></span>
-                    <p>个人中心</p>
-                </li>
-            </a>
+
         </ul>
     </div>
 </div>

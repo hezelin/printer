@@ -373,6 +373,8 @@ class AdminRentController extends \yii\web\Controller
                 $model->address = Yii::$app->request->post('address-name');
 
             if($model->save()){
+                if($url = Yii::$app->request->get('redirect'))
+                    return $this->redirect($url);
                 return $this->redirect(Url::toRoute('list'));
             }
         }

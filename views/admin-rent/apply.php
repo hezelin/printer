@@ -83,16 +83,15 @@ echo GridView::widget([
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions' => ['style'=>'width:100px'],
+            'headerOptions' => ['style'=>'width:140px'],
             'template' => '{pass} &nbsp; {unpass}',
             'buttons' => [
                 'pass' => function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-ok"></i>',Url::toRoute(['pass','id'=>$model['id']]),['title'=>'租借通过']);
+                    return Html::a('通过',Url::toRoute(['pass','id'=>$model['id']]),['class'=>'btn btn-info btn-sm']);
                 },
                 'unpass' => function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-remove"></i>',Url::toRoute(['unpass','id'=>$model['id']]),[
-                        'title'=>'不通过',
-                        'class'=>'close-model',
+                    return Html::a('不通过',Url::toRoute(['unpass','id'=>$model['id']]),[
+                        'class'=>'btn btn-danger btn-sm close-model',
                         'key-id'=>$model['id'],
                     ]);
                 }

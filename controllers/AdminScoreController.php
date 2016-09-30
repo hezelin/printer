@@ -42,8 +42,10 @@ class AdminScoreController extends \yii\web\Controller
             Cache::setValue('score:'.$id,Yii::$app->request->get('openid'),60*30);
             $this->redirect(Url::toRoute('send'));
         }
+
         $openid = Cache::getValue('score:'.$id);
 
+//        exit($openid);
         if( Yii::$app->request->post('score') ) {
 
             $score = Yii::$app->request->post('score');
@@ -76,6 +78,7 @@ class AdminScoreController extends \yii\web\Controller
 
         $model = $openid? TblUserWechat::find()->with('count')->where(['wx_id'=>$id,'openid'=>$openid])->one():NULL;
         $isScan = $openid? 1:0;
+
         return $this->render('send',['model'=>$model,'isScan'=>$isScan]);
     }
 

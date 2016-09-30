@@ -21,7 +21,7 @@ class ItemController extends Controller
     {
         $this->layout = '/auicss';
         $len = Yii::$app->request->get('len')? : 10;
-
+        $cate = Yii::$app->request->get('category');
         $model = (new \yii\db\Query())
             ->select('t.id,t.wx_id,c.name as category,t.name,t.cover,t.price')
             ->from('tbl_product as t')
@@ -34,8 +34,12 @@ class ItemController extends Controller
             $model->andWhere(['<','t.id',Yii::$app->request->get('startId')]);
         if(Yii::$app->request->get('q'))
             $model->andWhere(['like','t.name',Yii::$app->request->get('q')]);
-        if(Yii::$app->request->get('key') && Yii::$app->request->get('key') != 'all')
-            $model->andWhere('t.category_id=:cate',[':cate'=>Yii::$app->request->get('key')]);
+
+
+        if($cate && $cate != 'all')
+        {
+            $model->andWhere(['t.category_id'=>$cate]);
+        }
 
         $model = $model->all();
 
@@ -58,14 +62,20 @@ class ItemController extends Controller
             ->all();
         $category = $category? ArrayHelper::map($category,'id','name'):[];
 
+        $categoryName = '所有商品';
+        if( $cate && $cate != 'all')
+        {
+            $categoryName = isset($category[$cate])? $category[$cate]:'所有商品';
+        }
         $startId = $model? $model[count($model)-1]['id']:0;
 
         return $this->render('list',[
             'model'=>$model,
             'startId'=>$startId,
             'id'=>$id,
-            'len'=>$len,
-            'category'=>$category
+            'len'=>count($model),
+            'category'=>$category,
+            'categoryName'=>$categoryName,
         ]);
     }
 

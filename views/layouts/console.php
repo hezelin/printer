@@ -185,7 +185,6 @@ WeixinAsset::register($this);
                                 'icon' => 'shopping-cart',
                                 'items' => [
                                     ['label' => '耗材列表','url' => ['/shop/backend/list']],
-                                    ['label' => '录入耗材','url' => ['/shop/backend/add']],
                                     ['label' => '订单管理', 'url' => ['/shop/adminorder/check']],
 
                                 ],

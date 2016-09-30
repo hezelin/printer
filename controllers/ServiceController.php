@@ -415,7 +415,7 @@ class ServiceController extends \yii\web\Controller
         {
             if( $model->save() == 'success' ){
                 Yii::$app->session->setFlash('success','资料录入成功！，请更正用户坐标！');
-                return $this->redirect(['/admin-rent/map','id'=>$model->rent->id]);
+                return $this->redirect(['/admin-rent/map','id'=>$model->rent->id,'redirect'=>'/service/list']);
             }else
                 Yii::$app->session->setFlash('error','资料录入失败！');
 
