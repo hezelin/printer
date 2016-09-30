@@ -5,6 +5,7 @@
  */
 
 namespace app\models;
+use app\models\common\Debug;
 use app\models\config\Tool;
 use app\models\Curl;
 use Yii;
@@ -127,7 +128,6 @@ class WxTemplate extends WxBase {
                 ],
             ]
         ];
-
         $this->sendTpl($tpl);
     }
 

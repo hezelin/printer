@@ -44,7 +44,8 @@ echo GridView::widget([
         ],
         [
             'attribute' => 'add_time',
-            'format'=>['date','php:Ymd H:i']
+            'label' => '操作时间',
+            'format'=>['date','php:Y-m-d H:i']
         ],
     ],
 ]);

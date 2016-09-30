@@ -22,7 +22,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         vertical-align:bottom;
     }
 
-    /*swiper*/
+    /*swiper2*/
     .swiper-pagination-bullet{
         border:2px solid #fff;
         background: none;
@@ -202,13 +202,13 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
             <div class="swiper-container">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
+                        <a href="#"><img src="/images/home/one.jpg" width="100%"></a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="#"><img src="/images/home/two.jpg" width="100%"></a>
+                    </div>
+                    <div class="swiper-slide">
                         <a href="#"><img src="/images/flash2.png" width="100%"></a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="#"><img src="/images/wsc_flash_1.jpg" width="100%"></a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="#"><img src="/images/wsc_flash_2.jpg" width="100%"></a>
                     </div>
                 </div>
                 <div class="swiper-pagination"></div>
