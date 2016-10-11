@@ -364,7 +364,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
     ;!function(){
         var bhold = true;
         var $sp = $('.sp');
-        var noMessage = '<div class="aui-text-center">没有数据了</div>';
+        var noMessage = '<div class="aui-text-center" style="clear: both;">没有数据了</div>';
         var $loading = $('.loading');
         var $chat = document.getElementsByClassName('chat')[0];
         window.addEventListener('scroll', function(){
