@@ -186,7 +186,7 @@ WeixinAsset::register($this);
                                 'items' => [
                                     ['label' => '耗材列表','url' => ['/shop/backend/list']],
                                     ['label' => '订单管理', 'url' => ['/shop/adminorder/check']],
-
+                                    ['label' => '轮播图设置', 'url' => ['/shop/admin-home/carousel']],
                                 ],
                             ],
                             [

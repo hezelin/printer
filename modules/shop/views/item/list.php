@@ -201,15 +201,23 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
         <div id="flash_rhome" class="aui-mg-b-15">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <a href="#"><img src="/images/home/one.jpg" width="100%"></a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="#"><img src="/images/home/two.jpg" width="100%"></a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="#"><img src="/images/flash2.png" width="100%"></a>
-                    </div>
+                    <?php if($carousel):?>
+                        <?php foreach($carousel as $c):?>
+                            <div class="swiper-slide">
+                                <a href="#"><img src="<?=$c?>" width="100%"></a>
+                            </div>
+                        <?php endforeach;?>
+                    <?php else:?>
+                        <div class="swiper-slide">
+                            <a href="#"><img src="/images/flash2.png" width="100%"></a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="#"><img src="/images/flash2.png" width="100%"></a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="#"><img src="/images/flash2.png" width="100%"></a>
+                        </div>
+                    <?php endif;?>
                 </div>
                 <div class="swiper-pagination"></div>
             </div>

@@ -26,7 +26,7 @@ class ItemController extends Controller
             ->select('t.id,t.wx_id,c.name as category,t.name,t.cover,t.price')
             ->from('tbl_product as t')
             ->leftJoin('tbl_category as c','c.id=t.category_id')
-            ->where('t.enable="Y" and t.wx_id=:wid',[':wid'=>$id])
+            ->where(['t.enable'=>'Y','t.wx_id'=>$id])
             ->andWhere(['>','t.amount',0])
             ->limit($len)
             ->orderBy('t.id desc');
@@ -69,6 +69,18 @@ class ItemController extends Controller
         }
         $startId = $model? $model[count($model)-1]['id']:0;
 
+        $carousel = (new \yii\db\Query())
+            ->select('images')
+            ->from('tbl_shop_home_carousel')
+            ->where(['wx_id'=>$id])
+            ->scalar();
+
+        if($carousel)
+        {
+            $carousel = str_replace('/s/','/m/',$carousel);
+            $carousel = json_decode($carousel,true);
+        }
+
         return $this->render('list',[
             'model'=>$model,
             'startId'=>$startId,
@@ -76,6 +88,7 @@ class ItemController extends Controller
             'len'=>count($model),
             'category'=>$category,
             'categoryName'=>$categoryName,
+            'carousel' => $carousel
         ]);
     }
 
