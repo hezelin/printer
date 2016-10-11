@@ -11,10 +11,10 @@ class ConfigBase
      * 公众号 等级
      */
     public static $vip = [
-//        1 => '试用版',
         1 => 'vip版',
         2 => '普通版',
         3 => '高级版',
+        10 => '私有云版',
     ];
 
     public static function getVip($id){

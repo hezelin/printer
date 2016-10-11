@@ -81,10 +81,7 @@ $this->title = '数据统计';
 
     <div class="col-md-6">
         <div class="chart-box">
-            <div class="row">
-                <div class="col-md-6"><div id="machine"></div></div>
-                <div class="col-md-6"><div id="machine2"></div></div>
-            </div>
+            <div id="machine"></div>
         </div>
     </div>
 
@@ -223,7 +220,7 @@ $this->title = '数据统计';
         series: <?=json_encode($machine['series'])?>
     });
 
-    $('#machine2').highcharts({
+    /*$('#machine2').highcharts({
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -253,7 +250,7 @@ $this->title = '数据统计';
             }
         },
         series: <?=json_encode($machine['series2'])?>
-    });
+    });*/
 
     $('#rent').highcharts({
         chart: {
