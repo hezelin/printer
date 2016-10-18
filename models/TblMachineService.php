@@ -22,7 +22,6 @@ class TblMachineService extends \yii\db\ActiveRecord
             [['weixin_id', 'machine_id', 'from_openid', 'add_time'], 'required'],
             [['weixin_id', 'machine_id', 'type', 'status', 'add_time', 'opera_time', 'unfinished_parts_num', 'accept_time', 'resp_time', 'fault_time', 'fault_score', 'parts_apply_time', 'parts_arrive_time', 'complete_time'], 'integer'],
             [['fault_cost', 'resp_km'], 'number'],
-            [['enable'], 'string'],
             [['from_openid', 'openid'], 'string', 'max' => 28],
             [['content'], 'string', 'max' => 600],
             [['desc'], 'string', 'max' => 1000],
@@ -36,7 +35,7 @@ class TblMachineService extends \yii\db\ActiveRecord
         return [
             'id' => '自增id',
             'weixin_id' => '微信id',
-            'machine_id' => '机器id',
+            'machine_id' => '机器编号',
             'from_openid' => '申请者openid',
             'openid' => '维修员id',
             'type' => '故障类型',
@@ -56,7 +55,6 @@ class TblMachineService extends \yii\db\ActiveRecord
             'parts_apply_time' => '配件申请时间',
             'parts_arrive_time' => '配件到达时间',
             'complete_time' => '维修完成时间',
-            'enable' => '是否使用',
         ];
     }
 

@@ -16,14 +16,12 @@ AuicssAsset::register($this);
     <meta name="format-detection" content="telephone=no">
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() //引入资源文件?>
-
 </head>
-<body>
+<body class="rhome">
 <?php $this->beginBody() ?>
 <?= $content ?>
-
-<div class="copyright aui-text-default">技术支持：<?= Yii::$app->name ?></div>
-<div style="height: 50px;">&nbsp;</div>
+<div class="aui-text-center it_support" style="color:#999; font-size: 12px !important; margin-bottom: 20px; overflow:hidden;">技术支持：<?= Yii::$app->name ?></div>
+<div class="footer_line" style="height:50px;">&nbsp;</div>
 <?php $this->endBody() ?>
 </body>
 </html>

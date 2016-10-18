@@ -6,6 +6,7 @@
 namespace app\modules\shop\controllers;
 
 use app\models\WxBase;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use Yii;
 
@@ -20,12 +21,12 @@ class ItemController extends Controller
     {
         $this->layout = '/auicss';
         $len = Yii::$app->request->get('len')? : 10;
-
+        $cate = Yii::$app->request->get('category');
         $model = (new \yii\db\Query())
             ->select('t.id,t.wx_id,c.name as category,t.name,t.cover,t.price')
             ->from('tbl_product as t')
             ->leftJoin('tbl_category as c','c.id=t.category_id')
-            ->where('t.enable="Y" and t.wx_id=:wid',[':wid'=>$id])
+            ->where(['t.enable'=>'Y','t.wx_id'=>$id])
             ->andWhere(['>','t.amount',0])
             ->limit($len)
             ->orderBy('t.id desc');
@@ -33,10 +34,17 @@ class ItemController extends Controller
             $model->andWhere(['<','t.id',Yii::$app->request->get('startId')]);
         if(Yii::$app->request->get('q'))
             $model->andWhere(['like','t.name',Yii::$app->request->get('q')]);
-        if(Yii::$app->request->get('key') && Yii::$app->request->get('key') != 'all')
-            $model->andWhere('t.category_id=:cate',[':cate'=>Yii::$app->request->get('key')]);
+
+
+        if($cate && $cate != 'all')
+        {
+            $model->andWhere(['t.category_id'=>$cate]);
+        }
 
         $model = $model->all();
+
+        foreach($model as &$m)
+            $m['cover'] = str_replace('/s/','/m/',$m['cover']);
 
         if(Yii::$app->request->get('format') == 'json'){
             return $model? json_encode([
@@ -47,13 +55,40 @@ class ItemController extends Controller
             ]):json_encode(['status'=>0,'msg'=>'没有数据了','startId'=>0]);
         }
 
+        $category = (new \yii\db\Query())
+            ->select('id,name')
+            ->from('tbl_category')
+            ->where(['wx_id'=>$id])
+            ->all();
+        $category = $category? ArrayHelper::map($category,'id','name'):[];
+
+        $categoryName = '所有商品';
+        if( $cate && $cate != 'all')
+        {
+            $categoryName = isset($category[$cate])? $category[$cate]:'所有商品';
+        }
         $startId = $model? $model[count($model)-1]['id']:0;
+
+        $carousel = (new \yii\db\Query())
+            ->select('images')
+            ->from('tbl_shop_home_carousel')
+            ->where(['wx_id'=>$id])
+            ->scalar();
+
+        if($carousel)
+        {
+            $carousel = str_replace('/s/','/m/',$carousel);
+            $carousel = json_decode($carousel,true);
+        }
 
         return $this->render('list',[
             'model'=>$model,
             'startId'=>$startId,
             'id'=>$id,
-            'len'=>$len,
+            'len'=>count($model),
+            'category'=>$category,
+            'categoryName'=>$categoryName,
+            'carousel' => $carousel
         ]);
     }
 

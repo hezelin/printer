@@ -2,23 +2,17 @@
 
 namespace app\models;
 
+use app\models\config\ConfigScheme;
 use Yii;
-use yii\base\InvalidParamException;
-use yii\web\NotFoundHttpException;
+
 
 class TblMachine extends \yii\db\ActiveRecord
 {
+    /*
+     * status = 11 , 表示删除状态
+     */
     // 添加数量，支持批量插入
     public $amount;
-    public $seriesLists = [];
-
-    /*
-     * 关联机器模型
-     */
-    public function getMachineModel()
-    {
-        return $this->hasOne(TblMachineModel::className(), ['id' => 'model_id']);
-    }
 
     /*
      * 查询机器维修状态
@@ -27,87 +21,64 @@ class TblMachine extends \yii\db\ActiveRecord
     {
         return $this->hasOne(TblMachineService::className(),['machine_id' => 'id']);
     }
+
     public static function tableName()
     {
         return 'tbl_machine';
     }
 
-
     public function rules()
     {
         return [
-            [['wx_id', 'model_id', 'series_id', 'buy_date', 'buy_price', 'add_time'], 'required'],
-            [['wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'come_from', 'add_time'], 'integer'],
+            [['model_id', 'images', 'brand'], 'required'],
+            ['amount','required','on'=>['create']],
+            [['wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'add_time', 'come_from','amount'], 'integer'],
+            [['buy_price'], 'number'],
             [['buy_date'], 'safe'],
-            [['buy_price','amount'], 'number'],
-            [['amount'],'default','value'=>1],
-            [['enable'], 'string'],
-            [['else_attr'], 'string', 'max' => 1000],
-            [['else_attr'], 'default', 'value' => '[]'],
-            [['series_id'],'checkNum'],
-            [['wx_id', 'series_id'], 'unique', 'targetAttribute' => ['wx_id', 'series_id'], 'message' => '编号已经存在.']
+            [['model_name', 'brand', 'series_id'], 'string', 'max' => 50],
+            [['brand_name', 'cover'], 'string', 'max' => 100],
+            [['images', 'remark'], 'string', 'max' => 500],
         ];
     }
 
-    /*
-     * 自定义验证规则，验证编号 series_id 跟 添加机器数量是否对应
-     * 遍历每个series_id 的长度，超过40验证失败
-     */
-    public function checkNum($attribute, $params)
+    public function beforeSave($insert)
     {
-        if (!$this->hasErrors()) {
-            if($this->amount >1){
-                $this->seriesLists = array_filter(explode(',',str_replace(['，',' '],[','],$this->series_id) ) );
-                if(count($this->seriesLists) != (int)$this->amount)
-                    $this->addError($attribute, '系列号必须填写 '.$this->amount . '个，并且用逗号,隔开');
-                if(!$this->hasErrors())
-                    foreach($this->seriesLists as $one){
-                        if( strlen($one) > 30){
-                            $this->addError($attribute, '系列号 '.$one.' 长度不能大于30个字符');
-                            break;
-                        }
-                    }
-            }else if( strlen($this->amount) >30 )
-                $this->addError($attribute, '系列号长度不能大于30个字符');
+        $this->cover = str_replace('/s/','/m/',json_decode($this->images,true)[0]);
+        $this->brand_name = ConfigScheme::brand($this->brand);
+        $this->updateModel();
+        if (parent::beforeSave($insert)) {
+            if($insert)
+            {
+                $this->wx_id = $this->wx_id? :Cache::getWid();
+                $this->add_time = time();
+            }  // 新增加数据，保存用户id
+            return true;
         }
+        return false;
     }
 
     public function attributeLabels()
     {
         return [
-            'id' => '系统id',
+            'id' => '机器编号',
             'wx_id' => '公众号id',
             'model_id' => '选择机型',
-            'series_id' => '机身序列号',
-            'buy_date' => '购买日期',
+            'model_name' => '机型',
+            'brand' => '品牌字母',
+            'brand_name' => '品牌名字',
+            'series_id' => '客户编号',
             'buy_price' => '购买价格',
-            'else_attr' => '补充属性',
+            'buy_date' => '购买时间',
+            'cover' => '封面图片',
+            'images' => '机器图片',
+            'remark' => '机器备注',
             'status' => '状态',
             'maintain_count' => '维修次数',
             'rent_count' => '租借次数',
-            'come_from' => '机器分类',
             'add_time' => '添加时间',
-            'enable' => '是否有效',
-            'amount' => '机器数量',
+            'come_from' => '机器分类',
+            'amount' => '数量',
         ];
-    }
-
-    /*
-     * 更新 tbl_machine_model 表上的  machine_count 计数
-     * $type = add / dec 减少
-     */
-    public function updateCount($type='add',$num=1)
-    {
-        if( !in_array($type,['add','dec']))
-            throw new InvalidParamException;
-
-        $model = TblMachineModel::findOne($this->model_id );
-        if($type === 'add')
-            $model->machine_count = $model->machine_count + $num;
-        else $model->machine_count = $model->machine_count - $num;
-
-        if( !$model->save() )
-            throw new NotFoundHttpException('计数错误');
     }
 
 
@@ -117,36 +88,46 @@ class TblMachine extends \yii\db\ActiveRecord
      */
     public function multiSave()
     {
-//        判断系列号是否存在
-        $data = (new \yii\db\Query())
-            ->select('series_id')
-            ->from('tbl_machine')
-            ->where(['in','series_id',$this->seriesLists])
-            ->all();
-        if($data){
-            Yii::$app->session->setFlash('error','系列号“'.ToolBase::arrayToString($data).'” 已经存在。');
-            return false;
-        }
+        $this->cover = str_replace('/s/','/m/',json_decode($this->images,true)[0]);
+        $this->brand_name = ConfigScheme::brand($this->brand);
+        $this->updateModel();                           // 更新 model_name
 
         $wx_id = Cache::getWid();
         $rows = [];
         for($i=0;$i< $this->amount;$i++){
             $row[0] = $wx_id;
             $row[1] = $this->model_id ;
-            $row[2] = $this->seriesLists[$i];
-            $row[3] = $this->buy_date;
-            $row[4] = $this->buy_price;
-            $row[5] = $this->else_attr;
-            $row[6] = time();
+            $row[2] = $this->brand;
+            $row[3] = $this->brand_name;
+            $row[4] = $this->cover;
+            $row[5] = $this->images;
+            $row[6] = $this->buy_date;
+            $row[7] = $this->buy_price;
+            $row[8] = time();
+            $row[9] = $this->model_name;
+            $row[10] = $this->remark;
+            $row[11] = $this->series_id;
             $rows[] = $row;
         }
 
         $row = Yii::$app->db->createCommand()->batchInsert('tbl_machine',
-            ['wx_id','model_id','series_id','buy_date','buy_price','else_attr','add_time'],$rows
+            ['wx_id','model_id','brand','brand_name','cover','images','buy_date','buy_price','add_time','model_name','remark','series_id'],$rows
         )->execute();
 
-        if($row)
-            $this->updateCount('add',$row);
         return $row;
+    }
+
+    /*
+     * 添加机器或者修改机器，获取机型名字
+     */
+    public function updateModel()
+    {
+        if( !isset($this->oldAttributes['model_id']) || $this->attributes['model_id'] != $this->oldAttributes['model_id']){
+            $this->model_name = (new \yii\db\Query())
+                ->select('model')
+                ->from('tbl_machine_model')
+                ->where(['id'=>$this->attributes['model_id']])
+                ->scalar();
+        }
     }
 }

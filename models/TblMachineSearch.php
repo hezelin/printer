@@ -7,66 +7,34 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\TblMachine;
 
-/**
- * TblMachineSearch represents the model behind the search form about `app\models\TblMachine`.
- */
 class TblMachineSearch extends TblMachine
 {
-    public $name;
-    public $type;
-
     public function rules()
     {
         return [
-            [['id', 'wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'come_from', 'add_time'], 'integer'],
-            [['series_id', 'buy_date', 'else_attr', 'enable','name','type'], 'safe'],
+            [['id', 'wx_id', 'model_id', 'status', 'maintain_count', 'rent_count', 'add_time', 'come_from'], 'integer'],
+            [['model_name', 'brand', 'brand_name', 'series_id', 'buy_date', 'cover', 'images', 'remark'], 'safe'],
             [['buy_price'], 'number'],
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scenarios()
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
         $query = TblMachine::find()
-            ->joinWith([
-                'machineModel'=>function($query){
-                    $query->joinWith(['brand']);  // 如果还有继续下去
-                }
-            ])
-            ->where(['tbl_machine.wx_id'=>Cache::getWid(),'tbl_machine.enable'=>'Y'])
-            ->orderBy('tbl_machine.id desc');
+            ->where(['wx_id'=>Cache::getWid()])
+            ->andWhere(['<','status',11])
+            ->orderBy('id desc');
 
-
+        // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                'pageSize' => 15,
-            ],
-/*            'sort'=>[
-                'attributes'=>[
-                    'type'=>[
-                        'asc'=>['machineModel.type'=>SORT_ASC],
-                        'desc'=>['machineModel.type'=>SORT_DESC],
-                        'label'=>'品牌',
-                    ]
-                ]
-            ],*/
         ]);
 
         $this->load($params);
@@ -77,24 +45,27 @@ class TblMachineSearch extends TblMachine
             return $dataProvider;
         }
 
+        // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
             'wx_id' => $this->wx_id,
             'model_id' => $this->model_id,
-            'buy_date' => $this->buy_date,
             'buy_price' => $this->buy_price,
+            'buy_date' => $this->buy_date,
             'status' => $this->status,
             'maintain_count' => $this->maintain_count,
             'rent_count' => $this->rent_count,
-            'come_from' => $this->come_from,
             'add_time' => $this->add_time,
+            'come_from' => $this->come_from,
         ]);
 
-        $query->andFilterWhere(['like', 'series_id', $this->series_id])
-            ->andFilterWhere(['like', 'else_attr', $this->else_attr])
-            ->andFilterWhere(['like', 'enable', $this->enable])
-            ->andFilterWhere(['like', 'tbl_machine_model.type', $this->type])
-            ->andFilterWhere(['like', 'tbl_brand.name', $this->name]);
+        $query->andFilterWhere(['like', 'model_name', $this->model_name])
+            ->andFilterWhere(['like', 'brand', $this->brand])
+            ->andFilterWhere(['like', 'brand_name', $this->brand_name])
+            ->andFilterWhere(['like', 'series_id', $this->series_id])
+            ->andFilterWhere(['like', 'cover', $this->cover])
+            ->andFilterWhere(['like', 'images', $this->images])
+            ->andFilterWhere(['like', 'remark', $this->remark]);
 
         return $dataProvider;
     }

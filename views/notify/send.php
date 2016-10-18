@@ -3,7 +3,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 $this->title = '发送通知';
-
+$this->params['breadcrumbs'][] = $this->title;
 
 function getSex($sex){
     return $sex==1? '男':($sex==2? '女':'未知');
@@ -18,13 +18,13 @@ function getSex($sex){
             <span class="small"> <?= date('Y-m-d H:i',$user['subscribe_time'])?>关注</span>
         </p>
         <p>
-            <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['wxuser/selectmaintain','url'=>\Yii::$app->request->url])?>">重新指定维修员</a>
-            <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['wxuser/select','url'=>\Yii::$app->request->url])?>">重新指定用户</a>
+            <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['/wxuser/select-maintain','url'=>\Yii::$app->request->url])?>">重新指定维修员</a>
+            <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['/wxuser/select','url'=>\Yii::$app->request->url])?>">重新指定用户</a>
         </p>
     <?php else:?>
         <p>指定用户发送
-            <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['wxuser/selectmaintain','url'=>\Yii::$app->request->url])?>">指定维修员</a>
-            <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['wxuser/select','url'=>\Yii::$app->request->url])?>">指定用户</a>
+            <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['/wxuser/select-maintain','url'=>\Yii::$app->request->url])?>">指定维修员</a>
+            <a class="btn btn-success" href="<?=\yii\helpers\Url::toRoute(['/wxuser/select','url'=>\Yii::$app->request->url])?>">指定用户</a>
         </p>
     <?php endif;?>
 </div>

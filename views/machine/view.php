@@ -5,10 +5,9 @@ use yii\widgets\DetailView;
 use yii\helpers\Url;
 use app\models\ConfigBase;
 
-/* @var $this yii\web\View */
-/* @var $model app\models\TblMachine */
-
 $this->title = '机器详情';
+$this->params['breadcrumbs'][] = ['label'=>'机器列表','url'=>['list']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <p>
@@ -42,36 +41,15 @@ $this->title = '机器详情';
                 ConfigBase::getMxStatus($model->status) ;
         }
 
-        function getFrom($model){
+        /*function getFrom($model){
             return $model->come_from? '自家':'非自家';
-        }
+        }*/
 
         function formatImage($model){
             return '<img src="'.$model->cover.'" width=100 >';
         }
-        function elseAttr($model){
-            $arr = json_decode($model->else_attr,true);
-            if(!$arr)
-                return '无';
-            $html = '';
-            foreach($arr as $row)
-                $html .= '<p>'.$row['name'].' : <span class="orange">'.$row['value'].'</span>';
 
-            return $html;
-        }
 
-        function getModel($id)
-        {
-            if($id == '0') return '<span class="not-set">（无设置）</span>';
-            $model = (new \yii\db\Query())
-                ->select('t.id, p.name, t.type')
-                ->from('tbl_machine_model as t')
-                ->leftJoin('tbl_brand as p','p.id=t.brand_id')
-                ->where('t.wx_id=:wid and t.id=:id',[':wid'=>\app\models\Cache::getWid(),':id'=>$id])
-                ->one();
-            $name = isset($model['name'])? $model['name']:'不存在';
-            return Html::a($name,Url::toRoute(['model/view','id'=>$id]));
-        }
     ?>
     <?= DetailView::widget([
         'model' => $model,
@@ -81,8 +59,9 @@ $this->title = '机器详情';
             'series_id',
             [
                 'attribute'=>'model_id',
+                'label' => '品牌机型',
                 'format'=>'html',
-                'value'=>getModel($model->model_id),
+                'value'=>$model->brand_name.','.$model->model_name,
             ],
             [
                 'attribute'=>'buy_price',
@@ -92,7 +71,13 @@ $this->title = '机器详情';
             [
                 'attribute'=>'add_time',
                 'value' => date("Y-m-d H:i:s",$model->add_time),
-                ],
+            ],
+            [
+                'attribute' => 'cover',
+                'format' => 'html',
+                'value' => \app\models\config\Tool::getImage($model->cover,100,true)
+            ],
+            'remark',
             'rent_count',
             'maintain_count',
             [
@@ -103,12 +88,7 @@ $this->title = '机器详情';
             [
                 'attribute' => 'come_from',
                 'label'=>'机器来源',
-                'value' => getFrom($model),
+                'value' => ConfigBase::getMachineOrigin($model->come_from),
             ],
-            [
-                'attribute' => 'else_attr',
-                'format' => 'html',
-                'value' =>elseAttr($model),
-            ]
         ],
     ]) ?>

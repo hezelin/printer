@@ -2,6 +2,7 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
     $this->title = '修改资料';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="row">

@@ -9,6 +9,7 @@ use yii\bootstrap\Modal;
 //$this->registerCssFile('/css/console-task.css');
 ?>
 <link href="/css/console-task.css" rel="stylesheet">
+<p>&nbsp;</p>
 <div class="row">
     <div class="mod_navbar">
         <div class="title"> <h3><i class="icon glyphicon glyphicon-tasks"></i> 工作任务</h3>  </div>
@@ -211,10 +212,10 @@ use yii\bootstrap\Modal;
             <?php if($data['alert']):?>
             <ul class="box-list-ul">
                 <li class="box-list-li">
-                    <span class="m-tips" style="width:60%;">待收租机器</span><a href="<?=Url::toRoute(['/adminrent/collect'])?>" class="num-alert"><?=$data['alert']['collect_count']?></a>
+                    <span class="m-tips" style="width:60%;">待收租机器</span><a href="<?=Url::toRoute(['/admin-rent/collect'])?>" class="num-alert"><?=$data['alert']['collect_count']?></a>
                 </li>
                 <li class="box-list-li">
-                    <span class="m-tips" style="width:60%;">快到期租借</span><a href="<?=Url::toRoute(['/adminrent/expire'])?>" class="num-alert"><?=$data['alert']['expire_count']?></a>
+                    <span class="m-tips" style="width:60%;">快到期租借</span><a href="<?=Url::toRoute(['/admin-rent/expire'])?>" class="num-alert"><?=$data['alert']['expire_count']?></a>
                 </li>
             </ul>
             <?php else:?>
@@ -266,7 +267,7 @@ use yii\bootstrap\Modal;
         <a href="<?=Url::toRoute(['service/call'])?>" class="box-panel-header">
             <h4><i class="icon glyphicon glyphicon-phone-alt"></i>电话报修</h4>
         </a>
-        <a href="<?=Url::toRoute(['adminscore/send'])?>" class="box-panel-header">
+        <a href="<?=Url::toRoute(['admin-score/send'])?>" class="box-panel-header">
             <h4><i class="icon glyphicon glyphicon-gift"></i>赠送积分</h4>
         </a>
         <a href="<?=Url::toRoute(['machine/list'])?>" class="box-panel-header">
@@ -293,11 +294,11 @@ use yii\bootstrap\Modal;
                             <span><?=$d['phone']?></span>
                         </div>
                         <div class="fault-data">
-                            <h4><?=$d['brand'],$d['type']?></h4>
+                            <h4><?=$d['brand_name'],$d['model']?></h4>
                             <span>月租:<b class="high-show"><?=$d['lowest_expense']?></b> , 黑白:<b class="high-show"><?=$d['black_white']?></b> , 彩色:<b class="high-show"><?=$d['colours']?></b></span>
                         </div>
                         <div class="fault-btn">
-                            <a href="<?=Url::toRoute(['adminrent/pass','id'=>$d['id']])?>" class="btn btn-info btn-sm">通过</a>
+                            <a href="<?=Url::toRoute(['/admin-rent/pass','id'=>$d['id']])?>" class="btn btn-info btn-sm">通过</a>
                             <button type="button" key-id="<?=$d['id']?>" modal-type="modal-rent-apply" class="order-modal btn btn-danger btn-sm">不通过</button>
                         </div>
                     </li>
@@ -356,7 +357,7 @@ echo newerton\fancybox\FancyBox::widget([
 Modal::begin([
     'header' => '分配任务',
     'id' => 'modal-fault-allot',
-    'size' => 'modal-md',
+    'size' => 'modal-lg',
     'toggleButton' => false,
     'footer' => '
         <button id="go-back" type="button" class="btn btn-default">上一步</button>
@@ -369,12 +370,8 @@ echo Html::beginForm('','',['class'=>'form-horizontal','id'=>'fault-text-form'])
 echo Html::textarea('fault_remark','',['placeholder'=>'备注留言(可省略)','class'=>'form-control','id'=>'fault-remark']);
 echo Html::endForm();
 
-echo Html::beginTag('table',['class'=>'table table-striped','id'=>'my-fix-model']);
-echo '<tr><th>名字</th><th>手机</th><th>待修</th><th>分配</th></tr>';
-foreach($data['maintainer'] as $d){
-    echo '<tr><td>',$d['name'],'</td><td>',$d['phone'],'</td><td class="repair-count">',$d['wait_repair_count'],'</td><td><a class="select-maintain" href="javascript:void(0);" title="分配维修" key-wid="',$d['wx_id'],'" key-openid="',$d['openid'],'" data-method="post"><i class="glyphicon glyphicon-ok"></i></a></td></tr>';
-}
-echo Html::endTag('table');
+echo Html::tag('div','',['id'=>'my-fix-model','style'=>'display:none']);
+
 Modal::end();
 
 
@@ -465,12 +462,87 @@ Modal::end();
 
 ?>
 
+<script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
 
 <script>
-    <?php $this->beginBlock('JS_END') ?>
     // 共用key,fault
-    var keyId;
-    var $li;
+    var keyId,
+        $li;
+
+    var myMarker,
+        mySite,
+        mpoints = [],
+        mapHasShow = 0,
+        mapHei,
+        mapFaultData = <?=json_encode($data['maintainer'],JSON_UNESCAPED_UNICODE)?> || [],
+        mapHomeData = {
+            lng: 116.404,
+            lat: 39.915
+        };
+
+    function showMap()
+    {
+        $('#my-fix-model').show();
+        if(mapHasShow == 0)
+        {
+            mapHei = mapHei || $(window).height();
+            $('#my-fix-model').css({
+                height:mapHei-250
+            });
+            setTimeout(function(){
+                if(mySite== undefined){
+                    mySite = new BMap.Map("my-fix-model", {enableMapClick: false}); // 创建Map实例
+                    mySite.enableScrollWheelZoom();                            // 启用滚轮放大缩小 map.enableContinuousZoom();                             // 启用地图惯性拖拽，默认禁用 map.enableInertialDragging();                           // 启用连续缩放效果，默认禁用。 map.addControl(new BMap.NavigationControl());           // 添加平移缩放控件
+                    mySite.addControl(new BMap.NavigationControl());
+
+                    // 维修任务坐标
+                    /*var pt = new BMap.Point(mapHomeData.lng, mapHomeData.lat);
+                     var myIcon = new BMap.Icon("/images/home-zulin.png", new BMap.Size(38,38));
+                     var marker2 = new BMap.Marker(pt,{icon:myIcon});
+                     mySite.addOverlay(marker2);*/
+
+                    for (var i = 0; i < mapFaultData.length; i++) {
+                        var lat = mapFaultData[i]['latitude'];
+                        var lng = mapFaultData[i]['longitude'];
+                        var content = '\
+                                <div id="openid-'+i+'" class="map-point-label" key-wid="'+mapFaultData[i]['wx_id']+'" key-openid="'+mapFaultData[i]['openid']+'">\
+                                    <div class="obj-img">\
+                                        <img src="/images/weixiuyuan_01.png">\
+                                        <div class="map-img-name">'+mapFaultData[i]['name']+'</div>\
+                                    </div>\
+                                    <div class="open-box hidden">\
+                                        <span class="map-point-name" style="font-size: 17px; margin:12px 0 7px 0;"> '+mapFaultData[i]['name']+'&nbsp;'+(mapFaultData[i]['phone'] == null? '':mapFaultData[i]['phone'])+'</span>\
+                                        <span class="map-point-name" style="font-size: 14px; color:#888; margin:4px 0 2px 0; line-height: 24px;">\
+                                            <i class="glyphicon glyphicon-time"></i>\
+                                            '+mapFaultData[i]['point_time']+'\
+                                            <br/>\
+                                            <i class="glyphicon glyphicon glyphicon-list-alt"></i>\
+                                            待维修'+mapFaultData[i]['wait_repair_count']+'个\
+                                        </span>\
+                                        <div class="map-yes-fix-btn">\
+                                            确认分配\
+                                        </div>\
+                                    </div>\
+                                </div>';
+                        var point = new BMap.Point(lng, lat);
+                        if(lng == null)
+                            continue;
+                        mpoints.push(point);
+                        var labelOpts = {
+                            position: point
+                        };
+                        var defaultLabel = new BMap.Label(content, labelOpts);
+                        mySite.addOverlay(defaultLabel);
+                    }
+                    mySite.setViewport(mpoints);
+                }
+            },500);
+            mapHasShow = 1;
+        }
+
+    }
+    <?php $this->beginBlock('JS_END') ?>
+
 
     ///////////  展开 收起  功能
     var listClsoe = '<i class="glyphicon glyphicon-menu-up"></i> 收起';
@@ -538,29 +610,37 @@ Modal::end();
         $('#my-fix-model').hide();
     });
     //        下一步
-    $('#my-fix-model').hide();
+//    $('#my-fix-model').hide();
     $('#next-step').click(function(){
         $(this).hide();
-        $('#fault-text-form').slideUp();
-        $('#my-fix-model').show();
+        $('#fault-text-form').hide();
+//        $('#my-fix-model').show();
+        showMap();
+    });
+
+    $('#modal-fault-allot').on('mouseenter','.map-point-label',function(){
+        $(this).find('.obj-img').siblings().removeClass('hidden');
+    }).on('mouseleave','.map-point-label',function(){
+        $(this).find('.obj-img').siblings().addClass('hidden');
     });
 
 //    维修分配
-    $('#modal-fault-allot .select-maintain').click(function(){
-        $(this).html('<img src="/images/loading.gif">');
+    $('#modal-fault-allot').on('click','.map-yes-fix-btn',function(){
+
         var $this = $(this);
-        var wid = $(this).attr('key-wid');
-        var openid = $(this).attr('key-openid');
-        var re_count = $(this).closest('tr').children('.repair-count');
+        var $closest = $this.closest('.map-point-label');
+
+        $this.html('正在分配中 <img src="/images/loading.gif">');
+        var wid = $closest.attr('key-wid');
+        var openid = $closest.attr('key-openid');
         $.post(
             '<?=Url::toRoute(['/service/allot'])?>',
             {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
             function(res){
                 if(res.status == 1){
-                    re_count.text( parseInt(re_count.text()) + 1 );
                     setTimeout(function(){
-                        $this.html('<i class="glyphicon glyphicon-ok"></i>');
                         $('#modal-fault-allot').modal('hide');
+                        $this.html('确认分配');
                         $li.slideUp();
                     },1000);
                 }
@@ -647,7 +727,7 @@ Modal::end();
             return false;
         }
         $.post(
-            '<?=Url::toRoute(['/adminrent/nopass'])?>?rent_id='+keyId,
+            '<?=Url::toRoute(['/admin-rent/nopass'])?>?rent_id='+keyId,
             {'text':text},
             function(res){
                 if(res.status == 1){

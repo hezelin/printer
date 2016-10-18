@@ -1,5 +1,7 @@
 <?php
     $this->title = '生成机器码';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <style>

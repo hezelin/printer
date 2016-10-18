@@ -11,6 +11,7 @@ use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 
 class WeixinController extends \yii\web\Controller
 {
@@ -21,12 +22,16 @@ class WeixinController extends \yii\web\Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-//                'only' => ['add', 'update', 'index','view','delete','start','stop'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['add', 'update', 'index','view','delete','start','stop','open','select','createmenu','console'],
-                        'roles' => ['@'],
+                        'actions' => ['index','view','start','stop','open','select','createmenu','console','test'],
+                        'roles' => ['manager'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['add', 'update','delete'],
+                        'roles' => ['super'],
                     ],
                 ],
             ],
@@ -66,8 +71,9 @@ class WeixinController extends \yii\web\Controller
 
     public function actionIndex()
     {
+        $uid = Yii::$app->user->identity->group_id == -1? Yii::$app->user->id:Yii::$app->user->identity->group_id;
         $dataProvider = new ActiveDataProvider([
-            'query' => TblWeixin::find()->where(['enable'=>'Y','uid'=>Yii::$app->user->id]),
+            'query' => TblWeixin::find()->where(['enable'=>'Y','uid'=>$uid]),
             'pagination' => [
                 'pageSize' => 15,
             ],
@@ -142,7 +148,6 @@ class WeixinController extends \yii\web\Controller
         $model = $this->findModel($id);
         Yii::$app->session['wechat'] = $model->attributes;
 
-
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $wechat = new WxBase($id);
@@ -154,15 +159,17 @@ class WeixinController extends \yii\web\Controller
 
             $model->status = 2;                                 // 默认开通 14天 时间
             $model->due_time = time() + 3600 * 24 * 14;
-            $model->save();
-                                                                // 店铺 资料 设置
+            if(!$model->save())
+                throw new HttpException(401,'开通失败');
+                // 店铺 资料 设置
             $setting = TblStoreSetting::find()->where('wx_id=:wid',[':wid'=>$id])->one();
             if(!$setting) $setting = new TblStoreSetting();
             $setting->wx_id = $id;
             $setting->add_time = time();
             $setting->store_name = $model->name;
             $setting->menu_name = $model->name;
-            $setting->save();
+            if(!$setting->save())
+                throw new HttpException(401,'店铺设置失败');
 
             $tmp = new WxTemplate($id);
             $tmp->setWechatTmp();                               // 设置模板行业
@@ -171,7 +178,11 @@ class WeixinController extends \yii\web\Controller
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();
-            return $this->render('//tips/homestatus',['tips'=>'开通失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+            return $this->render('//tips/home-status',[
+                'tips'=>'开通失败'.$e,
+                'btnText'=>'返回',
+                'btnUrl'=>'javascript:history.go(-1);'
+            ]);
         }
         return $this->redirect(['index']);
     }
@@ -211,5 +222,15 @@ class WeixinController extends \yii\web\Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionTest($id)
+    {
+        header("content-type:text/html;charset=utf-8");
+        $tmp = new WxTemplate($id);
+        $data = $tmp->getAllTemplate();
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
     }
 }

@@ -5,8 +5,8 @@ namespace app\controllers;
 use app\models\Cache;
 use app\models\TblRentApply;
 use app\models\TblRentReport;
-use app\models\TblRentReportSearch;
 use app\models\TblRentReportLog;
+use app\models\views\ViewChargeReportSearch;
 use Yii;
 use yii\helpers\Url;
 
@@ -26,28 +26,28 @@ class ChargeController extends \yii\web\Controller
             try {
                 $model->save();
 
-                $rent = TblRentApply::find()->where('enable="Y" and machine_id=:mid',[':mid'=>$machine_id])->one();
+                $rent = TblRentApply::find()->where('machine_id=:mid and status<11',[':mid'=>$machine_id])->one();
                 $rent->first_rent_time = strtotime( $model->next_rent );
                 $rent->save();
 
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();
-                return $this->render('//tips/error',['tips'=>$e,'btnText'=>'返回租借列表','btnUrl'=>Url::toRoute(['/adminrent/list'])]);
+                return $this->render('//tips/error',['tips'=>$e,'btnText'=>'返回租借列表','btnUrl'=>Url::toRoute(['/admin-rent/list'])]);
             }
-            return $this->redirect('/adminrent/list');
+            return $this->redirect('/admin-rent/list');
         }
 
         $rent = (new \yii\db\Query())
-            ->select('monthly_rent,black_white,colours,rent_period,name,address, first_rent_time')
+            ->select('monthly_rent,black_white,colours,rent_period,name,address, colours_amount,black_amount,first_rent_time')
             ->from('tbl_rent_apply')
-            ->where('machine_id=:mid and enable="Y"',[':mid'=>$machine_id])
+            ->where('machine_id=:mid and status<11',[':mid'=>$machine_id])
             ->orderBy('id desc')
             ->one();
         $lastCharge = (new \yii\db\Query())
             ->select('colour,black_white,total_money,exceed_money,add_time')
             ->from('tbl_rent_report')
-            ->where('enable="Y" and machine_id=:mid',[':mid'=>$machine_id])
+            ->where('machine_id=:mid and status<11',[':mid'=>$machine_id])
             ->orderBy('id desc')
             ->one();
 
@@ -57,14 +57,9 @@ class ChargeController extends \yii\web\Controller
         return $this->render('add',['model'=>$model,'rent'=>$rent,'lastCharge'=>$lastCharge,]);
     }
 
-    public function actionDetail()
-    {
-        return $this->render('detail');
-    }
-
     public function actionList()
     {
-        $searchModel = new TblRentReportSearch();
+        $searchModel = new ViewChargeReportSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('list', [
@@ -86,28 +81,28 @@ class ChargeController extends \yii\web\Controller
             try {
                 $model->save();
 
-                $rent = TblRentApply::find()->where('enable="Y" and machine_id=:mid',[':mid'=>$model->machine_id])->one();
+                $rent = TblRentApply::find()->where('machine_id=:mid and status<11',[':mid'=>$model->machine_id])->one();
                 $rent->first_rent_time = strtotime( $model->next_rent );
                 $rent->save();
 
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();
-                return $this->render('//tips/error',['tips'=>$e,'btnText'=>'返回租借列表','btnUrl'=>Url::toRoute(['/adminrent/list'])]);
+                return $this->render('//tips/error',['tips'=>$e,'btnText'=>'返回租借列表','btnUrl'=>Url::toRoute(['/admin-rent/list'])]);
             }
-            return $this->redirect('/adminrent/list');
+            return $this->redirect('/admin-rent/list');
         }
         $rent = (new \yii\db\Query())
-            ->select('monthly_rent,black_white,colours,rent_period,name,address, first_rent_time')
+            ->select('monthly_rent,black_white,colours,black_amount,colours_amount,rent_period,name,address, first_rent_time')
             ->from('tbl_rent_apply')
-            ->where('machine_id=:mid and enable="Y"',[':mid'=>$model->machine_id])
+            ->where('machine_id=:mid and status<11',[':mid'=>$model->machine_id])
             ->orderBy('id desc')
             ->one();
 
         $lastCharge = (new \yii\db\Query())
             ->select('colour,black_white,total_money,exceed_money,add_time')
             ->from('tbl_rent_report')
-            ->where('enable="Y" and machine_id=:mid',[':mid'=>$model->machine_id])
+            ->where('machine_id=:mid and status<11',[':mid'=>$model->machine_id])
             ->andWhere(['<','id',$model->id])
             ->orderBy('id desc')
             ->one();
@@ -130,12 +125,10 @@ class ChargeController extends \yii\web\Controller
 
         $rent = (new \yii\db\Query())
             ->select('monthly_rent,black_white,colours,rent_period,t.name,t.address,first_rent_time,
-                p.type,m.series_id,b.name as brand')
+                m.model_name as type,m.series_id,m.brand_name as brand')
             ->from('tbl_rent_apply t')
             ->leftJoin('tbl_machine m','t.machine_id=m.id')
-            ->leftJoin('tbl_machine_model p','p.id=m.model_id')
-            ->leftJoin('tbl_brand b','b.id=p.brand_id')
-            ->where('t.machine_id=:mid and t.enable="Y"',[':mid'=>$machine_id])
+            ->where('t.machine_id=:mid and t.status<11',[':mid'=>$machine_id])
             ->orderBy('t.id desc')
             ->one();
 

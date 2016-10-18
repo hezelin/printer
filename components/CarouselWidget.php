@@ -21,6 +21,7 @@ class CarouselWidget extends Widget{
     public $nav = 'carousel-nav';
     public $align = 'right';
     public $backgroundColor = '#444';
+    public $showNum = false;                        // 显示轮播图数量
 
     /*
      * 以下一个参数默认为 class
@@ -48,16 +49,19 @@ class CarouselWidget extends Widget{
 
     public function renderHtml()
     {
+        $num = $this->showNum? '<div class="carousel-show-num">'.count($this->data).'张</div>':'';
         $content = <<< MODEL_CONTENT
 <div id="{$this->wrap}" style="background-color:{$this->backgroundColor};">
     <div id="{$this->carousel}">
         <div id="{$this->iscroll}">
               {$this->renderItem()}
         </div>
+        {$num}
     </div>
 </div>
 
 <div id="{$this->nav}"><div id="dotty"></div></div>
+
 MODEL_CONTENT;
         return $content;
 

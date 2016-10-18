@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = '通知记录';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php

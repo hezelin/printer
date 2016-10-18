@@ -24,13 +24,12 @@ class WechatController extends \yii\web\Controller
 
         if($setting == null)
             throw new NotFoundHttpException('您所访问的页面不存在');
-
         if(!$this->checkMaintain($id,$openid)){             // 维修员页面跳转订
 //            查询 系统订单数
             $num['order'] = (new \yii\db\Query())
                 ->select('count(*)')
                 ->from('tbl_machine_service')
-                ->where('status=1 and enable="Y" and weixin_id=:wid',[':wid'=>$id])
+                ->where(['status'=>1,'weixin_id'=>$id])
                 ->scalar();
             $num['new'] = (new \yii\db\Query())
                 ->select('count(*)')
@@ -40,12 +39,21 @@ class WechatController extends \yii\web\Controller
             $num['fault'] = (new \yii\db\Query())
                 ->select('count(*)')
                 ->from('tbl_machine_service')
-                ->where('enable="Y" and status<9 and openid=:openid and weixin_id=:wid',[':openid'=>$openid,':wid'=>$id])
+                ->where('status<9 and openid=:openid and weixin_id=:wid',[':openid'=>$openid,':wid'=>$id])
                 ->scalar();
 
-            return $this->render('maintain',['setting'=>$setting,'num'=>$num]);
+            return $this->render('maintain',['setting'=>$setting,'num'=>$num,'openid'=>$openid]);
         }
-        return $this->render('index',['setting'=>$setting]);
+        $phone = (new \yii\db\Query())
+            ->select('phone')
+            ->from('tbl_store_setting')
+            ->where(['wx_id'=>$id])
+            ->scalar();
+
+        return $this->render('index',[
+            'setting'=>$setting,
+            'phone'=>$phone
+        ]);
     }
 
     /*

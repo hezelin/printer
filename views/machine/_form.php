@@ -7,10 +7,6 @@ use dosamigos\datepicker\DatePicker;
 use app\components\MoreattrWidget;
 use yii\bootstrap\Alert;
 
-
-/* @var $this yii\web\View */
-/* @var $model app\models\TblMachine */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 <style>
     #ui-datepicker-div{
@@ -26,6 +22,13 @@ if( Yii::$app->session->hasFlash('error') )
         ],
         'body' => Yii::$app->session->getFlash('error'),
     ]);
+if( Yii::$app->session->hasFlash('success') )
+    echo Alert::widget([
+        'options' => [
+            'class' => 'alert-info',
+        ],
+        'body' => Yii::$app->session->getFlash('success'),
+    ]);
 ?>
 
 <div class="row">
@@ -39,25 +42,12 @@ if( Yii::$app->session->hasFlash('error') )
         ],
     ]); ?>
 
-    <?= $form->field($model, 'series_id')->textInput(['placeholder'=>'多个序列号用逗号","隔开']) ?>
-    <?= $form->field($model, 'model_id')->widget(\kartik\select2\Select2::classname(), [
-        'data' => app\models\ConfigBase::getMachineModel(),
-        'language' => 'zh-CN',
-        'options' => ['placeholder' => '选择机型 ...'],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-        'addon' => [
-            'append' => [
-                'content' => Html::a('<i class="glyphicon glyphicon-plus"></i>',Url::toRoute(['model/add','url'=>Yii::$app->request->url]),[
-                    'class' => 'btn btn-success',
-                    'title' => '添加模型',
-                    'style' => 'padding-bottom:7px;'
-                ]),
-                'asButton' => true
-            ]
-        ]
-    ]);?>
+    <?= $form->field($model, 'brand')->dropDownList([''=>'选择'] + \app\models\config\ConfigScheme::$brand)->hint('品牌不存在跟我们联系')->label('选择品牌') ?>
+
+    <?= $form->field($model, 'model_id')->widget(\app\components\ItemDependentWidget::className(),[
+        'depend'=>'brand',
+        'dataUrl'=>'/ajax-data/model-type'
+    ])->hint('型号不存在跟我们联系')?>
 
     <?= $form->field($model, 'buy_price')->textInput() ?>
     <?= $form->field($model, 'buy_date')->widget(dosamigos\datepicker\DatePicker::className(), [
@@ -68,14 +58,20 @@ if( Yii::$app->session->hasFlash('error') )
         ]
     ]) ?>
 
+    <?= $form->field($model, 'series_id')->textInput() ?>
+
+    <?= $form->field($model, 'images')->widget(\app\components\UploadimageWidget::className(),[
+        'serverUrl'=>Url::toRoute(['/site/image','pathName'=>'machine']),'imageLimit'=>5
+    ])?>
+
     <?= $form->field($model, 'come_from')->dropDownList(\app\models\ConfigBase::$machineOrigin) ?>
+
+    <?= $form->field($model, 'remark')->textarea(['rows'=>4,'placeholder'=>'机器特点可备注，可省略']) ?>
 
     <?php
         if( $model->isNewRecord )
-           echo  $form->field($model, 'amount')->textInput(['placeholder'=>1]);
+           echo  $form->field($model, 'amount')->textInput(['value'=>1]);
     ?>
-
-    <?= $form->field($model, 'else_attr')->textInput(['placeholder'=>'属性名，属性值一一对应']) ?>
 
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
@@ -88,5 +84,3 @@ if( Yii::$app->session->hasFlash('error') )
     <?php ActiveForm::end(); ?>
 
 </div>
-
-<?=MoreattrWidget::widget(['targetId'=>'#tblmachine-else_attr','data'=>$model->else_attr])?>

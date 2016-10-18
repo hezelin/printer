@@ -11,6 +11,15 @@ $config = [
         'shop' => [
             'class' => 'app\modules\shop\Module',
         ],
+        'maintain' => [
+            'class' => 'app\modules\maintain\Module',
+        ],
+        'user' => [
+            'class' => 'app\modules\user\Module',
+        ],
+        'gridview' =>  [
+            'class' => '\kartik\grid\Module',
+        ],
     ],
     'components' => [
         'urlManager' =>[
@@ -30,16 +39,18 @@ $config = [
         'fileCache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'redis' => [
-            'class' => 'yii\redis\Connection',
-            'hostname' => 'localhost',
-            'port' => 6379,
-            'database' => 2,
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
             'loginUrl' => '/auth/login',
             'enableAutoLogin' => true,
+            'identityCookie' => [
+                'name'     => '_hyizu',
+                'path'     => '/',
+                'httpOnly' => true,
+            ],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -64,7 +75,7 @@ $config = [
     ],
     'params' => require(__DIR__ . '/params.php'),
 ];
-
+$config['modules']['gii'] = 'yii\gii\Module';
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';

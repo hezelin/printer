@@ -11,6 +11,7 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+    public $layout = 'console';
     public function behaviors()
     {
         return [
@@ -46,6 +47,9 @@ class SiteController extends Controller
                 'minLength' => 4,
                 'maxLength' => 6,
             ],
+            'image' => [
+                'class' => 'app\components\HarryImageAction',
+            ]
         ];
     }
 

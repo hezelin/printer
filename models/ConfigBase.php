@@ -11,9 +11,10 @@ class ConfigBase
      * 公众号 等级
      */
     public static $vip = [
-        1 => '试用版',
+        1 => 'vip版',
         2 => '普通版',
         3 => '高级版',
+        10 => '私有云版',
     ];
 
     public static function getVip($id){
@@ -66,8 +67,12 @@ class ConfigBase
      */
     public static $faultStatus = [
         1 => '卡纸',
-        2 => '坏晒鼓',
-        3 => '其他'
+        2 => '黑线',
+        3 => '重影',
+        4 => '不清晰',
+        5 => '底灰',
+        6 => '开不了机',
+        10 => '其他'
     ];
 
     public static function getFaultStatus($id){
@@ -167,13 +172,13 @@ class ConfigBase
     public static function getMachineInfo($id='',$is_from='')
     {
         $model = (new \yii\db\Query())
-            ->select('m.id,m.series_id, p.name, t.type')
-            ->from('tbl_machine as m')
-            ->leftJoin('tbl_machine_model as t','m.model_id=t.id')
-            ->leftJoin('tbl_brand as p','p.id=t.brand_id')
-            ->where('t.enable="Y" and m.status=1 and t.wx_id=:wid',[':wid'=>Cache::getWid()]);
+            ->select('id,brand_name,model_name,come_from')
+            ->from('tbl_machine')
+            ->where(['wx_id'=>Cache::getWid()])
+            ->andWhere(['status'=>1]);
+
         if($is_from)
-            $model->andWhere('t.come_from=:from',[':from'=>$is_from]);
+            $model->andWhere(['come_from'=>$is_from]);
 
         $model = $model->all();
 
@@ -181,7 +186,10 @@ class ConfigBase
         if($model){
             foreach($model as $m)
             {
-                $tmp[ $m['id'] ] = $m['name'].' / '.$m['type'].' / '.$m['series_id'];
+                if($m['come_from'] == 4)
+                    $tmp[ $m['id'] ] = '预设机器 / '.$m['id'];
+                else
+                    $tmp[ $m['id'] ] = $m['brand_name'].' / '.$m['model_name'].' / '.$m['id'];
             }
         }
 
@@ -195,7 +203,7 @@ class ConfigBase
         1 => '出租',
         2 => '销售',
         3 => '维修',
-        4 => '二维码',
+        4 => '预设机器',
     ];
 
     /*
@@ -203,6 +211,16 @@ class ConfigBase
      */
     public static function getMachineOrigin($id){
         return isset(self::$machineOrigin[$id])? self::$machineOrigin[$id]:'出错';
+    }
+
+    /*
+     *
+     */
+    public static function getMachineFrom()
+    {
+        $data = self::$machineOrigin;
+        unset($data[4]);
+        return $data;
     }
 
     /*

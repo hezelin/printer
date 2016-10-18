@@ -100,7 +100,7 @@ class PartsController extends Controller
         // 查询商品库 库存
         $model = TblProduct::findOne($item_id);
         if($model->amount <= 0)
-            return $this->render('//tips/homestatus',['tips'=>'配件库存为0','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+            return $this->render('//tips/home-status',['tips'=>'配件库存为0','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
         $model->amount = $model->amount -1;
 
         // 非维修员不能申请配件
@@ -112,9 +112,9 @@ class PartsController extends Controller
                 ->where('openid=:openid', [':openid' => $openid])
                 ->scalar();
             if ( !$isMaintainer )
-                return $this->render('//tips/homestatus', ['tips' => '不是维修员，没有权限！', 'btnText' => '返回', 'btnUrl' => 'javascript:history.go(-1);']);
+                return $this->render('//tips/home-status', ['tips' => '不是维修员，没有权限！', 'btnText' => '返回', 'btnUrl' => 'javascript:history.go(-1);']);
 
-            $btnUrl = Url::toRoute(['/m/taskdetail','id'=>$fault_id]);
+            $btnUrl = Url::toRoute(['/maintain/task/detail','id'=>$fault_id]);
             $btnText = '返回维修';
         }else{
             $btnText = '返回主页';
@@ -150,10 +150,10 @@ class PartsController extends Controller
         } catch(\Exception $e) {
             $transaction->rollBack();
 //            echo $e;
-            return $this->render('//tips/homestatus',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
+            return $this->render('//tips/home-status',['tips'=>'入库失败','btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
         }
 
-        return $this->render('//tips/homestatus',[
+        return $this->render('//tips/home-status',[
             'tips'=>'配件申请提交成功!',
             'btnText'=>$btnText,
             'btnUrl'=>$btnUrl,
@@ -243,7 +243,7 @@ class PartsController extends Controller
             if(!$model) $model = new TblParts();
             $model->machine_id = $machine_id;
         }else
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'数据不合法！',
                 'btnText'=>'返回',
                 'btnUrl'=>'javascript:history.go(-1)']);
@@ -287,13 +287,13 @@ class PartsController extends Controller
         } catch(\Exception $e) {
             $transaction->rollBack();
             echo $e;
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'系统错误！',
                 'btnText'=>'返回',
                 'btnUrl'=>'javascript:history.go(-1)']);
         }
 
-        return $this->render('//tips/homestatus',[
+        return $this->render('//tips/home-status',[
             'tips'=>'绑定成功！',
             'btnText'=>'返回首页',
             'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])]);
@@ -333,13 +333,13 @@ class PartsController extends Controller
         } catch(\Exception $e) {
             $transaction->rollBack();
             echo $e;
-            return $this->render('//tips/homestatus',[
+            return $this->render('//tips/home-status',[
                 'tips'=>'系统错误！',
                 'btnText'=>'返回',
                 'btnUrl'=>'javascript:history.go(-1)']);
         }
 
-        return $this->render('//tips/homestatus',[
+        return $this->render('//tips/home-status',[
             'tips'=>'解除绑定成功！',
             'btnText'=>'返回首页',
             'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])]);
@@ -386,7 +386,7 @@ class PartsController extends Controller
             if(!$model->remark())
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
             else
-                return $this->render('//tips/homestatus',[
+                return $this->render('//tips/home-status',[
                     'tips'=>'备注成功',
                     'btnText'=>'返回',
                     'btnUrl'=>'javascript:history.go(-2)'

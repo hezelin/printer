@@ -1,5 +1,7 @@
 <?php
 $this->title = '积分二维码';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <div class="col-md-3 col-md-offset-1 bg-info">

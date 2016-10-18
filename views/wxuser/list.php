@@ -3,7 +3,8 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = '微信用户列表';
+$this->title = '微信用户';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php

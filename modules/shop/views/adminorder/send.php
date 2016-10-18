@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\bootstrap\Modal;
 use app\modules\shop\models\Shop;
 $this->title = '待发货订单';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <style>
 

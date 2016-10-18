@@ -8,14 +8,14 @@ $this->title = '机器页面';
 
     <?=$btnHtml?>
 
-    <a class="h-link" href="<?=Url::toRoute(['m/taskdetail','id'=>$service_id])?>">
+    <a class="h-link" href="<?=Url::toRoute(['/maintain/task/detail','id'=>$service_id])?>">
         故障信息
     </a>
-    <a class="h-link" href="<?=Url::toRoute(['m/task','id'=>$wid,'type'=>'history'])?>">
+    <a class="h-link" href="<?=Url::toRoute(['/maintain/task/list','id'=>$wid,'type'=>'history'])?>">
         维修记录
     </a>
 
-    <a class="h-link" href="<?=Url::toRoute(['mcharge/add','id'=>$wid,'machine_id'=>$mid])?>">
+    <a class="h-link" href="<?=url::toRoute(['/maintain/charge/add','id'=>$wid,'machine_id'=>$mid])?>">
         收租录入
     </a>
 </div>

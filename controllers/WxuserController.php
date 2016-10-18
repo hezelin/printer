@@ -29,14 +29,14 @@ class WxuserController extends \yii\web\Controller
         return $this->render('select',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'fromUrl'=>$fromUrl]);
     }
 
-    public function actionSelectmaintain()
+    public function actionSelectMaintain()
     {
         $searchModel = new TblUserMaintainSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $fromUrl = $this->dealUrl( Yii::$app->request->get('url') );
 
-        return $this->render('selectmaintain',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'fromUrl'=>$fromUrl]);
+        return $this->render('select-maintain',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'fromUrl'=>$fromUrl]);
     }
 
     /*

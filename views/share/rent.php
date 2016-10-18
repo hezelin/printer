@@ -65,7 +65,7 @@ $this->title = '分享租机方案';
     'jsReady'=>'
         wx.onMenuShareTimeline({
             title: "“'.$data['name'].'”,让你节省40%办公设备成本，省心省力！",
-            link: "'.Url::toRoute(['rent/list','id'=>$id,'origin'=>$from],'http').'",
+            link: "'.url::toRoute(['/user/rent/list','id'=>$id,'origin'=>$from],'http').'",
             imgUrl: "'.Yii::$app->request->hostInfo.'/images/share-image.jpg",
             success: function () {
                 syncShare(4);
@@ -77,7 +77,7 @@ $this->title = '分享租机方案';
         wx.onMenuShareAppMessage({
             title:  "'.$data['name'].'",
             desc: "让你节省40%办公设备成本，省心省力！",
-            link: "'.Url::toRoute(['rent/list','id'=>$id,'origin'=>$from],'http').'",
+            link: "'.url::toRoute(['/user/rent/list','id'=>$id,'origin'=>$from],'http').'",
             imgUrl: "'.Yii::$app->request->hostInfo.'/images/share-image.jpg",
             success: function () {
                 // 用户确认分享后执行的回调函数

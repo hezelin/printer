@@ -42,19 +42,17 @@ class ConsoleController extends \yii\web\Controller
         }
 
         $data['maintainer'] = (new \yii\db\Query())
-            ->select('name,phone,openid,wx_id,wait_repair_count')
+            ->select(['name','phone','openid','wx_id','wait_repair_count','longitude','latitude','FROM_UNIXTIME(`point_time`,"%Y-%m-%d %H:%i") as point_time'])
             ->from('tbl_user_maintain')
             ->where('wx_id=:wid',[':wid'=>$wx_id])
             ->all();
 
         $data['fault'] = (new \yii\db\Query())
-            ->select('t.id,t.content,t.desc,t.type,t.add_time,p.type as model,b.name as brand,a.name,a.phone,a.address')
+            ->select('t.id,t.content,t.desc,t.type,t.add_time,m.model_name as model,m.brand_name as brand,a.name,a.phone,a.address')
             ->from('tbl_machine_service t')
             ->leftJoin('tbl_machine m','t.machine_id=m.id')
-            ->leftJoin('tbl_machine_model p','p.id=m.model_id')
-            ->leftJoin('tbl_brand b','b.id=p.brand_id')
-            ->leftJoin('tbl_rent_apply a','a.machine_id=t.machine_id and a.enable="Y"')
-            ->where('t.enable="Y" and t.status=1 and t.weixin_id=:wid',[':wid'=>$wx_id])
+            ->leftJoin('tbl_rent_apply a','a.machine_id=t.machine_id and a.status<11')
+            ->where('t.status=1 and t.weixin_id=:wid',[':wid'=>$wx_id])
             ->all();
         if($data['fault']){
             foreach($data['fault'] as &$d){
@@ -64,16 +62,15 @@ class ConsoleController extends \yii\web\Controller
         }
 
         $data['rent'] = (new \yii\db\Query())
-            ->select('t.id,t.name,t.phone,t.add_time,u.headimgurl,m.type,m.is_color,b.name as brand,
+            ->select('t.id,t.name,t.phone,t.add_time,u.headimgurl,m.model,m.brand_name,
                 p.lowest_expense,p.black_white,p.colours')
             ->from('tbl_rent_apply as t')
-            ->where('t.wx_id=:wid and t.status=1 and t.enable="Y"',[':wid'=>$wx_id])
+            ->where('t.wx_id=:wid and t.status=1',[':wid'=>$wx_id])
             ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
             ->leftJoin('tbl_machine_rent_project as p','p.id=t.project_id')
             ->leftJoin('tbl_machine_model as m','p.machine_model_id=m.id')
-            ->leftJoin('tbl_brand b','b.id=m.brand_id')
             ->all();
-
+//        $data['rent'] = [];
         $data['alert'] = (new \yii\db\Query())
             ->select('expire_count,collect_count')
             ->from('tbl_analyze_rent')
@@ -114,13 +111,11 @@ class ConsoleController extends \yii\web\Controller
         $data['rental'] = (new \yii\db\Query())
             ->select('t.id,t.machine_id,t.colour,t.black_white,t.total_money,t.exceed_money,t.sign_img,t.name,
                 p.name as username,p.address,
-                d.type as model,b.name as brand')
+                m.model_name as model,m.brand_name as brand')
             ->from('tbl_rent_report t')
-            ->leftJoin('tbl_rent_apply p','p.machine_id=t.machine_id and p.enable="Y"')
+            ->leftJoin('tbl_rent_apply p','p.machine_id=t.machine_id and p.status<11')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')
-            ->leftJoin('tbl_machine_model as d','d.id=m.model_id')
-            ->leftJoin('tbl_brand as b','b.id=d.brand_id')
-            ->where('t.wx_id=:wid and t.status=1 and t.enable="Y"',[':wid'=>$wx_id])
+            ->where('t.wx_id=:wid and t.status=1',[':wid'=>$wx_id])
             ->all();
 
         return $this->render('view',['data'=>$data,'wx_id'=>$wx_id]);
@@ -147,7 +142,7 @@ class ConsoleController extends \yii\web\Controller
 
         return $this->render('analyze',[
             'item'=>$item->getCharts(),
-            'stock'=>$item->getItemStock(),
+//            'stock'=>$item->getItemStock(),
             'machine'=>$machine->getCharts(),
             'charts'=>$ana->getCharts(),
             'rent'=>$rent->getCharts(),

@@ -4,6 +4,8 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use app\assets\WeixinAsset;
 use kartik\sidenav\SideNav;
+use yii\widgets\Breadcrumbs;
+use app\models\Alert;
 
 WeixinAsset::register($this);
 ?>
@@ -58,7 +60,7 @@ WeixinAsset::register($this);
         <?php
             NavBar::begin([
                 'brandLabel' => Yii::$app->name,
-                'brandUrl' => '#',
+                'brandUrl' => '/console/view',
                 'brandOptions' => [
                     'style' => 'color:#ffffff',
                 ],
@@ -87,7 +89,6 @@ WeixinAsset::register($this);
 
     <div class="container-fluid">
         <div class="row my-content">
-
             <div class="col-sm-3 col-md-2">
                 <?php
                 $item = [
@@ -108,14 +109,21 @@ WeixinAsset::register($this);
                         'label' => '我的账号',
                         'icon' => 'user',
                         'items' => [
-                            ['label' => '修改密码', 'url' => ['/user/reset']],
+                            ['label' => '修改密码', 'url' => ['/auth/reset']],
 //                                        ['label' => '查看日志', 'url' => '/user/log'],
                         ],
                     ],
+                    [
+                        'label' => '权限管理',
+                        'icon' => 'star',
+                        'items' => [
+                            ['label' => '成员管理', 'url' => ['/admin-rbac/member'],
+                                'active' => in_array(Yii::$app->controller->getRoute(),['admin-rbac/member','admin-rbac/update','admin-rbac/create']),
+                            ],
+                            ['label' => '登录日志', 'url' => ['/admin-rbac/log']],
+                        ],
+                    ],
                 ];
-
-                if(Yii::$app->user->id == 4)
-                    array_push($item,['label' => '报名表', 'url' => ['/console/zuji-apply'],'icon'=>'stats']);
 
                 echo SideNav::widget([
                     'type' => SideNav::TYPE_DEFAULT,
@@ -126,7 +134,10 @@ WeixinAsset::register($this);
                 ?>
             </div>
             <div class="col-sm-9 col-md-10">
-                <p style="height: 20px">&nbsp;</p>
+                <?= Breadcrumbs::widget([
+                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                ]) ?>
+                <?= Alert::widget() ?>
                 <?= $content ?>
             </div>
         </div>

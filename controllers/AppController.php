@@ -1,7 +1,8 @@
 <?php
 
 namespace app\controllers;
-use app\models\Cache;
+use app\models\common\Debug;
+use app\models\config\Tool;
 use app\models\TblUserMaintain;
 use app\models\ToolBase;
 use app\models\WxUser;
@@ -26,7 +27,7 @@ class AppController extends \yii\web\Controller
 
         $wx->init();
 
-        $msgType = empty($wx->msg->MsgType) ? '' : strtolower($wx->msg->MsgType);
+        /*$msgType = empty($wx->msg->MsgType) ? '' : strtolower($wx->msg->MsgType);
 
         switch ($msgType)
         {
@@ -35,6 +36,15 @@ class AppController extends \yii\web\Controller
                 break;
             case 'image':
                 //你要处理图文消息代码
+                break;
+            case 'voice':
+                //你要处理音频消息代码
+                break;
+            case 'video':
+                //你要处理视频消息代码
+                break;
+            case 'shortvideo':
+                //你要处理小视频消息代码
                 break;
             case 'location':
                 //你要处理位置消息代码
@@ -48,47 +58,60 @@ class AppController extends \yii\web\Controller
             default:
                 //无效消息情况下的处理方式
                 break;
-        }
+        }*/
 
+        /*
+         * 变量转换
+         */
+        $wxEvent = (string)$wx->msg->Event;
+        $wxEventKey = (string)$wx->msg->EventKey;
+        $wxFromUser = (string)$wx->msg->FromUserName;
         /*
          * 用户关注，保存资料
          */
-        if($wx->msg->Event == 'subscribe'){
+        if($wxEvent == 'subscribe'){
             $weixin = new WxUser($id);
-            $weixin->getUser($wx->msg->FromUserName,true);
+            $weixin->getUser($wxFromUser,true);
         }
-        else if($wx->msg->Event == 'unsubscribe'){
+        else if($wxEvent == 'unsubscribe'){
             $weixin = new WxUser($id);
-            $weixin->delUser($wx->msg->FromUserName);
+            $weixin->delUser($wxFromUser);
         }
 
         /*
          * 二维码扫描处理,关注事件扫描二维码
          */
-        if( ($wx->msg->Event == 'SCAN' && $key = $wx->msg->EventKey) ||
-            ($wx->msg->Event == 'subscribe' && substr($wx->msg->EventKey,0,8) == 'qrscene_' && $key = substr($wx->msg->EventKey,8,-1))
+        if( ($wxEvent == 'SCAN' && $key = $wxEventKey) ||
+            ($wxEvent == 'subscribe' && substr($wxEventKey,0,8) == 'qrscene_' && $key = substr($wxEventKey,8,-1))
         ){
 
             if($key == 1)               // 绑定维修员事件
             {
-                $maintain = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$wx->msg->FromUserName]);
+                $maintain = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$wxFromUser]);
                 if($maintain)
                     return $wx->makeText( date('Y-m-d H:i',$maintain->add_time).'已绑定为维修员，无需再绑定！');
                 else{
                     $maintain = new TblUserMaintain();
                     $maintain->wx_id = $id;
-                    $maintain->name = (new \yii\db\Query())->select('nickname')->from('tbl_user_wechat')->where(['wx_id'=>$id,'openid'=>$wx->msg->FromUserName])->scalar();
-                    $maintain->openid = (string)$wx->msg->FromUserName;
+                    $maintain->name = (new \yii\db\Query())->select('nickname')->from('tbl_user_wechat')->where(['wx_id'=>$id,'openid'=>$wxFromUser])->scalar();
+                    $maintain->name || $maintain->name = '未知';
+                    $maintain->openid = $wxFromUser;
                     $maintain->add_time = time();
                     if($maintain->save())
                         return $wx->makeText('成功绑定为维修员！');
-                    return $wx->makeText( ToolBase::arrayToString($maintain->errors));
+                    return $wx->makeText(ToolBase::arrayToString($maintain->errors));
                 }
             }elseif($key == 2 )          // 扫描积分二维码
             {
-                Yii::$app->cache->set('score:'.$id,(string)$wx->msg->FromUserName,60*30);
+                Yii::$app->cache->set('score:'.$id,$wxFromUser,60*30);
                 return $wx->makeText( '等待获得积分中...');
             }
+        }
+
+        if($wxEvent == 'LOCATION')
+        {
+            Tool::location($wxFromUser,$id,$wx->msg->Longitude,$wx->msg->Latitude);
+            return 'success';
         }
 
 //        $wx->reply($reply);

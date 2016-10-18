@@ -11,12 +11,15 @@ use app\models\TblUserMaintain;
 use app\models\ToolBase;
 use app\models\WxTemplate;
 use Yii;
+use yii\web\HttpException;
 
 class NewCall
 {
     public $machine;            // tbl_machine 句柄
     public $rent;               // tbl_rent_apply 句柄
     public $fault;              // tbl_machine_service
+    public $tips = [];          // 提示资料
+    public $faultStatus;        // 维修 状态,1维修
     public $wid;
 
     /*
@@ -24,32 +27,61 @@ class NewCall
      */
     public function __construct()
     {
-        $this->machine = new TblMachine();
-        $this->rent = new TblRentApply(['scenario' => 'new-call']);
-        $this->fault = new TblMachineService();
         $this->wid = Cache::getWid();
 
-        $this->machine->wx_id = $this->wid;
-        $this->machine->model_id = 0;
-        $this->machine->series_id = 'DH_'.$this->wid.'_'.$this->dec62(time());
-        $this->machine->buy_date = date('Y-m-d',time());
-        $this->machine->buy_price = 0;
-        $this->machine->come_from = 3;
-        $this->machine->status = 2;
+        // 维修资料状态，如果在维修过程中，或者刚刚申请中 返回
+        // 机器不存在或者已删除，将新建机器资料
+        // 租赁资料不存在 或者已删除，将新建客户资料
+        if($machineId = Yii::$app->request->get('machine_id'))
+        {
+            $this->fault = TblMachineService::find()->where(['machine_id'=>$machineId])->one();
+            if($this->fault && $this->fault->status < 9 && $this->fault->weixin_id == $this->wid){
+                $this->faultStatus = $this->fault->status;
+                return '';
+            }
+
+            $this->machine = TblMachine::find()->where(['id'=>$machineId,'wx_id'=>$this->wid])->one();
+            if(!$this->machine || $this->machine->status == 11)
+            {
+                $this->tips[] = '机器型号 '.$machineId.' 不存在，将新建机器';
+                $this->machine = null;
+            }
+
+            $this->rent = TblRentApply::find()->where(['machine_id'=>$machineId,'wx_id'=>$this->wid])->one();
+            if(!$this->rent || $this->rent->status == 11)
+            {
+                $this->tips[] = '客户资料不存在，将新建客户资料';
+                $this->rent = null;
+            }
+
+        }else
+            $this->tips = ['机器型号不存在，将新建机器','客户资料不存在，将新建客户资料'];
+
+        $this->machine || $this->machine = new TblMachine();
+        $this->rent || $this->rent = new TblRentApply(['scenario' => 'new-call']);
+        $this->fault = new TblMachineService();
+
+
+        $this->machine->wx_id || $this->machine->wx_id = $this->wid;
+        $this->machine->model_id || $this->machine->model_id = 1664;        //-
+        $this->machine->brand || $this->machine->brand = 'wsz';             //-
+        $this->machine->status = 2;                                         // 更改为已租借、已维修
+        $this->machine->come_from || $this->machine->come_from = 3;         // 电话维修
+
 
 //        用户租借申请表，需要补回  machine_id
-        $this->rent->project_id = 0;
-        $this->rent->wx_id = $this->wid;
-        $this->rent->openid = $this->machine->series_id;
-        $this->rent->due_time = strtotime('10 year',time());        // 10年到期
-        $this->rent->first_rent_time = $this->rent->due_time;       // 下次收租时间 10年
-        $this->rent->rent_period = 3;                               // 3个月
-        $this->rent->status = 2;                                    // 租借通过
+        $this->rent->project_id || $this->rent->project_id = 0;
+        $this->rent->wx_id || $this->rent->wx_id = $this->wid;
+        $this->rent->openid || $this->rent->openid = uniqid('dh_');
+        $this->rent->due_time ||$this->rent->due_time = strtotime('10 year',time());                // 10年到期
+        $this->rent->first_rent_time|| $this->rent->first_rent_time = $this->rent->due_time;        // 下次收租时间 10年
+        $this->rent->rent_period || $this->rent->rent_period = 60;                                  // 5年
+        $this->rent->status || $this->rent->status = 3;                     // 1申请中，2已通过，3                                            // 租借通过
 
 //        维修表，需要补回 machine_id
         $this->fault->weixin_id = $this->wid;
         $this->fault->from_openid = $this->rent->openid;
-        $this->fault->content = json_encode(['cover'=>['/images/call_maintain.png']]);
+        $this->fault->content = json_encode(['cover'=>['/img/haoyizu.png']]);
     }
 
     /*
@@ -65,11 +97,21 @@ class NewCall
 //        添加时间
         $this->machine->add_time = $this->rent->add_time = $this->fault->add_time = time();
         $this->rent->due_time = strtotime($this->rent->due_time);
+        // 添加机器封面图片 cover/images
+        if(!$this->machine->images)
+        {
+            $this->machine->images = json_encode(['/img/haoyizu.png']);
+            $this->machine->cover = '/img/haoyizu.png';
+        }
 
+        $error = [];
         $transaction = Yii::$app->db->beginTransaction();
         try {
             if( !$this->machine->save())
+            {
+                $error[] = $this->machine->errors;
                 throw new \Exception('系统出错--machine');
+            }
 
             $this->rent->machine_id = $this->machine->id;
             if(!$this->rent->save())
@@ -101,8 +143,8 @@ class NewCall
 
             $transaction->commit();
         } catch(\Exception $e) {
-            echo $e;
             $transaction->rollBack();
+            throw new HttpException(401,'系统出错');
         }
 
         return 'success';
@@ -139,5 +181,16 @@ class NewCall
             $n -= $a * pow($base, $t);
         }
         return $ret;
+    }
+
+    /*
+     * 返回提醒
+     */
+    public function getTips()
+    {
+        $tmp = [];
+        foreach($this->tips as $k=>$p)
+            $tmp[] = ($k+1)."、$p";
+        return $tmp;
     }
 }

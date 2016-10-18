@@ -12,8 +12,7 @@ class TblStoreSetting extends \yii\db\ActiveRecord
     public function getCarousel()
     {
         return $this->hasMany(Carousel::className(), ['weixinid' => 'wx_id'])
-            ->where(['show'=>1])          // where 条件查询
-            ->orderBy('id');
+            ->orderBy('sort');
     }
 
     public static function tableName()

@@ -36,10 +36,22 @@ class AnalyzeController extends \yii\web\Controller
     /*
      * 维修统计
      */
-    public function actionFault()
+    public function actionHistory()
     {
         $ana = new TblAnalyzeFault();
-        return $ana->historyDay(-4,0);
+        $ana->historyDay(-15,0);
+        $ana = new TblAnalyzeMaintain();
+        $ana->historyDay(-15,0);
+        $ana = new TblAnalyzeOrder();
+        $ana->historyDay(-15,0);
+        $ana = new TblAnalyzeProduct();
+        $ana->historyDay(-15,0);
+        $ana = new TblAnalyzeMachine();
+        $ana->historyDay(-15,0);
+        $ana = new TblAnalyzeRent();
+        $ana->historyDay(-15,0);
+        $ana = new TblAnalyzeRental();
+        $ana->historyDay(-15,0);
     }
 
     /*

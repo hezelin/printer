@@ -5,8 +5,8 @@ use yii\helpers\Url;
 use app\models\ConfigBase;
 use yii\bootstrap\Modal;
 
-
 $this->title = '选择维修';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php
@@ -60,7 +60,7 @@ echo GridView::widget([
         [
             'attribute'=>'series_id',
             'format'=>'html',
-            'header'=>'系列号',
+            'header'=>'客户编号',
             'headerOptions'=>['style'=>'width:100px'],
             'value'=>function($model){
                 return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).

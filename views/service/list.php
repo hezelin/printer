@@ -6,7 +6,8 @@ use app\models\ConfigBase;
 use yii\bootstrap\Modal;
 
 
-$this->title = '待维修列表';
+$this->title = '维修列表';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <style>
@@ -22,17 +23,80 @@ $this->title = '待维修列表';
         .voice-stop .voice-image{background-position: -40px 0;}
         .voice-playing .voice-image{background-position: -120px 0;}
         .voice-play .voice-image{background-position: -80px 0;}
+
+        label.BMapLabel{
+            background: 0 none !important;
+            padding: 5px !important;
+            border:0 none !important;
+
+        }
+        .map-point-label{
+            height: 48px;
+            position: relative;
+            margin-left: -35px;
+            margin-top: -55px;
+        }
+        .map-point-name{
+            line-height: 24px;
+            display: block;
+        }
+        .obj-img{
+            position: relative;
+            width:98px;
+            height:70px;
+            overflow:hidden;
+        }
+        .map-img-name{
+            position: absolute;
+            color:#fff;
+            left:12px;
+            top:12px;
+            width:80px;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+        }
+        .open-box{
+            padding:0 17px;
+            position: absolute;
+            top:-148px;
+            left:-90px;
+            width:290px;
+            height:148px;
+            overflow: hidden;
+            background: url('/images/box-label-map.png') no-repeat;
+        }
+        .map-yes-fix-btn{
+            overflow:hidden;
+            cursor: pointer;
+            margin-top:5px;
+            float:right;
+            height:28px;
+            line-height:28px;
+            padding:0 15px;
+            text-align: center;
+            color:#fff;
+            background: #5bc0de;
+            border-radius:2px;
+            font-size: 14px;
+        }
     </style>
 
-<div >
+<?php if(Yii::$app->request->get('machine_id')):?>
+    <div class="alert alert-info">正在筛选机器编号 <span class="badge"><?=Yii::$app->request->get('machine_id')?></span> 数据</div>
+<?php elseif(Yii::$app->request->get('client_no')):?>
+    <div class="alert alert-info">正在筛选客户编号 <span class="badge"><?=Yii::$app->request->get('client_no')?></span> 数据</div>
+<?php else:?>
+<div>
     <ul class="nav nav-tabs" >
         <li <?php if(!Yii::$app->request->get('process')) echo 'class="active"';?>><a href="<?=Url::toRoute(['list'])?>" >维修中</a></li>
         <li <?php if(Yii::$app->request->get('process')==2) echo 'class="active"';?>><a href="<?=Url::toRoute(['list','process'=>2])?>" >等待评价</a></li>
         <li <?php if(Yii::$app->request->get('process')==3) echo 'class="active"';?>><a href="<?=Url::toRoute(['list','process'=>3])?>" >已完成</a></li>
-        <li><a href="<?=Url::toRoute(['cancellist'])?>" >已取消</a></li>
+        <li><a href="<?=Url::toRoute(['cancel-list'])?>" >已取消</a></li>
     </ul>
+    <p>&nbsp;</p>
 </div>
-<p>&nbsp;</p>
+<?php endif;?>
 
 <?php
 
@@ -43,7 +107,33 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'layout' => "{items}\n{pager}",
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],               // 系列
+//        ['class' => 'yii\grid\SerialColumn'],
+        [
+            'attribute'=>'machine_id',
+            'format' => 'html',
+            'content'=>function($model){
+                return Html::a($model->machine_id,['machine/view','id'=>$model->machine_id],[
+                    'title'=>'查看机器详情',
+                    'target'=>'_blank',
+                ]);
+            }
+        ],
+        [
+            'attribute'=>'series_id',
+            'format' => 'html',
+            'content'=>function($model){
+                if($model->series_id)
+                    return Html::a($model->series_id,['/service/list','client_no'=>$model->series_id],[
+                        'title'=>'查看编号所有维修',
+                        'target'=>'_blank',
+                    ]);
+                return '<span class="not-set">(未设置)</span>';
+            }
+        ],
+        [
+            'attribute'=>'user_name',
+            'label'=>'用户姓名',
+        ],
         [
             'attribute'=>'cover',
             'header'=>'故障图片',
@@ -93,29 +183,22 @@ echo GridView::widget([
             }
         ],
         [
-            'attribute'=>'machine.machineModel.cover',
-            'header'=>'机器',
+            'attribute'=>'cover',
+            'header'=>'机器图片',
             'content'=>function($data)
             {
-                if( isset($data->machine->machineModel->cover )  )
-                    return Html::a(Html::img($data->machine->machineModel->cover,['width'=>40]),str_replace('/s/','/m/',$data->machine->machineModel->cover),['class'=>'fancybox','rel'=>'group1']);
+                if( isset($data->cover )  )
+                    return Html::a(Html::img($data->cover,['width'=>40]),str_replace('/s/','/m/',$data->cover),['class'=>'fancybox','rel'=>'group1']);
             }
         ],
-
-        'machine.machineModel.brand.name',
-        'machine.machineModel.type',
         [
-            'attribute'=>'series_id',
-            'format'=>'html',
-            'header'=>'系列号',
-            'headerOptions'=>['style'=>'width:100px'],
-            'value'=>function($model){
-                if( !isset($model->machine->series_id)) return '无';
-                return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
-                Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
+            'attribute'=>'model_name',
+            'label'=>'机型',
+            'content'=>function($model) {
+                return $model->brand_name . $model->model_name;
             }
         ],
-        'machine.maintain_count',
+        'maintain_count',
         [
             'attribute'=>'status',
             'header'=>'进度',
@@ -137,14 +220,14 @@ echo GridView::widget([
         ],
         [
             'attribute' => 'add_time',
-            'header'=>'申请时间',
+            'header'=>'维修时间',
             'format' => ['date', 'php:Y-m-d H:i'],
         ],
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions'=>['style'=>'width:110px'],
-            'template' => '{process} &nbsp; {switch} &nbsp; {delete}',
+            'template' => '{process} &nbsp; {switch} &nbsp; {delete} &nbsp; {qrcode} <br/>{fault}',
             'buttons' => [
                 'process'=>function($url,$model,$key){
                     return Html::a('<i class="glyphicon glyphicon-eye-open"></i>',$url,['title'=>'查看进度']);
@@ -168,6 +251,12 @@ echo GridView::widget([
                         'class'=>'close-model',
                         'key-id'=>$key
                     ]);
+                },
+                'qrcode' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::toRoute(['/code/machine','id'=>$model->machine_id]) ,['title'=>'机器二维码']);
+                },
+                'fault' => function($url,$model,$key){
+                    return Html::a('<span class="glyphicon glyphicon-screenshot"></span>',Url::toRoute(['/service/list','machine_id'=>$model->machine_id]) ,['title'=>'机器维修记录']);
                 },
             ]
         ]
@@ -195,7 +284,6 @@ echo Html::input('text','service_cancel','',['placeholder'=>'取消原因','clas
 echo Html::endForm();
 
 Modal::end();
-
 
 // fancybox 图片预览插件
 
@@ -237,50 +325,37 @@ echo newerton\fancybox\FancyBox::widget([
 Modal::begin([
     'header' => '分配任务',
     'id' => 'my-modal',
-    'size' => 'modal-md',
+    'size' => 'modal-lg',
     'toggleButton' => false,
     'footer' => '
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
     ',
 ]);
-echo GridView::widget([
-    'dataProvider'=> $fixProvider,
-    'tableOptions' => ['class' => 'table table-striped'],
-    'layout' => "{items}\n{pager}",
-    'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],               // 系列
-        'name',
-        'phone',
-        [
-            'attribute'=>'wait_repair_count',
-            'contentOptions'=>['class'=>'repair-count'],
-        ],
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'header' => '分配',
-            'headerOptions'=>['style'=>'width:120px'],
-            'template' => '{select}',
-            'buttons' => [
-                'select'=>function($url,$model,$key){
-
-                    return Html::a('<i class="glyphicon glyphicon-ok"></i>','javascript:void(0);',[
-                        'title'=>'分配维修',
-                        'class'=>'select-maintain',
-                        'key-wid'=>$key['wx_id'],
-                        'key-openid'=>$key['openid'],
-                        'data-method'=>'post',
-                    ]);
-                },
-            ]
-        ]
-    ],
-]);
+echo Html::tag('div','',['id'=>'my-fix-model','style'=>'display:none']);
 
 Modal::end();
 ?>
 
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
+
     <script>
-        var playtime,myAudio,voiceWrap;
+        var myMarker,
+            mySite,
+            mpoints = [],
+            mapHasShow = 0,
+            mapHei,
+            mapFaultData = <?=json_encode($maintainer,JSON_UNESCAPED_UNICODE)?> || [],
+            mapHomeData = {
+                lng: 116.404,
+                lat: 39.915
+            };
+
+        var allotTr,                                //  公共变量
+            keyId;
+
+        var playtime,                               //  录音控制
+            myAudio,
+            voiceWrap;
         function get_less_time(){
             var second = voiceWrap.find('.voice-second')
 
@@ -300,9 +375,72 @@ Modal::end();
             voiceWrap.find('.voice-second').text( voiceWrap.attr('data-time'));
         }
 
+        function showMap()
+        {
+            $('#my-fix-model').show();
+            if(mapHasShow == 0)
+            {
+                mapHei = mapHei || $(window).height();
+                $('#my-fix-model').css({
+                    height:mapHei-250
+                });
+                setTimeout(function(){
+                    if(mySite== undefined){
+                        mySite = new BMap.Map("my-fix-model", {enableMapClick: false}); // 创建Map实例
+                        mySite.enableScrollWheelZoom();                            // 启用滚轮放大缩小 map.enableContinuousZoom();                             // 启用地图惯性拖拽，默认禁用 map.enableInertialDragging();                           // 启用连续缩放效果，默认禁用。 map.addControl(new BMap.NavigationControl());           // 添加平移缩放控件
+                        mySite.addControl(new BMap.NavigationControl());
+
+                        // 维修任务坐标
+                        /*var pt = new BMap.Point(mapHomeData.lng, mapHomeData.lat);
+                        var myIcon = new BMap.Icon("/images/home-zulin.png", new BMap.Size(38,38));
+                        var marker2 = new BMap.Marker(pt,{icon:myIcon});
+                        mySite.addOverlay(marker2);*/
+
+                        for (var i = 0; i < mapFaultData.length; i++) {
+                            var lat = mapFaultData[i]['latitude'];
+                            var lng = mapFaultData[i]['longitude'];
+                            var content = '\
+                                <div id="openid-'+i+'" class="map-point-label" key-wid="'+mapFaultData[i]['wx_id']+'" key-openid="'+mapFaultData[i]['openid']+'">\
+                                    <div class="obj-img">\
+                                        <img src="/images/weixiuyuan_01.png">\
+                                        <div class="map-img-name">'+mapFaultData[i]['name']+'</div>\
+                                    </div>\
+                                    <div class="open-box hidden">\
+                                        <span class="map-point-name" style="font-size: 17px; margin:12px 0 7px 0;"> '+mapFaultData[i]['name']+'&nbsp;'+(mapFaultData[i]['phone'] == null? '':mapFaultData[i]['phone'])+'</span>\
+                                        <span class="map-point-name" style="font-size: 14px; color:#888; margin:4px 0 2px 0; line-height: 24px;">\
+                                            <i class="glyphicon glyphicon-time"></i>\
+                                            '+mapFaultData[i]['point_time']+'\
+                                            <br/>\
+                                            <i class="glyphicon glyphicon glyphicon-list-alt"></i>\
+                                            待维修'+mapFaultData[i]['wait_repair_count']+'个\
+                                        </span>\
+                                        <div class="map-yes-fix-btn">\
+                                            确认分配\
+                                        </div>\
+                                    </div>\
+                                </div>';
+                            var point = new BMap.Point(lng, lat);
+                            if(lng == null)
+                                continue;
+                            mpoints.push(point);
+                            var labelOpts = {
+                                position: point
+                            };
+                            var defaultLabel = new BMap.Label(content, labelOpts);
+                            mySite.addOverlay(defaultLabel);
+                        }
+                        mySite.setViewport(mpoints);
+                    }
+                },500);
+                mapHasShow = 1;
+            }
+        }
+
+
+
         <?php $this->beginBlock('JS_END') ?>
-        var allotTr;
-        var keyId;
+
+
 
         $('#fix-list .close-model').click(function(){
             keyId = $(this).attr('key-id');
@@ -315,24 +453,31 @@ Modal::end();
             allotTr = $(this).closest('tr');
             keyId = $(this).attr('key-id');
             $('#my-modal').modal('show');
+            showMap();
             return false;
         });
-        $('#my-modal .select-maintain').click(function(){
-            $(this).html('<img src="/images/loading.gif">');
+
+        $('#my-modal').on('mouseenter','.map-point-label',function(){
+            $(this).find('.obj-img').siblings().removeClass('hidden');
+        }).on('mouseleave','.map-point-label',function(){
+            $(this).find('.obj-img').siblings().addClass('hidden');
+        });
+
+        $('#my-modal').on('click','.map-yes-fix-btn',function(){
             var $this = $(this);
-            var wid = $(this).attr('key-wid');
-            var openid = $(this).attr('key-openid');
-            var re_count = $(this).closest('tr').children('.repair-count');
+            var $closest = $this.closest('.map-point-label');
+
+            $this.html('正在分配中 <img src="/images/loading.gif">');
+            var wid = $closest.attr('key-wid');
+            var openid = $closest.attr('key-openid');
             $.post(
-                '<?=Url::toRoute(['switch'])?>',
+                '<?=Url::toRoute(['/service/switch'])?>',
                 {'id':keyId,'wid':wid,'openid':openid},
                 function(res){
                     if(res.status == 1){
-                        re_count.text( parseInt(re_count.text()) + 1 );
                         setTimeout(function(){
-                            $this.html('<i class="glyphicon glyphicon-ok"></i>');
                             $('#my-modal').modal('hide');
-                            allotTr.remove();
+                            $this.html('确认分配');
                         },1000);
                     }
                     else
@@ -341,6 +486,7 @@ Modal::end();
             );
             return false;
         });
+
 
         $('#cancel-btn').click(function(){
             var text = $.trim($('#cancel-text').val());
@@ -362,7 +508,6 @@ Modal::end();
                 },'json'
             );
         })
-
 
         //录音控制
         $('.voice-wrap').click(function(){

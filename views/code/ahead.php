@@ -1,11 +1,12 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\grid\CheckboxColumn;
 use yii\bootstrap\Alert;
 
-$this->title = '生成机器码';
+$this->title = '预设机器二维码';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php
@@ -20,7 +21,7 @@ if( Yii::$app->session->hasFlash('error') )
 ?>
 
 <div class="alert alert-info" role="alert">
-    1、您最多只能生成300个无机器资料 二维码，目前已生成<?=$count?>个
+    1、您最多只能生成300个空资料的机器二维码，目前已生成<?=$count?>个
     <p>&nbsp;</p>
     <form class="form-inline" method="post">
         <input name="_csrf" type="hidden" value="<?php echo \Yii::$app->request->csrfToken; ?>"/>
@@ -43,8 +44,35 @@ if( Yii::$app->session->hasFlash('error') )
                 return ['value'=> $model->id];
             }
         ],
-        ['class' => 'yii\grid\SerialColumn'],               // 系列
-        'series_id',
+        'id',
+        [
+            'class'=>'kartik\grid\EditableColumn',
+            'attribute'=> 'series_id',
+            'headerOptions' => ['style'=>'width:60px'],
+            'pageSummary'=>true,
+            'editableOptions'=> [
+                'formOptions' => ['action' => ['/machine/editable']],
+                'showButtonLabels' => true,
+                'submitButton' => [
+                    'label' => '保存',
+                    'class' => 'btn btn-primary btn-sm',
+                ],
+            ],
+        ],
+        [
+            'class'=>'kartik\grid\EditableColumn',
+            'attribute'=> 'remark',
+            'headerOptions' => ['style'=>'width:60px'],
+            'pageSummary'=>true,
+            'editableOptions'=> [
+                'formOptions' => ['action' => ['/machine/editable']],
+                'showButtonLabels' => true,
+                'submitButton' => [
+                    'label' => '保存',
+                    'class' => 'btn btn-primary btn-sm',
+                ],
+            ],
+        ],
         [
             'attribute'=>'add_time',
             'format'=>['date','php:Y-m-d H:i'],
@@ -53,7 +81,7 @@ if( Yii::$app->session->hasFlash('error') )
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'headerOptions' => ['style'=>'width:120px'],
-            'template' => '{qrcode} &nbsp; {delete} &nbsp; {update}',
+            'template' => '{update} &nbsp; {delete} &nbsp; {qrcode}',
             'buttons' => [
                 'qrcode' => function($url,$model,$key){
                     return Html::a('<span class="glyphicon glyphicon-qrcode"></span>',Url::to(['code/machine','id'=>$model->id]) ,['title'=>'机器码']);
@@ -67,7 +95,7 @@ if( Yii::$app->session->hasFlash('error') )
                     ]);
                 },
                 'update' => function($url,$model,$key){
-                    return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::to(['machine/update','id'=>$model->id]) );
+                    return Html::a('<span class="glyphicon glyphicon-edit"></span>',Url::to(['machine/update-rent','id'=>$model->id]) );
                 }
             ],
         ],

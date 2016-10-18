@@ -3,6 +3,7 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 $this->title = '收租记录';
+$this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
@@ -11,21 +12,37 @@ $this->title = '收租记录';
     'filterModel' => $searchModel,
     'tableOptions' => ['class' => 'table table-striped'],
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],
+//        ['class' => 'yii\grid\SerialColumn'],
+        [
+            'attribute'=>'machine_id',
+            'format' => 'html',
+            'content'=>function($model){
+                return Html::a($model->machine_id,['machine/view','id'=>$model->machine_id],[
+                    'title'=>'查看机器详情',
+                    'target'=>'_blank',
+                ]);
+            }
+        ],
+        [
+            'attribute'=>'series_id',
+            'format' => 'html',
+            'content'=>function($model){
+                if($model->series_id)
+                    return Html::a($model->series_id,['/charge/list','client_no'=>$model->series_id],[
+                        'title'=>'查看编号所有收租',
+                        'target'=>'_blank',
+                    ]);
+                return '<span class="not-set">(未设置)</span>';
+            }
+        ],
         'black_white',
         'colour',
         'total_money',
         'exceed_money',
-        [
-            'label'=>'机型',
-            'format'=>'html',
-            'value'=>function($model){
-                if( isset( $model->rentApply->machine->machineModel ) )
-                return $model->rentApply->machine->machineModel->brand->name . $model->rentApply->machine->machineModel->type;
-            }
-        ],
-        'rentApply.name',
-        'rentApply.address',
+        'brand_name',
+        'model_name',
+        'user_name',
+        'address',
         [
             'attribute'=>'sign_img',
             'format'=>['html', ['Attr.AllowedRel' => 'group1']],
@@ -49,19 +66,19 @@ $this->title = '收租记录';
         ],
         [
             'attribute'=>'add_time',
-            'label'=>'记录时间',
-            'value'=>function($model){
-                return date('Y-m-d H:i',$model->add_time);
-            }
+            'format'=>['date','Y-m-d H:i'],
         ],
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'headerOptions' => ['style'=>'width:100px'],
+            'headerOptions' => ['style'=>'width:140px'],
             'template' => '{log} &nbsp;{update}',
             'buttons' => [
                 'log' => function($url,$model,$key){
-                    return Html::a('<i class="glyphicon glyphicon-info-sign"></i>',Url::toRoute(['log','machine_id'=>$model->machine_id]),['title'=>'收租记录'] );
+                    return Html::a('收租记录',Url::toRoute(['log','machine_id'=>$model->machine_id]),['class'=>'btn btn-default btn-sm'] );
+                },
+                'update' => function($url,$model,$key){
+                    return Html::a('修改',$url,['class'=>'btn btn-primary btn-sm'] );
                 },
             ]
         ]

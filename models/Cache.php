@@ -12,7 +12,6 @@ use yii\helpers\Url;
 
 class Cache
 {
-
     /*
      * 设置过期时间 秒
      */
@@ -33,6 +32,8 @@ class Cache
     {
         return Yii::$app->cache->delete($key);
     }
+
+
     /*
      * 获取 微信id
      * 跳转登录
@@ -41,16 +42,26 @@ class Cache
      */
     public static function getWid()
     {
-        if( !Yii::$app->user->id)
+        if( Yii::$app->user->isGuest )
             return Yii::$app->getResponse()->redirect(['auth/login','url'=>Yii::$app->request->url])->send();
 
-        if( Yii::$app->request->get('wx_id') ){
-            Yii::$app->cache->set('u:'.Yii::$app->user->id.':wid',Yii::$app->request->get('wx_id'));
-            return Yii::$app->request->get('wx_id');
-        }
         $value = Yii::$app->cache->get('u:'.Yii::$app->user->id.':wid');
         if( empty($value) )
+        {
+            if( Yii::$app->user->identity->group_id > 0)
+            {
+                Yii::$app->cache->set('u:'.Yii::$app->user->id.':wid',Yii::$app->user->identity->weixin_id);
+                return Yii::$app->user->identity->weixin_id;
+            }else{
+                if( Yii::$app->request->get('wx_id') )
+                {
+                    Yii::$app->cache->set('u:'.Yii::$app->user->id.':wid',Yii::$app->request->get('wx_id'));
+                    return Yii::$app->request->get('wx_id');
+                }
+            }
+
             return Yii::$app->getResponse()->redirect(['weixin/select','url'=>Yii::$app->request->url])->send();
+        }
 
         return $value;
     }

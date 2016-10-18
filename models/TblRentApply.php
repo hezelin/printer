@@ -16,15 +16,10 @@ class TblRentApply extends \yii\db\ActiveRecord
         return $this->hasOne(TblMachine::className(),['id'=>'machine_id']);
     }
 
-    // 这个 维修列表 数据重复
-    public function getMachineFault()
-    {
-        return $this->hasOne(TblMachineService::className(),['machine_id'=>'machine_id'])->onCondition(['tbl_machine_service.enable' => 'Y']);
-    }
     // 去掉重复
     public function getMachineFault2()
     {
-        return $this->hasOne(TblMachineService::className(),['machine_id'=>'machine_id'])->onCondition('tbl_machine_service.enable = "Y" and tbl_machine_service.status < 9');
+        return $this->hasOne(TblMachineService::className(),['machine_id'=>'machine_id'])->onCondition('tbl_machine_service.status < 9');
     }
 
     public function getMachineProject()
@@ -41,9 +36,8 @@ class TblRentApply extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'openid', 'project_id', 'due_time', 'phone', 'name', 'add_time'], 'required'],
-            [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'rent_period'], 'integer'],
+            [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'rent_period','black_amount','colours_amount'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
-            [['enable'], 'string'],
             [['colours','monthly_rent','black_white'], 'default','value'=>0],
             [['openid'], 'string', 'max' => 28],
             [['phone'], 'string', 'max' => 11],
@@ -63,21 +57,23 @@ class TblRentApply extends \yii\db\ActiveRecord
             'project_id' => '租借方案',
             'machine_id' => '分配机器',
             'monthly_rent' => '月租',
+            'contain_paper' => '包含张数',
             'black_white' => '黑白价格',
+            'black_amount' => '黑白读数',
+            'colours_amount' => '彩色读数',
             'colours' => '彩色价格',
             'due_time' => '合同到期时间',
             'first_rent_time' => '下次收租时间',
             'rent_period' => '收租周期',
             'phone' => '手机',
-            'name' => '用户',
-            'address' => '用户地址',
+            'name' => '客户名称',
+            'address' => '客户地址',
             'status' => '状态',
             'apply_word' => '备注',
             'latitude' => '纬度',
             'longitude' => '经度',
             'accuracy' => '精确度',
             'add_time' => '申请时间',
-            'enable' => '是否有效',
         ];
     }
 

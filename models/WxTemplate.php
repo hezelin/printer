@@ -5,6 +5,8 @@
  */
 
 namespace app\models;
+use app\models\common\Debug;
+use app\models\config\Tool;
 use app\models\Curl;
 use Yii;
 use yii\helpers\Url;
@@ -45,7 +47,7 @@ class WxTemplate extends WxBase {
         $tpl = [
             'touser'=>$openid,
             'template_id'=>$this->getTmpId('newTask'),
-            'url'=>Url::toRoute(['m/taskdetail','id'=>$id],'http'),
+            'url'=>Url::toRoute(['/maintain/task/detail','id'=>$id],'http'),
 //            'topcolor'=>'#FF0000',
             'data'=> [
                 'first'=>[
@@ -126,7 +128,6 @@ class WxTemplate extends WxBase {
                 ],
             ]
         ];
-
         $this->sendTpl($tpl);
     }
 
@@ -297,7 +298,8 @@ class WxTemplate extends WxBase {
             $curl = new Curl();
             $res = $curl->postJson($this->sendUrl,json_encode($tpl),['access_token'=>$this->accessToken()]);
             if( $res['errcode'] )
-                Yii::$app->end(json_encode(['status'=>0,'msg'=>$res['errmsg']]));
+//                Yii::$app->end(json_encode(['status'=>0,'msg'=>$res['errmsg']]));
+                return false;
             return true;
         }
         return false;
@@ -305,6 +307,7 @@ class WxTemplate extends WxBase {
 
     /*
      * 设置模板所属行业
+     * 开通 2个行业
      */
     public function setWechatTmp()
     {
@@ -336,7 +339,7 @@ class WxTemplate extends WxBase {
         $url = 'https://api.weixin.qq.com/cgi-bin/template/api_add_template';
         $curl = new Curl();
 
-        $tmp = [];
+        $tmp = $error = [];
         foreach($data as $k=>$type){
             $params = [
                 'template_id_short'=>$type,
@@ -344,6 +347,8 @@ class WxTemplate extends WxBase {
             $res = $curl->postJson($url,json_encode($params),['access_token'=>$this->accessToken()]);
             if( !$res['errcode'] )
                 $tmp[$k] = $res['template_id'];
+            else
+                $error[] = $res;
         }
         if(count($tmp) == count($data)){
             $model = TblWeixinTemplate::findOne($this->id);
@@ -360,7 +365,14 @@ class WxTemplate extends WxBase {
 //                throw new BadRequestHttpException('添加模板id,入库失败');
         }
 
-
 //        throw new BadRequestHttpException('添加模板id失败或者模板id已存在');
+    }
+
+    public function getAllTemplate()
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/template/get_all_private_template';
+        $curl = new Curl();
+        $data = $curl->getJson($url,['access_token'=>$this->accessToken()]);
+        return $data;
     }
 } 

@@ -1,5 +1,6 @@
 <?php
 $this->title = '修改录入';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <ul class="list-group">

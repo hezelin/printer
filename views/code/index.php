@@ -7,6 +7,7 @@ use yii\grid\CheckboxColumn;
 use app\models\ConfigBase;
 
 $this->title = '生成机器码';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <style>
@@ -15,12 +16,22 @@ $this->title = '生成机器码';
     #my-search-filer a{margin-right: 15px; display: inline-block; padding: 5px 45px;}
 </style>
 
-<div class="row" id="my-search-filer">
+<!--<div class="row" id="my-search-filer">
     <span>机器状态：</span>
-    <a href="index?TblMachineSearch[status]=1" class="btn <?= isset($_GET['TblMachineSearch']['status']) && $_GET['TblMachineSearch']['status'] != 1? 'btn-default':'btn-primary'?>"> 闲置中 </a>
-    <a href="index?TblMachineSearch[status]=2" class="btn btn-default<?= isset($_GET['TblMachineSearch']['status']) && $_GET['TblMachineSearch']['status'] == 2? ' btn-primary':''?>"> 已租借 </a>
-    <a href="index?TblMachineSearch[status]=3" class="btn btn-default<?= isset($_GET['TblMachineSearch']['status']) && $_GET['TblMachineSearch']['status'] == 3? ' btn-primary':''?>"> 已报废 </a>
+    <a href="index?TblMachineSearch[status]=1" class="btn <?/*= isset($_GET['TblMachineSearch']['status']) && $_GET['TblMachineSearch']['status'] != 1? 'btn-default':'btn-primary'*/?>"> 闲置中 </a>
+    <a href="index?TblMachineSearch[status]=2" class="btn btn-default<?/*= isset($_GET['TblMachineSearch']['status']) && $_GET['TblMachineSearch']['status'] == 2? ' btn-primary':''*/?>"> 已租借 </a>
+    <a href="index?TblMachineSearch[status]=3" class="btn btn-default<?/*= isset($_GET['TblMachineSearch']['status']) && $_GET['TblMachineSearch']['status'] == 3? ' btn-primary':''*/?>"> 已报废 </a>
+</div>-->
+
+<div>
+    <ul class="nav nav-tabs">
+        <li<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] != 1? '':' class="active"'?>><a href="index?TblMachineSearch[come_from]=1"> 出租 </a></li>
+        <li<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 2? ' class="active"':''?>><a href="index?TblMachineSearch[come_from]=2"> 销售 </a></li>
+        <li<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 3? ' class="active"':''?>><a href="index?TblMachineSearch[come_from]=3"> 维修 </a></li>
+        <li<?= isset($_GET['TblMachineSearch']['come_from']) && $_GET['TblMachineSearch']['come_from'] == 4? ' class="active"':''?>><a href="index?TblMachineSearch[come_from]=4"> 预设机器 </a></li>
+    </ul>
 </div>
+<p>&nbsp;</p>
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
@@ -35,26 +46,14 @@ $this->title = '生成机器码';
             }
         ],
         ['class' => 'yii\grid\SerialColumn'],               // 系列
+        'id',
         'series_id',
         'buy_date',
         'buy_price',
         'maintain_count',
         'rent_count',
-        [
-            'attribute'=>'type',
-            'format'=>'html',
-            'value'=>function($data){
-                if(!$data->machineModel) return '<span class="not-set">无设置</span>';
-                return Html::a($data->machineModel->type,Url::toRoute(['model/view','id'=>$data->model_id]));
-            },
-//                'value'=>'machineModel.type',
-            'header'=>'型号'
-        ],
-        [
-            'attribute'=>'name',
-            'value'=>'machineModel.brand.name',
-            'header'=>'品牌'
-        ],
+        'model_name',
+        'brand_name',
         [
             'attribute'=>'add_time',
             'format'=>['date','php:Y-m-d H:i'],

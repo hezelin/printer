@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\models\ConfigBase;
 $this->title = '维修员携带列表';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <div >

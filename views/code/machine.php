@@ -1,5 +1,6 @@
 <?php
-    $this->title = '生成机器码';
+$this->title = '机器二维码';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <style>
@@ -27,10 +28,7 @@
     <div  id="print-wrap" style="position: relative;<?=$data['img']['style']?>">
         <img src="<?=$data['img']['img']?>" <?=$data['img']['width']?>/>
         <div id="user-id" style="position:absolute;<?=$data['apply']?>">
-            <?=$data['applyId']? $data['come_from'].$data['applyId']:''?>
-        </div>
-        <div id="qrcode-user" style="position: absolute;<?=$data['user']?>">
-            <?= $data['userName'] ?>
+            <?=$data['machineId']?>
         </div>
         <div id="qrcode-img" style="position:absolute;<?=$data['code']?>">
             <img src="<?=$data['qrcodeImgUrl']?>" width="100%"/>

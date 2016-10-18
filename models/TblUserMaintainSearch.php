@@ -17,9 +17,9 @@ class TblUserMaintainSearch extends TblUserMaintain
     public function rules()
     {
         return [
-            [['wx_id', 'wait_repair_count', 'add_time'], 'integer'],
+            [['wx_id', 'wait_repair_count', 'add_time', 'point_time'], 'integer'],
             [['openid', 'name', 'phone','nickname', 'identity_card', 'address'], 'safe'],
-            [['latitude', 'longitude', 'accuracy'], 'number'],
+            [['latitude', 'longitude'], 'number'],
         ];
     }
 
@@ -63,7 +63,7 @@ class TblUserMaintainSearch extends TblUserMaintain
             'wait_repair_count' => $this->wait_repair_count,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'accuracy' => $this->accuracy,
+            'point_time' => $this->point_time,
             'add_time' => $this->add_time,
         ]);
 
