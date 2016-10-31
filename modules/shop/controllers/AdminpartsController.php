@@ -58,7 +58,9 @@ class AdminpartsController extends Controller
         }
         if(Yii::$app->request->isAjax)
             return json_encode(['status'=>1]);
-        return $this->redirect( Yii::$app->request->referrer );
+
+//        return $this->redirect( Yii::$app->request->referrer );
+        return $this->redirect( ['list'] );
     }
 
     /*

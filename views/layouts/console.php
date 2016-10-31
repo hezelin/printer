@@ -176,7 +176,7 @@ WeixinAsset::register($this);
                                         'active' => in_array(Yii::$app->controller->getRoute(),['code/index','code/machine','code/machineall']),
                                     ],
                                     ['label' => '预设机器二维码','url' => ['/code/ahead']],
-                                    ['label' => '配件二维码','url' => ['/code/parts']],
+//                                    ['label' => '配件二维码','url' => ['/code/parts']],
                                     ['label' => '维修员绑定码','url' => ['/code/binding']],
                                 ],
                             ],

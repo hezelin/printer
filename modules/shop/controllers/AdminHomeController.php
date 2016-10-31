@@ -18,7 +18,6 @@ class AdminHomeController extends Controller
     public function actionCarousel()
     {
         $wid = Cache::getWid();
-
         $model = TblShopHomeCarousel::findOne($wid);
         if($model == null)
         {
@@ -26,6 +25,11 @@ class AdminHomeController extends Controller
             $model->wx_id = $wid;
         }
 
+        /*if(Yii::$app->request->userIP == '183.54.198.36')
+        {
+            print_r($model->attributes);
+            exit;
+        }*/
         if ( Yii::$app->request->post() && $model->load(Yii::$app->request->post()) ) {
 
             if($model->save())
@@ -33,7 +37,6 @@ class AdminHomeController extends Controller
             else
                 Yii::$app->session->setFlash('error',ToolBase::arrayToString($model->errors));
         }
-
         return $this->render('carousel',[
             'model' => $model,
             'wid'=>$wid

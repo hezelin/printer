@@ -14,7 +14,7 @@ class TblMachineServiceList extends TblMachineService
     {
         return [
             [['id', 'weixin_id', 'machine_id', 'type', 'status', 'unfinished_parts_num', 'add_time', 'opera_time', 'accept_time', 'resp_time', 'fault_time', 'fault_score', 'parts_apply_time', 'parts_arrive_time', 'complete_time'], 'integer'],
-            [['from_openid', 'openid', 'content', 'desc', 'enable'], 'safe'],
+            [['from_openid', 'openid', 'content', 'desc'], 'safe'],
             [['resp_km'], 'number'],
         ];
     }
@@ -36,7 +36,7 @@ class TblMachineServiceList extends TblMachineService
                 ]);
             }
         ])->where([
-            'tbl_machine_service.enable'=>'Y',
+//            'tbl_machine_service.enable'=>'Y',
             'tbl_machine_service.weixin_id'=>Cache::getWid()
         ]);
 
@@ -84,8 +84,7 @@ class TblMachineServiceList extends TblMachineService
         $query->andFilterWhere(['like', 'from_openid', $this->from_openid])
             ->andFilterWhere(['like', 'openid', $this->openid])
             ->andFilterWhere(['like', 'content', $this->content])
-            ->andFilterWhere(['like', 'desc', $this->desc])
-            ->andFilterWhere(['like', 'enable', $this->enable]);
+            ->andFilterWhere(['like', 'desc', $this->desc]);
 
         return $dataProvider;
     }

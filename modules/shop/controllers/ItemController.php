@@ -102,15 +102,23 @@ class ItemController extends Controller
             ->select('t.id,t.wx_id,c.name as category,t.name,t.cover_images,t.price,t.market_price,t.describe,t.add_attr')
             ->from('tbl_product as t')
             ->leftJoin('tbl_category as c','c.id=t.category_id')
-            ->where('t.enable="Y" and t.id=:id',[':id'=>$item_id])
+            ->where(['t.id'=>$item_id,'enable'=>'Y'])
             ->one();
+        /*if($item_id == 26)
+        {
+            echo '<pre>';
+            print_r($model);
+            exit;
+        }*/
         $model['cover_images'] = json_decode(str_replace('/s/','/m/',$model['cover_images']),true);
         $model['big_cover_images'] = [];
-        foreach($model['cover_images'] as $img){
-            $model['big_cover_images'][] = Yii::$app->request->hostInfo.str_replace('/m/','/o/',$img);
-        }
 
-        $model['else_attr'] = $model['add_attr']? json_decode($model['add_attr'],true):'';
+        if(is_array($model['cover_images']))
+            foreach($model['cover_images'] as $img){
+                $model['big_cover_images'][] = Yii::$app->request->hostInfo.str_replace('/m/','/o/',$img);
+            }
+
+        $model['else_attr'] = (isset($model['add_attr']) && $model['add_attr'])? json_decode($model['add_attr'],true):'';
 
         return $this->render('detail',['model'=>$model,'id'=>$id,'openid'=>$openid]);
     }
