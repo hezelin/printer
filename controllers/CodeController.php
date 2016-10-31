@@ -142,10 +142,10 @@ class CodeController extends \yii\web\Controller
 
             $data = [
                 'img'=> [
-                    'width'=>' width="700px"',
+                    'width'=>' width="320px"',
                     'img'=>'/images/qrcode-bgimg-test.jpg',
                     'style'=>'',
-                    'bgWidth'=>'',
+                    'bgWidth'=>'340',
                 ],
                 'series'=>'',
                 'code'=>'',
@@ -158,7 +158,10 @@ class CodeController extends \yii\web\Controller
                     $data['img']['style'] = isset($series['width'])? 'width:'.$series['width'].';':'100%;';
 
                     if( isset($series['width']) && $series['width'])
+                    {
                         $data['img']['width'] = ' width="'.$series['width'].'"';
+                        $data['img']['bgWidth'] = (int)$series['width'];
+                    }
 
                     $data['img']['img'] = isset($series['img'])? $series['img']:'';
                 }
@@ -223,8 +226,8 @@ class CodeController extends \yii\web\Controller
             'img'=> [
                 'width'=>'',
                 'img'=>'/images/qrcode-bgimg-test.jpg',
-                'style'=>'width:700px',
-                'bgWidth'=>'700'
+                'style'=>'width:320px',
+                'bgWidth'=>'320'
             ],
             'seriesCss'=>[
                 'top'=>138,
@@ -312,10 +315,10 @@ class CodeController extends \yii\web\Controller
 
         $data = [
             'img'=> [
-                'width'=>' width="700px"',
+                'width'=>' width="320px"',
                 'img'=>'/images/qrcode-bgimg-test.jpg',
                 'style'=>'',
-                'bgWidth'=>'',
+                'bgWidth'=>'340',
             ],
             'series'=>'',
             'user'=>'',
@@ -332,7 +335,10 @@ class CodeController extends \yii\web\Controller
                 $data['img']['style'] = isset($series['width'])? 'width:'.$series['width'].';':'100%;';
 
                 if( isset($series['width']) && $series['width'])
+                {
                     $data['img']['width'] = ' width="'.$series['width'].'"';
+                    $data['img']['bgWidth'] = (int)$series['width'];
+                }
 
                 $data['img']['img'] = isset($series['img'])? $series['img']:'';
             }
