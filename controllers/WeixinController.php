@@ -157,8 +157,8 @@ class WeixinController extends \yii\web\Controller
             $wx = new WxUser($id);                              // 拉取旧的 用户微信资料
             $wx->pullUser();
 
-            $model->status = 2;                                 // 默认开通 14天 时间
-            $model->due_time = time() + 3600 * 24 * 14;
+            $model->status = 2;                                 // 默认开通 7天 时间
+            $model->due_time = time() + 3600 * 24 * 7;
             if(!$model->save())
                 throw new HttpException(401,'开通失败');
                 // 店铺 资料 设置

@@ -184,6 +184,11 @@ class WxTemplate extends WxBase {
 发起人：{{keyword2.DATA}}
 发起时间：{{keyword3.DATA}}
 {{remark.DATA}}
+
+    {{first.DATA}}
+待办事项：{{keyword1.DATA}}
+备注说明：{{keyword2.DATA}}
+{{remark.DATA}}
      */
     public function sendWaiting($openid,$url,$machineTime,$applyTime)
     {
@@ -201,11 +206,7 @@ class WxTemplate extends WxBase {
                     'color'=>'#000000',
                 ],
                 'keyword2'=>[
-                    'value'=>'系统自动',
-                    'color'=>'#000000',
-                ],
-                'keyword3'=>[
-                    'value'=> date('m月d日 H:i',$applyTime),
+                    'value'=> '时间'.date('m月d日 H:i',$applyTime),
                     'color'=>'#000000',
                 ],
 
@@ -330,10 +331,11 @@ class WxTemplate extends WxBase {
         $data = [
             'newTask'=>'OPENTM204588400',
             'score'=>'TM00230',
-            'dueTime'=>'TM00003',
+            'dueTime'=>'TM00008',
             'checkInfo'=>'OPENTM201057607',
             'process'=>'TM00254',
-            'waitTask'=>'OPENTM200706571',
+//            'waitTask'=>'OPENTM200706571',
+            'waitTask'=>'OPENTM406438955',
             'cancel'=>'OPENTM203353498',
         ];
         $url = 'https://api.weixin.qq.com/cgi-bin/template/api_add_template';
@@ -350,7 +352,7 @@ class WxTemplate extends WxBase {
             else
                 $error[] = $res;
         }
-        if(count($tmp) == count($data)){
+//        if(count($tmp) == count($data)){
             $model = TblWeixinTemplate::findOne($this->id);
             if(!$model){
                 $model = new TblWeixinTemplate();
@@ -363,7 +365,7 @@ class WxTemplate extends WxBase {
                 exit;
             }
 //                throw new BadRequestHttpException('添加模板id,入库失败');
-        }
+//        }
 
 //        throw new BadRequestHttpException('添加模板id失败或者模板id已存在');
     }
@@ -372,7 +374,7 @@ class WxTemplate extends WxBase {
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/template/get_all_private_template';
         $curl = new Curl();
-        $data = $curl->getJson($url,['access_token'=>$this->accessToken()]);
+        $data = $curl->postJson($url,['access_token'=>$this->accessToken()]);
         return $data;
     }
 } 
