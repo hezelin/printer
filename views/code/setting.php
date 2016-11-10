@@ -71,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="setting-row"> 左部距离：
             <input class="setting-input" type="text" data-vessel="code" data-key="left" data-end="px" name="code_left" value="<?=$data['codeCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
 
-        <h4>机器编号设置</h4>
+        <!--<h4>机器编号设置</h4>
         <div class="setting-row"> 字体颜色：
             <input class="setting-input" type="text" data-vessel="series" data-key="color" data-end="" name="color" value="<?=$data['seriesCss']['color']?>"/></div>
         <div class="setting-row"> 字体大小：
@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="setting-row"> 顶部距离：
             <input class="setting-input" type="text" data-vessel="series" data-key="top" data-end="px" name="top" value="<?=$data['seriesCss']['top']?>" />&nbsp;&nbsp;&nbsp;px</div>
         <div class="setting-row"> 左部距离：
-            <input class="setting-input" type="text" data-vessel="series" data-key="left" data-end="px" name="left" value="<?=$data['seriesCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>
+            <input class="setting-input" type="text" data-vessel="series" data-key="left" data-end="px" name="left" value="<?=$data['seriesCss']['left']?>"/>&nbsp;&nbsp;&nbsp;px</div>-->
 
 
         <h4 class="setting-m">背景图片设置</h4>
@@ -109,9 +109,6 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div id="qrcode-img" style="position:absolute;<?=$data['code']?>">
                 <img src="<?=$data['qrcodeImgUrl']?>" width="100%"/>
-            </div>
-            <div id="qrcode-series" style="position: absolute;<?=$data['series']?>">
-                <?= $data['seriesNum'] ?>
             </div>
         </div>
     </div>

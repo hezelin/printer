@@ -33,9 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <div id="qrcode-img" style="position:absolute;<?=$data['code']?>">
             <img src="<?=$data['qrcodeImgUrl']?>" width="100%"/>
         </div>
-        <div id="qrcode-series" style="position: absolute;<?=$data['series']?>">
-            <?= $data['seriesNum'] ?>
-        </div>
     </div>
 </div>
 
