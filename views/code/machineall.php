@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="col-md-offset-1" style="width:1300px;">
     <div id="print-wrap">
         <?php foreach($model as $row):?>
-        <div style="width:<?=$data['img']['bgWidth'] ?>px; float: left;">
+        <div style="margin:10px 10px 0 0;width:<?=$data['img']['bgWidth'] ?>px; float: left;">
             <div style="position: relative;<?=$data['img']['style']?>; overflow:hidden;">
                 <img src="<?=$data['img']['img']?>" <?=$data['img']['width']?>/>
                 <div id="user-id" style="position:absolute;<?=$data['apply']?>">
@@ -32,13 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div id="print-wrap-2" style="display: none;">
         <?php foreach($model as $row):?>
-            <div style="width:320px; float: left;">
-                <div style="position: relative;width:320px; overflow:hidden;">
+            <div style="margin:10px 10px 0 0;width:320px; float: left;">
+                <div style="margin:10px 10px 0 0;position: relative;width:320px; overflow:hidden;">
                     <img src="<?=$data['img']['img']?>" width="320">
-                    <div id="user-id" style="position:absolute;color:#777;font-size:16px;top:103px;left:223px;">
+                    <div id="user-id" style="position:absolute;<?=$data['apply']?>">
                         <?=$row['id']?>
                     </div>
-                    <div id="qrcode-img" style="position:absolute;width:95px;top:8px;left:217px;z-index:1000;">
+                    <div id="qrcode-img" style="position:absolute;<?=$data['code']?>z-index:1000;">
                         <img src="<?=$row['qrcodeImgUrl']?>" width="100%"/>
                     </div>
                 </div>
@@ -50,6 +50,33 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script>
     <?php $this->beginBlock('JS_END') ?>
+    var printTwo = $('#print-wrap-2');
+        twoUser = printTwo.find('#user-id');
+        twoQrcodeImg = printTwo.find('#qrcode-img');
+
+
+    function scaleReduct( elem , type ){
+        var styles = elem.attr('style');
+        var val = function(m, $1, $2){
+            return $1 + ':'+ parseInt($2)/2 + 'px;';
+        }
+
+        switch (type){
+            case 1:
+                styles = styles.replace(/(?:(top|left|font-size):([^;]+);)/ig, val);
+                break;
+            case 2:
+                styles = styles.replace(/(?:(top|left|width|height):([^;]+);)/ig, val);
+                break;
+        }
+        elem.attr('style', styles)
+    }
+
+    scaleReduct(twoUser, 1);
+    scaleReduct(twoQrcodeImg, 2);
+
+
+
 
     $('#print-btn').click(function(){
         $('#print-wrap-2').hide();
