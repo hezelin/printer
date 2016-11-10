@@ -23,14 +23,28 @@ echo GridView::widget([
             'attribute'=>'cover',
             'header'=>'故障图片',
             'headerOptions'=>['style'=>'width:160px'],
-            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
-            'value'=>function($data)
+            'content'=>function($data)
             {
-                if(!$data->cover) return '没有图片';
-                $covers = json_decode($data->cover,true);
-                if(is_array($covers) )
-                foreach($covers as $cover){
-                    $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class' => 'fancybox','rel'=>'group1']);
+                if(!$data->content) return '没有图片';
+                $contents = json_decode($data->content,true);
+                $html = [];
+                if(isset($contents['cover']) && is_array($contents['cover']) )
+                    foreach($contents['cover'] as $cover){
+                        $html[] = Html::a(Html::img($cover,['width'=>40]),$cover,['class' => 'fancybox','rel'=>'group1']);
+                    }
+
+                if(isset($contents['voice'],$contents['voiceLen'])){
+                    $html[] = '
+                    <div class="h-box-text">
+                        <div class="voice-wrap" data-value="3" data-time="'.$contents['voiceLen'].'" data-id="'.$data->id.'">
+                            <div class="voice-image voice-playing"></div>
+                            <p class="voice-time"><span class="voice-second">'.$contents['voiceLen'].'</span>＂</p>
+                        </div>
+                        <audio hidden="true" preload="auto" onended="play_ended()" id="myaudio'.$data->id.'">
+                            <source src="'.$contents['voice'].'" type="audio/mpeg">
+                            "不支持播放录音"
+                        </audio>
+                    </div>';
                 }
                 return join("\n",$html);
             }
@@ -45,29 +59,22 @@ echo GridView::widget([
         ],
         'desc',
         [
-            'attribute'=>'machine.machineModel.cover',
-            'header'=>'机器',
-            'format'=>['html', ['Attr.AllowedRel' => 'group1']],
-            'value'=>function($data)
+            'attribute'=>'cover',
+            'header'=>'机器图片',
+            'content'=>function($data)
             {
-                if( isset($data->machine->machineModel->cover )  )
-                    return Html::a(Html::img($data->machine->machineModel->cover,['width'=>40]),str_replace('/s/','/m/',$data->machine->machineModel->cover),['class'=>'fancybox','rel'=>'group1']);
+                if( isset($data->cover )  )
+                    return Html::a(Html::img($data->cover,['width'=>40]),str_replace('/s/','/m/',$data->cover),['class'=>'fancybox','rel'=>'group1']);
             }
         ],
-
-        'machine.machineModel.brand.name',
-        'machine.machineModel.type',
         [
-            'attribute'=>'series_id',
-            'format'=>'html',
-            'header'=>'客户编号',
-            'headerOptions'=>['style'=>'width:100px'],
-            'value'=>function($model){
-                return Html::a($model->machine->series_id,\yii\helpers\Url::toRoute(['machine/view','id'=>$model->machine_id]),['title'=>'查看机器详情']).
-                Html::a('&nbsp;&nbsp;<i class="glyphicon glyphicon-qrcode"></i>',\yii\helpers\Url::toRoute(['code/machine','id'=>$model->machine->id]),['title'=>'查看机器二维码']);
+            'attribute'=>'model_name',
+            'label'=>'机型',
+            'content'=>function($model) {
+                return $model->brand_name . $model->model_name;
             }
         ],
-        'machine.maintain_count',
+        'maintain_count',
         [
             'attribute'=>'status',
             'header'=>'进度',

@@ -363,12 +363,18 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionSelect()
     {
-        $searchModel = new TblMachineServiceList();
+        $searchModel = new ViewFaultDataSearch();
+//        $searchModel = new TblMachineServiceList();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $fromUrl = $this->dealUrl( Yii::$app->request->get('url') );
 
-        return $this->render('select',['dataProvider'=>$dataProvider,'searchModel' => $searchModel,'wid'=>Cache::getWid(),'fromUrl'=>$fromUrl]);
+        return $this->render('select',[
+            'dataProvider'=>$dataProvider,
+            'searchModel' => $searchModel,
+            'wid'=>Cache::getWid(),
+            'fromUrl'=>$fromUrl]
+        );
     }
 
     /*

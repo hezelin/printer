@@ -81,16 +81,17 @@ MODEL_CONTENT;
     public function renderItem()
     {
         $items =[];
-        foreach($this->data as $d){
-            if(isset($d['imgurl']) && is_file($d['imgurl']) ){
-                $p = Html::tag('p',$d['title'],['class'=>'carousel-title']);
-                $a = (isset($d['link']) && $d['link'])? Html::a(Html::img('/'.$d['imgurl']),$d['link']):Html::img('/'.$d['imgurl']);
-                $items[] = Html::tag('div',$p.$a,['class'=>$this->itemClass]);
-            }else if( is_string($d) ){
-                $img = Html::img($d);
-                $items[] = Html::tag('div',$img,['class'=>$this->itemClass]);
+        if( is_array($this->data) )
+            foreach($this->data as $d){
+                if(isset($d['imgurl']) && is_file($d['imgurl']) ){
+                    $p = Html::tag('p',$d['title'],['class'=>'carousel-title']);
+                    $a = (isset($d['link']) && $d['link'])? Html::a(Html::img('/'.$d['imgurl']),$d['link']):Html::img('/'.$d['imgurl']);
+                    $items[] = Html::tag('div',$p.$a,['class'=>$this->itemClass]);
+                }else if( is_string($d) ){
+                    $img = Html::img($d);
+                    $items[] = Html::tag('div',$img,['class'=>$this->itemClass]);
+                }
             }
-        }
         return implode("\n",$items);
     }
     /*

@@ -65,16 +65,16 @@ echo GridView::widget([
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
-            'template' => '{renew} | {upgrade}  &nbsp; &nbsp; {console} &nbsp; {view} &nbsp; {update} &nbsp; {delete} &nbsp; {start} &nbsp; {stop} &nbsp; {qrcode}',
+            'template' => '{renew} &nbsp; &nbsp; {console} &nbsp; {view} &nbsp; {update} &nbsp; {delete} &nbsp; {start} &nbsp; {stop} &nbsp; {qrcode}',
             'buttons' => [
                 'renew' => function($url,$model,$key){
                     if($model->status == 1)
                         return Html::a('开通',Url::to(['weixin/open','id'=>$model->id]));
-                    return Html::a('续费', $url);
+//                    return Html::a('续费', $url);
                 },
-                'upgrade' => function($url,$model,$key){
+                /*'upgrade' => function($url,$model,$key){
                     return Html::a('升级', $url);
-                },
+                },*/
                 'console' => function($url,$model, $key){
                     return Html::a('<span class="glyphicon glyphicon-th"></span>',Url::to(['console/view','wx_id'=>$model->id]) ,['title'=>'管理后台']);
                 },

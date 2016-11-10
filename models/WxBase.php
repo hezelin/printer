@@ -165,7 +165,6 @@ class WxBase {
             json_encode( $this->menu($name),JSON_UNESCAPED_UNICODE),
             array('access_token'=>$this->accessToken())
         );
-
         return $req['errmsg'] == 'ok' ? true: false;
     }
 

@@ -403,7 +403,7 @@ class CodeController extends \yii\web\Controller
     }
 
     /*
-     * 配件二维码
+     * 批量生成配件二维码
      *
      */
     public function actionParts()
