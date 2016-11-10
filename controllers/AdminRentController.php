@@ -217,10 +217,16 @@ class AdminRentController extends \yii\web\Controller
             $model->add_time = time();
             $model->wx_id = Cache::getWid();
             $model->status = 2;
+            $model->black_amount || $model->black_amount = 0;
+            $model->colours_amount || $model->colours_amount = 0;
 
             $model->due_time = ($_POST['TblRentApply']['due_time'] && $_POST['TblRentApply']['due_time'] != '1970-01-01')? strtotime($_POST['TblRentApply']['due_time']):0;
             $model->first_rent_time = ($_POST['TblRentApply']['first_rent_time'] && $_POST['TblRentApply']['first_rent_time'] != '1970-01-01')? strtotime($_POST['TblRentApply']['first_rent_time']):0;
 
+            /*echo '<pre>';
+            print_r(Yii::$app->request->post());
+            print_r($model->attributes);
+            exit;*/
             if($model->save()) {
                 $model->updateMachineStatus();
                 return $this->redirect(Url::toRoute(['map','id'=>$model->id]));
