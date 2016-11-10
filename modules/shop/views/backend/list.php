@@ -47,9 +47,10 @@ $this->params['breadcrumbs'][] = $this->title;
             {
                 $attr = json_decode($data->add_attr,true);
                 $html = [];
-                foreach($attr as $row){
-                    $html[] = Html::tag('div',$row['name'].' : '.$row['value']);
-                }
+                if( is_array($attr) )
+                    foreach($attr as $row){
+                        $html[] = Html::tag('div',$row['name'].' : '.$row['value']);
+                    }
                 return join("\n",$html);
             }
         ],
