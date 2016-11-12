@@ -37,7 +37,7 @@ if( Yii::$app->session->hasFlash('success') )
         'id' => 'add-form',
         'options' => ['class' => 'form-horizontal'],
         'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-5\">{input}</div>\n<div class=\"col-lg-5\">{error}</div>",
+            'template' => "{label}\n<div class=\"col-lg-5\">{input}</div>\n<div class=\"col-lg-5\">{hint}{error}</div>",
             'labelOptions' => ['class' => 'col-lg-2 control-label'],
         ],
     ]); ?>
@@ -47,7 +47,7 @@ if( Yii::$app->session->hasFlash('success') )
     <?= $form->field($model, 'model_id')->widget(\app\components\ItemDependentWidget::className(),[
         'depend'=>'brand',
         'dataUrl'=>'/ajax-data/model-type'
-    ])->hint('型号不存在跟我们联系')?>
+    ])->hint('型号不存在,&nbsp; &nbsp;<a class="btn btn-warning btn-sm" href="/machine-model/create">点击添加</a>')?>
 
     <?= $form->field($model, 'buy_price')->textInput() ?>
     <?= $form->field($model, 'buy_date')->widget(dosamigos\datepicker\DatePicker::className(), [
