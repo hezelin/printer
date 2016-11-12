@@ -153,9 +153,10 @@ class RentController extends \yii\web\Controller
 
             if($model->save())
                 return $this->render('//tips/home-status',[
-                    'tips'=>'资料录入成功！',
+                    'tips'=>'绑定资料成功！',
                     'btnText'=>'申请维修',
-                    'btnUrl'=>Url::toRoute(['/maintain/fault/apply','id'=>$id,'mid'=>$machine_id]),
+                    'btnUrl'=>Url::toRoute(['/codeapi/machine','id'=>$machine_id]),
+                    'jumpUrl'=>Url::toRoute(['/codeapi/machine','id'=>$machine_id]),
                 ]);
             else
                 throw new HttpException(401,'数据保存出错！');
