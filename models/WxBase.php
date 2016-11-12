@@ -177,9 +177,19 @@ class WxBase {
         return [
             'button'=>[
                 [
-                    'name'=>$name,
+                    'name'=>'商城',
+                    'type'=>'view',
+                    'url'=>Url::toRoute(['/shop/item/list','id'=>$this->id],true)
+                ],
+                [
+                    'name'=>'服务',
                     'type'=>'view',
                     'url'=>Url::toRoute(['wechat/index','id'=>$this->id],true)
+                ],
+                [
+                    'name'=>'一键报修',
+                    'type'=>'scancode_push',
+                    'key'=>'rselfmenu_0_1',
                 ]
             ],
         ];
