@@ -1,10 +1,12 @@
 <?php
 
 namespace app\modules\user\controllers;
+use app\models\TblMachine;
 use app\models\TblRentApply;
 use app\models\ToolBase;
 use app\models\WxBase;
 use Yii;
+use yii\base\Exception;
 use yii\helpers\Url;
 use yii\web\HttpException;
 
@@ -149,17 +151,41 @@ class RentController extends \yii\web\Controller
             $model->machine_id = $machine_id;
             $model->add_time = time();
             $model->due_time = time();
-            $model->status = 3;                 // 预设机器 ，租赁状态
+            $model->status = 2;                                     // 已租借状态
 
-            if($model->save())
-                return $this->render('//tips/home-status',[
-                    'tips'=>'绑定资料成功！',
-                    'btnText'=>'申请维修',
-                    'btnUrl'=>Url::toRoute(['/codeapi/machine','id'=>$machine_id]),
-                    'jumpUrl'=>Url::toRoute(['/codeapi/machine','id'=>$machine_id]),
-                ]);
-            else
-                throw new HttpException(401,'数据保存出错！');
+            $machine = TblMachine::findOne($machine_id);
+            $machine->model_id || $machine->model_id = 1664;                      // -
+            $machine->brand || $machine->brand = 'wsz';                        // -
+            $machine->images || $machine->images = json_encode(['/img/haoyizu.png']);
+            $machine->status = 2;
+            $machine->come_from = 2;
+
+            $error = [];
+            $transaction= Yii::$app->db->beginTransaction();
+            try {
+                if(!$model->save())
+                   throw new Exception('入库失败');
+
+
+                if($machine && $machine->wx_id == $id)
+                {
+                    $machine->status = 2;                           // 机器更改为已租借状态
+                    if(!$machine->save())
+                        throw new Exception('更改机器状态失败');
+                }
+
+                $transaction->commit();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+                throw new HttpException(401,'数据保存出错==！'.ToolBase::arrayToString($error).$e);
+            }
+
+            return $this->render('//tips/home-status',[
+                'tips'=>'绑定资料成功！',
+                'btnText'=>'申请维修',
+                'btnUrl'=>Url::toRoute(['/codeapi/machine','id'=>$machine_id]),
+                'jumpUrl'=>Url::toRoute(['/codeapi/machine','id'=>$machine_id]),
+            ]);
         }
 
         return $this->render('bind',['model'=>$model,'wx_id'=>$id]);

@@ -81,7 +81,8 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
     public function updateMachineStatus($type='rent')
     {
         $machine = TblMachine::findOne($this->machine_id);
-
+        if(!$machine)
+            return true;
         if($type == 'rent'){
             $machine->rent_count = $machine->rent_count + 1;
             if($this->machine_come_from)
