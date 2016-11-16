@@ -71,10 +71,12 @@ class CodeController extends \yii\web\Controller
      */
     public function actionAhead()
     {
+        $wx_id = Cache::getWid();
+
         $count = (new \yii\db\Query())
             ->select('count(*)')
             ->from('tbl_machine')
-            ->where(['come_from'=>4])
+            ->where(['come_from'=>4,'wx_id'=>$wx_id])
             ->scalar();
 
         if($num = (int)Yii::$app->request->post('ahead-code')){
