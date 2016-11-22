@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\share\Score;
+use app\models\TblActivity;
 use app\models\WxBase;
 use Yii;
 
@@ -11,10 +12,14 @@ class ShareController extends \yii\web\Controller
     public $layout = 'home';
     public $enableCsrfValidation = false;
 
-    public function actionActive()
+    /*
+     * 微信id
+     */
+    public function actionActive($id)
     {
         $this->layout = 'auicss';
-        return $this->render('active');
+        $model = TblActivity::findOne($id);
+        return $this->render('active',['model'=>$model]);
     }
 
     public function actionGame()

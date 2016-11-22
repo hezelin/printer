@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Cache;
+use app\models\TblActivity;
 use app\models\TblNotifyLog;
 use app\models\TblNotifyLogSearch;
 use app\models\TblUserWechat;
@@ -60,5 +61,30 @@ class NotifyController extends \yii\web\Controller
         $model->enable = 'N';
         $model->save();
         $this->redirect(['list']);
+    }
+
+    /*
+     * 最新活动
+     */
+    public function actionActivity()
+    {
+        $wxId = Cache::getWid();
+        $model = TblActivity::findOne($wxId);
+        if($model == null)
+        {
+            $model = new TblActivity();
+            $model->wx_id = $wxId;
+        }
+
+        if(Yii::$app->request->isPost)
+        {
+            $model->load(Yii::$app->request->post());
+            $model->created_at = time();
+            if($model->save())
+                Yii::$app->session->setFlash('success','保存成功');
+            else
+                Yii::$app->session->setFlash('error','保存失败');
+        }
+        return $this->render('activity',['model'=>$model]);
     }
 }
