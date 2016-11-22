@@ -13,6 +13,7 @@ use app\models\TblRentApplyWithMachine;
 use app\models\TblServiceProcess;
 use app\models\TblUserMaintain;
 use app\models\ToolBase;
+use app\models\views\ViewAllDataSearch;
 use app\models\views\ViewRentDataSearch;
 use app\models\WxTemplate;
 use Yii;
@@ -170,7 +171,8 @@ class AdminRentController extends \yii\web\Controller
 
     public function actionList()
     {
-        $searchModel = new ViewRentDataSearch();
+//        $searchModel = new ViewRentDataSearch();
+        $searchModel = new ViewAllDataSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $fixProvider = new ActiveDataProvider([

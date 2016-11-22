@@ -88,6 +88,10 @@ echo GridView::widget([
                 return Html::ul($data,['class'=>'rent-price']);
             }
         ],
+        [
+            'attribute'=>'nickname',
+            'label' => '微信昵称',
+        ],
         'phone',
         'name',
         'address',
