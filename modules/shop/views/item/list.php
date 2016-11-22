@@ -260,7 +260,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
             </div>
             <script type="text/formatTpl" id="show_cp">
                 <%= for(var i=0; i<data.length; i++){ %>
-                <a href="/shop/item/detail?id=1&item_id=<% data[i].id %>" class="chat_cp aui-col-xs-6 aui-padded-0-10 aui-block">
+                <a href="/shop/item/detail?id=<% data[i].wx_id %>&item_id=<% data[i].id %>" class="chat_cp aui-col-xs-6 aui-padded-0-10 aui-block">
                     <div class="cp">
                         <div class="img_in" style="width:100%; height:150px; overflow:hidden;">
                             <img src="<% data[i].cover %>"  width="100%" height="150">

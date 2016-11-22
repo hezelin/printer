@@ -215,7 +215,9 @@ WeixinAsset::register($this);
                                     ['label' => '发送通知','url' => ['/notify/send']],
                                     ['label' => '通知日志','url' => ['/notify/list']]
                                 ]
-                            ]
+                            ],
+                            ['label' => '最新活动','icon' => 'flag', 'url' => ['/notify/activity']],
+
                         ]
                     ]);
                     ?>

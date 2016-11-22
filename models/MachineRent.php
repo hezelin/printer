@@ -51,6 +51,8 @@ class MachineRent
         $this->rent->first_rent_time|| $this->rent->first_rent_time = strtotime('3 month',time());        // 下次收租时间 10年
         $this->rent->rent_period || $this->rent->rent_period = 3;                                  // 5年
         $this->rent->status || $this->rent->status = 2;                                             // 1申请中，2已通过
+        $this->rent->black_amount || $this->rent->black_amount = 0;
+        $this->rent->colours_amount || $this->rent->colours_amount = 0;
     }
 
     /*
@@ -86,8 +88,7 @@ class MachineRent
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();
-
-            throw new HttpException(401,ToolBase::arrayToString($error));
+            throw new HttpException(401,ToolBase::arrayToString($error).$e);
         }
 
         return 'success';

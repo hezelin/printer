@@ -64,7 +64,8 @@ class TblMachineService extends \yii\db\ActiveRecord
     public function updateMachineCount($type='complete')
     {
         $machine = TblMachine::findOne($this->machine_id);
-
+        if(!$machine)
+            return true;
         if($type == 'complete'){
             $machine->maintain_count = $machine->maintain_count + 1;
             $machine->status = 2;

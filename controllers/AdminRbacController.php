@@ -115,8 +115,8 @@ class AdminRbacController extends \yii\web\Controller
             throw new HttpException(401,'成员不存在');
         if($model->group_id != Yii::$app->user->id)
             throw new HttpException(403,'没有权限删除');
-
-        return $this->redirect(['index']);
+        $model->delete();
+        return $this->redirect(['member']);
     }
 
     /*

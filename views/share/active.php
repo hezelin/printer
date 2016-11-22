@@ -19,6 +19,10 @@ HomeAsset::register($this);
     </div>
 </header>
 <div>
+    <?php if(isset($model->text) && $model->text):?>
+        <?=$model->text;?>
+    <?php else:?>
     <h3 class="blank-text" style="font-size: 16px; padding-top:80px;">暂时没有最新活动</h3>
+    <?php endif;?>
 </div>
 
