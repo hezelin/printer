@@ -7,6 +7,7 @@ namespace app\modules\shop\controllers;
 
 use app\models\WxBase;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
 
@@ -83,6 +84,7 @@ class ItemController extends Controller
 
         return $this->render('list',[
             'model'=>$model,
+            'action' => Url::toRoute(['/shop/item/list','id'=>$id,'category'=>$cate]),
             'startId'=>$startId,
             'id'=>$id,
             'len'=>count($model),
