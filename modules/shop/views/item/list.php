@@ -335,7 +335,7 @@ $this->registerCssFile('/css/aui/css/aui-pull-refresh.css',['depends'=>['app\ass
 </footer>
 
 <?php \app\assets\ZeptoAsset::register($this); ?>
-<script> var q='',key='',len = <?=$len?>,startId = <?=$startId?>,action = '/shop/item/list?id=<?=$id?>'; </script>
+<script> var q='',key='',len = <?=$len?>,startId = <?=$startId?>,action = '<?=$action?>'; </script>
 <script>
     <?php $this->beginBlock('JS_END') ?>
 
