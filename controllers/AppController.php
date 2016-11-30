@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\Cache;
 use app\models\common\Debug;
 use app\models\config\Tool;
 use app\models\TblUserMaintain;
@@ -8,6 +9,7 @@ use app\models\ToolBase;
 use app\models\WxUser;
 use app\models\WxChat;
 use Yii;
+use yii\helpers\Url;
 
 class AppController extends \yii\web\Controller
 {

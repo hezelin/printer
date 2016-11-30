@@ -7,6 +7,8 @@ use app\models\TblActivity;
 use app\models\TblNotifyLog;
 use app\models\TblNotifyLogSearch;
 use app\models\TblUserWechat;
+use app\models\WxChat;
+use app\models\WxTemplate;
 use Yii;
 use yii\helpers\Url;
 
@@ -38,6 +40,24 @@ class NotifyController extends \yii\web\Controller
             $model->from_id = Yii::$app->user->id;
             $model->wx_id = $id;
             if( $model->save() ){
+                //[20161129 执行微信窗口推送
+//                $tpl = new WxTemplate($id);
+//                $tpl -> sendNotify($openid,
+//                    '您好，你现有新的通知：',
+//                    $model->text,
+//                    date("m月d日 H:i",time()),
+//                    "没有留言！"
+//                );
+
+                //20161129 执行微信窗口推送]
+
+                //[20161130  改为文字发送
+//                $par = [];
+//                $par[] = ['FromUserName'=>$id, 'ToUserName'=>$openid];
+//                $msg = [];
+//                $wx = new WxChat($msg[] = $par);
+//                $wx->makeText($model->text);
+                //20161130]
                 return $this->render('//tips/success',[
                     'tips' => '发布通知成功',
                     'btnText' => '继续发布',

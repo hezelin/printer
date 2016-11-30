@@ -59,7 +59,7 @@ class TblNotifyLogSearch extends TblNotifyLog
             'wx_id' => $this->wx_id,
             'from_id' => $this->from_id,
             'add_time' => $this->add_time,
-        ]);
+        ])->orderBy('add_time desc');//20161130 biao 修改显示顺序
 
         $query->andFilterWhere(['like', 'openid', $this->openid])
             ->andFilterWhere(['like', 'text', $this->text])
