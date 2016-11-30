@@ -94,6 +94,7 @@ $this->title = '维修任务';
         };
 
         wx.getLocation({
+            type: "gcj02",
             success: function (res) {
                 $.ajax({
                     type:"get",

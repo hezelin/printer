@@ -3,6 +3,7 @@
  * 全局功能 工具
  */
 namespace app\models\config;
+use app\models\common\Debug;
 use app\models\ToolBase;
 use yii\helpers\Html;
 
@@ -92,7 +93,16 @@ class Tool
     {
         if(strlen($openid) == 28)
         {
+//            $tmp = rand();
+//            Debug::log("\n".$tmp."------------------开始---------------\n",'map.txt');
+//            Debug::log($longitude.','.$latitude,'map.txt');
             $latLng = ToolBase::bd_encrypt($latitude,$longitude);
+//            Debug::log("\n".$tmp."------------------转换---------------\n",'map.txt');
+//            Debug::log($latLng['lon'].','.$latLng['lat'],'map.txt');
+            /*$latLng = [
+                'lon' => $longitude,
+                'lat' => $latitude,
+            ];*/
             $t = time();
             $sql = "UPDATE `tbl_user_maintain` SET `longitude`={$latLng['lon']} ,`latitude`={$latLng['lat']} ,`point_time`=$t WHERE openid='$openid' and wx_id=$wx_id";
             \Yii::$app->db->createCommand($sql)->execute();
