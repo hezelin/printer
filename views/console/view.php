@@ -67,7 +67,7 @@ use yii\bootstrap\Modal;
                     <?php foreach($data['maintainer'] as $d):?>
                     <li class="box-list-li">
                         <a href="<?=Url::toRoute(['/service/list','fromFault'=>$d['openid']]);?>" >
-                        <span class="m-name"><?=$d['name']?></span><span class="m-tips">待修机器</span><span class="num-alert"><?=$d['wait_repair_count']?></span>
+                        <span class="m-name"><?=$d['longitude']? '<i class="glyphicon glyphicon-map-marker"></i>':''?><?=$d['name']?></span><span class="m-tips">待修机器</span><span class="num-alert"><?=$d['wait_repair_count']?></span>
                         </a>
                     </li>
                     <?php endforeach;?>
