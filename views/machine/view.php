@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         function getStatus($model){
             return $model->status == 1? Html::a(ConfigBase::getMxStatus($model->status),
-                Url::toRoute(['wxuser/select','url'=>Url::toRoute(['adminrent/bings','machine_id'=>$model->id])]),
+                Url::toRoute(['wxuser/select','url'=>Url::toRoute(['/admin-rent/bings','machine_id'=>$model->id])]),
                 ['class'=>'btn btn-info btn-sm','title'=>'分配租赁用户']):
                 ConfigBase::getMxStatus($model->status) ;
         }
