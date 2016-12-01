@@ -9,7 +9,7 @@
     <li class="list-group-item"><span class="list-label">用户：</span><span class="list-text"><?=$rent['name']?></span></li>
     <li class="list-group-item"><span class="list-label">地址：</span><span class="list-text"><?=$rent['address']?></span></li>
     <li class="list-group-item">
-        <span class="list-label">租金：</span><span class="list-text">最低消费<?=$rent['monthly_rent']?>元，付款周期：<?=$rent['rent_period']?>个月，黑白 <?=$rent['black_white']?>元/张
+        <span class="list-label">租金：</span><span class="list-text">最低消费<?=$rent['monthly_rent']?>元(包含 <?=$rent['contain_paper']? :0?> 张黑白)，付款周期：<?=$rent['rent_period']?>个月，黑白 <?=$rent['black_white']?>元/张
             <?php
             if($rent['colours'])
                 echo '，彩色：',$rent['colours'],'元/张';

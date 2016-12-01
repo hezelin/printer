@@ -67,7 +67,7 @@ use yii\bootstrap\Modal;
                     <?php foreach($data['maintainer'] as $d):?>
                     <li class="box-list-li">
                         <a href="<?=Url::toRoute(['/service/list','fromFault'=>$d['openid']]);?>" >
-                        <span class="m-name"><?=$d['name']?></span><span class="m-tips">待修机器</span><span class="num-alert"><?=$d['wait_repair_count']?></span>
+                        <span class="m-name"><?=$d['longitude']? '<i class="glyphicon glyphicon-map-marker"></i>':''?><?=$d['name']?></span><span class="m-tips">待修机器</span><span class="num-alert"><?=$d['wait_repair_count']?></span>
                         </a>
                     </li>
                     <?php endforeach;?>
@@ -360,18 +360,25 @@ Modal::begin([
     'size' => 'modal-lg',
     'toggleButton' => false,
     'footer' => '
-        <button id="go-back" type="button" class="btn btn-default">上一步</button>
-        <button id="next-step" type="button" class="btn btn-primary">下一步</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button id="go-back" type="button" class="btn btn-default" data-toggle="list">切换列表分配</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
     ',
 ]);
 
 echo Html::beginForm('','',['class'=>'form-horizontal','id'=>'fault-text-form']);
-echo Html::textarea('fault_remark','',['placeholder'=>'备注留言(可省略)','class'=>'form-control','id'=>'fault-remark']);
+echo Html::textInput('fault_remark','',['placeholder'=>'给维修员留言（可省略）','class'=>'form-control','id'=>'fault-remark']);
+echo '<br/>';
+echo Html::tag('div','',['id'=>'my-fix-model']);                // 地图弹窗
+
+
+echo Html::beginTag('table',['class'=>'table table-striped','id'=>'my-fix-model-list','style'=>'display:none']);
+echo '<tr><th>名字</th><th>手机</th><th>待修</th><th>分配</th></tr>';
+foreach($data['maintainer'] as $d){
+    echo '<tr><td>',$d['name'],'</td><td>',$d['phone'],'</td><td class="repair-count">',$d['wait_repair_count'],'</td><td><a class="select-maintain" href="javascript:void(0);" title="分配维修" key-wid="',$d['wx_id'],'" key-openid="',$d['openid'],'" data-method="post"><i class="glyphicon glyphicon-ok"></i></a></td></tr>';
+}
+echo Html::endTag('table');
+
 echo Html::endForm();
-
-echo Html::tag('div','',['id'=>'my-fix-model','style'=>'display:none']);
-
 Modal::end();
 
 
@@ -600,23 +607,31 @@ Modal::end();
             keyId = $(this).attr('key-id');
         $li = $(this).closest('li');
         $('#'+modelIds).modal('show');
+        console.log(modelIds);
+        if(modelIds == 'modal-fault-allot')
+            showMap();
     });
 
 
-    //        上一步
+    //        切换列表模式
     $('#go-back').click(function(){
-        $('#next-step').show();
-        $('#fault-text-form').show();
-        $('#my-fix-model').hide();
+        var tog = $(this).attr('data-toggle');
+        console.log(tog);
+        if( tog == 'list') {
+            $('#my-fix-model-list').show();
+            $('#my-fix-model').hide();
+            $(this).attr('data-toggle','map');
+            $(this).text('切换地图分配');
+
+        }else{
+            $(this).attr('data-toggle','list');
+            $('#my-fix-model').show();
+            $('#my-fix-model-list').hide();
+            $(this).text('切换列表分配');
+
+        }
     });
-    //        下一步
-//    $('#my-fix-model').hide();
-    $('#next-step').click(function(){
-        $(this).hide();
-        $('#fault-text-form').hide();
-//        $('#my-fix-model').show();
-        showMap();
-    });
+
 
     $('#modal-fault-allot').on('mouseenter','.map-point-label',function(){
         $(this).find('.obj-img').siblings().removeClass('hidden');
@@ -624,7 +639,7 @@ Modal::end();
         $(this).find('.obj-img').siblings().addClass('hidden');
     });
 
-//    维修分配
+//    地图维修分配
     $('#modal-fault-allot').on('click','.map-yes-fix-btn',function(){
 
         var $this = $(this);
@@ -641,6 +656,32 @@ Modal::end();
                     setTimeout(function(){
                         $('#modal-fault-allot').modal('hide');
                         $this.html('确认分配');
+                        $li.slideUp();
+                    },1000);
+                }
+                else
+                    alert(res.msg);
+            },'json'
+        );
+        return false;
+    });
+
+    //    列表维修分配
+    $('#modal-fault-allot').on('click','.select-maintain',function(){
+        $(this).html('<img src="/images/loading.gif">');
+        var $this = $(this);
+        var wid = $(this).attr('key-wid');
+        var openid = $(this).attr('key-openid');
+        var re_count = $(this).closest('tr').children('.repair-count');
+        $.post(
+            '<?=Url::toRoute(['/service/allot'])?>',
+            {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
+            function(res){
+                if(res.status == 1){
+                    re_count.text( parseInt(re_count.text()) + 1 );
+                    setTimeout(function(){
+                        $this.html('<i class="glyphicon glyphicon-ok"></i>');
+                        $('#modal-fault-allot').modal('hide');
                         $li.slideUp();
                     },1000);
                 }

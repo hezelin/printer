@@ -111,6 +111,7 @@ AuicssAsset::register($this);
             return false;
         }
         wx.getLocation({
+            type: "gcj02",
             success: function (res) {
                 document.getElementById("tbl_latitude").value = res.latitude;
                 document.getElementById("tbl_longitude").value = res.longitude;

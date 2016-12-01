@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => function($data){
                 switch($data->status){
                     case 1: return Html::a(ConfigBase::getMxStatus($data->status),
-                        Url::toRoute(['wxuser/select','url'=>Url::toRoute(['adminrent/bings','machine_id'=>$data->id])]),
+                        Url::toRoute(['wxuser/select','url'=>Url::toRoute(['/admin-rent/bings','machine_id'=>$data->id])]),
                         ['class'=>'btn btn-info btn-sm','title'=>'分配租赁用户']);
                     case 3: return Html::tag('span',ConfigBase::getMxStatus($data->status),['class'=>'btn btn-waring btn-sm']);
                     default : return ConfigBase::getMxStatus($data->status);
