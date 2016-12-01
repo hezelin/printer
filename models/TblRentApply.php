@@ -36,7 +36,7 @@ class TblRentApply extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'openid', 'project_id', 'due_time', 'phone', 'name', 'add_time'], 'required'],
-            [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'rent_period','black_amount','colours_amount'], 'integer'],
+            [['wx_id', 'project_id', 'machine_id', 'status', 'add_time', 'rent_period', 'contain_paper', 'black_amount','colours_amount'], 'integer'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
             [['colours','monthly_rent','black_white'], 'default','value'=>0],
             [['openid'], 'string', 'max' => 28],

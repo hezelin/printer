@@ -1,6 +1,6 @@
 <?php
 use yii\helpers\Url;
-$this->title = '维修主页';
+$this->title = '维修主页2';
 ?>
 
 <div class="aui-content" id="home-fault">
@@ -64,6 +64,7 @@ $this->title = '维修主页';
     'apiList'=>['getLocation'],
     'jsReady'=>'
         wx.getLocation({
+            type: "gcj02",
             success: function (res) {
                 $.ajax({
                     type:"get",

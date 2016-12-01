@@ -52,8 +52,9 @@ AuicssAsset::register($this);
         </div>
     </div>
     <div class="aui-clearfix aui-overflow-hidden" style="border-bottom:3px solid #B8D4F1;">
-        <button id="bind-btn" type="button" class="aui-btn aui-btn-block aui-btn-info" style="border-radius:0; padding:9px 0; font-size: 15px;">绑定资料</button>
+        <button id="bind-btn" type="button" class="aui-btn aui-btn-block aui-btn-info" style="border-radius:0; padding:9px 0; font-size: 15px;">加载中...</button>
     </div>
+    <p>提示：如果一直显示加载中，请刷新或重新扫描</p>
 </form>
 
 
@@ -90,6 +91,8 @@ AuicssAsset::register($this);
     'wx_id'=>$wx_id,
     'apiList'=>['getLocation'],
     'jsReady'=>'
+    document.querySelector("#bind-btn").innerHTML = "绑定资料";
+
     document.querySelector("#bind-btn").onclick = function () {
         var phoneVal = document.getElementById("apply-phone").value.trim();
         var nameVal = document.getElementById("apply-name").value.trim();
@@ -110,12 +113,17 @@ AuicssAsset::register($this);
             show("地址不能为空");
             return false;
         }
+
         wx.getLocation({
+            type: "gcj02",
             success: function (res) {
                 document.getElementById("tbl_latitude").value = res.latitude;
                 document.getElementById("tbl_longitude").value = res.longitude;
                 document.getElementById("tbl_accuracy").value = res.accuracy;
                 document.getElementById("wechat-submit").submit();
+            },
+            fail: function(res){
+                alert(res.errMsg);
             }
         });
 

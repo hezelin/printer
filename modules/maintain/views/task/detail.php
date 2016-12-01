@@ -42,6 +42,7 @@ MAP;
      document.querySelector("#access-order").innerHTML = "确认接单";
     document.querySelector("#access-order").onclick = function () {
         wx.getLocation({
+            type: "gcj02",
             success: function (res) {
                 document.getElementById("tbl_latitude").value = res.latitude;
                 document.getElementById("tbl_longitude").value = res.longitude;

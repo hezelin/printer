@@ -36,6 +36,7 @@ $this->title = '机器页面';
     'jsReady'=>'
     document.querySelector("#access-order").onclick = function () {
         wx.getLocation({
+            type: "gcj02",
             success: function (res) {
                 document.getElementById("tbl_latitude").value = res.latitude;
                 document.getElementById("tbl_longitude").value = res.longitude;

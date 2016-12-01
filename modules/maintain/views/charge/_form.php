@@ -54,12 +54,12 @@ if( Yii::$app->session->hasFlash('error') )
     <form method="post" id="wechat-form">
         <div class="row">
             <span class="list-label">黑白</span>
-            <span class="list-text"><input class="rent-num check-btn" data-type="black_white" data-name="last_black" data-tips="黑白" type="text" name="TblRentReport[black_white]" placeholder="张数" /> </span>
+            <span class="list-text"><input class="rent-num check-btn" data-type="black_white" data-name="last_black" data-contain="contain_paper" data-tips="黑白" type="text" name="TblRentReport[black_white]" placeholder="张数" /> </span>
         </div>
         <?php if($hasColour):?>
         <div class="row">
             <span class="list-label">彩色</span>
-            <span class="list-text"><input class="rent-num check-btn" data-type="colours" data-name="last_colour" data-tips="彩色" type="text" name="TblRentReport[colour]" placeholder="张数" /> </span>
+            <span class="list-text"><input class="rent-num check-btn" data-type="colours" data-name="last_colour" data-contain="colours_contain" data-tips="彩色" type="text" name="TblRentReport[colour]" placeholder="张数" /> </span>
         </div>
         <?php endif;?>
         <div class="row">
@@ -93,7 +93,9 @@ if( Yii::$app->session->hasFlash('error') )
         'black_white'=>(float)$rent['black_white'],
         'rent_period'=>(int)$rent['rent_period'],
         'last_black'=> isset($lastCharge['black_white'])? (int)$lastCharge['black_white']:$rent['black_amount'],
-        'last_colour'=> isset($lastCharge['colour'])? (int)$lastCharge['colour']:$rent['colours_amount']
+        'last_colour'=> isset($lastCharge['colour'])? (int)$lastCharge['colour']:$rent['colours_amount'],
+        'contain_paper'=>(int)$rent['contain_paper'],
+        'colours_contain' => 0
     ])?>;
 
     <?php $this->beginBlock('JS_END') ?>
@@ -103,14 +105,24 @@ if( Yii::$app->session->hasFlash('error') )
             var money = 0;
             $('.rent-num').each(function(){
                 if( $.trim($(this).val()) )
-                    money += (parseInt($(this).val())-Rent_price[$(this).attr('data-name')]) * Rent_price[$(this).attr('data-type')] ;
+                    money += (parseInt($(this).val())-Rent_price[$(this).attr('data-name')]-Rent_price[$(this).attr('data-contain')] * Rent_price.rent_period) * Rent_price[$(this).attr('data-type')] ;
             });
-            if( Rent_price.monthly_rent * Rent_price.rent_period >= money){
-                money = Rent_price.monthly_rent * Rent_price.rent_period;
-                $('.exceed-money').val(0);
-            }
-            else{
-                $('.exceed-money').val ( (money - Rent_price.monthly_rent * Rent_price.rent_period).toFixed(2) )
+            if(money < 0 )                                          // 计算出的结果不为 负数
+                money = 0;
+            if( Rent_price[$(this).attr('data-contain')] > 0)               // 月租有包含张数
+            {
+                $('.exceed-money').val ( money.toFixed(2) )
+                money += Rent_price.monthly_rent * Rent_price.rent_period
+            }else
+            {
+                // 总金额小于 月租费用，输出月租金
+                if( Rent_price.monthly_rent * Rent_price.rent_period >= money){
+                    money = Rent_price.monthly_rent * Rent_price.rent_period;
+                    $('.exceed-money').val(0);
+                }
+                else{
+                    $('.exceed-money').val ( (money - Rent_price.monthly_rent * Rent_price.rent_period).toFixed(2) )
+                }
             }
 
             $('.rent-money').val( money.toFixed(2));
