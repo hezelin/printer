@@ -144,6 +144,7 @@ class ServiceController extends \yii\web\Controller
      */
     public function actionAllot()
     {
+        Yii::$app->response->format = 'json';               // 返回数组
         if( Yii::$app->request->post())
         {
             $model = TblUserMaintain::findOne([
@@ -152,7 +153,7 @@ class ServiceController extends \yii\web\Controller
             ]);
             $name = $model->name;
             if(!$model)
-                Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,100']) );
+                return ['status'=>0,'msg'=>'出错,100'];
             $model->wait_repair_count = $model->wait_repair_count + 1;
 
             $connection = Yii::$app->db;
@@ -184,7 +185,7 @@ class ServiceController extends \yii\web\Controller
                 $transaction->commit();
             }catch(\Exception $e) {
                 $transaction->rollBack();
-                return json_encode(['status'=>0,'msg'=>'参数错误'.$e]);
+                return ['status'=>0,'msg'=>'参数错误'.$e];
             }
 
             // 为维修员推送消息
@@ -214,10 +215,10 @@ class ServiceController extends \yii\web\Controller
                 );
             }
 
-            echo json_encode(['status'=>1]);
+            return ['status'=>1];
         }
         else
-            echo json_encode(['status'=>0,'msg'=>'参数错误']);
+            return ['status'=>0,'msg'=>'参数错误'];
 
     }
 
