@@ -1,6 +1,6 @@
 <?php
 use yii\helpers\Url;
-$this->title = '维修主页2';
+$this->title = '维修主页';
 ?>
 
 <div class="aui-content" id="home-fault">

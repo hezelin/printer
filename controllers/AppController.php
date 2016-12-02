@@ -4,6 +4,8 @@ namespace app\controllers;
 use app\models\common\Debug;
 use app\models\config\Tool;
 use app\models\TblUserMaintain;
+use app\models\tool\Coord;
+use app\models\tool\Coordinate;
 use app\models\ToolBase;
 use app\models\WxUser;
 use app\models\WxChat;
@@ -110,7 +112,7 @@ class AppController extends \yii\web\Controller
 
         if($wxEvent == 'LOCATION')
         {
-            Tool::location($wxFromUser,$id,$wx->msg->Longitude,$wx->msg->Latitude);
+            Tool::location($wxFromUser,$id,$wx->msg->Longitude,$wx->msg->Latitude,'wgs84');
             return 'success';
         }
 
