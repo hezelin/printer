@@ -55,4 +55,35 @@ class MapController extends \yii\web\Controller
         return $this->render('rent',['points'=>$points]);
     }
 
+    /**
+     *  维修人员分布地图
+     *
+     *  20161201 biao 添加维护人员分布地图
+     *
+     */
+    public function actionMaintain(){
+
+        //1. 读取维修人员表，获取经纬度
+        $points = (new \yii\db\Query())
+            ->select(['name','longitude as lng','latitude as lat'])
+            ->from('tbl_user_maintain')
+            ->where(['wx_id' => Cache::getWid()])
+            ->all();
+
+        //2. 判断数据合法性
+//        foreach ($points as &$m){
+//            if($m['lat'] && $m['lng']){
+//                $data = ToolBase::bd_encrypt($m['lat'],$m['lng']);
+//
+//                $m['lng'] = number_format($data['lon'],6,'.','');
+//                $m['lat'] = number_format($data['lat'],6,'.','');
+//
+//            }else{
+//                unset($m);
+//            }
+//        }
+
+        return $this->render('maintain',['points' => $points]);
+    }
+
 }

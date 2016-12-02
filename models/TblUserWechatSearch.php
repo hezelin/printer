@@ -47,6 +47,8 @@ class TblUserWechatSearch extends TblUserWechat
             'query' => $query,
             'sort'=>['defaultOrder'=>['subscribe_time' => SORT_DESC]]
         ]);
+    +
+
 
         $this->load($params);
 

@@ -207,7 +207,15 @@ WeixinAsset::register($this);
                             ],*/
 
                             ['label' => '微信用户','icon' => 'user','url' => ['/wxuser/list']],
-                            ['label' => '维修员资料','icon' => 'magnet', 'url' => ['/staff/list']],
+                            //['label' => '维修员资料','icon' => 'magnet', 'url' => ['/staff/list']],
+                            [
+                                'label' => '维修员管理',
+                                'icon' => 'magnet',
+                                'items' => [
+                                    ['label' => '维修员资料', 'url' => ['/staff/list']],
+                                    ['label' => '维修员地图分布', 'url' => ['/map/maintain']]
+                                ]
+                            ],
                             [
                                 'label' => '通知管理',
                                 'icon' => 'bell',

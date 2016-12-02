@@ -290,6 +290,42 @@ class WxTemplate extends WxBase {
         return $this->sendTpl($tpl);
     }
 
+    /**
+     * 20161129 商家发送通知
+     *
+     *{{first.DATA}}
+    内容：{{keyword1.DATA}}
+    时间：{{keyword2.DATA}}
+    {{remark.DATA}}
+     *
+     */
+    public function sendNotify($openid, $first, $key1, $key2, $remark){
+        $tpl = [
+            'touser'=>$openid,
+            'template_id'=>$this->getTmpId('updateNotify'),
+            'url'=>'',
+            'data'=> [
+                'first'=>[
+                    'value'=>$first,
+                    'color'=>'#000000',
+                ],
+                'keyword1'=>[
+                    'value'=>$key1,
+                    'color'=>'#000000',
+                ],
+                'keyword2'=>[
+                    'value'=>$key2,
+                    'color'=>'#000000',
+                ],
+                'remark'=>[
+                    'value'=>$remark,
+                    'color'=>'#f07f12',
+                ],
+            ]
+        ];
+        return $this->sendTpl($tpl);
+    }
+
     /*
      * 发送模板消息
      */
@@ -328,6 +364,7 @@ class WxTemplate extends WxBase {
      */
     public function setWechatTmpId()
     {
+        //test
         $data = [
             'newTask'=>'OPENTM204588400',
             'score'=>'TM00230',
@@ -337,6 +374,7 @@ class WxTemplate extends WxBase {
 //            'waitTask'=>'OPENTM200706571',
             'waitTask'=>'OPENTM406438955',
             'cancel'=>'OPENTM203353498',
+            'updateNotify' => 'OPENTM405766411',//20161129 新增的更新通知消息模块
         ];
         $url = 'https://api.weixin.qq.com/cgi-bin/template/api_add_template';
         $curl = new Curl();

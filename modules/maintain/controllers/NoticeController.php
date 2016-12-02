@@ -21,6 +21,7 @@ class NoticeController extends Controller
     {
         $openid = WxBase::openId($id);
         $model = TblNotifyLog::find()->where(['wx_id'=>$id,'openid'=>$openid,'enable'=>'Y'])->orderBy('id desc')->all();
+        TblNotifyLog::updateAll(['is_read' => 'Y'], ['wx_id' => $id, 'openid' => $openid]);//20161201 修改
         return $this->render('index',['model'=>$model,'count'=>count($model)]);
     }
 
