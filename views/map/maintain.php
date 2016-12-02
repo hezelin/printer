@@ -48,14 +48,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <div id="map_canvas"></div>
 
     <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+
 
     <script type="text/javascript">
-
+        <?php $this->beginBlock('JS_END') ?>
         var mapData = <?=$points? json_encode($points,JSON_UNESCAPED_UNICODE):'[]'?>;
 
-        <?php $this->beginBlock('JS_END') ?>
+
 
         // 设置地图窗口的高度
         var hei = hei || $(window).height();
@@ -122,7 +121,7 @@ $this->params['breadcrumbs'][] = $this->title;
             var lat = mapFaultData[i]['lat'];
             var lng = mapFaultData[i]['lng'];
             var content = '\
-                                <div class="map-point-label">\
+                                <div class="map-point-label" >\
                                     <div class="obj-img">\
                                         <img src="/images/weixiuyuan_01.png">\
                                         <div class="map-img-name" style="position:absolute;top:14px;left:14px;color:white;" >'+mapFaultData[i]['name']+'</div>\
@@ -132,10 +131,10 @@ $this->params['breadcrumbs'][] = $this->title;
             if(lng == null)
                 continue;
             mpoints.push(point);
-            var labelOpts = {
-                position: point
-            };
-            var defaultLabel = new BMap.Label(content, labelOpts);
+//            var labelOpts = {
+//                position: pt
+//            };
+            var defaultLabel = new BMap.Label(content, {position:point,offset:new BMap.Size(-30,-50)});
             map.addOverlay(defaultLabel);
         }
         map.setViewport(mpoints);

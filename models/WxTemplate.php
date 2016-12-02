@@ -189,33 +189,77 @@ class WxTemplate extends WxBase {
 待办事项：{{keyword1.DATA}}
 备注说明：{{keyword2.DATA}}
 {{remark.DATA}}
+
+    待办事项状态变更通知
+    {{first.DATA}}
+待办名称：{{keyword1.DATA}}
+状态：{{keyword2.DATA}}
+时间：{{keyword3.DATA}}
+备注：{{keyword4.DATA}}
+{{remark.DATA}}
      */
     public function sendWaiting($openid,$url,$machineTime,$applyTime)
     {
+//        $tpl = [
+//            'touser'=>$openid,
+//            'template_id'=>$this->getTmpId('waitTask'),
+//            'url'=>$url,
+//            'data'=> [
+//                'first'=>[
+//                    'value'=>'您申请的机器维修已于['.date('m月d日 H:i',$machineTime).']维修完成,去评价一下吧！',
+//                    'color'=>'#000000',
+//                ],
+//                'keyword1'=>[
+//                    'value'=>'机器维修完成',
+//                    'color'=>'#000000',
+//                ],
+//                'keyword2'=>[
+//                    'value'=> '时间'.date('m月d日 H:i',$applyTime),
+//                    'color'=>'#000000',
+//                ],
+//
+//                'Remark'=>[
+//                    'value'=>'福利来了，评价赠送积分哦！',
+//                    'color'=>'#173177',
+//                ],
+//            ]
+//        ];
+
+        //[20161202 biao 修改模板
         $tpl = [
             'touser'=>$openid,
             'template_id'=>$this->getTmpId('waitTask'),
             'url'=>$url,
             'data'=> [
                 'first'=>[
-                    'value'=>'您申请的机器维修已于['.date('m月d日 H:i',$machineTime).']维修完成,去评价一下吧！',
+                    'value'=>'',
                     'color'=>'#000000',
                 ],
                 'keyword1'=>[
-                    'value'=>'机器维修完成',
+                    'value'=>'您申请的机器维修已于['.date('m月d日 H:i',$machineTime).']维修完成,去评价一下吧！',
                     'color'=>'#000000',
                 ],
                 'keyword2'=>[
-                    'value'=> '时间'.date('m月d日 H:i',$applyTime),
+                    'value'=>'机器维修完成',
                     'color'=>'#000000',
                 ],
+                'keyword3'=>[
+                    'value'=> date('m月d日 H:i',$applyTime),
+                    'color'=>'#000000',
+                ],
+                'keyword4'=>[
+                    'value'=> '福利来了，评价赠送积分哦！',
+                    'color'=>'#173177',
+                ],
 
-                'Remark'=>[
-                    'value'=>'福利来了，评价赠送积分哦！',
+                'remark'=>[
+                    'value'=>'',
                     'color'=>'#173177',
                 ],
             ]
         ];
+        //20161202]
+
         return $this->sendTpl($tpl);
     }
 
@@ -299,7 +343,45 @@ class WxTemplate extends WxBase {
     {{remark.DATA}}
      *
      */
-    public function sendNotify($openid, $first, $key1, $key2, $remark){
+//    public function sendNotify($openid, $first, $key1, $key2, $remark){
+//        $tpl = [
+//            'touser'=>$openid,
+//            'template_id'=>$this->getTmpId('updateNotify'),
+//            'url'=>'',
+//            'data'=> [
+//                'first'=>[
+//                    'value'=>$first,
+//                    'color'=>'#000000',
+//                ],
+//                'keyword1'=>[
+//                    'value'=>$key1,
+//                    'color'=>'#000000',
+//                ],
+//                'keyword2'=>[
+//                    'value'=>$key2,
+//                    'color'=>'#000000',
+//                ],
+//                'remark'=>[
+//                    'value'=>$remark,
+//                    'color'=>'#f07f12',
+//                ],
+//            ]
+//        ];
+//        return $this->sendTpl($tpl);
+//    }
+
+
+    /**
+     * 20161202 工单进度通知
+     *
+     * {{first.DATA}}
+    通知事项：{{keyword1.DATA}}
+    发起人：{{keyword2.DATA}}
+    发起时间：{{keyword3.DATA}}
+    留言：{{keyword4.DATA}}
+    {{remark.DATA}}
+     */
+    public function sendOrderNotify($openid, $first, $key1, $key2,$key3, $key4, $remark=''){
         $tpl = [
             'touser'=>$openid,
             'template_id'=>$this->getTmpId('updateNotify'),
@@ -311,10 +393,18 @@ class WxTemplate extends WxBase {
                 ],
                 'keyword1'=>[
                     'value'=>$key1,
-                    'color'=>'#000000',
+                    'color'=>'#ff0000',
                 ],
                 'keyword2'=>[
                     'value'=>$key2,
+                    'color'=>'#000000',
+                ],
+                'keyword3'=>[
+                    'value'=>$key3,
+                    'color'=>'#000000',
+                ],
+                'keyword4'=>[
+                    'value'=>$key4,
                     'color'=>'#000000',
                 ],
                 'remark'=>[
@@ -372,9 +462,12 @@ class WxTemplate extends WxBase {
             'checkInfo'=>'OPENTM201057607',
             'process'=>'TM00254',
 //            'waitTask'=>'OPENTM200706571',
-            'waitTask'=>'OPENTM406438955',
+//            'waitTask'=>'OPENTM406438955',
+        //OPENTM207123406
+            'waitTask' => 'OPENTM207123406', //20161202 待办事项提醒 => 待办事项状态变更通知
             'cancel'=>'OPENTM203353498',
-            'updateNotify' => 'OPENTM405766411',//20161129 新增的更新通知消息模块
+            //'updateNotify' => 'OPENTM405766411',//20161129 新增的更新通知消息模块
+            'updateNotify' => 'OPENTM204655948', //20161202 鉴定更新通知 改为 工单进度通知
         ];
         $url = 'https://api.weixin.qq.com/cgi-bin/template/api_add_template';
         $curl = new Curl();
