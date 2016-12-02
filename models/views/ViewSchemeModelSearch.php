@@ -54,7 +54,7 @@ class ViewSchemeModelSearch extends ViewSchemeModel
             'colours' => $this->colours,
             'is_show' => $this->is_show,
             'add_time' => $this->add_time,
-        ]);
+        ])->orderBy('add_time desc');//20161130 biao 修改显示顺序
 
         $query->andFilterWhere(['like', 'cover', $this->cover])
             ->andFilterWhere(['like', 'images', $this->images])
