@@ -1,6 +1,7 @@
 <?php
 namespace app\models;
 
+use app\models\common\Debug;
 use Yii;
 
 /*
@@ -227,7 +228,7 @@ class ToolBase {
     }
 
     /*
-     * google 转百度坐标
+     * 火星坐标(GCJ02坐标，高德，谷歌，腾讯坐标) 转百度坐标
      */
     public static function bd_encrypt($gcjLat, $gcjLon) {
         $x_pi = 3.14159265358979324 * 3000.0 / 180.0;
@@ -240,7 +241,7 @@ class ToolBase {
     }
 
     /*
-     * 百度转百度坐标
+     * 百度转 火星坐标(GCJ02坐标，高德，谷歌，腾讯坐标)
      */
     public static function bd_decrypt($bdLat, $bdLon)
     {

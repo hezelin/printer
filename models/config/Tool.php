@@ -89,21 +89,26 @@ class Tool
         file_put_contents($dir.$name,$message,FILE_APPEND);
     }
 
-    public static function location($openid,$wx_id,$longitude,$latitude)
+    public static function location($openid,$wx_id,$longitude,$latitude,$api='gjc02')
     {
         if(strlen($openid) == 28)
         {
-//            $tmp = rand();
-//            Debug::log("\n".$tmp."------------------开始---------------\n",'map.txt');
-//            Debug::log($longitude.','.$latitude,'map.txt');
-            $latLng = ToolBase::bd_encrypt($latitude,$longitude);
-//            Debug::log("\n".$tmp."------------------转换---------------\n",'map.txt');
-//            Debug::log($latLng['lon'].','.$latLng['lat'],'map.txt');
-            /*$latLng = [
-                'lon' => $longitude,
-                'lat' => $latitude,
-            ];*/
-            $t = time();
+            if($api == 'wgs84')                         // 地图坐标
+            {
+                $data = @file_get_contents('http://api.map.baidu.com/geoconv/v1/?coords='.$longitude.','.$latitude.'&from=1&to=5&ak=yIQq8IIwIm7WoMOsi7NfK41YXY24Yogf');
+                $data = json_decode($data,1);
+                if(isset($data['result'][0]['x'],$data['result'][0]['y']))
+                {
+                    $latLng = [
+                        'lon' => round($data['result'][0]['x'],6),
+                        'lat' => round($data['result'][0]['y'],6),
+                    ];
+                }else
+                    return 1;
+            } else{
+                $latLng = ToolBase::bd_encrypt($latitude,$longitude);
+            }
+            $t= time();
             $sql = "UPDATE `tbl_user_maintain` SET `longitude`={$latLng['lon']} ,`latitude`={$latLng['lat']} ,`point_time`=$t WHERE openid='$openid' and wx_id=$wx_id";
             \Yii::$app->db->createCommand($sql)->execute();
         }

@@ -34,4 +34,5 @@ composer.json
 
 #test
 controllers/BiaoController.php
+sql/
 
