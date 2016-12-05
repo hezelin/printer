@@ -53,7 +53,7 @@ class Tool
      */
     public static function paperNum($num)
     {
-        if($num>1000)
+        if($num>=1000)
             return $num/1000 .'千张';
         else
             return $num .'张';
