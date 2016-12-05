@@ -21,6 +21,7 @@ echo GridView::widget([
         'lowest_expense',
         'contain_paper',
         'black_white',
+        'contain_colours',
         'colours',
         [
             'attribute'=>'cover',

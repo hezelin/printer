@@ -32,7 +32,7 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'openid', 'black_white', 'project_id', 'due_time', 'phone', 'name', 'add_time','machine_id','first_rent_time', 'rent_period'], 'required'],
-            [['wx_id', 'project_id', 'machine_id', 'contain_paper', 'status', 'add_time', 'black_amount', 'colours_amount', 'machine_come_from'], 'integer'],
+            [['wx_id', 'project_id', 'machine_id', 'contain_paper','contain_colours', 'status', 'add_time', 'black_amount', 'colours_amount', 'machine_come_from'], 'integer'],//20161205 新增：彩色张数
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude', 'accuracy'], 'number'],
             [['openid'], 'string', 'max' => 28],
             [['phone'], 'string', 'max' => 11],
@@ -53,7 +53,8 @@ class TblRentApplyWithMachine extends \yii\db\ActiveRecord
             'project_id' => '租借方案',
             'machine_id' => '分配机器',
             'monthly_rent' => '月租',
-            'contain_paper' => '包含张数',
+            'contain_paper' => '黑白张数',
+            'contain_colours' => '彩色张数',//20161205 新增：包含彩色张数
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
             'black_amount' => '黑板读数',

@@ -22,7 +22,7 @@ class TblRentReport extends \yii\db\ActiveRecord
     {
         return [
             [['wx_id', 'colour', 'black_white', 'status', 'machine_id', 'add_time'], 'integer'],
-            [['wx_id', 'black_white', 'total_money', 'sign_img', 'name', 'machine_id', 'add_time','next_rent'], 'required'],
+            [['wx_id', 'black_white','colour', 'total_money', 'sign_img', 'name', 'machine_id', 'add_time','next_rent'], 'required'],
             [['total_money', 'exceed_money'], 'number'],
             [['colour'],'default','value'=>0],
             [['sign_img'], 'string', 'max' => 80],

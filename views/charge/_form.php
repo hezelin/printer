@@ -38,6 +38,8 @@ if( Yii::$app->session->hasFlash('error') )
 
     <?= $form->field($model, 'black_white')->textInput(['placeholder'=>'填写整数','class'=>'form-control rent-num',
         'data-type'=>'black_white','data-name'=>'last_black','data-contain'=>'contain_paper'])?>
+    <?= $form->field($model, 'colour')->textInput(['placeholder'=>'填写整数','class'=>'form-control rent-num',
+        'data-type'=>'colour','data-name'=>'last_colour','data-contain'=>'contain_colours'])?>
 
     <?php
         if($hasColour)

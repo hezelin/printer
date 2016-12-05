@@ -59,7 +59,7 @@ if( Yii::$app->session->hasFlash('error') )
         <?php if($hasColour):?>
         <div class="row">
             <span class="list-label">彩色</span>
-            <span class="list-text"><input class="rent-num check-btn" data-type="colours" data-name="last_colour" data-contain="colours_contain" data-tips="彩色" type="text" name="TblRentReport[colour]" placeholder="张数" /> </span>
+            <span class="list-text"><input class="rent-num check-btn" data-type="colours" data-name="last_colour" data-contain="contain_colours" data-tips="彩色" type="text" name="TblRentReport[colour]" placeholder="张数" /> </span>
         </div>
         <?php endif;?>
         <div class="row">
@@ -95,7 +95,8 @@ if( Yii::$app->session->hasFlash('error') )
         'last_black'=> isset($lastCharge['black_white'])? (int)$lastCharge['black_white']:$rent['black_amount'],
         'last_colour'=> isset($lastCharge['colour'])? (int)$lastCharge['colour']:$rent['colours_amount'],
         'contain_paper'=>(int)$rent['contain_paper'],
-        'colours_contain' => 0
+        'contain_colours' => (int)$rent['contain_colours'],//20161205 新增：彩色张数
+        //'colours_contain' => 0
     ])?>;
 
     <?php $this->beginBlock('JS_END') ?>
