@@ -19,7 +19,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
     public function rules()
     {
         return [
-            [['rent_id','machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id', 'contain_paper'], 'integer'],
+            [['rent_id','machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id', 'contain_paper', 'contain_colours'], 'integer'],
             [['openid', 'phone', 'name', 'address', 'series_id', 'cover', 'brand_name', 'model_name'], 'safe'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude'], 'number'],
         ];
@@ -71,6 +71,7 @@ class ViewRentDataSearch extends ViewRentFaultMachine
             'wx_id' => $this->wx_id,
             'monthly_rent' => $this->monthly_rent,
             'contain_paper' => $this->contain_paper,
+            'contain_colours' => $this->contain_colours,//20161205 新增：包含彩色纸张数
             'black_white' => $this->black_white,
             'colours' => $this->colours,
             'due_time' => $this->due_time,

@@ -38,8 +38,9 @@ class ChargeController extends \yii\web\Controller
             return $this->redirect('/admin-rent/list');
         }
 
+        //20161205 新增：包含彩色张数
         $rent = (new \yii\db\Query())
-            ->select('monthly_rent,contain_paper,black_white,colours,rent_period,name,address, colours_amount,black_amount,first_rent_time')
+            ->select('monthly_rent,contain_paper,contain_colours,black_white,colours,rent_period,name,address, colours_amount,black_amount,first_rent_time')
             ->from('tbl_rent_apply')
             ->where('machine_id=:mid and status<11',[':mid'=>$machine_id])
             ->orderBy('id desc')

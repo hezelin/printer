@@ -19,7 +19,7 @@ class ViewRentFaultMachine extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['rent_id', 'machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id', 'contain_paper'], 'integer'],
+            [['rent_id', 'machine_id', 'wx_id', 'due_time', 'first_rent_time', 'add_time', 'come_from', 'status', 'apply_status', 'fault_id', 'contain_paper', 'contain_colours'], 'integer'],//20161205 新增：彩色张数
             [['wx_id', 'openid', 'phone', 'name', 'due_time', 'add_time'], 'required'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude'], 'number'],
             [['openid'], 'string', 'max' => 28],
@@ -39,7 +39,8 @@ class ViewRentFaultMachine extends \yii\db\ActiveRecord
             'wx_id' => '公众号id',
             'openid' => 'Openid',
             'monthly_rent' => '月租',
-            'contain_paper' => '包含张数',
+            'contain_paper' => '黑白张数',
+            'contain_colours' => '彩色张数',//20161205 新增：包含彩色张数
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
             'phone' => '手机',

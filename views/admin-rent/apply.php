@@ -70,7 +70,10 @@ echo GridView::widget([
                 if($model['colours'])
                     $row[] = Html::tag('div','彩色：'.\app\models\config\Tool::schemePrice($model['colours']));
                 if($model['contain_paper'])
-                    $row[] = Html::tag('div','包含张数：'.\app\models\config\Tool::paperNum($model['contain_paper']));
+                    $row[] = Html::tag('div','黑白张数：'.\app\models\config\Tool::paperNum($model['contain_paper']));
+                if($model['contain_colours'])
+                    $row[] = Html::tag('div','彩色张数：'.\app\models\config\Tool::paperNum($model['contain_colours']));
+
 
                 return join("\n",$row);
             }

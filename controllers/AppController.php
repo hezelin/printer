@@ -76,6 +76,11 @@ class AppController extends \yii\web\Controller
         if($wxEvent == 'subscribe'){
             $weixin = new WxUser($id);
             $weixin->getUser($wxFromUser,true);
+
+            //[20161205 biao 增加：用户第一次关注，发送消息功能
+            return $wx->makeText("亲，你终于来了！");
+
+            //20161205]
         }
         else if($wxEvent == 'unsubscribe'){
             $weixin = new WxUser($id);

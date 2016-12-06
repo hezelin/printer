@@ -35,9 +35,10 @@ class RentController extends \yii\web\Controller
      */
     public function actionDetail($id,$project_id)
     {
+        //20161205 新增：彩色张数
         $model = (new \yii\db\Query())
             ->select('t.id,t.lowest_expense,t.describe,m.brand_name,m.model,t.black_white,t.colours,
-              t.images,t.contain_paper
+              t.images,t.contain_paper, t.contain_colours
             ')
             ->from('tbl_machine_rent_project as t')
             ->leftJoin('tbl_machine_model as m','m.id=t.machine_model_id')

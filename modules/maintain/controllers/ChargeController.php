@@ -53,8 +53,9 @@ class ChargeController extends \yii\web\Controller
             ]);
         }
         $openid = WxBase::openId($id);
+        //20161205 新增：彩色张数
         $rent = (new \yii\db\Query())
-            ->select('monthly_rent,contain_paper,black_white,colours,black_amount,colours_amount,rent_period,name,address, first_rent_time')
+            ->select('monthly_rent,contain_paper,contain_colours,black_white,colours,black_amount,colours_amount,rent_period,name,address, first_rent_time')
             ->from('tbl_rent_apply')
             ->where('machine_id=:mid and status<11',[':mid'=>$machine_id])
             ->orderBy('id desc')

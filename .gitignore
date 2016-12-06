@@ -30,3 +30,9 @@ phpunit.phar
 controllers/TestController.php
 views/test/
 composer.lock
+composer.json
+
+#test
+controllers/BiaoController.php
+sql/
+

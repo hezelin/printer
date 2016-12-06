@@ -83,14 +83,25 @@ echo GridView::widget([
                 if($model->colours)
                     array_push($data,'彩色：'.\app\models\config\Tool::schemePrice($model->colours));
                 if($model->contain_paper)
-                    array_push($data,'包含张数：'.\app\models\config\Tool::paperNum($model->contain_paper));
+                    array_push($data,'黑白张数:'.\app\models\config\Tool::paperNum($model->contain_paper));
+                if($model->contain_colours)
+                    array_push($data, '彩色张数:'.\app\models\config\Tool::paperNum($model->contain_colours));//20161205 新增：包含彩色纸张数
 
                 return Html::ul($data,['class'=>'rent-price']);
             }
         ],
         [
             'attribute'=>'nickname',
+            'format' => 'html',
             'label' => '微信昵称',
+            'value' => function($model){
+                if($model->nickname) {
+                    return $model->nickname.Html::a('更换',['/wxuser/select', 'url' => '/admin-rent/list?machineid='.$model->machine_id], ['class' => 'btn btn-info']);
+                }
+
+                return  '<span class="not-set">(未设置)</span>'.Html::a('设置',['/wxuser/select', 'url' => '/admin-rent/list?machineid='.$model->machine_id], ['class' => 'btn btn-warning']);
+
+            }
         ],
         'phone',
         'name',

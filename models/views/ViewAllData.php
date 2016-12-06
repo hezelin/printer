@@ -19,7 +19,7 @@ class ViewAllData extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['rent_id', 'machine_id', 'wx_id', 'contain_paper', 'due_time', 'first_rent_time', 'add_time', 'apply_status', 'come_from', 'fault_id', 'status'], 'integer'],
+            [['rent_id', 'machine_id', 'wx_id', 'contain_paper','contain_colours', 'due_time', 'first_rent_time', 'add_time', 'apply_status', 'come_from', 'fault_id', 'status'], 'integer'],//20161205 新增：彩色张数
             [['wx_id', 'openid', 'due_time', 'add_time', 'phone', 'name'], 'required'],
             [['monthly_rent', 'black_white', 'colours', 'latitude', 'longitude'], 'number'],
             [['openid'], 'string', 'max' => 28],
@@ -40,7 +40,8 @@ class ViewAllData extends \yii\db\ActiveRecord
             'wx_id' => '公众号id',
             'openid' => 'Openid',
             'monthly_rent' => '月租',
-            'contain_paper' => '包含张数',
+            'contain_paper' => '黑白张数',
+            'contain_colours' => '彩色张数',//20161205 新增：包含彩色张数
             'black_white' => '黑白价格',
             'colours' => '彩色价格',
             'due_time' => '合同到期时间',

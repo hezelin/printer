@@ -19,6 +19,7 @@ use app\models\WxTemplate;
 use Yii;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
+use yii\db\Query;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\HttpException;
@@ -93,6 +94,7 @@ class AdminRentController extends \yii\web\Controller
         $model->first_rent_time = $model->first_rent_time? :strtotime('3 month');
         $model->monthly_rent = $model->machineProject->lowest_expense;
         $model->contain_paper = $model->machineProject->contain_paper;
+        $model->contain_colours = $model->machineProject->contain_colours;//20161205 新增 包含彩色纸张数
         $model->machine_id = '';
 
         if( $model->due_time < time() )
@@ -171,6 +173,19 @@ class AdminRentController extends \yii\web\Controller
 
     public function actionList()
     {
+        //[20161202 添加修改微信账号绑定
+        $openid = Yii::$app->request->get('openid');
+        $machineid = Yii::$app->request->get('machineid');
+
+
+        if( $openid && $machineid ){
+            $sql = "UPDATE `view_all_data` SET `openid` = '".str_replace(' ','',$openid)."'  WHERE `machine_id` = ".str_replace(' ', '', $machineid)."";
+            Yii::$app->db->createCommand($sql)->execute();
+            return $this->redirect('list');
+        }
+
+        //20161202]
+
 //        $searchModel = new ViewRentDataSearch();
         $searchModel = new ViewAllDataSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

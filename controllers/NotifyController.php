@@ -58,11 +58,22 @@ class NotifyController extends \yii\web\Controller
 //                $wx = new WxChat($msg[] = $par);
 //                $wx->makeText($model->text);
                 //20161130]
-                return $this->render('//tips/success',[
-                    'tips' => '发布通知成功',
-                    'btnText' => '继续发布',
-                    'btnUrl' => Url::toRoute(['send','id'=>$id])
-                ]);
+
+
+                //[20161202 修改模板消息
+                $tpl = new WxTemplate($id);
+                $tpl ->sendOrderNotify(
+                    $openid,
+                    '您好，你现有新的通知：',
+                    $model->text,
+                    '租赁商',
+                    date('m月d日 H:i'),
+                    '没有留言'
+                );
+
+
+                //201612020]
+
             }
             else
                 Yii::$app->session->setFlash('error',\app\models\ToolBase::arrayToString($model->errors));

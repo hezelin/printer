@@ -34,12 +34,12 @@ class TblRentApplySearch extends TblRentApply
     {
         $query = (new \yii\db\Query())
             ->select('t.id,t.name,t.phone,t.add_time,u.nickname,u.headimgurl,u.sex,
-                p.lowest_expense,p.contain_paper,p.black_white,p.colours,p.images,m.brand_name,m.model')
+                p.lowest_expense,p.contain_paper,p.contain_colours,p.black_white,p.colours,p.images,m.brand_name,m.model')
             ->from('tbl_rent_apply as t')
             ->where('t.wx_id=:wid and t.status=1',[':wid'=>Cache::getWid()])
             ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
             ->leftJoin('tbl_machine_rent_project as p','p.id=t.project_id')
-            ->leftJoin('tbl_machine_model as m','p.machine_model_id=m.id');
+            ->leftJoin('tbl_machine_model as m','p.machine_model_id=m.id');//20161205 新增：包含彩色字段
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -63,6 +63,7 @@ class TblRentApplySearch extends TblRentApply
             'machine_id' => $this->machine_id,
             'monthly_rent' => $this->monthly_rent,
             'contain_paper' => $this->contain_paper,
+            'contain_colours'=>$this->contain_colours,//20161205 新增：包含彩色张数
             'black_white' => $this->black_white,
             'colours' => $this->colours,
             'due_time' => $this->due_time,
