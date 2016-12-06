@@ -36,3 +36,5 @@ composer.json
 #biao
 controllers/BiaoController.php
 sql/
+config/db.php
+web/.htaccess
