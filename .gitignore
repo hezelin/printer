@@ -32,7 +32,7 @@ views/test/
 composer.lock
 composer.json
 
-#test
+#biao
 controllers/BiaoController.php
-sql/
+config/db.php
 
