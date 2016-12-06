@@ -38,3 +38,4 @@ controllers/BiaoController.php
 sql/
 config/db.php
 web/.htaccess
+config/db.php
