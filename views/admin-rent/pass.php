@@ -56,6 +56,7 @@ if( $type =='allot' )
     <?= $form->field($model, 'contain_paper')->textInput(['placeholder'=>'月租包含黑白张数'])->hint('包含黑白多少张') ?>
     <?= $form->field($model, 'black_white')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.02  代表2分钱'])->hint('多少元 / 每张')?>
 
+    <?= $form->field($model, 'contain_colours')->textInput(['placeholder'=>'月租包含彩色张数'])->hint('包含彩色多少张') ?>
     <?= $form->field($model, 'colours')->textInput(['placeholder'=>'单位为元 / 每张，例如：0.04  代表4分钱'])->hint('多少元 / 每张')?>
     <?= $form->field($model, 'black_amount')->textInput(['placeholder'=>'必填'])->hint('机器黑白读数初始值')->label('黑白读数')?>
     <?= $form->field($model, 'colours_amount')->textInput(['placeholder'=>'彩色机必填'])->hint('机器彩色读数初始值')->label('彩色读数')?>
