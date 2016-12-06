@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\Cache;
 use app\models\MachineRent;
 use app\models\TblMachineSearch;
 use Yii;
@@ -196,7 +197,7 @@ class MachineController extends \yii\web\Controller
 
     protected function findModel($id)
     {
-        if (($model = TblMachine::findOne($id)) !== null) {
+        if (($model = TblMachine::findOne(['id' => $id, 'wx_id' => Cache::getWid()])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException();

@@ -94,13 +94,12 @@ echo GridView::widget([
             'attribute'=>'nickname',
             'format' => 'html',
             'label' => '微信昵称',
-            'value' => function($model){
-                if($model->nickname) {
-                    return $model->nickname.Html::a('更换',['/wxuser/select', 'url' => '/admin-rent/list?machineid='.$model->machine_id], ['class' => 'btn btn-info']);
+            'value' => function($model) {
+                if ($model->nickname) {
+                    return $model->nickname .'<br>'. Html::a('更换', ['/wxuser/select', 'url' => '/admin-rent/list?machineid=' . $model->machine_id], ['class' => 'btn btn-info btn-sm']);
                 }
 
-                return  '<span class="not-set">(未设置)</span>'.Html::a('设置',['/wxuser/select', 'url' => '/admin-rent/list?machineid='.$model->machine_id], ['class' => 'btn btn-warning']);
-
+                return '<span class="not-set">(未设置)</span>' ."<br>". Html::a('设置', ['/wxuser/select', 'url' => '/admin-rent/list?machineid=' . $model->machine_id], ['class' => 'btn btn-warning btn-sm']);
             }
         ],
         'phone',

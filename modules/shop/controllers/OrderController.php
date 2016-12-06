@@ -72,6 +72,11 @@ class OrderController extends Controller
             $transaction = $connection->beginTransaction();
 
             try {
+                //[20161205 修改订单重复提交bug
+                if(TblShopOrder::find(['order_data' => $model->order_data])){
+                    return $this->render('//tips/home-status',['tips'=>'请不要重复提交！','btnText'=>'返回','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
+                }
+                //20161205]
                 $model->save();                     // 订单保存
 
                 // 删除购物车
