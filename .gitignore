@@ -34,5 +34,5 @@ composer.json
 
 
 #biao
-controllers/BianConroller.php
+controllers/BiaoConroller.php
 sql/
