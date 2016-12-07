@@ -103,7 +103,7 @@ class TblRentApply extends \yii\db\ActiveRecord
         if(empty($machine->brand))
             $machine->brand = "未知品牌";
         if(empty($machine->cover))
-            $machine->images = '/img/haoyizu.png';
+            $machine->cover = '/img/haoyizu.png';
 
         //20161207]
 
