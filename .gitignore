@@ -31,3 +31,9 @@ controllers/TestController.php
 views/test/
 composer.lock
 composer.json
+
+
+#biao
+controllers/BiaoController.php
+config/db.php
+sql/
