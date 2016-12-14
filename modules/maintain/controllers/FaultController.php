@@ -206,6 +206,16 @@ class FaultController extends Controller
                 'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
             ]);
 
+        $openid = WxBase::openId($id);
+        if(  TblUserMaintain::findOne(['openid'=>$openid]) )
+        {
+            return $this->render('//tips/home-status',[
+                'tips'=>'维修员无权限评价！',
+                'btnText'=>'返回',
+                'btnUrl'=>Url::toRoute(['/wechat/index','id'=>$id])
+            ]);
+        }
+
         if($score = Yii::$app->request->post('score')){
 
             $model->status = 9;
