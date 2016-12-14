@@ -5,12 +5,14 @@ use app\models\Cache;
 use app\models\common\Debug;
 use app\models\config\Tool;
 use app\models\TblUserMaintain;
+use app\models\TblWexinReply;
 use app\models\tool\Coord;
 use app\models\tool\Coordinate;
 use app\models\ToolBase;
 use app\models\WxUser;
 use app\models\WxChat;
 use Yii;
+use yii\db\Query;
 use yii\helpers\Url;
 
 class AppController extends \yii\web\Controller
@@ -78,9 +80,20 @@ class AppController extends \yii\web\Controller
             $weixin->getUser($wxFromUser,true);
 
             //[20161205 biao 增加：用户第一次关注，发送消息功能
-            return $wx->makeText("亲，你终于来了！");
+            //return $wx->makeText("亲，你终于来了！");
 
             //20161205]
+
+            //[20161214 增加数据库等
+            $tbl_wexin_reply = TblWexinReply::findOne(['wx_id' => Cache::getWid()]);
+            if($tbl_wexin_reply){
+                return $wx->makeText($tbl_wexin_reply->subscribe_reply);
+            }else{
+                return $wx->makeText("亲，你终于来了！");//默认设置
+            }
+
+
+            //20161214]
         }
         else if($wxEvent == 'unsubscribe'){
             $weixin = new WxUser($id);
