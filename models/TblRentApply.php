@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\models\common\Debug;
 use Yii;
 
 class TblRentApply extends \yii\db\ActiveRecord
@@ -85,7 +86,9 @@ class TblRentApply extends \yii\db\ActiveRecord
     {
         $machine = TblMachine::findOne($this->machine_id);
         if($machine == null)
+        {
             return true;
+        }
         if($type == 'rent'){
             $machine->rent_count = $machine->rent_count + 1;
             $machine->status = 2;
@@ -93,6 +96,21 @@ class TblRentApply extends \yii\db\ActiveRecord
 //            $machine->rent_count = $machine->rent_count - 1;
             $machine->status = 1;
         }
-        return $machine->save();
+
+        //[20161207 保存状态前添加一个判断
+        if(empty($machine->images))
+            $machine->images = '["/img/haoyizu.png"]';
+        if(empty($machine->brand))
+            $machine->brand = "未知品牌";
+        if(empty($machine->cover))
+            $machine->cover = '/img/haoyizu.png';
+
+        //20161207]
+
+       return $machine->save();
+//        if(!$data){
+//            Debug::log('----保存失败 -----'."\n");
+//            Debug::log(ToolBase::arrayToString($machine->errors));
+//        }
     }
 }

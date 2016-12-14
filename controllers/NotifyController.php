@@ -15,6 +15,24 @@ use yii\helpers\Url;
 class NotifyController extends \yii\web\Controller
 {
     public $layout = 'console';
+
+    /*
+     * 配置 ueditor 图片上传路径
+     */
+    public function actions()
+    {
+        return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+                'config' => [
+                    "imageUrlPrefix"  => Yii::$app->request->hostInfo,//图片访问路径前缀
+                    "imagePathFormat" => "/uploads/product/{yy}{mm}/{dd}/{time}{rand:6}",//上传保存路径
+                    "imageCompressBorder" => 640,
+                ],
+            ]
+        ];
+    }
+
     public function actionList()
     {
         $searchModel = new TblNotifyLogSearch();
