@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
             echo '初始读数：';
             echo '黑白：',$rent['black_amount'],'张';
             if( $rent['colours_amount']>0 )
-                echo '彩色：',$rent['colours_amount'],'张';
+                echo '，彩色：',$rent['colours_amount'],'张';
         }
     ?>
     </li>

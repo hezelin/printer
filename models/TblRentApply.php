@@ -101,16 +101,9 @@ class TblRentApply extends \yii\db\ActiveRecord
         if(empty($machine->images))
             $machine->images = '["/img/haoyizu.png"]';
         if(empty($machine->brand))
-            $machine->brand = "未知品牌";
+            $machine->brand = "wsz";
         if(empty($machine->cover))
             $machine->cover = '/img/haoyizu.png';
-
-        //20161207]
-
        return $machine->save();
-//        if(!$data){
-//            Debug::log('----保存失败 -----'."\n");
-//            Debug::log(ToolBase::arrayToString($machine->errors));
-//        }
     }
 }
