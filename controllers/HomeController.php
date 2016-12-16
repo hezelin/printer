@@ -1,6 +1,8 @@
 <?php
 namespace app\controllers;
 use app\models\Cache;
+use app\models\common\Debug;
+use app\models\TblWexinReply;
 use app\models\WxBase;
 use yii\data\ActiveDataProvider;
 use app\models\ToolBase;
@@ -216,6 +218,45 @@ class HomeController extends \yii\web\Controller
 
         return $this->render('setting',['model' => $model,'wid'=>$wid]);
     }
+
+    //[20161207 新增关注回复的消息
+    public function actionReplySetting(){
+        $model = new TblWexinReply();
+        if(Yii::$app->request->isPost){
+            $model->load(Yii::$app->request->post());
+            $model->wx_id = Cache::getWid();
+            $model->add_time = time();
+
+            //Debug::log(ToolBase::arrayToString($model));
+            //return;
+           // $data = Yii::$app->request->post('TblWexinReply');
+
+  //          $type =
+//            $subscribe_reply =  $data['subscribe_reply'];
+//            $wx_id = Cache::getWid();
+//
+
+//            $rst = Yii::$app->db->createCommand($sql)->execute();
+
+
+            if($model->saveReply()) {
+                return $this->render('//tips/success', [
+                    'tips' => '修改保存成功！',
+                    'btnText' => '继续修改',
+                    'btnUrl' => \yii\helpers\Url::toRoute(['/home/reply-setting'])
+                ]);
+            }else{
+                return $this->render('//tips/error', [
+                    'tips' => '修改保存失败！',
+                    'btnText' => '重试',
+                    'btnUrl' => \yii\helpers\Url::toRoute(['/home/reply-setting'])
+                ]);
+            }
+        }
+
+        return $this->render('reply', ['model' => $model]);
+    }
+    //20161207]
 
     /*
      * 样式选择

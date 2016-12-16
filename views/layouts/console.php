@@ -164,6 +164,7 @@ WeixinAsset::register($this);
                                 'items' => [
                                     ['label' => '店铺装修', 'url' => ['/home/fitment']],
                                     ['label' => '店铺设置', 'url' => ['/home/setting']],
+                                    ['label' => '设置关注回复', 'url' => ['/home/reply-setting']],
                                 ],
                             ],
                             [
