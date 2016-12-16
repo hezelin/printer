@@ -224,22 +224,12 @@ class HomeController extends \yii\web\Controller
         $model = new TblWexinReply();
         if(Yii::$app->request->isPost){
             $model->load(Yii::$app->request->post());
-            $model->wx_id = Cache::getWid();
-            $model->add_time = time();
 
-            //Debug::log(ToolBase::arrayToString($model));
-            //return;
-           // $data = Yii::$app->request->post('TblWexinReply');
-
-  //          $type =
-//            $subscribe_reply =  $data['subscribe_reply'];
-//            $wx_id = Cache::getWid();
-//
-
-//            $rst = Yii::$app->db->createCommand($sql)->execute();
+            $wx_id = Cache::getWid();
+            $add_time = time();
 
 
-            if($model->saveReply()) {
+            if($model->saveReply($wx_id,$model->subscribe_reply, $add_time)) {
                 return $this->render('//tips/success', [
                     'tips' => '修改保存成功！',
                     'btnText' => '继续修改',
