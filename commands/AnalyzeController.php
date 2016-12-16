@@ -11,6 +11,7 @@ use app\models\analyze\TblAnalyzeOrder;
 use app\models\analyze\TblAnalyzeProduct;
 use app\models\analyze\TblAnalyzeRent;
 use app\models\analyze\TblAnalyzeRental;
+use app\modules\maintain\controllers\FaultController;
 
 class AnalyzeController extends \yii\console\Controller
 {
@@ -34,6 +35,12 @@ class AnalyzeController extends \yii\console\Controller
         $ana->yesterday();
         $ana = new TblAnalyzeRental();
         $ana->yesterday();
+
+        //[20161215 自动评价
+        $fault = new FaultController();
+        $fault->autoEvaluate();
+        //20161215]
+
     }
     /*
      * 维修统计
