@@ -20,7 +20,7 @@ class TblWexinReply extends \yii\db\ActiveRecord{
      *
      */
     public function saveReply($wx_id,$subscribe_reply, $add_time){
-        $sql = "INSERT INTO `tbl_wexin_reply`(`wx_id`,`subscribe_reply`, `enable`, `add_time`) VALUES($wx_id,'".$subscribe_reply."','Y',".$add_time.")  ON DUPLICATE KEY UPDATE `subscribe_reply` = VALUES(subscribe_reply), `add_time` = VALUES(add_time)";
+        $sql = "INSERT INTO `tbl_wexin_reply`(`wx_id`,`subscribe_reply`, `add_time`) VALUES($wx_id,'".$subscribe_reply."',".$add_time.")  ON DUPLICATE KEY UPDATE `subscribe_reply` = VALUES(subscribe_reply), `add_time` = VALUES(add_time)";
 
         return \Yii::$app->db->createCommand($sql)->execute();
     }
