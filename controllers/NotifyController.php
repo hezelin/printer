@@ -89,6 +89,12 @@ class NotifyController extends \yii\web\Controller
                     '没有留言'
                 );
 
+                return $this->render('//tips/success', [
+                    'tips' => '通知发送成功！',
+                    'btnText' => '继续发送',
+                    'btnUrl' => \yii\helpers\Url::toRoute(['/notify/send'])
+                ]);
+
 
                 //201612020]
 
