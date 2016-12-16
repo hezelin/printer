@@ -10,10 +10,6 @@ namespace app\models;
 
 class TblWexinReply extends \yii\db\ActiveRecord{
 
-    public $wx_id;
-    public $type;
-    public $subscribe_reply;
-    public $add_time;
 
     public static function tableName(){
         return 'tbl_wexin_reply';
@@ -23,8 +19,8 @@ class TblWexinReply extends \yii\db\ActiveRecord{
      * 保存关注自动回复信息
      *
      */
-    public function saveReply(){
-        $sql = "INSERT INTO `tbl_Wexin_Reply`(`wx_id`,`subscribe_reply`, `enable`, `add_time`) VALUES($this->wx_id,'".$this->subscribe_reply."','Y',".$this->add_time.")  ON DUPLICATE KEY UPDATE `type` = VALUES(type), `subscribe_reply` = VALUES(subscribe_reply), `add_time` = VALUES(add_time)";
+    public function saveReply($wx_id,$subscribe_reply, $add_time){
+        $sql = "INSERT INTO `tbl_wexin_reply`(`wx_id`,`subscribe_reply`, `enable`, `add_time`) VALUES($wx_id,'".$subscribe_reply."','Y',".$add_time.")  ON DUPLICATE KEY UPDATE `subscribe_reply` = VALUES(subscribe_reply), `add_time` = VALUES(add_time)";
 
         return \Yii::$app->db->createCommand($sql)->execute();
     }
