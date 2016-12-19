@@ -147,4 +147,58 @@ class TblMachineService extends \yii\db\ActiveRecord
             }
         }
     }
+
+    /*
+     * 20161215 增加自动评论（默认3天自动评论）
+     *
+     * 20161219 Bug 修复
+     *
+     */
+    public function autoEvaluate()
+    {
+        //查找所有待评论的任务
+        $faults = TblMachineService::find()->where(['status' => 8])->all();
+
+
+        foreach ($faults as $fault) {
+            if($fault->complete_time > strtotime('-3 days'))//维修完成时间大于三天前的时间，即表示还没到三天
+                continue;
+
+
+            $fault->status = 9;
+            $fault->fault_score = 5;                  //默认5分好评
+            $fault->opera_time = time();
+            $wx_id = $fault->weixin_id;
+            $toOpenid = $fault->openid;
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                if (!$fault->save())
+                    throw new Exception('维修状态错误');
+                if (!$fault->updateMachineCount())
+                    throw new Exception('机器数量统计出错');
+
+                $model = new TblServiceProcess();
+                $model->service_id = $fault->id;
+                $model->process = 9;
+                $model->content = '评价完成';
+                $model->add_time = time();
+                if (!$model->save())
+                    throw new Exception('维修进度错误');
+
+
+                $model = TblUserMaintain::findOne(['wx_id' => $wx_id, 'openid' => $toOpenid]);
+                if ($model && $model->wait_repair_count > 0) {
+                    $model->wait_repair_count -= 1;
+                    if (!$model->save())
+                        throw new Exception('维修员待修计数');
+                }
+
+                $transaction->commit();
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                throw new Exception('系统出错');
+            }
+        }
+    }
 }
