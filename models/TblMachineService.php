@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\base\Exception;
+
 
 class TblMachineService extends \yii\db\ActiveRecord
 {
