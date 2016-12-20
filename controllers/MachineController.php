@@ -2,11 +2,14 @@
 
 namespace app\controllers;
 use app\models\Cache;
+use app\models\common\Debug;
 use app\models\MachineRent;
 use app\models\TblMachineSearch;
+use app\models\TblRentApply;
 use Yii;
 use app\models\TblMachine;
 use app\models\ToolBase;
+use yii\base\Exception;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -97,11 +100,41 @@ class MachineController extends \yii\web\Controller
 
     public function actionDelete($id)
     {
+        /*
         $model = $this->findModel($id);
         $model->status = 11;
         $model->save();
 
         return $this->redirect(['list']);
+        */
+
+        //[20161216 删除机器同时删除租赁关系
+        $transaction = Yii::$app->db->beginTransaction();
+        try{
+            //1. 删除机器表（更新状态）
+            $model = $this->findModel($id);
+            $model->status = 11;
+            if(!$model->save()) {
+                Debug::log("机器状态出错\r\n");
+                throw new Exception("机器状态出错");
+            }
+
+            //2. 删除租赁关系（更新状态）
+            $sql = "UPDATE `tbl_rent_apply` SET `status` = 11 WHERE `wx_id`= ".Cache::getWid()." and `machine_id`= ".trim($id);
+
+            if(!Yii::$app->db->createCommand($sql)->execute()){
+                Debug::log("租赁状态出错\r\n");
+                Debug::log(Yii::$app->db->createCommand($sql)->getSql()."\r\n");
+                throw new Exception("租赁关系状态出错");
+            }
+            $transaction->commit();
+        }catch (\Exception $e){
+            $transaction->rollBack();
+            throw new Exception("系统出错");
+        }
+
+        return $this->redirect(['list']);
+        //20161216]
     }
 
     /*

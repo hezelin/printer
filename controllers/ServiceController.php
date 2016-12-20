@@ -113,11 +113,20 @@ class ServiceController extends \yii\web\Controller
         $searchModel = new ViewFaultDataSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams,1);
 
+        //[20161220 维修分配地图
+        $data = [];
+        $data['maintainer'] = (new \yii\db\Query())
+            ->select(['name','phone','openid','wx_id','wait_repair_count','longitude','latitude','FROM_UNIXTIME(`point_time`,"%Y-%m-%d %H:%i") as point_time'])
+            ->from('tbl_user_maintain')
+            ->where('wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->all();
+        //20161220]
         return $this->render('index',[
             'dataProvider'=>$dataProvider,
             'searchModel' => $searchModel,
             'maintainer'=> $searchModel->mapMaintainer(),
-            'wid'=>Cache::getWid()
+            'wid'=>Cache::getWid(),
+            'data' => $data,
         ]);
     }
 
@@ -126,11 +135,21 @@ class ServiceController extends \yii\web\Controller
         $searchModel = new ViewFaultDataSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        //[20161220 维修分配地图
+        $data = [];
+        $data['maintainer'] = (new \yii\db\Query())
+            ->select(['name','phone','openid','wx_id','wait_repair_count','longitude','latitude','FROM_UNIXTIME(`point_time`,"%Y-%m-%d %H:%i") as point_time'])
+            ->from('tbl_user_maintain')
+            ->where('wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->all();
+        //20161220]
+
         return $this->render('list',[
             'dataProvider'=>$dataProvider,
             'searchModel' => $searchModel,
             'maintainer'=> $searchModel->mapMaintainer(),
-            'wid'=>Cache::getWid()
+            'wid'=>Cache::getWid(),
+            'data' => $data,
         ]);
     }
 

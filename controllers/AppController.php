@@ -85,8 +85,8 @@ class AppController extends \yii\web\Controller
             //20161205]
 
             //[20161214 增加数据库等
-            $tbl_wexin_reply = TblWexinReply::find()->where(['wx_id' => Cache::getWid()])->one();
-            if($tbl_wexin_reply){
+            $tbl_wexin_reply = TblWexinReply::find()->where(['wx_id' => $id])->one();
+            if($tbl_wexin_reply->subscribe_reply){
                 return $wx->makeText($tbl_wexin_reply->subscribe_reply);
             }else{
                 return $wx->makeText("亲，你终于来了！");//默认设置

@@ -42,7 +42,7 @@ if( Yii::$app->session->hasFlash('error') )
     <?php
         if($hasColour)
             echo $form->field($model, 'colour')->textInput(['placeholder'=>'填写整数','class'=>'form-control rent-num',
-                'data-type'=>'colours','data-name'=>'last_colour','data-contain'=>'colours_contain']);
+                'data-type'=>'colours','data-name'=>'last_colour','data-contain'=>'contain_colours']);
     ?>
     <?= $form->field($model, 'total_money')->textInput(['placeholder'=>'最多2位小数','class'=>'form-control rent-money']) ?>
 
@@ -81,7 +81,7 @@ if( Yii::$app->session->hasFlash('error') )
         'last_black'=> isset($lastCharge['black_white'])? (int)$lastCharge['black_white']:(isset($rent['black_amount'])? $rent['black_amount']:0),
         'last_colour'=> isset($lastCharge['colour'])? (int)$lastCharge['colour']:(isset($rent['colours_amount'])? $rent['colours_amount']:0),
         'contain_paper'=>(int)$rent['contain_paper'],
-        'colours_contain' => 0
+        'contain_colours' => (int)$rent['contain_colours'],//20161217 修改: 0 ==>(int)$rent['contain_colours']
     ])?>;
 
     <?php $this->beginBlock('JS_END') ?>

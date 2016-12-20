@@ -8,6 +8,7 @@ namespace app\modules\shop\controllers;
 use app\models\TblUserCount;
 use app\models\WxBase;
 use app\modules\shop\models\TblShopOrder;
+use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -29,6 +30,7 @@ class OrderController extends Controller
             $model->load(Yii::$app->request->post());
             $model->add_time = time();
             $model->wx_id = $id;
+            $model->pay_score = (int)$model->pay_score;
             $model->order_id = date('YmdHis',time()).rand(1000,9999);
             if($model->pay_status == 3)         // 在线支付，更改为等待付款
                 $model->order_status = 3;
@@ -72,12 +74,8 @@ class OrderController extends Controller
             $transaction = $connection->beginTransaction();
 
             try {
-                //[20161205 修改订单重复提交bug
-                if(TblShopOrder::find(['order_data' => $model->order_data])){
-                    return $this->render('//tips/home-status',['tips'=>'请不要重复提交！','btnText'=>'返回','btnUrl'=>Url::toRoute(['/shop/i/order','id'=>$id])]);
-                }
-                //20161205]
-                $model->save();                     // 订单保存
+                if(!$model->save())
+                    throw new Exception('保存订单出错');                     // 订单保存
 
                 // 删除购物车
                 $sql1 = "DELETE FROM `tbl_shop_cart` WHERE openid='$openid' and wx_id=$id";
@@ -90,7 +88,8 @@ class OrderController extends Controller
                         return $this->render('//tips/home-status',['tips'=>'积分不够！',
                             'btnText'=>'返回','btnUrl'=>'javascript:history.go(-1);']);
                     $score->score = $score->score - $model->pay_score;
-                    $score->save();
+                    if(!$score->save())
+                        throw new Exception('更改积分出错');
                 }
 
 //                更改商城库存
