@@ -174,16 +174,17 @@ $(function(){
             flag = 1;
 
 
-        if(flag != 1)
+        if(flag != 1) {
             alert('文字、图片和语音至少选择一种提交！');
+            return false;
+        }
         //20161219]
 
         if( $('#voice-wrap').attr('data-value') == '2'){
             alert('正在录音中....');
             return false;
         }
-        alert('可以提交');
-        return;
+
         function upload() {
             wx.uploadImage({
                 localId: images.localId[i],
