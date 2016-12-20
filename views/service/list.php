@@ -215,6 +215,16 @@ echo GridView::widget([
                         ->scalar();
                     return '维修员：'.$maintainer.'<br/>'.ConfigBase::getFixStatus($data->status);
                 }
+                //[20161220 修改
+                if($data->status == 2){
+                    $maintainer = (new \yii\db\Query())
+                        ->select('name')
+                        ->from('tbl_user_maintain')
+                        ->where('wx_id=:wid and openid=:openid',[':openid'=>$data->openid,':wid'=>$data->weixin_id])
+                        ->scalar();
+                    return ConfigBase::getFixStatus($data->status).'<br>'.'已分配<span style="color:#c55;"> '.$maintainer.' </span>维修员，'.'等待接单';
+                }
+                //20161220]
                 return ConfigBase::getFixStatus($data->status);
             }
         ],
@@ -328,10 +338,24 @@ Modal::begin([
     'size' => 'modal-lg',
     'toggleButton' => false,
     'footer' => '
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button id="go-back" type="button" class="btn btn-default" data-toggle="list">切换列表分配</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
     ',
 ]);
-echo Html::tag('div','',['id'=>'my-fix-model','style'=>'display:none']);
+echo Html::beginForm('','',['class'=>'form-horizontal','id'=>'fault-text-form']);
+echo Html::textInput('fault_remark','',['placeholder'=>'给维修员留言（可省略）','class'=>'form-control','id'=>'fault-remark']);
+echo '<br/>';
+echo Html::tag('div','',['id'=>'my-fix-model']);                // 地图弹窗
+
+
+echo Html::beginTag('table',['class'=>'table table-striped','id'=>'my-fix-model-list','style'=>'display:none']);
+echo '<tr><th>名字</th><th>手机</th><th>待修</th><th>分配</th></tr>';
+foreach($data['maintainer'] as $d){
+    echo '<tr><td>',$d['name'],'</td><td>',$d['phone'],'</td><td class="repair-count">',$d['wait_repair_count'],'</td><td><a class="select-maintain" href="javascript:void(0);" title="分配维修" key-wid="',$d['wx_id'],'" key-openid="',$d['openid'],'" data-method="post"><i class="glyphicon glyphicon-ok"></i></a></td></tr>';
+}
+echo Html::endTag('table');
+
+echo Html::endForm();
 
 Modal::end();
 ?>
@@ -378,6 +402,9 @@ Modal::end();
         function showMap()
         {
             $('#my-fix-model').show();
+            $('#my-fix-model-list').hide();
+            $('#go-back').text('切换列表分配');
+            $('#go-back').attr('data-toggle', 'list');
             if(mapHasShow == 0)
             {
                 mapHei = mapHei || $(window).height();
@@ -438,7 +465,36 @@ Modal::end();
 
 
 
+
+
         <?php $this->beginBlock('JS_END') ?>
+
+        //        切换列表模式
+        $('#go-back').click(function(){
+            var tog = $(this).attr('data-toggle');
+            console.log(tog);
+            if( tog == 'list') {
+                $('#my-fix-model-list').show();
+                $('#my-fix-model').hide();
+                $(this).attr('data-toggle','map');
+                $(this).text('切换地图分配');
+
+            }else{
+                $(this).attr('data-toggle','list');
+                $('#my-fix-model').show();
+                $('#my-fix-model-list').hide();
+                $(this).text('切换列表分配');
+
+            }
+        });
+
+
+        $('#my-modal').on('mouseenter','.map-point-label',function(){
+            $(this).find('.obj-img').siblings().removeClass('hidden');
+        }).on('mouseleave','.map-point-label',function(){
+            $(this).find('.obj-img').siblings().addClass('hidden');
+        });
+
 
 
 
@@ -463,7 +519,9 @@ Modal::end();
             $(this).find('.obj-img').siblings().addClass('hidden');
         });
 
+        //    地图维修分配
         $('#my-modal').on('click','.map-yes-fix-btn',function(){
+
             var $this = $(this);
             var $closest = $this.closest('.map-point-label');
 
@@ -472,12 +530,14 @@ Modal::end();
             var openid = $closest.attr('key-openid');
             $.post(
                 '<?=Url::toRoute(['/service/switch'])?>',
-                {'id':keyId,'wid':wid,'openid':openid},
+                {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
                 function(res){
                     if(res.status == 1){
                         setTimeout(function(){
                             $('#my-modal').modal('hide');
                             $this.html('确认分配');
+                            $li.slideUp();
+                            document.location.href='/service/index';
                         },1000);
                     }
                     else
@@ -487,6 +547,34 @@ Modal::end();
             return false;
         });
 
+        //    列表维修分配
+        $('#my-modal').on('click','.select-maintain',function(){
+
+
+            $(this).html('<img src="/images/loading.gif">');
+            var $this = $(this);
+            var wid = $(this).attr('key-wid');
+            var openid = $(this).attr('key-openid');
+            var re_count = $(this).closest('tr').children('.repair-count');
+            $.post(
+                '<?=Url::toRoute(['/service/switch'])?>',
+                {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
+                function(res){
+                    if(res.status == 1){
+                        re_count.text( parseInt(re_count.text()) + 1 );
+                        setTimeout(function(){
+                            $this.html('<i class="glyphicon glyphicon-ok"></i>');
+                            $('#my-modal').modal('hide');
+                            $li.slideUp();
+                            document.location.href='/service/list';
+                        },1000);
+                    }
+                    else
+                        alert(res.msg);
+                },'json'
+            );
+            return false;
+        });
 
         $('#cancel-btn').click(function(){
             var text = $.trim($('#cancel-text').val());
@@ -507,7 +595,7 @@ Modal::end();
                         alert(res.msg);
                 },'json'
             );
-        })
+        });
 
         //录音控制
         $('.voice-wrap').click(function(){
