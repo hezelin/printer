@@ -489,7 +489,12 @@ Modal::end();
 
     function showMap()
     {
+        //[20161220 修改Bug
         $('#my-fix-model').show();
+        $('#my-fix-model-list').hide();
+        $('#go-back').text('切换列表分配');
+        $('#go-back').attr('data-toggle', 'list');
+        //20161220]
         if(mapHasShow == 0)
         {
             mapHei = mapHei || $(window).height();

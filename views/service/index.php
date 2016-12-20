@@ -183,6 +183,34 @@ echo GridView::widget([
     ],
 ]);
 
+
+// 分配维修
+Modal::begin([
+    'header' => '分配任务',
+    'id' => 'my-modal',
+    'size' => 'modal-lg',
+    'toggleButton' => false,
+    'footer' => '
+        <button id="go-back" type="button" class="btn btn-default" data-toggle="list">切换列表分配</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+    ',
+]);
+echo Html::beginForm('','',['class'=>'form-horizontal','id'=>'fault-text-form']);
+echo Html::textInput('fault_remark','',['placeholder'=>'给维修员留言（可省略）','class'=>'form-control','id'=>'fault-remark']);
+echo '<br/>';
+echo Html::tag('div','',['id'=>'my-fix-model']);                // 地图弹窗
+
+
+echo Html::beginTag('table',['class'=>'table table-striped','id'=>'my-fix-model-list','style'=>'display:none']);
+echo '<tr><th>名字</th><th>手机</th><th>待修</th><th>分配</th></tr>';
+foreach($data['maintainer'] as $d){
+    echo '<tr><td>',$d['name'],'</td><td>',$d['phone'],'</td><td class="repair-count">',$d['wait_repair_count'],'</td><td><a class="select-maintain" href="javascript:void(0);" title="分配维修" key-wid="',$d['wx_id'],'" key-openid="',$d['openid'],'" data-method="post"><i class="glyphicon glyphicon-ok"></i></a></td></tr>';
+}
+echo Html::endTag('table');
+
+echo Html::endForm();
+
+Modal::end();
 ?>
 
 <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
@@ -225,7 +253,12 @@ echo GridView::widget([
 
     function showMap()
     {
+        //[20161220 修改Bug
         $('#my-fix-model').show();
+        $('#my-fix-model-list').hide();
+        $('#go-back').text('切换列表分配');
+        $('#go-back').attr('data-toggle', 'list');
+        //20161220]
         if(mapHasShow == 0)
         {
             mapHei = mapHei || $(window).height();
@@ -341,6 +374,114 @@ echo GridView::widget([
         });
 
 
+    //        切换列表模式
+    $('#go-back').click(function(){
+        var tog = $(this).attr('data-toggle');
+        console.log(tog);
+        if( tog == 'list') {
+            $('#my-fix-model-list').show();
+            $('#my-fix-model').hide();
+            $(this).attr('data-toggle','map');
+            $(this).text('切换地图分配');
+
+        }else{
+            $(this).attr('data-toggle','list');
+            $('#my-fix-model').show();
+            $('#my-fix-model-list').hide();
+            $(this).text('切换列表分配');
+
+        }
+    });
+
+
+    $('#my-modal').on('mouseenter','.map-point-label',function(){
+        $(this).find('.obj-img').siblings().removeClass('hidden');
+    }).on('mouseleave','.map-point-label',function(){
+        $(this).find('.obj-img').siblings().addClass('hidden');
+    });
+
+
+
+
+
+
+    $('#fix-list .close-model').click(function(){
+        keyId = $(this).attr('key-id');
+        allotTr = $(this).closest('tr');
+        $('#my-modal-cancel').modal('show');
+        return false;
+    });
+
+    $('#fix-list .allot-model').click(function(){
+        allotTr = $(this).closest('tr');
+        keyId = $(this).attr('key-id');
+        $('#my-modal').modal('show');
+        showMap();
+        return false;
+    });
+
+    $('#my-modal').on('mouseenter','.map-point-label',function(){
+        $(this).find('.obj-img').siblings().removeClass('hidden');
+    }).on('mouseleave','.map-point-label',function(){
+        $(this).find('.obj-img').siblings().addClass('hidden');
+    });
+
+    //    地图维修分配
+    $('#my-modal').on('click','.map-yes-fix-btn',function(){
+
+        var $this = $(this);
+        var $closest = $this.closest('.map-point-label');
+
+        $this.html('正在分配中 <img src="/images/loading.gif">');
+        var wid = $closest.attr('key-wid');
+        var openid = $closest.attr('key-openid');
+        $.post(
+            '<?=Url::toRoute(['/service/switch'])?>',
+            {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
+            function(res){
+                if(res.status == 1){
+                    setTimeout(function(){
+                        $('#my-modal').modal('hide');
+                        $this.html('确认分配');
+                        $li.slideUp();
+                        document.location.href='/service/index';
+                    },1000);
+                }
+                else
+                    alert(res.msg);
+            },'json'
+        );
+        return false;
+    });
+
+    //    列表维修分配
+    $('#my-modal').on('click','.select-maintain',function(){
+
+
+        $(this).html('<img src="/images/loading.gif">');
+        var $this = $(this);
+        var wid = $(this).attr('key-wid');
+        var openid = $(this).attr('key-openid');
+        var re_count = $(this).closest('tr').children('.repair-count');
+        $.post(
+            '<?=Url::toRoute(['/service/switch'])?>',
+            {'id':keyId,'wid':wid,'openid':openid,'fault_remark':$('#fault-remark').val()},
+            function(res){
+                if(res.status == 1){
+                    re_count.text( parseInt(re_count.text()) + 1 );
+                    setTimeout(function(){
+                        $this.html('<i class="glyphicon glyphicon-ok"></i>');
+                        $('#my-modal').modal('hide');
+                        $li.slideUp();
+                    },1000);
+                }
+                else
+                    alert(res.msg);
+            },'json'
+        );
+        return false;
+    });
+
         /*
          * 关闭维修
          */
@@ -411,27 +552,7 @@ $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 ?>
 
 <?php
-Modal::begin([
-    'header' => '分配任务',
-    'id' => 'my-modal',
-    'size' => 'modal-lg',
-    'toggleButton' => false,
-    'footer' => '
-        <button id="go-back" type="button" class="btn btn-default">上一步</button>
-        <button id="next-step" type="button" class="btn btn-primary">下一步</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-    ',
-]);
 
-echo Html::beginForm('','',['class'=>'form-horizontal','id'=>'fault-text-form']);
-
-echo Html::textarea('fault_remark','',['placeholder'=>'备注留言(可省略)','class'=>'form-control','id'=>'fault-remark']);
-
-echo Html::endForm();
-
-echo Html::tag('div','',['id'=>'my-fix-model','style'=>'display:none']);
-
-Modal::end();
 
 
 /*
