@@ -171,4 +171,57 @@ class ConsoleController extends \yii\web\Controller
 
         return $this->render('zujiApply',['dataProvider'=>$dataProvider]);
     }
+
+    /**
+     * 20161220 biao 增加
+     *
+     * 数据轮询，获取最新消息
+     *
+     */
+    public function actionPolling(){
+
+        //$data = [1, 2, 3, 4, 5];
+
+        if(Yii::$app->request->isPost) {
+            $from_time = Yii::$app->request->post('fromtime');//开始获取的时间戳
+
+
+            //1. 待分配维修
+            $data['fault'] = (new \yii\db\Query())
+                ->select('t.id,t.content,t.desc,t.type,t.add_time,m.model_name as model,m.brand_name as brand,a.name,a.phone,a.address')
+                ->from('tbl_machine_service t')
+                ->leftJoin('tbl_machine m', 't.machine_id=m.id')
+                ->leftJoin('tbl_rent_apply a', 'a.machine_id=t.machine_id and a.status<11')
+                ->where('t.status=2 and t.weixin_id=:wid and t.add_time < :fromtime', [':wid' => Cache::getWid(),':fromtime' => $from_time])
+                ->all();
+
+            //2. 订单处理
+            $data['order'] = (new \yii\db\Query())
+                ->select('t.order_id,t.order_data,t.remark,t.freight,t.total_price,t.pay_score,t.pay_status,t.order_status,t.add_time,
+                d.name,d.phone,d.city,d.address')
+                ->from('tbl_shop_order t')
+                ->leftJoin('tbl_shop_address d','d.id=t.address_id')
+                ->where(['t.enable'=>'Y','t.wx_id'=>Cache::getWid(),'t.order_status'=>[1,5]])
+                ->all();
+            if($data['order']){
+                foreach($data['order'] as &$d)
+                    $d['order_data'] = json_decode($d['order_data'],true);
+            }
+
+            //3. 租赁申请
+            $data['rent'] = (new \yii\db\Query())
+                ->select('t.id,t.name,t.phone,t.add_time,u.headimgurl,m.model,m.brand_name,
+                p.lowest_expense,p.black_white,p.colours')
+                ->from('tbl_rent_apply as t')
+                ->where('t.wx_id=:wid and t.status=1',[':wid'=>Cache::getWid()])
+                ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
+                ->leftJoin('tbl_machine_rent_project as p','p.id=t.project_id')
+                ->leftJoin('tbl_machine_model as m','p.machine_model_id=m.id')
+                ->all();
+
+            return json_encode(['status' => 1,'data' => $data]);
+        }//end of isPost
+
+
+    }
 }

@@ -5,10 +5,17 @@ use yii\grid\GridView;
 use app\modules\shop\models\Shop;
 use yii\bootstrap\Modal;
 
+
+
     $this->title = '工作任务';
 //$this->registerCssFile('/css/console-task.css');
 ?>
 <link href="/css/console-task.css" rel="stylesheet">
+<link href="/css/pnotify.css"  media="all" rel="stylesheet">
+<link href="/css/pnotify.history.css"  media="all" rel="stylesheet">
+<link href="/css/pnotify.brighttheme.css"  media="all" rel="stylesheet">
+<link href="/css/pnotify.buttons.css"  media="all" rel="stylesheet">
+
 <p>&nbsp;</p>
 <div class="row">
     <div class="mod_navbar">
@@ -17,12 +24,13 @@ use yii\bootstrap\Modal;
 </div>
 <div class="row" id="task-layout">
     <p style="height: 40px;">&nbsp;</p>
+
     <div class="col-md-9 no-padding">
         <div class="row-box">
             <div class="box-panel-header">
                 <h4><i class="icon glyphicon glyphicon-wrench"></i>待分配维修</h4>
             </div>
-            <div class="box-panel-body">
+            <div class="box-panel-body" id="box-fault">
                 <?php if($data['fault']):?>
                     <ul class="fault-list-ul">
                         <?php foreach($data['fault'] as $d):?>
@@ -471,6 +479,14 @@ Modal::end();
 
 <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
 
+
+<script type="text/javascript" src="/js/require.js"></script>
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/pnotify.js"></script>
+<script type="text/javascript" src="/js/pnotify.history.js"></script>
+<script type="text/javascript" src="/js/pnotify.buttons.js"></script>
+
+
 <script>
     // 共用key,fault
     var keyId,
@@ -553,7 +569,9 @@ Modal::end();
         }
 
     }
+
     <?php $this->beginBlock('JS_END') ?>
+
 
 
     ///////////  展开 收起  功能
@@ -800,8 +818,75 @@ Modal::end();
                     alert(resp.msg);
             },'json'
         );
-    })
+    });
+
+    //初始化
+    var newsTimer;
+    var counter = 0;
+    var currentTime = new Date().getTime();
+    $(function(){
+        startTimer();
+    });
+
+
+    //开启计时器
+    function startTimer(){
+        newsTimer = setInterval(function(){
+            //alert(123);
+            counter++;
+
+            $.post('<?=Url::toRoute(['/console/polling'])?>',{'fromtime':currentTime},function(rst){
+                var data = JSON.parse(rst);
+                var str = '';
+                for(var i = 0; i < data['fault'].length; i ++){
+                    str += data['fault'][i]['desc']+'+++++';
+                }
+
+                $('#box-fault').html("<ul class='fault-list-ul'><li class='fault-list-li'><div class='fault-data'><a href='/img/haoyizu.png' class='fancybox' rel='group'><img class='cover-img' src='/img/haoyizu.png' /></a><h4>卡纸,<b class='fault-time'>12月20 11:00</b></h4><span>不清楚</span></div><div class='fault-data'><h4>富士施乐2050 , 测试</h4><span>13112345678,广东省广州市天河区车陂地铁站</span></div><div class='fault-btn'><button type='button' key-id='61' modal-type='modal-fault-allot' class='order-modal btn btn-info btn-sm'>分配</button><button type='button' key-id='61' modal-type='modal-fault-del' class='order-modal btn btn-danger btn-sm'>关闭</button></div></li></ul>");
+
+                requirejs(['jquery', 'pnotify', 'pnotify.history','pnotify.buttons'], function($, PNotify){
+                    PNotify.prototype.options.styling = "bootstrap3";
+                    $(function(){
+                        new PNotify({
+                            title: "<span style=''>您有新任务<span>【"+counter+"】",
+                            text: str,
+                            type:'info',
+                            delay:3000,
+                            hide:true, //是否自动关闭
+                            mouse_reset:true,   //鼠标悬浮的时候，计时重置
+
+                            history:{
+                                history:true,
+                                menu:true,
+                                fixed:true,
+                                maxonscreen:Infinity ,
+                                labels: {redisplay: "历史消息", all: "显示全部", last: "最后一个"}
+                            },
+                            buttons:{
+                                closer:true,
+                                closer_hover:false,
+                                sticker_hover:true,
+                                //labels: {close: "Close", stick: "Stick"}
+                            },
+
+
+
+                        });
+                    });
+                });
+
+            });
+        }, 2000);
+    }
+
+    //停止计时器
+    function stopTimer(){
+        clearInterval(newsTimer);
+    }
+
+
     <?php $this->endBlock();?>
+
 </script>
 
 <?php
