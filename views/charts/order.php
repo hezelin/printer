@@ -53,21 +53,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 crosshair: true
             }],
             yAxis: [ {
-                gridLineWidth: 0,
-                title: {
-                    text: '总积分',
-                    style: {
-                        color: Highcharts.getOptions().colors[2]
-                    }
-                },
-                labels: {
-                    format: '{value} 分',
-                    style: {
-                        color: Highcharts.getOptions().colors[2]
-                    }
-                },
-                opposite: true
-            },{
                 labels: {
                     format: '{value} 个',
                     style: {
@@ -116,22 +101,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 crosshair: true
             }],
             yAxis: [ {
-                gridLineWidth: 0,
-                yMin:0,
-                title: {
-                    text: '总积分',
-                    style: {
-                        color: Highcharts.getOptions().colors[2]
-                    }
-                },
-                labels: {
-                    format: '{value} 分',
-                    style: {
-                        color: Highcharts.getOptions().colors[2]
-                    }
-                },
-                opposite: true
-            },{
                 labels: {
                     format: '{value} 个',
                     style: {

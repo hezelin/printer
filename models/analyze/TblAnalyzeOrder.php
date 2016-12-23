@@ -140,7 +140,8 @@ class TblAnalyzeOrder
         }
 
         $data = (new \yii\db\Query())
-            ->select('date_time,total_num,total_money,total_score,new_money,new_score,new_num')
+            //->select('date_time,total_num,total_money,total_score,new_money,new_score,new_num')
+            ->select('date_time,total_num,total_money,new_money,new_num')//20161223 修改
             ->from('tbl_analyze_order')
             ->where(['between','date_time',$start,$end])
             ->andWhere('wx_id=:wid',[':wid'=>Cache::getWid()])
@@ -153,10 +154,10 @@ class TblAnalyzeOrder
             foreach($data as $d){
                 $chart['cate'][] = date('Y-m-d',$d['date_time']);
                 $tmp['money'][] = (float)$d['total_money'];
-                $tmp['score'][] = (int)$d['total_score'];
+                //$tmp['score'][] = (int)$d['total_score'];
                 $tmp['num'][] = (int)$d['total_num'];
                 $new['newMoney'][] = (float)$d['new_money'];
-                $new['newScore'][] = (int)$d['new_score'];
+                //$new['newScore'][] = (int)$d['new_score'];
                 $new['newNum'][] = (int)$d['new_num'];
             }
         }else
@@ -173,7 +174,7 @@ class TblAnalyzeOrder
             [
                 'name'=>'累计数量',
                 'type'=>'spline',
-//                'yAxis'=>2,
+                'yAxis'=>0,//20161223 修改
                 'tooltip'=>['valueSuffix'=>'个'],
                 'data'=> isset($tmp['num'])? $tmp['num']:[]
             ]/*,[
@@ -188,22 +189,22 @@ class TblAnalyzeOrder
             [
                 'name'=>'新增数量',
                 'type'=>'column',
-                'yAxis'=>1,
+                'yAxis'=>0,//20161223 修改
                 'tooltip'=>['valueSuffix'=>'个'],
                 'data'=> isset($new['newNum'])? $new['newNum']:[]
             ],
             [
                 'name'=>'新增金额',
                 'type'=>'spline',
-                'yAxis'=>2,
+                'yAxis'=>1,//20161223 修改
                 'tooltip'=>['valueSuffix'=>'元'],
                 'data'=> isset($new['newMoney'])? $new['newMoney']:[]
-            ],[
+            ]/*,[
                 'name'=>'新增积分',
                 'type'=>'spline',
                 'tooltip'=>['valueSuffix'=>'个'],
                 'data'=> isset($new['newScore'])? $new['newScore']:[]
-            ]
+            ]*///20161223 修改
         ];
 
         unset($data);
