@@ -97,8 +97,8 @@ ul li:last-child{border-bottom: none;}
 .order-list{ width: 30%;float: left;}
 .order-address{ width: 30%;float: left;}
 .order-btn{width: 15%; float: left; margin-top: 20px;}
-
-.order-list p{ height: 20px; line-height: 20px; margin: 0; padding:0;}
+/*height: 20px; line-height: 20px;*/
+.order-list p{ /*height: 20px; line-height: 20px;*/ margin: 0; padding:0;}
 .order-list-m li{
     height: 50px; width: 180px; border-bottom: 1px solid #cccccc; padding: 7px 0; margin-bottom: 3px;
 }
