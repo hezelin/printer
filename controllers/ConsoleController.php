@@ -10,7 +10,10 @@ use app\models\analyze\TblAnalyzeProduct;
 use app\models\analyze\TblAnalyzeRent;
 use app\models\analyze\TblAnalyzeRental;
 use app\models\Cache;
+use app\models\common\Debug;
+use app\models\ConfigBase;
 use app\models\TblZujiApply;
+use app\models\ToolBase;
 use yii\data\ActiveDataProvider;
 use Yii;
 
@@ -53,6 +56,7 @@ class ConsoleController extends \yii\web\Controller
             ->leftJoin('tbl_machine m','t.machine_id=m.id')
             ->leftJoin('tbl_rent_apply a','a.machine_id=t.machine_id and a.status<11')
             ->where('t.status=1 and t.weixin_id=:wid',[':wid'=>$wx_id])
+            ->orderBy('t.add_time desc')//20161222 调整显示顺序
             ->all();
         if($data['fault']){
             foreach($data['fault'] as &$d){
@@ -66,6 +70,7 @@ class ConsoleController extends \yii\web\Controller
                 p.lowest_expense,p.black_white,p.colours')
             ->from('tbl_rent_apply as t')
             ->where('t.wx_id=:wid and t.status=1',[':wid'=>$wx_id])
+            ->orderBy('t.add_time desc')//20161222 调整显示顺序
             ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
             ->leftJoin('tbl_machine_rent_project as p','p.id=t.project_id')
             ->leftJoin('tbl_machine_model as m','p.machine_model_id=m.id')
@@ -85,6 +90,7 @@ class ConsoleController extends \yii\web\Controller
             ->from('tbl_shop_order t')
             ->leftJoin('tbl_shop_address d','d.id=t.address_id')
             ->where(['t.enable'=>'Y','t.wx_id'=>$wx_id,'t.order_status'=>[1,5]])
+            ->orderBy('t.add_time desc')//20161222 调整显示顺序
             ->all();
         if($data['order']){
             foreach($data['order'] as &$d)
@@ -116,6 +122,7 @@ class ConsoleController extends \yii\web\Controller
             ->leftJoin('tbl_rent_apply p','p.machine_id=t.machine_id and p.status<11')
             ->leftJoin('tbl_machine as m','m.id=t.machine_id')
             ->where('t.wx_id=:wid and t.status=1',[':wid'=>$wx_id])
+            ->orderBy('t.add_time desc')//20161222 调整显示顺序
             ->all();
 
         return $this->render('view',['data'=>$data,'wx_id'=>$wx_id]);
@@ -182,7 +189,8 @@ class ConsoleController extends \yii\web\Controller
 
         //$data = [1, 2, 3, 4, 5];
 
-        if(Yii::$app->request->isPost) {
+        if(Yii::$app->request->isPost && !empty(Yii::$app->request->post('fromtime'))) {
+
             $from_time = Yii::$app->request->post('fromtime');//开始获取的时间戳
 
 
@@ -192,28 +200,74 @@ class ConsoleController extends \yii\web\Controller
                 ->from('tbl_machine_service t')
                 ->leftJoin('tbl_machine m', 't.machine_id=m.id')
                 ->leftJoin('tbl_rent_apply a', 'a.machine_id=t.machine_id and a.status<11')
-                ->where('t.status=2 and t.weixin_id=:wid and t.add_time < :fromtime', [':wid' => Cache::getWid(),':fromtime' => $from_time])
+                ->where('t.status=1 and t.weixin_id=:wid and t.add_time > :fromtime', [':wid' => Cache::getWid(),':fromtime' => $from_time])//处理时间
+                ->orderBy('t.add_time desc')//20161222
                 ->all();
+            //Debug::log(var_dump($data['fault']));
+            if($data['fault']){
+                foreach ($data['fault'] as &$d){
+                    //var_dump($d);
+                    //$d['']
+                    $d['type'] =  ConfigBase::getFaultStatus((int)$d['type']);
+                    $d['add_time'] = date('m月d日 H:i',$d['add_time']);
+                }
+            }
 
             //2. 订单处理
             $data['order'] = (new \yii\db\Query())
-                ->select('t.order_id,t.order_data,t.remark,t.freight,t.total_price,t.pay_score,t.pay_status,t.order_status,t.add_time,
-                d.name,d.phone,d.city,d.address')
+                ->select('t.order_id,t.order_data,t.remark,t.freight,t.total_price,t.pay_score,t.pay_status,t.order_status,t.add_time, d.name,d.phone,d.city,d.address')
                 ->from('tbl_shop_order t')
                 ->leftJoin('tbl_shop_address d','d.id=t.address_id')
                 ->where(['t.enable'=>'Y','t.wx_id'=>Cache::getWid(),'t.order_status'=>[1,5]])
+                ->andWhere('t.add_time > :fromtime',[':fromtime'=>$from_time])//订单时间处理
+                ->orderBy('t.add_time desc')//20161222 调整显示顺序
                 ->all();
             if($data['order']){
                 foreach($data['order'] as &$d)
                     $d['order_data'] = json_decode($d['order_data'],true);
+                    $d['pay_status'] = \app\modules\shop\models\Shop::getPayStatus($d['pay_status']);
+                    $d['remark'] = $d['remark'] == ""?"":$d['remark'];
             }
 
-            //3. 租赁申请
+            //3. 配件申请
+            $data['part'] = (new \yii\db\Query())
+                ->select('t.id,t.status,t.item_id,t.fault_id,p.name,p.market_price,p.price,p.cover,m.content as fault_cover,m.desc,m.type, a.name as nickname,a.phone')
+                ->from('tbl_parts t')
+                ->leftJoin('tbl_product p','p.id=t.item_id')
+                ->leftJoin('tbl_machine_service m','m.id=t.fault_id')
+                ->leftJoin('tbl_user_maintain a','a.openid=t.openid')
+                ->where(['t.status'=>[1,11],'t.wx_id'=>Cache::getWid(),'t.enable'=>'Y'])
+                ->andWhere('t.apply_time > :fromtime', [':fromtime' => $from_time])//时间选择
+                ->orderBy('t.id desc')
+                ->all();
+            if($data['part']){
+                foreach($data['part'] as &$d){
+                    $tmp = json_decode($d['fault_cover'],true);
+                    $d['fault_cover'] = isset($tmp['cover']['0'])? $tmp['cover'][0]:'/images/call_maintain.png';
+                    $d['type'] = $d['type'] == ""?"":ConfigBase::getFaultStatus($d['type']);
+                    $d['status'] = \app\modules\shop\models\Shop::getParts($d['status']);
+                }
+            }
+
+            //4. 机器租金
+            $data['rental'] = (new \yii\db\Query())
+                ->select('t.id,t.machine_id,t.colour,t.black_white,t.total_money,t.exceed_money,t.sign_img,t.name,
+                p.name as username,p.address,
+                m.model_name as model,m.brand_name as brand')
+                ->from('tbl_rent_report t')
+                ->leftJoin('tbl_rent_apply p','p.machine_id=t.machine_id and p.status<11')
+                ->leftJoin('tbl_machine as m','m.id=t.machine_id')
+                ->where('t.wx_id=:wid and t.status=1',[':wid'=>Cache::getWid()])
+                ->andWhere('t.add_time > :fromtime', [':fromtime' => $from_time])//时间选择
+                ->orderBy('t.add_time desc')//20161222 调整显示顺序
+                ->all();
+
+            //5. 租赁申请
             $data['rent'] = (new \yii\db\Query())
                 ->select('t.id,t.name,t.phone,t.add_time,u.headimgurl,m.model,m.brand_name,
                 p.lowest_expense,p.black_white,p.colours')
                 ->from('tbl_rent_apply as t')
-                ->where('t.wx_id=:wid and t.status=1',[':wid'=>Cache::getWid()])
+                ->where('t.wx_id=:wid and t.status=1 and t.add_time > :fromtime',[':wid'=>Cache::getWid(), ':fromtime' => $from_time])//时间选择
                 ->leftJoin('tbl_user_wechat as u','u.openid=t.openid')
                 ->leftJoin('tbl_machine_rent_project as p','p.id=t.project_id')
                 ->leftJoin('tbl_machine_model as m','p.machine_model_id=m.id')
@@ -221,6 +275,9 @@ class ConsoleController extends \yii\web\Controller
 
             return json_encode(['status' => 1,'data' => $data]);
         }//end of isPost
+        else{
+            return json_encode(['status' => 0, 'data' => 'error']);
+        }
 
 
     }

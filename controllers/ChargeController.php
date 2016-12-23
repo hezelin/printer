@@ -94,7 +94,7 @@ class ChargeController extends \yii\web\Controller
             return $this->redirect('/admin-rent/list');
         }
         $rent = (new \yii\db\Query())
-            ->select('monthly_rent,black_white,colours,black_amount,colours_amount,rent_period,name,address, first_rent_time')
+            ->select('monthly_rent,black_white,colours,black_amount,colours_amount,rent_period,name,address, first_rent_time, contain_paper, contain_colours')
             ->from('tbl_rent_apply')
             ->where('machine_id=:mid and status<11',[':mid'=>$model->machine_id])
             ->orderBy('id desc')
