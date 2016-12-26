@@ -22,7 +22,7 @@ class ViewSchemeModel extends \yii\db\ActiveRecord
             [['wx_id', 'machine_model_id', 'lowest_expense', 'black_white', 'cover', 'images', 'add_time'], 'required'],
             [['lowest_expense', 'black_white', 'colours'], 'number'],
             [['describe'], 'string'],
-            [['cover', 'brand_name'], 'string', 'max' => 100],
+            [['cover','brand','brand_name'], 'string', 'max' => 100],
             [['images'], 'string', 'max' => 500],
             [['model'], 'string', 'max' => 30],
         ];
@@ -44,6 +44,7 @@ class ViewSchemeModel extends \yii\db\ActiveRecord
             'is_show' => '显示',
             'describe' => '描述',
             'add_time' => '添加时间',
+            'brand' => '品牌',
             'brand_name' => '品牌',
             'model' => '型号',
         ];

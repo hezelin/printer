@@ -30,7 +30,7 @@ HomeAsset::register($this);
                         <a href="<?=url::toRoute(['/user/rent/detail','id'=>$id,'project_id'=>$row['id']])?>">
                             <img class="aui-img-object aui-pull-left" src="<?=$row['cover']?>">
                             <div class="aui-img-body aui-arrow-right">
-                                <h2 class="aui-ellipsis-1"><?=$row['brand_name'],$row['model_name']?></h2>
+                                <h2 class="aui-ellipsis-1"><?=\app\models\config\ConfigScheme::brand($row['brand']),$row['model_name']?></h2>
                                 <p class="aui-ellipsis-1 aui-text-default">
                                     月租 : <span class="aui-red-color">¥<?= $row['lowest_expense']?></span>
                                 </p>

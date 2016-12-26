@@ -22,7 +22,7 @@ class RentController extends \yii\web\Controller
     {
         $this->layout = '/auicss';
         $model = (new \yii\db\Query())
-            ->select('t.id,t.lowest_expense,t.black_white,t.colours,t.cover,m.model as model_name,m.brand_name')
+            ->select('t.id,t.lowest_expense,t.black_white,t.colours,t.cover,m.model as model_name,m.brand_name,m.brand')
             ->from('tbl_machine_rent_project as t')
             ->leftJoin('tbl_machine_model as m','m.id=t.machine_model_id')
             ->where(['t.wx_id'=>$id,'t.is_show'=>1])
@@ -37,7 +37,7 @@ class RentController extends \yii\web\Controller
     {
         //20161205 新增：彩色张数
         $model = (new \yii\db\Query())
-            ->select('t.id,t.lowest_expense,t.describe,m.brand_name,m.model,t.black_white,t.colours,
+            ->select('t.id,t.lowest_expense,t.describe,m.brand_name,m.brand,m.model,t.black_white,t.colours,
               t.images,t.contain_paper, t.contain_colours
             ')
             ->from('tbl_machine_rent_project as t')
