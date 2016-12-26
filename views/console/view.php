@@ -967,7 +967,7 @@ Modal::end();
 
             });//end of post
 
-        }, 1000*3);//end of newsTimer
+        }, 1000*60*5);//end of newsTimer
     }// end of startTimer
 
     //展示提示
