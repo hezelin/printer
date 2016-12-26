@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 use app\models\common\CommonLog;
+use app\models\User;
 use Yii;
 use app\models\RegisterForm;
 use app\models\LoginForm;
@@ -70,10 +71,9 @@ class AuthController extends \yii\web\Controller
         $model = new ResetpswdForm();
         if($model->load(Yii::$app->request->post()))
         {
-            $auth = TblUserBase::findOne(Yii::$app->user->id);
-            if( $auth->password === md5($model->oldPassword . $auth->salt . $auth->salt ) ){
-                $auth->password = md5($model->acPassword . $auth->salt . $auth->salt );
-
+            $auth = User::findIdentity(Yii::$app->user->id);
+            if( $auth->validatePassword($model->oldPassword) ){
+                $auth->setPassword($model->acPassword);
                 if( $auth->save() ){
                     return $this->render('//tips/success',['tips'=>'密码修改成功！']);
                 }
