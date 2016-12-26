@@ -249,7 +249,7 @@ $this->title = '数据统计';
                 showInLegend: true
             }
         },
-        series: <?=json_encode($machine['series2'])?>
+        series: =json_encode($machine['series2'])?>
     });*/
 
     $('#rent').highcharts({
@@ -334,21 +334,6 @@ $this->title = '数据统计';
             crosshair: true
         }],
         yAxis: [ {
-            gridLineWidth: 0,
-            title: {
-                text: '总积分',
-                style: {
-                    color: Highcharts.getOptions().colors[2]
-                }
-            },
-            labels: {
-                format: '{value} 分',
-                style: {
-                    color: Highcharts.getOptions().colors[2]
-                }
-            },
-            opposite: true
-        },{
             labels: {
                 format: '{value} 个',
                 style: {
