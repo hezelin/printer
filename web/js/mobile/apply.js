@@ -164,20 +164,26 @@ $(function(){
         var i = 0, length = images.localId.length;
 
         //[20161219 modify
-        //if (images.localId.length == 0){
-        //    alert('图片不能为空！');
-        //    return false;
-        //}
-        var flag = 0;
-        //alert(length);
-        if($('#service-desc').val() != '' || images.localId.length != 0 || voice_localId != undefined)//判断文字、图片和语音是否为空
-            flag = 1;
+        //20161223 modify
 
+        if($(this).attr('data-type') == 'affirm'){
+            var flag = 0;
+            //alert(length);
+            if($('#service-desc').val() != '' || images.localId.length != 0 || voice_localId != undefined)//判断文字、图片和语音是否为空
+                flag = 1;
 
-        if(flag != 1) {
-            alert('文字、图片和语音至少选择一种提交！');
-            return false;
+            if(flag != 1) {
+                alert('文字、图片和语音至少选择一种提交！');
+                return false;
+            }
+        }else{
+            if (images.localId.length == 0){
+                alert('图片不能为空！');
+                return false;
+            }
         }
+
+
         //20161219]
 
         if( $('#voice-wrap').attr('data-value') == '2'){
