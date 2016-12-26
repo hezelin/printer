@@ -103,7 +103,10 @@ echo GridView::widget([
             }
         ],
         'phone',
-        'name',
+        [
+            'attribute' => 'name',
+            'headerOptions' => ['style'=>'width:240px'],
+        ],
         'address',
         [
             'attribute' => 'due_time',

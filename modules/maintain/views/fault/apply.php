@@ -59,7 +59,7 @@ if( Yii::$app->session->hasFlash('error') )
                     <?= Html::dropDownList('TblMachineService[type]','',\app\models\ConfigBase::$faultStatus,['class'=>'h-label-input'])?>
                 </div>
                 <p style="float: left; height: 30px;">&nbsp;</p>
-                <button type="button" id="wechat-submit" class="h-button">提交申请</button>
+                <button type="button" id="wechat-submit" class="h-button" data-type="apply">提交申请</button>
             </form>
         </div>
     </div>

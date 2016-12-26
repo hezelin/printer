@@ -5,10 +5,17 @@ use yii\grid\GridView;
 use app\modules\shop\models\Shop;
 use yii\bootstrap\Modal;
 
+
+
     $this->title = '工作任务';
 //$this->registerCssFile('/css/console-task.css');
 ?>
 <link href="/css/console-task.css" rel="stylesheet">
+<link href="/css/pnotify.css"  media="all" rel="stylesheet">
+<link href="/css/pnotify.history.css"  media="all" rel="stylesheet">
+<link href="/css/pnotify.brighttheme.css"  media="all" rel="stylesheet">
+<link href="/css/pnotify.buttons.css"  media="all" rel="stylesheet">
+
 <p>&nbsp;</p>
 <div class="row">
     <div class="mod_navbar">
@@ -17,14 +24,15 @@ use yii\bootstrap\Modal;
 </div>
 <div class="row" id="task-layout">
     <p style="height: 40px;">&nbsp;</p>
+
     <div class="col-md-9 no-padding">
         <div class="row-box">
             <div class="box-panel-header">
                 <h4><i class="icon glyphicon glyphicon-wrench"></i>待分配维修</h4>
             </div>
-            <div class="box-panel-body">
+            <div class="box-panel-body" id="box-fault">
                 <?php if($data['fault']):?>
-                    <ul class="fault-list-ul">
+                    <ul class="fault-list-ul" id="fault-list-ul">
                         <?php foreach($data['fault'] as $d):?>
                             <li class="fault-list-li">
                                 <div class="fault-data">
@@ -89,9 +97,9 @@ use yii\bootstrap\Modal;
             <div class="box-panel-header">
                 <h4><i class="icon glyphicon glyphicon-shopping-cart"></i>订单处理</h4>
             </div>
-            <div class="box-panel-body">
+            <div class="box-panel-body" id="box-order">
                 <?php if($data['order']):?>
-                    <ul class="order-list-ul">
+                    <ul class="order-list-ul" id="order-list-ul">
                     <?php foreach($data['order'] as $d):?>
                     <li class="order-list-li">
                         <ul class="order-list-m">
@@ -140,9 +148,9 @@ use yii\bootstrap\Modal;
             <div class="box-panel-header">
                 <h4><i class="icon glyphicon glyphicon-object-align-vertical"></i>配件处理</h4>
             </div>
-            <div class="box-panel-body">
+            <div class="box-panel-body" id="box-part">
                 <?php if($data['part']):?>
-                    <ul class="order-list-ul">
+                    <ul class="order-list-ul" id="part-list-ul">
                         <?php foreach($data['part'] as $d):?>
                             <li class="order-list-li">
                                 <ul class="order-list-m">
@@ -229,9 +237,9 @@ use yii\bootstrap\Modal;
             <div class="box-panel-header">
                 <h4><i class="icon glyphicon glyphicon-yen"></i>机器租金</h4>
             </div>
-            <div class="box-panel-body">
+            <div class="box-panel-body" id="box-rental">
                 <?php if($data['rental']):?>
-                    <ul class="fault-list-ul">
+                    <ul class="fault-list-ul" id="rental-list-ul">
                         <?php foreach($data['rental'] as $d):?>
                             <li class="fault-list-li">
                                 <div class="fault-data">
@@ -283,9 +291,9 @@ use yii\bootstrap\Modal;
         <div class="box-panel-header">
             <h4><i class="icon glyphicon glyphicon-resize-horizontal"></i>租借申请</h4>
         </div>
-        <div class="box-panel-body">
+        <div class="box-panel-body" id="box-rent">
             <?php if($data['rent']):?>
-                <ul class="fault-list-ul">
+                <ul class="fault-list-ul" id="rent-list-ul">
                 <?php foreach($data['rent'] as $d):?>
                     <li class="fault-list-li">
                         <div class="fault-data">
@@ -471,6 +479,14 @@ Modal::end();
 
 <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
 
+
+<script type="text/javascript" src="/js/require.js"></script>
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/pnotify.js"></script>
+<script type="text/javascript" src="/js/pnotify.history.js"></script>
+<script type="text/javascript" src="/js/pnotify.buttons.js"></script>
+
+
 <script>
     // 共用key,fault
     var keyId,
@@ -553,7 +569,9 @@ Modal::end();
         }
 
     }
+
     <?php $this->beginBlock('JS_END') ?>
+
 
 
     ///////////  展开 收起  功能
@@ -800,8 +818,200 @@ Modal::end();
                     alert(resp.msg);
             },'json'
         );
-    })
+    });
+
+    //初始化
+    var newsTimer;
+    var counter = 0;
+    var fromtime;
+
+    var type = 1;
+    $(function(){
+        //showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success');
+
+        startTimer();
+    });
+
+
+    //开启计时器
+    function startTimer() {
+
+        newsTimer = setInterval(function () {
+            //alert(123);
+            counter++;
+            if(counter <= 2){
+                showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success', 1000*30);
+            }
+
+            fromtime = parseInt( (new Date().getTime())/1000);//获取当前时间
+            $.post('<?=Url::toRoute(['/console/polling'])?>',{'fromtime':fromtime},function(rst){
+                var result = JSON.parse(rst);
+                var data = result['data'];
+
+
+
+
+                //1. 待分配维修处理
+                if(data['fault'].length > 0){
+                    if ($('#fault-list-ul').length <= 0) {
+                        $('#box-fault').html("<ul class='fault-list-ul' id='fault-list-ul'></ul>");
+                    }
+                    for(var i = 0; i < data['fault'].length; i ++){
+                        var content = JSON.parse(data['fault'][i]['content']);
+                        //alert(content);
+                        var cover = content['cover'];
+                        $('#fault-list-ul').prepend("<li class='fault-list-li'><div class='fault-data'><a href='"+cover+"' class='fancybox' rel='group'><img class='cover-img' src='"+cover+"' /></a><h4>"+data['fault'][i]['type'] + ", <b class='fault-time'>"+data['fault'][i]['add_time']+"</b></h4><span>"+data['fault'][i]['desc']+"</span></div><div class='fault-data'><h4>"+data['fault'][i]['brand']+data['fault'][i]['model']+" , "+data['fault'][i]['name']+"</h4><span>"+data['fault'][i]['phone']+","+data['fault'][i]['address']+"</span></div><div class='fault-btn'><button type='button' key-id='"+data['fault'][i]['id']+"' modal-type='modal-fault-allot' class='order-modal btn btn-info btn-sm'>分配</button><button type='button' key-id='"+data['fault'][i]['id']+"' modal-type='modal-fault-del' class='order-modal btn btn-danger btn-sm'>关闭</button></div></li>");
+
+                        showNotice('你有一个新的【<b class="high-show">维修分配</b>】',data['fault'][i]['address']+':'+data['fault'][i]['type']);
+                    }
+                }
+
+                //2. 订单处理
+                if(data['order'].length > 0){
+                    if($('#order-list-ul').length <=0 ){
+                        $('#box-order').html("<ul class='order-list-ul' id='order-list-ul'></ul>");
+                    }
+                    for(var i = 0; i < data['order'].length; i ++){
+                        var order_data = data['order'][i]['order_data'];
+                        for(var j = 0; j < order_data.length; j ++) {
+                            var str = "<li class='order-list-li'><ul class='order-list-m'><li><a href='/shop/backend/view?id=" + order_data[j]['item_id'] + "'><img class='order-cover' src='"+order_data[j]['cover']+"'><span class='order-name'>"+order_data[j]['name']+"</span><p class='order-num-price'>"+order_data[j]['item_nums']+" 件 <b>¥"+(order_data[j]['item_nums']*order_data[j]['price']).toFixed(2)+"</b></p></a></li></ul><div class='order-list'><p>支付金额: <span style='color:#b10000;font-weight: 600'> ¥"+data['order'][i]['total_price']+"</span></p><p>积分支付: <span>"+data['order'][i]['pay_score']+"</span></p><p>其中运费: <span>"+data['order'][i]['freight']+"</span></p><p>方式: <span>"+data['order'][i]['pay_status']+"</span></p></div><ul class='order-address'><li>"+data['order'][i]['name']+data['order'][i]['phone']+"</li><li>"+data['order'][i]['city']+data['order'][i]['address']+"</li><li class='order-remark'>"+data['order'][i]['remark']+"</li></ul><div class='order-btn'>";
+                          if(data['order'][i]['order_status'] == 1) {
+                              str += "<button type='button' key='"+data['order'][i]['order_id']+"|"+data['order'][i]['pay_status']+"' class='order-pass btn btn-info btn-sm'>通过</button><button type='button' key-id='"+data['order'][i]['order_id']+"' modal-type='modal-order-nopass' class='order-modal btn btn-danger btn-sm'>不通过</button></div></li>"
+                          }else {
+                              str += "<button type='button' key-id='201610251002429341' modal-type='modal-order-send' class='order-modal btn btn-info btn-sm'>发货</button></div></li>";
+                          }
+
+                            $('#order-list-ul').prepend(str);
+                        }
+                        showNotice('你有一个新的【<b class="high-show">订单</b>】',data['order'][i]['address']+':'+data['order'][i]['name']);
+                    }
+
+                }
+
+                //3. 配件处理
+                if(data['part'].length > 0){
+                    if($('#part-list-ul').length <= 0){
+                        $('#box-part').html("<ul class='order-list-ul' id='part-list-ul'></ul>");
+                    }
+                    for(var i = 0; i < data['part'].length; i ++){
+                        var str = "<li class='order-list-li'><ul class='order-list-m'><li class='part-li'><a href='/shop/backend/view?id="+data['part'][i]['item_id']+"'><img class='order-cover' src='"+data['part'][i]['cover']+"'><span class='order-name'>"+data['part'][i]['name']+"</span><p class='order-num-price'>销售价格<b>¥"+data['part'][i]['price']+"</b></p></a></li></ul><div class='part-data'>";
+                        if(data['part'][i]['type'] == ""){
+                            str += "携带申请</div>";
+                        }else{
+                           str += "<a href='"+data['part'][i]['fault_cover']+"' class='fancybox' rel='group'><img class='cover-img' src='"+data['part'][i]['fault_cover']+"' /></a><h4>"+data['part'][i]['type']+"</h4><span>"+data['part'][i]['desc']+"</span>";
+                        }
+                        str += "<div class='part-data'><h4>"+data['part'][i]['nickname']+"</h4><span>"+data['part'][i]['phone']+"</span></div>";
+
+                        var status = 0;
+                        if(data['part'][i]['status']>0)
+                            status = 3;
+                        else
+                            status = 2;
+
+                        str += "<div class='part-btn'>"+data['part'][i]['status'];
+                        if(data['part'][i]['status'] == '申请中'){
+                            str += "<a data-href='/shop/adminparts/status?id="+data['part'][i]['id']+"&status="+status+"' class='data-btn1 btn btn-info btn-sm'>发货</a></div></li>";
+                        }else{
+
+                            str += "<a data-href='/shop/adminparts/status?id="+data['part'][i]['id']+"&status="+status+"' class='data-btn1 btn btn-info btn-sm'>回收</a></div></li>";
+                        }
+
+
+
+
+                        $('#part-list-ul').prepend(str);
+                        showNotice('你有一个新的【<b class="high-show">配件申请</b>】',data['part'][i]['nickname']+':'+data['part'][i]['name']);
+                    }
+                }
+
+                //4. 机器租金
+                if(data['rental'].length > 0 ){
+                    if($('#rental-list-ul').length <= 0 ){
+                        $('#box-rental').html("<ul class='fault-list-ul' id='rental-list-ul'></ul>");
+                    }
+                    for(var i = 0; i < data['rental'].length; i ++){
+                        var str = "<li class='fault-list-li'><div class='fault-data'><a href='"+data['rental'][i]['sign_img']+"' class='fancybox' rel='group'><img class='cover-img' src='"+data['rental'][i]['sign_img']+"' width='40' /></a><h4>"+data['rental'][i]['brand']+data['rental'][i]['model']+" , "+data['rental'][i]['name']+"</h4><span>"+data['rental'][i]['address']+"</span></div><div class='fault-data'><h4>"+data['rental'][i]['username']+"</h4><span>租金:<b class='high-show'>"+data['rental'][i]['total_money']+"</b> , 黑白:<b class='high-show'>"+data['rental'][i]['black_white']+"</b>, 彩色:<b class='high-show'>"+data['rental'][i]['colour']+"</b>";
+                        if(data['rental'][i]['exceed_money'] != "0.00"){
+                            str += ", 超出金额:<b class='high-show'>"+data['rental'][i]['exceed_money']+"</b></span>";
+                        }else{
+                            str += "</span>";
+                        }
+                        str += "</span></div><div class='fault-btn'><button class='btn btn-info btn-sm rental-pass' key-id='"+data['rental'][i]['id']+"' >通过</button><a class='btn btn-danger btn-sm' href='/charge/update/"+data['rental'][i]['id']+"'>编辑</a></div></li>";
+                        $('#box-rental').prepend(str);
+
+                        showNotice('你有一个新的【<b class="high-show">租金提交</b>】',data['rental'][i]['username']+':￥'+data['rental'][i]['total_money']);
+                    }
+                }
+
+                //5. 租借申请
+                if(data['rent'].length > 0){
+                    if($('#rent-list-ul').length <= 0 ){
+                        $('#box-rental').html("<ul class='fault-list-ul' id='rent-list-ul'></ul>");
+                    }
+
+                    for(var i = 0; i < data['rent'].length; i ++ ){
+                        var url = "";
+                        if(url != ""){
+                            url = (data['rent'][i]['headimgurl']).substr(0, -1);
+                        }
+
+                        var str = "<li class='fault-list-li'><div class='fault-data'><a href='"+data['rent'][i]['headimgurl']+"?.jpg' class='fancybox' rel='group'><img class='cover-img' src='"+url+"46' /></a><h4>"+data['rent'][i]['name']+"</h4><span>"+data['rent'][i]['phone']+"</span></div><div class='fault-data'><h4>"+data['rent'][i]['brand_name']+data['rent'][i]['model']+"</h4><span>月租:<b class='high-show'>"+data['rent'][i]['lowest_expense']+"</b> , 黑白:<b class='high-show'>"+data['rent'][i]['black_white']+"</b> , 彩色:<b class='high-show'>"+data['rent'][i]['colours']+"</b></span></div><div class='fault-btn'><a href='/admin-rent/pass?id="+data['rent'][i]['id']+"' class='btn btn-info btn-sm'>通过</a><button type='button' key-id='"+data['rent'][i]['id']+"' modal-type='modal-rent-apply' class='order-modal btn btn-danger btn-sm'>不通过</button></div></li>";
+
+                        $('#box-rent').prepend(str);
+
+                        showNotice('你有一个新的【<b class="high-show">租借申请</b>】',data['rent'][i]['name']+':'+data['rent'][i]['brand_name']+data['rent'][i]['model']);
+                    }
+                }
+
+
+
+            });//end of post
+
+        }, 1000*60*3);//end of newsTimer
+    }// end of startTimer
+
+    //展示提示
+    function showNotice(title, text, type = 'info', delay = 1000*60*1 ) {
+        requirejs(['jquery', 'pnotify', 'pnotify.history','pnotify.buttons'], function($, PNotify){
+            PNotify.prototype.options.styling = "bootstrap3";
+            //$(function(){
+                new PNotify({
+                    title: title,
+                    text: text,
+                    type:type,
+                    delay:delay,
+                    hide:true, //是否自动关闭
+                    mouse_reset:true,   //鼠标悬浮的时候，计时重置
+
+                    history:{
+                        history:true,
+                        menu:true,
+                        fixed:true,
+                        maxonscreen:Infinity ,
+                        labels: {redisplay: "历史消息", all: "显示全部", last: "最后一个"}
+                    },
+                    buttons:{
+                        closer:true,
+                        closer_hover:false,
+                        sticker_hover:true,
+                        //labels: {close: "Close", stick: "Stick"}
+                    },
+
+
+
+                });
+            //});
+        });
+    }
+
+    //停止计时器
+    function stopTimer(){
+        clearInterval(newsTimer);
+    }
+
+
     <?php $this->endBlock();?>
+
 </script>
 
 <?php

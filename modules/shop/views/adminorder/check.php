@@ -26,8 +26,9 @@ $this->params['breadcrumbs'][] = $this->title;
     }
     .order-list-m b{ color: #b10000; float: right; font-weight: 500;}
     .order-list li{
-        height: 24px;
-        line-height: 24px;
+        /*display: inline-block;
+        //height: 24px;
+        line-height: 24px;*/
     }
     .order-name{ overflow: hidden; width: 130px; height: 20px;  float: left;}
     .order-error{
@@ -41,6 +42,9 @@ $this->params['breadcrumbs'][] = $this->title;
         color: #1e90ff;
     }
     .close-model{ margin-top: 10px;}
+    p{
+        margin: 0 0 0px;
+    }
 </style>
 <div >
     <ul class="nav nav-tabs" >

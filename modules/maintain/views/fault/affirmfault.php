@@ -61,7 +61,7 @@ if( Yii::$app->session->hasFlash('error') )
 
                 <p style="float: left; height: 30px;">&nbsp;</p>
 
-                <button type="button" id="wechat-submit" class="h-button">提交故障</button>
+                <button type="button" id="wechat-submit" class="h-button" data-type="affirm">提交故障</button>
             </form>
         </div>
     </div>

@@ -65,6 +65,8 @@ class AuthController extends \yii\web\Controller
      */
     public function actionReset()
     {
+        $this->layout = '/weixin';
+
         $model = new ResetpswdForm();
         if($model->load(Yii::$app->request->post()))
         {
