@@ -14,7 +14,24 @@ use yii\bootstrap\Modal;
 <link href="/css/pnotify.css"  media="all" rel="stylesheet">
 <link href="/css/pnotify.history.css"  media="all" rel="stylesheet">
 <link href="/css/pnotify.buttons.css"  media="all" rel="stylesheet">
+<style type="text/css">
+    .ui-pnotify-history-container{
+        width: 120px;
+        background-color: #616774;
+    }
+    .ui-pnotify-history-header{
+        color:white;
+        font-size: 20px;
+    }
+    .ui-pnotify-history-all,.ui-pnotify-history-last{
+        margin:10px 0 5px 0px;
+        width:80%;
+    }
 
+    .ui-pnotify-history-pulldown{
+        color:wheat;
+    }
+</style>
 <p>&nbsp;</p>
 <div class="row">
     <div class="mod_navbar">
@@ -822,11 +839,15 @@ Modal::end();
     var newsTimer;
     var counter = 0;
     var fromtime;
+    var timeset = 5;//轮询的时间间隔：5分钟
 
     var type = 1;
     $(function(){
         //showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success');
+        showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success', 1000*30);
 
+        $('.ui-pnotify-history-all').addClass('btn-warning');
+        $('.ui-pnotify-history-last').addClass('btn-info');
         startTimer();
     });
 
@@ -837,11 +858,9 @@ Modal::end();
         newsTimer = setInterval(function () {
             //alert(123);
             counter++;
-            if(counter <= 1){
-                showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success', 1000*30);
-            }
 
-            fromtime = parseInt( (new Date().getTime())/1000);//获取当前时间
+
+            fromtime = parseInt( (new Date().getTime())/1000 - timeset*60);//获取当前时间
             $.post('<?=Url::toRoute(['/console/polling'])?>',{'fromtime':fromtime},function(rst){
                 var result = JSON.parse(rst);
                 var data = result['data'];
@@ -967,7 +986,7 @@ Modal::end();
 
             });//end of post
 
-        }, 1000*3);//end of newsTimer
+        }, 1000*60*timeset);//end of newsTimer
     }// end of startTimer
 
     //展示提示
@@ -995,7 +1014,9 @@ Modal::end();
                         closer:true,
                         closer_hover:false,
                         sticker_hover:true,
-                        //labels: {close: "Close", stick: "Stick"}
+                        labels: {close: "关闭", stick: "停止",unstick: "开始"},
+
+
                     }
 
 
