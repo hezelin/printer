@@ -13,7 +13,6 @@ use yii\bootstrap\Modal;
 <link href="/css/console-task.css" rel="stylesheet">
 <link href="/css/pnotify.css"  media="all" rel="stylesheet">
 <link href="/css/pnotify.history.css"  media="all" rel="stylesheet">
-<link href="/css/pnotify.brighttheme.css"  media="all" rel="stylesheet">
 <link href="/css/pnotify.buttons.css"  media="all" rel="stylesheet">
 
 <p>&nbsp;</p>
@@ -839,7 +838,7 @@ Modal::end();
         newsTimer = setInterval(function () {
             //alert(123);
             counter++;
-            if(counter <= 2){
+            if(counter <= 1){
                 showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success', 1000*30);
             }
 
@@ -1017,3 +1016,4 @@ Modal::end();
 <?php
 $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 ?>
+
