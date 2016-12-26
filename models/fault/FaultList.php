@@ -113,7 +113,7 @@ class FaultList
                 $tmp = '';
                 $c = json_decode($p['content'],true);
                 $tmp .= $c['text'];                     // 故障图片
-                if($c['cover'] && count($c['cover']) >0){
+                if(isset($c['cover']) && count($c['cover']) >0){
                     $tmp .= '<div class="process-img">';
                     foreach($c['cover'] as $img){
                         $tmp .= '<img src="'.$img.'" />';
