@@ -16,7 +16,14 @@ echo GridView::widget([
     'layout' => "{items}\n{pager}",
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],               // 系列
-        'brand_name',
+        [
+            'attribute' => 'brand',
+            'value' => function($model)
+            {
+                if($model->brand)
+                return \app\models\config\ConfigScheme::brand($model->brand);
+            }
+        ],
         'model',
         'lowest_expense',
         'contain_paper',

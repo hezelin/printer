@@ -138,7 +138,7 @@ AuicssAsset::register($this);
         <?php endif;?>
         <div class="aui-col-xs-12">
             <h5 class="aui-col-xs-4">品牌</h5>
-            <h5 class="aui-col-xs-8"><?=$model['brand_name']?></h5>
+            <h5 class="aui-col-xs-8"><?=\app\models\config\ConfigScheme::brand($model['brand'])?></h5>
         </div>
         <div class="aui-col-xs-12">
             <h5 class="aui-col-xs-4">型号</h5>

@@ -15,7 +15,7 @@ class ViewSchemeModelSearch extends ViewSchemeModel
         return [
             [['id', 'wx_id', 'machine_model_id', 'contain_paper', 'is_show', 'add_time'], 'integer'],
             [['lowest_expense', 'black_white', 'colours'], 'number'],
-            [['cover', 'images', 'describe', 'brand_name', 'model'], 'safe'],
+            [['cover', 'images', 'describe', 'brand', 'brand_name', 'model'], 'safe'],
         ];
     }
 
@@ -59,6 +59,7 @@ class ViewSchemeModelSearch extends ViewSchemeModel
         $query->andFilterWhere(['like', 'cover', $this->cover])
             ->andFilterWhere(['like', 'images', $this->images])
             ->andFilterWhere(['like', 'describe', $this->describe])
+            ->andFilterWhere(['like', 'brand', $this->brand])
             ->andFilterWhere(['like', 'brand_name', $this->brand_name])
             ->andFilterWhere(['like', 'model', $this->model]);
 
