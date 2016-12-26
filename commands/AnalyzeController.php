@@ -44,6 +44,28 @@ class AnalyzeController extends \yii\console\Controller
         //20161215]
 
     }
+
+    /*
+     * 执行历史的分析
+     */
+    public function actionHistory($start=-4,$end=0)
+    {
+        set_time_limit(0);
+        $ana = new TblAnalyzeFault();
+        $ana->historyDay($start,$end);
+        $ana = new TblAnalyzeMaintain();
+        $ana->historyDay($start,$end);
+        $ana = new TblAnalyzeOrder();
+        $ana->historyDay($start,$end);
+        $ana = new TblAnalyzeProduct();
+        $ana->historyDay($start,$end);
+        $ana = new TblAnalyzeMachine();
+        $ana->historyDay($start,$end);
+        $ana = new TblAnalyzeRent();
+        $ana->historyDay($start,$end);
+        $ana = new TblAnalyzeRental();
+        $ana->historyDay($start,$end);
+    }
     /*
      * 维修统计
      */
@@ -59,8 +81,7 @@ class AnalyzeController extends \yii\console\Controller
     public function actionMaintainer()
     {
         $ana = new TblAnalyzeMaintain();
-        return $ana->today();
-//        return $ana->today();
+        return $ana->historyDay(-4,0);
     }
 
     public function actionOrder()
@@ -73,7 +94,6 @@ class AnalyzeController extends \yii\console\Controller
     {
         $ana = new TblAnalyzeProduct();
         return $ana->historyDay(-4,0);
-//        return $ana->today();
     }
 
     /*
@@ -83,7 +103,6 @@ class AnalyzeController extends \yii\console\Controller
     {
         $ana = new TblAnalyzeMachine();
         return $ana->historyDay(-4,0);
-//        return $ana->today();
     }
 
     public function actionRent()
@@ -95,6 +114,6 @@ class AnalyzeController extends \yii\console\Controller
     public function actionRental()
     {
         $ana = new TblAnalyzeRental();
-        return $ana->today();
+        return $ana->historyDay(-4,0);
     }
 }
