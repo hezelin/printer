@@ -478,8 +478,7 @@ Modal::end();
 
 <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
 
-
-<script type="text/javascript" src="/js/require.js"></script>
+<!--<script type="text/javascript" src="/js/require.js"></script>-->
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/pnotify.js"></script>
 <script type="text/javascript" src="/js/pnotify.history.js"></script>
@@ -950,9 +949,11 @@ Modal::end();
 
                     for(var i = 0; i < data['rent'].length; i ++ ){
                         var url = "";
-                        if(url != ""){
-                            url = (data['rent'][i]['headimgurl']).substr(0, -1);
+                        //alert((data['rent'][i]['headimgurl']).length);
+                        if(data['rent'][i]['headimgurl'] != ""){
+                            url = (data['rent'][i]['headimgurl']).substring(0, (data['rent'][i]['headimgurl']).length-1);
                         }
+                        //alert(url);
 
                         var str = "<li class='fault-list-li'><div class='fault-data'><a href='"+data['rent'][i]['headimgurl']+"?.jpg' class='fancybox' rel='group'><img class='cover-img' src='"+url+"46' /></a><h4>"+data['rent'][i]['name']+"</h4><span>"+data['rent'][i]['phone']+"</span></div><div class='fault-data'><h4>"+data['rent'][i]['brand_name']+data['rent'][i]['model']+"</h4><span>月租:<b class='high-show'>"+data['rent'][i]['lowest_expense']+"</b> , 黑白:<b class='high-show'>"+data['rent'][i]['black_white']+"</b> , 彩色:<b class='high-show'>"+data['rent'][i]['colours']+"</b></span></div><div class='fault-btn'><a href='/admin-rent/pass?id="+data['rent'][i]['id']+"' class='btn btn-info btn-sm'>通过</a><button type='button' key-id='"+data['rent'][i]['id']+"' modal-type='modal-rent-apply' class='order-modal btn btn-danger btn-sm'>不通过</button></div></li>";
 
@@ -966,12 +967,13 @@ Modal::end();
 
             });//end of post
 
-        }, 1000*60*3);//end of newsTimer
+        }, 1000*3);//end of newsTimer
     }// end of startTimer
 
     //展示提示
     function showNotice(title, text, type = 'info', delay = 1000*60*1 ) {
-        requirejs(['jquery', 'pnotify', 'pnotify.history','pnotify.buttons'], function($, PNotify){
+////        requirejs(['jquery', 'pnotify', 'pnotify.history','pnotify.buttons'],
+//            requirejs(['pnotify'], function($, PNotify){
             PNotify.prototype.options.styling = "bootstrap3";
             //$(function(){
                 new PNotify({
@@ -994,13 +996,12 @@ Modal::end();
                         closer_hover:false,
                         sticker_hover:true,
                         //labels: {close: "Close", stick: "Stick"}
-                    },
+                    }
 
 
 
                 });
             //});
-        });
     }
 
     //停止计时器
