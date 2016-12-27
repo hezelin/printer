@@ -844,7 +844,8 @@ Modal::end();
     var type = 1;
     $(function(){
         //showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success');
-        showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success', 1000*30);
+        showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success', 1000*30, 2);
+
 
         $('.ui-pnotify-history-all').addClass('btn-warning');
         $('.ui-pnotify-history-last').addClass('btn-info');
@@ -990,9 +991,11 @@ Modal::end();
     }// end of startTimer
 
     //展示提示
-    function showNotice(title, text, type = 'info', delay = 1000*60*1 ) {
+    function showNotice(title, text, type = 'info', delay = 1000*60*1,from = 1 ) {
 ////        requirejs(['jquery', 'pnotify', 'pnotify.history','pnotify.buttons'],
 //            requirejs(['pnotify'], function($, PNotify){
+        if(from == 1)
+            $('#myVideo')[0].play();
             PNotify.prototype.options.styling = "bootstrap3";
             //$(function(){
                 new PNotify({
@@ -1034,7 +1037,7 @@ Modal::end();
     <?php $this->endBlock();?>
 
 </script>
-
+<video id="myVideo" style="display: none;" controls=""  name="media"><source src="/voices/notify.mp3" type="audio/mpeg"></video>
 <?php
 $this->registerJs($this->blocks['JS_END'],\yii\web\View::POS_READY);
 ?>
