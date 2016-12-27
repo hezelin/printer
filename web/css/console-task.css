@@ -74,7 +74,15 @@ ul,li{
 .fault-btn{ width: 20%; float: right; text-align: right; margin-top: 8px;}
 .fault-data span { color:#AAAAAA; height: 20px; line-height: 20px; overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap; width: 100%;}
+    white-space: nowrap; width: 100%;
+
+    display: inline-block;
+    width: 80%;
+    word-break: keep-all;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
 .fault-data h4{ color: #333333; height: 30px; line-height: 30px;overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;}
