@@ -296,7 +296,8 @@ class FaultController extends Controller
     public function actionIrecord($id,$mid)
     {
         $this->layout = '/auicss';
-        $model = TblMachineService::find()->where(['machine_id'=>$mid])->andWhere(['<','status',9])->orderBy('add_time desc')->asArray()->all();
+        //20161227 biao 修改 只能查看最近三次历史维修记录
+        $model = TblMachineService::find()->where(['machine_id'=>$mid])->andWhere(['<=','status',9])->limit(3)->orderBy('add_time desc')->asArray()->all();
         foreach ($model as $i=>$m) {
             $content = json_decode($m['content'],true);
             $model[$i]['cover'] = $content['cover'][0];

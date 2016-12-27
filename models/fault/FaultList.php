@@ -23,6 +23,7 @@ class FaultList
     public function task()
     {
         $openid = WxBase::openId($this->id);
+        //$openid = Yii::$app->request->get('id');
         $model = (new \yii\db\Query())
             ->select('t.id, t.content as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
                     m.address,m.name,m.phone
@@ -33,8 +34,11 @@ class FaultList
 
         if(Yii::$app->request->get('type') == 'evaluate')                       // 待评价状态
             $model = $model->andWhere(['t.status'=>8]);
-        elseif( Yii::$app->request->get('type') == 'history')                   // 历史记录状态
-            $model = $model->andWhere(['t.status'=>9]);
+        elseif( Yii::$app->request->get('type') == 'history') {                  // 历史记录状态
+            $model = $model->andWhere(['t.status' => 9])
+                ->andWhere('t.complete_time > '.strtotime('-10 days'));
+                //20161227 修改 维修员只能查看最近三天历史记录
+        }
         else
             $model = $model->andWhere(['<','t.status',8]);                      // 维修中
 
