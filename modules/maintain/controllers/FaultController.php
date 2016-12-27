@@ -140,6 +140,8 @@ class FaultController extends Controller
             if( isset( $_POST['TblMachineService']['imgid'] ) && $_POST['TblMachineService']['imgid'] ){
                 $wx = new WxMedia($id);
                 $content['cover'] = $wx->getImages( explode('|',$_POST['TblMachineService']['imgid']) );
+            }else{
+                $content['cover'] = ['/img/haoyizu.png'];
             }
             // 获取录音
             if( Yii::$app->request->post('voice') ){
