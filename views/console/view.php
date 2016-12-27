@@ -56,11 +56,11 @@ use yii\bootstrap\Modal;
                                     <h4><?=\app\models\ConfigBase::getFaultStatus($d['type'])?>,
                                         <b class="fault-time"><?=date('m月d H:i',$d['add_time'])?></b>
                                     </h4>
-                                    <span><?=$d['desc']?></span>
+                                    <span data-toggle="tooltip" data-placement="auto" title="<?=$d['desc']?>" ><?=$d['desc']?></span>
                                 </div>
                                 <div class="fault-data">
                                     <h4><?=$d['brand'],$d['model'],' , ',$d['name']?></h4>
-                                    <span><?=$d['phone'],',',$d['address']?></span>
+                                    <span data-toggle="tooltip" data-placement="auto" title="<?=$d['phone'],',',$d['address']?>"><?=$d['phone'],',',$d['address']?></span>
                                 </div>
                                 <div class="fault-btn">
                                     <button type="button" key-id="<?=$d['id']?>" modal-type="modal-fault-allot" class="order-modal btn btn-info btn-sm">分配</button>
@@ -261,11 +261,11 @@ use yii\bootstrap\Modal;
                                 <div class="fault-data">
                                     <a href="<?=$d['sign_img']?>" class="fancybox" rel="group"><img class="cover-img" src="<?=$d['sign_img']?>" width="40" /></a>
                                     <h4><?=$d['brand'],$d['model'],' , ',$d['name']?></h4>
-                                    <span><?=$d['address']?></span>
+                                    <span data-toggle="tooltip" data-placement="auto" title="<?=$d['address']?>"><?=$d['address']?></span>
                                 </div>
                                 <div class="fault-data">
                                     <h4><?=$d['username']?></h4>
-                                    <span>租金:<b class="high-show"><?=$d['total_money']?></b> , 黑白:<b class="high-show"><?=$d['black_white']?></b><?php if($d['colour']) echo ', 彩色:<b class="high-show">',$d['colour'],'</b>'; if($d['exceed_money']!='0.00') echo ', 超出金额:<b class="high-show">',$d['exceed_money'],'</b>';?></span>
+                                    <span style="width: 100%" html="true" data-toggle="tooltip" data-placement="auto" title="租金: <?=$d['total_money']?>, 黑白: <?=$d['black_white']?><?php if($d['colour']) echo ', 彩色: '.$d['colour']; if($d['exceed_money']!='0.00') echo ', 超出金额: ',$d['exceed_money'];?>">租金:<b class="high-show"><?=$d['total_money']?></b> , 黑白:<b class="high-show"><?=$d['black_white']?></b><?php if($d['colour']) echo ', 彩色:<b class="high-show">',$d['colour'],'</b>'; if($d['exceed_money']!='0.00') echo ', 超出金额:<b class="high-show">',$d['exceed_money'],'</b>';?></span>
                                 </div>
                                 <div class="fault-btn">
                                     <button class="btn btn-info btn-sm rental-pass" key-id="<?=$d['id']?>" >通过</button>
@@ -315,11 +315,11 @@ use yii\bootstrap\Modal;
                         <div class="fault-data">
                             <a href="<?=$d['headimgurl']?>?.jpg" class="fancybox" rel="group"><img class="cover-img" src="<?=substr($d['headimgurl'],0,-1)?>46" /></a>
                             <h4><?=$d['name']?></h4>
-                            <span><?=$d['phone']?></span>
+                            <span data-toggle="tooltip" data-placement="auto" title="联系方式: <?=$d['phone']?>"><?=$d['phone']?></span>
                         </div>
                         <div class="fault-data">
                             <h4><?=$d['brand_name'],$d['model']?></h4>
-                            <span>月租:<b class="high-show"><?=$d['lowest_expense']?></b> , 黑白:<b class="high-show"><?=$d['black_white']?></b> , 彩色:<b class="high-show"><?=$d['colours']?></b></span>
+                            <span data-toggle="tooltip" data-placement="auto" title="月租: <?=$d['lowest_expense']?> , 黑白: <?=$d['black_white']?> , 彩色: <?=$d['colours']?>">月租:<b class="high-show"><?=$d['lowest_expense']?></b> , 黑白:<b class="high-show"><?=$d['black_white']?></b> , 彩色:<b class="high-show"><?=$d['colours']?></b></span>
                         </div>
                         <div class="fault-btn">
                             <a href="<?=Url::toRoute(['/admin-rent/pass','id'=>$d['id']])?>" class="btn btn-info btn-sm">通过</a>
