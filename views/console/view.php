@@ -840,11 +840,14 @@ Modal::end();
     var counter = 0;
     var fromtime;
     var timeset = 5;//轮询的时间间隔：5分钟
+    var notify_delay = 1000*60*1;//消息提示框停留时间：1分钟
+    var notify_type = 'info';
+
 
     var type = 1;
     $(function(){
         //showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success');
-        showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success', 1000*30, 2);
+        showNotice('【<b class="high-show">开始自动消息提示</b>】', '如果有新消息，之后会有弹出提示框！','success', 1000*30);
 
 
         $('.ui-pnotify-history-all').addClass('btn-warning');
@@ -880,7 +883,7 @@ Modal::end();
                         var cover = content['cover'];
                         $('#fault-list-ul').prepend("<li class='fault-list-li'><div class='fault-data'><a href='"+cover+"' class='fancybox' rel='group'><img class='cover-img' src='"+cover+"' /></a><h4>"+data['fault'][i]['type'] + ", <b class='fault-time'>"+data['fault'][i]['add_time']+"</b></h4><span>"+data['fault'][i]['desc']+"</span></div><div class='fault-data'><h4>"+data['fault'][i]['brand']+data['fault'][i]['model']+" , "+data['fault'][i]['name']+"</h4><span>"+data['fault'][i]['phone']+","+data['fault'][i]['address']+"</span></div><div class='fault-btn'><button type='button' key-id='"+data['fault'][i]['id']+"' modal-type='modal-fault-allot' class='order-modal btn btn-info btn-sm'>分配</button><button type='button' key-id='"+data['fault'][i]['id']+"' modal-type='modal-fault-del' class='order-modal btn btn-danger btn-sm'>关闭</button></div></li>");
 
-                        showNotice('你有一个新的【<b class="high-show">维修分配</b>】',data['fault'][i]['address']+':'+data['fault'][i]['type']);
+                        showNotice('你有一个新的【<b class="high-show">维修分配</b>】',data['fault'][i]['address']+':'+data['fault'][i]['type'], notify_type, notify_delay);
                     }
                 }
 
@@ -901,7 +904,7 @@ Modal::end();
 
                             $('#order-list-ul').prepend(str);
                         }
-                        showNotice('你有一个新的【<b class="high-show">订单</b>】',data['order'][i]['address']+':'+data['order'][i]['name']);
+                        showNotice('你有一个新的【<b class="high-show">订单</b>】',data['order'][i]['address']+':'+data['order'][i]['name'], notify_type, notify_delay);
                     }
 
                 }
@@ -938,7 +941,7 @@ Modal::end();
 
 
                         $('#part-list-ul').prepend(str);
-                        showNotice('你有一个新的【<b class="high-show">配件申请</b>】',data['part'][i]['nickname']+':'+data['part'][i]['name']);
+                        showNotice('你有一个新的【<b class="high-show">配件申请</b>】',data['part'][i]['nickname']+':'+data['part'][i]['name'], notify_type, notify_delay);
                     }
                 }
 
@@ -957,7 +960,7 @@ Modal::end();
                         str += "</span></div><div class='fault-btn'><button class='btn btn-info btn-sm rental-pass' key-id='"+data['rental'][i]['id']+"' >通过</button><a class='btn btn-danger btn-sm' href='/charge/update/"+data['rental'][i]['id']+"'>编辑</a></div></li>";
                         $('#box-rental').prepend(str);
 
-                        showNotice('你有一个新的【<b class="high-show">租金提交</b>】',data['rental'][i]['username']+':￥'+data['rental'][i]['total_money']);
+                        showNotice('你有一个新的【<b class="high-show">租金提交</b>】',data['rental'][i]['username']+':￥'+data['rental'][i]['total_money'], notify_type, notify_delay);
                     }
                 }
 
@@ -979,7 +982,7 @@ Modal::end();
 
                         $('#box-rent').prepend(str);
 
-                        showNotice('你有一个新的【<b class="high-show">租借申请</b>】',data['rent'][i]['name']+':'+data['rent'][i]['brand_name']+data['rent'][i]['model']);
+                        showNotice('你有一个新的【<b class="high-show">租借申请</b>】',data['rent'][i]['name']+':'+data['rent'][i]['brand_name']+data['rent'][i]['model'], notify_type, notify_delay);
                     }
                 }
 
@@ -991,10 +994,10 @@ Modal::end();
     }// end of startTimer
 
     //展示提示
-    function showNotice(title, text, type = 'info', delay = 1000*60*1,from = 1 ) {
+    function showNotice(title, text, type, delay ) {
 ////        requirejs(['jquery', 'pnotify', 'pnotify.history','pnotify.buttons'],
 //            requirejs(['pnotify'], function($, PNotify){
-        if(from == 1)
+        if(type != 'success')
             $('#myVideo')[0].play();
             PNotify.prototype.options.styling = "bootstrap3";
             //$(function(){
