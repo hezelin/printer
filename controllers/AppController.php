@@ -110,9 +110,20 @@ class AppController extends \yii\web\Controller
             if($key == 1)               // 绑定维修员事件
             {
                 $maintain = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$wxFromUser]);
-                if($maintain)
-                    return $wx->makeText( date('Y-m-d H:i',$maintain->add_time).'已绑定为维修员，无需再绑定！');
-                else{
+                if($maintain) {
+                    //[20161228 biao 新增状态字段
+                    //return $wx->makeText(date('Y-m-d H:i', $maintain->add_time) . '已绑定为维修员，无需再绑定！');
+
+                    if($maintain->status == 10) {
+                        return $wx->makeText(date('Y-m-d H:i', $maintain->add_time) . '已绑定为维修员，无需再绑定！');
+                    }else{
+                        $maintain->status = 10;//把已经解绑的维修员，重新绑定
+                        if($maintain->save())
+                            return $wx->makeText('成功绑定为维修员！');
+                        return $wx->makeText(ToolBase::arrayToString($maintain->errors));
+                    }
+                    //20161228]
+                }else{
                     $maintain = new TblUserMaintain();
                     $maintain->wx_id = $id;
                     $maintain->name = (new \yii\db\Query())->select('nickname')->from('tbl_user_wechat')->where(['wx_id'=>$id,'openid'=>$wxFromUser])->scalar();

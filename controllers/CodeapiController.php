@@ -207,7 +207,8 @@ class CodeapiController extends \yii\web\Controller
      */
     private function checkMaintain($openid)
     {
-        return TblUserMaintain::findOne(['openid'=>$openid])? true:false;
+        //20161228 biao 维修员表:新增状态字段
+        return TblUserMaintain::findOne(['openid'=>$openid, 'status' => 10])? true:false;
     }
 
 }
