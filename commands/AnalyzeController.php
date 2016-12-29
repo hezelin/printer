@@ -12,6 +12,7 @@ use app\models\analyze\TblAnalyzeProduct;
 use app\models\analyze\TblAnalyzeRent;
 use app\models\analyze\TblAnalyzeRental;
 use app\models\TblMachineService;
+use app\models\TblUserMaintain;
 use app\modules\maintain\controllers\FaultController;
 
 class AnalyzeController extends \yii\console\Controller
@@ -42,6 +43,11 @@ class AnalyzeController extends \yii\console\Controller
         $machine_service = new TblMachineService();
         $machine_service -> autoEvaluate();
         //20161215]
+
+        //[20161229 维修员维修个数统计
+        $maintainer = new TblUserMaintain();
+        $maintainer->faultCount();
+        //20161229]
 
     }
 

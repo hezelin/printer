@@ -47,4 +47,41 @@ class TblUserMaintain extends \yii\db\ActiveRecord
             'add_time' => '添加时间',
         ];
     }
+
+    //[20161229 biao 增加：维修员个数统计
+    /*
+     * 维修个数统计
+     */
+    public function faultCount(){
+        //1. 统计维修表中，每个维修员正在维修的个数
+        $info = (new \yii\db\Query())
+            ->select('count(*) as count, openid')
+            ->from('tbl_machine_service as t')
+            ->where(['<','t.status',8])
+            ->groupBy('openid')
+            ->all();
+
+//        UPDATE mytable
+//    SET myfield = CASE id
+//        WHEN 1 THEN 'value'
+//        WHEN 2 THEN 'value'
+//        WHEN 3 THEN 'value'
+//    END
+//  WHERE id IN (1,2,3)
+
+        //2. 拼接批量更新语句
+        $sql = 'UPDATE `tbl_user_maintain` SET `wait_repair_count` = CASE `openid` ';
+        $opendids = [];
+        foreach ($info as $row){
+            if(!$row['openid'])
+                continue;
+            $sql .= sprintf("WHEN '%s' THEN %d ", $row['openid'], $row['count']);
+            $opendids[] = "'".$row['openid']."'";
+        }
+        $sql .= " END WHERE `openid` IN (".implode(',',$opendids).")";
+
+        //3. 执行更新操作
+        return Yii::$app->db->createCommand($sql)->execute();
+    }
+    //20161229]
 }
