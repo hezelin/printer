@@ -124,9 +124,11 @@ class NewCall
 
             if( $this->fault->openid ) {            // 如果电话维修任务分配给维修员
 //            更改维修员 待维修计数
+                //20161228 biao 维修员表：新增状态表
                 $model = TblUserMaintain::findOne([
                     'wx_id' => $this->machine->wx_id,
-                    'openid' => $this->fault->openid
+                    'openid' => $this->fault->openid,
+                    'status' => 10
                 ]);
                 $model->wait_repair_count = $model->wait_repair_count + 1;
                 $model->save();
@@ -152,10 +154,11 @@ class NewCall
 
     public function getMaintainer()
     {
+        //20161228 biao 维修员表：新增状态字段
         $data = (new \yii\db\Query())
             ->select('openid,name,wait_repair_count')
             ->from('tbl_user_maintain')
-            ->where(['wx_id'=>Cache::getWid()])
+            ->where(['wx_id'=>Cache::getWid(), 'status' => 10])
             ->all();
         $tmp = [''=>'选择维修员'];
         if($data){

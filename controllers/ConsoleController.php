@@ -44,10 +44,11 @@ class ConsoleController extends \yii\web\Controller
             return $this->render('//tips/error',['tips'=>'已过期！']);
         }
 
+        //20161228 biao 维修员表：新增状态字段
         $data['maintainer'] = (new \yii\db\Query())
             ->select(['name','phone','openid','wx_id','wait_repair_count','longitude','latitude','FROM_UNIXTIME(`point_time`,"%Y-%m-%d %H:%i") as point_time'])
             ->from('tbl_user_maintain')
-            ->where('wx_id=:wid',[':wid'=>$wx_id])
+            ->where('wx_id=:wid and status = 10',[':wid'=>$wx_id])
             ->all();
 
         $data['fault'] = (new \yii\db\Query())

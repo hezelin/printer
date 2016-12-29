@@ -209,7 +209,8 @@ class FaultController extends Controller
             ]);
 
         $openid = WxBase::openId($id);
-        if(  TblUserMaintain::findOne(['openid'=>$openid]) )
+        //20161228 biao 维修员表：新增状态表
+        if(  TblUserMaintain::findOne(['openid'=>$openid, 'status' => 10]) )
         {
             return $this->render('//tips/home-status',[
                 'tips'=>'维修员无权限评价！',
@@ -242,7 +243,8 @@ class FaultController extends Controller
                     throw new Exception('维修进度错误');
 
 
-                $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid]);
+                //20161228 biao 维修员表：新增状态表
+                $model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid, 'status' => 10]);
                 if($model &&  $model->wait_repair_count > 0)
                 {
                     $model->wait_repair_count -= 1;

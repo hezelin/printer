@@ -35,8 +35,21 @@ class StaffController extends \yii\web\Controller
 
     public function actionUnbind($wx_id, $openid)
     {
-        $this->findModel($wx_id, $openid)->delete();
-        return $this->redirect(['list']);
+        //[20161228 新增状态字段 删除 ：status = 11
+        //$this->findModel($wx_id, $openid)->delete();
+        //return $this->redirect(['list']);
+
+        $model = $this->findModel($wx_id, $openid);
+        $model->status = 11;
+        if($model->save())
+            return $this->redirect(['list']);
+        else
+            return $this->render('//tips/error', [
+                'tips' => '操作失败！',
+                'btnText' => '重试',
+                'btnUrl' => \yii\helpers\Url::toRoute(['/staff/list'])
+            ]);
+        //20161228]
     }
 
     public function actionIndex()
@@ -68,7 +81,7 @@ class StaffController extends \yii\web\Controller
 
     protected function findModel($wx_id, $openid)
     {
-        if (($model = TblUserMaintain::findOne(['wx_id' => $wx_id, 'openid' => $openid])) !== null) {
+        if (($model = TblUserMaintain::findOne(['wx_id' => $wx_id, 'openid' => $openid, 'status' => 10])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

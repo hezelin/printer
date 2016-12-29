@@ -76,7 +76,8 @@ class ServiceController extends \yii\web\Controller
             $tpl->sendCancelService($fromOpenid,$url,$type==2? '您':'系统',$text,time(),$applyTime);
 
             // 维修员存在，则为维修员 计数减一
-            if( $toOpenid &&  ($model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid])) ){
+            //20161228 biao 维修员表：新增状态字段
+            if( $toOpenid &&  ($model = TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$toOpenid, 'status' => 10])) ){
                 $tpl->sendCancelService($toOpenid,$url,$type==2? '用户':'系统',$text,time(),$applyTime);
                 // 维修员待修计数 减一
                 if( $model->wait_repair_count > 0)
@@ -114,11 +115,12 @@ class ServiceController extends \yii\web\Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams,1);
 
         //[20161220 维修分配地图
+        //20161228 biao 维修员表：新增状态字段
         $data = [];
         $data['maintainer'] = (new \yii\db\Query())
             ->select(['name','phone','openid','wx_id','wait_repair_count','longitude','latitude','FROM_UNIXTIME(`point_time`,"%Y-%m-%d %H:%i") as point_time'])
             ->from('tbl_user_maintain')
-            ->where('wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->where('wx_id=:wid and status = 10',[':wid'=>Cache::getWid()])
             ->all();
         //20161220]
         return $this->render('index',[
@@ -140,7 +142,7 @@ class ServiceController extends \yii\web\Controller
         $data['maintainer'] = (new \yii\db\Query())
             ->select(['name','phone','openid','wx_id','wait_repair_count','longitude','latitude','FROM_UNIXTIME(`point_time`,"%Y-%m-%d %H:%i") as point_time'])
             ->from('tbl_user_maintain')
-            ->where('wx_id=:wid',[':wid'=>Cache::getWid()])
+            ->where('wx_id=:wid and status = 10',[':wid'=>Cache::getWid()])
             ->all();
         //20161220]
 
@@ -166,9 +168,11 @@ class ServiceController extends \yii\web\Controller
         Yii::$app->response->format = 'json';               // 返回数组
         if( Yii::$app->request->post())
         {
+            //20161228 biao 维修员表：新增状态字段
             $model = TblUserMaintain::findOne([
                 'wx_id'=>Yii::$app->request->post('wid'),
-                'openid'=>Yii::$app->request->post('openid')
+                'openid'=>Yii::$app->request->post('openid'),
+                'status' => 10
             ]);
             $name = $model->name;
             if(!$model)
@@ -266,9 +270,11 @@ class ServiceController extends \yii\web\Controller
             try {
 
                 // 旧维修员 计数减一
+                //20161228 维修员表：新增状态字段
                 $old = TblUserMaintain::findOne([
                     'wx_id'=>Yii::$app->request->post('wid'),
-                    'openid'=>$fault->openid
+                    'openid'=>$fault->openid,
+                    'status' => 10
                 ]);
                 if($old){
                     $oldName = $old->name;
@@ -289,9 +295,11 @@ class ServiceController extends \yii\web\Controller
                     throw new Exception('维修员计数错误');
                 }
 
+                //20161228 biao 维修员表：新增状态字段
                 $new = TblUserMaintain::findOne([
                     'wx_id'=>Yii::$app->request->post('wid'),
-                    'openid'=>Yii::$app->request->post('openid')
+                    'openid'=>Yii::$app->request->post('openid'),
+                    'status' => 10
                 ]);
                 $newName = $new->name;
                 $new->wait_repair_count = $new->wait_repair_count + 1;

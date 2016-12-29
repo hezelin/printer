@@ -106,10 +106,11 @@ class PartsController extends Controller
         // 非维修员不能申请配件
         if($fault_id = Yii::$app->request->get('fault_id')) {
 
+            //20161228 biao 维修员表：新增状态字段【maintain_name】
             $isMaintainer = (new \yii\db\Query())
                 ->select('count(*)')
                 ->from('tbl_user_maintain')
-                ->where('openid=:openid', [':openid' => $openid])
+                ->where('openid=:openid and status = 10', [':openid' => $openid])
                 ->scalar();
             if ( !$isMaintainer )
                 return $this->render('//tips/home-status', ['tips' => '不是维修员，没有权限！', 'btnText' => '返回', 'btnUrl' => 'javascript:history.go(-1);']);
@@ -256,6 +257,7 @@ class PartsController extends Controller
         $model->apply_time = $model->bing_time = time();
         $model->fault_id = Yii::$app->request->get('fault_id')? : 0;
 
+        //20161228 biao 维修员表：新增状态字段【maintain_name】
         $name = (new \yii\db\Query())
             ->select('name')
             ->from('tbl_user_maintain')
@@ -308,10 +310,11 @@ class PartsController extends Controller
         $model = TblParts::findOne($part_id);
         $model->status = 11;
 
+        //20161228 biao 维修员表：新增状态字段【maintain_name】
         $name = (new \yii\db\Query())
             ->select('name')
             ->from('tbl_user_maintain')
-            ->where(['wx_id'=>$id,'openid'=>$openid])
+            ->where(['wx_id'=>$id,'openid'=>$openid, 'status' => 10])
             ->scalar();
 
         $content['text'] = "$name 解除机器";

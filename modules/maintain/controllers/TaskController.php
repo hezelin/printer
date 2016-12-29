@@ -260,7 +260,8 @@ class TaskController extends Controller
         $applyTime = $model->add_time;
         $respKm = $model->resp_km;
 
-        $maintainer = TblUserMaintain::find()->where(['wx_id'=>$wid,'openid'=>$openid])->one();
+        //20161228 biao 维修员表：新增状态表
+        $maintainer = TblUserMaintain::find()->where(['wx_id'=>$wid,'openid'=>$openid, 'status' => 10])->one();
         if(!$maintainer)
             return $this->render('//tips/home-status',[
                 'tips'=>'维修员不存在',

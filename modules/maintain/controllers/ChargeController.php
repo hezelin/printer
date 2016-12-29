@@ -21,10 +21,11 @@ class ChargeController extends \yii\web\Controller
             $model->load(Yii::$app->request->post());
             $model->machine_id = $machine_id;
             $model->add_time = time();
+            //20161228 biao 维修员表：新增状态字段【maintain_name】
             $model->name = (new \yii\db\Query())
                     ->select('name')
                     ->from('tbl_user_maintain')
-                    ->where('openid=:openid',[':openid'=>Yii::$app->request->post('openid')])
+                    ->where('openid=:openid and status = 10',[':openid'=>Yii::$app->request->post('openid')])
                     ->scalar();
             $wx = new WxMedia($id);
             $model->sign_img = $wx->getImage( $model->sign_img );

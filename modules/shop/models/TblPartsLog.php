@@ -44,12 +44,15 @@ class TblPartsLog extends \yii\db\ActiveRecord
     public function remark($isAdmin=false)
     {
         if($isAdmin)
+            //20161228 biao 维修员表：新增状态字段【maintain_name】
             $name = (new \yii\db\Query())
                 ->select('name')
                 ->from('tbl_user_maintain')
                 ->where([
                     'openid'=>Yii::$app->request->get('openid'),
-                    'wx_id'=>Yii::$app->request->get('id')])
+                    'wx_id'=>Yii::$app->request->get('id'),
+                    'status' => 10
+                ])
                 ->scalar();
         else
             $name = '管理员';
