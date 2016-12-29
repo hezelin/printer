@@ -64,10 +64,11 @@ class MapController extends \yii\web\Controller
     public function actionMaintain(){
 
         //1. 读取维修人员表，获取经纬度
+        //20161228 biao 维修员表：新增状态字段
         $points = (new \yii\db\Query())
             ->select(['name','longitude as lng','latitude as lat'])
             ->from('tbl_user_maintain')
-            ->where(['wx_id' => Cache::getWid()])
+            ->where(['wx_id' => Cache::getWid(), 'status' => 10])
             ->all();
 
         //2. 判断数据合法性

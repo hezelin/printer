@@ -97,6 +97,17 @@ class RentController extends \yii\web\Controller
      */
     public function actionApply($id,$mid)
     {
+        //[20161228 修改 验证是否为重复提交
+        if(TblRentApply::find()->where(['wx_id' => trim($id), 'openid' => WxBase::openId($id), 'project_id' =>  trim($mid),'status' => 1])->one()){
+            return $this->render('//tips/home-status',[
+                'tips'=>'请不要重复提交！',
+                'btnText'=>'返回',
+                'btnUrl'=>'javascript:history.go(-2)'
+            ]);
+
+        }
+        //20161228]
+
         $model = new TblRentApply();
         $model->wx_id = $id;
         $model->openid = WxBase::openId($id);

@@ -61,7 +61,8 @@ class WechatController extends \yii\web\Controller
      */
     private function checkMaintain($id,$openid)
     {
-        return TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$openid])? false:true;
+        //20161228 biao 维修员表：新增状态字段
+        return TblUserMaintain::findOne(['wx_id'=>$id,'openid'=>$openid, 'status' => 10])? false:true;
     }
 
 }

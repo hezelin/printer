@@ -41,7 +41,7 @@ class TblUserMaintainSearch extends TblUserMaintain
      */
     public function search($params)
     {
-        $query = TblUserMaintain::find()->where(['tbl_user_maintain.wx_id'=>Cache::getWid()])->joinWith('userinfo');
+        $query = TblUserMaintain::find()->where(['tbl_user_maintain.wx_id'=>Cache::getWid(), 'status' => 10])->joinWith('userinfo');//20161228 添加状态字段
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

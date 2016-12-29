@@ -94,8 +94,9 @@ class TblMachineServiceList extends TblMachineService
      */
     public function fixProvider()
     {
+        //20161228 biao 维修员表：新增状态表
         return new ActiveDataProvider([
-            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
+            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid(),'status' => 10]),
             'pagination' => [
                 'pageSize' => 20,
             ],

@@ -190,8 +190,9 @@ class AdminRentController extends \yii\web\Controller
         $searchModel = new ViewAllDataSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        //20161228 biao 维修员表：增加状态字段
         $fixProvider = new ActiveDataProvider([
-            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid()]),
+            'query' => TblUserMaintain::find()->where(['wx_id'=>Cache::getWid(), 'status' => 10]),
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -304,10 +305,11 @@ class AdminRentController extends \yii\web\Controller
             if(!$model->save())
                 Yii::$app->end( json_encode(['status'=>0,'msg'=>'出错,200']) );
 
-
+            //20161228 biao 维修员表：新增状态字段
             $model = TblUserMaintain::findOne([
                 'wx_id'=>Yii::$app->request->post('wx_id'),
-                'openid'=>Yii::$app->request->post('openid')
+                'openid'=>Yii::$app->request->post('openid'),
+                'status' => 10
             ]);
             $name = $model->name;
             if(!$model)

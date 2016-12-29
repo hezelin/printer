@@ -208,19 +208,21 @@ echo GridView::widget([
             'value'=>function($data)
             {
                 if( $data->status >= 3){
+                    //20161228 biao 维修员表：新增状态字段
                     $maintainer = (new \yii\db\Query())
                         ->select('name')
                         ->from('tbl_user_maintain')
-                        ->where('wx_id=:wid and openid=:openid',[':openid'=>$data->openid,':wid'=>$data->weixin_id])
+                        ->where('wx_id=:wid and openid=:openid and status = 10',[':openid'=>$data->openid,':wid'=>$data->weixin_id])
                         ->scalar();
                     return '维修员：'.$maintainer.'<br/>'.ConfigBase::getFixStatus($data->status);
                 }
                 //[20161220 修改
+                //20161228 biao 维修员表：新增状态字段
                 if($data->status == 2){
                     $maintainer = (new \yii\db\Query())
                         ->select('name')
                         ->from('tbl_user_maintain')
-                        ->where('wx_id=:wid and openid=:openid',[':openid'=>$data->openid,':wid'=>$data->weixin_id])
+                        ->where('wx_id=:wid and openid=:openid and status = 10',[':openid'=>$data->openid,':wid'=>$data->weixin_id])
                         ->scalar();
                     return ConfigBase::getFixStatus($data->status).'<br>'.'已分配<span style="color:#c55;"> '.$maintainer.' </span>维修员，'.'等待接单';
                 }
