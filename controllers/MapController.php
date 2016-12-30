@@ -33,18 +33,18 @@ class MapController extends \yii\web\Controller
 
                 $m['html'] = '<div class="point-li" id="point-'.$m['id'].'" lng="'.$m['lng'].'" lat="'.$m['lat'].'">
                                 <div class="point-row">
-                                    <span class="point-name">'.$m['name'].'</span>
-                                    <span class="point-address">'.$m['address'].'</span>
+                                    <span class="point-name ellipsis-show" data-toggle="tooltip" data-placement="auto" title='.$m['name'].'>'.$m['name'].'</span>
+                                    <span class="point-address ellipsis-show" data-toggle="tooltip" data-placement="auto" title='.$m['address'].'>'.$m['address'].'</span>
                                 </div>
                                 <div class="point-row">
-                                    '.($m['monthly_rent']? '<span class="black">月租：'.$m['monthly_rent'].'元</span>':'').'
-                                    '.($m['black_white']? '<span class="black">黑白：'.Tool::schemePrice($m['black_white']).'</span>':'').'
-                                    '.($m['colours']? '<span class="colours">彩色：'.Tool::schemePrice($m['colours']).'</span>':'').'
+                                    '.($m['monthly_rent']? '<span class="black ellipsis-show" data-toggle="tooltip" data-placement="auto" title="月租: '.$m['monthly_rent'].'元">月租：'.$m['monthly_rent'].'元</span>':'').'
+                                    '.($m['black_white']? '<span class="black ellipsis-show" data-toggle="tooltip" data-placement="auto" title="黑白: '.Tool::schemePrice($m['black_white']).'">黑白：'.Tool::schemePrice($m['black_white']).'</span>':'').'
+                                    '.($m['colours']? '<span class="colours ellipsis-show" data-toggle="tooltip" data-placement="auto" title="彩色: '.Tool::schemePrice($m['colours']).'">彩色：'.Tool::schemePrice($m['colours']).'</span>':'').'
                                 </div>
                                 <div class="point-row">
-                                    <span class="brand-model">机型：'.$m['brand_name'].'/'.$m['model_name'].'</span>
-                                    <span class="brand-model">机编：'.$m['machine_id'].'</span>
-                                    '.($m['series_id']? '<span class="colours">客编：'.$m['series_id'].'</span>':'').'
+                                    <span class="brand-model ellipsis-show" data-toggle="tooltip" data-placement="auto" title="机型: '.$m['brand_name'].'/'.$m['model_name'].'">机型：'.$m['brand_name'].'/'.$m['model_name'].'</span>
+                                    <span class="brand-model ellipsis-show" data-toggle="tooltip" data-placement="auto" title="机编: '.$m['machine_id'].'">机编：'.$m['machine_id'].'</span>
+                                    '.($m['series_id']? '<span class="colours ellipsis-show" data-toggle="tooltip" data-placement="auto" title="客编: '.$m['series_id'].'">客编：'.$m['series_id'].'</span>':'').'
                                 </div>
                                 <div class="point-icon"></div>
                 </div>';

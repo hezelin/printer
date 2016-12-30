@@ -11,15 +11,15 @@ $this->params['breadcrumbs'][] = $this->title;
     }
     .BMapLabel{ border: none !important; background-color: inherit !important;}
     .point-li{
-        width: 150px;
-        height: 150px;
+        width: 170px;
+        height: 170px;
         border: none;
         border-top: 2px solid #F1327A;
-        margin-left: -76px;
+        margin-left: -86px;
         padding: 10px;
         background-color: #fff !important;
         box-shadow: 0 1px 4px #999;
-        margin-top: -180px;
+        margin-top: -200px;
         display: none;
     }
     .point-row{
@@ -40,6 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
         position: absolute;
         left: -12px;
         bottom: 18px;
+    }
+
+    .ellipsis-show{
+        display: inline-block;
+        width: 100%;
+        word-break: keep-all;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 </style>
 
