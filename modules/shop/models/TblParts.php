@@ -23,7 +23,7 @@ class TblParts extends \yii\db\ActiveRecord
     public function getMaintainer()
     {
         //20161228 biao 维修员表：新增状态表
-        return $this->hasOne(TblUserMaintain::className(),['openid'=>'openid'])->where(['status' => 10]);
+        return $this->hasOne(TblUserMaintain::className(),['openid'=>'openid'])->where(['tbl_user_maintain.status' => 10]);
     }
 
     /*

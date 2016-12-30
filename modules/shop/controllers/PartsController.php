@@ -261,7 +261,7 @@ class PartsController extends Controller
         $name = (new \yii\db\Query())
             ->select('name')
             ->from('tbl_user_maintain')
-            ->where(['wx_id'=>$id,'openid'=>$openid])
+            ->where(['wx_id'=>$id,'openid'=>$openid, 'status' => 10])
             ->scalar();
 
         $content['text'] = "$name 绑定机器";

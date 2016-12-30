@@ -43,7 +43,7 @@ class MapController extends \yii\web\Controller
                                 </div>
                                 <div class="point-row">
                                     <span class="brand-model">机型：'.$m['brand_name'].'/'.$m['model_name'].'</span>
-                                    <span class="brand-model">机编：'.$m['id'].'</span>
+                                    <span class="brand-model">机编：'.$m['machine_id'].'</span>
                                     '.($m['series_id']? '<span class="colours">客编：'.$m['series_id'].'</span>':'').'
                                 </div>
                                 <div class="point-icon"></div>
