@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'attribute'=>'add_time',
-            'format'=>['date','Y-m-d H:i'],
+            'format'=>['date','Y-MM-dd H:i'],
         ],
         [
             'class' => 'yii\grid\ActionColumn',
