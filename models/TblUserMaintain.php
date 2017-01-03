@@ -55,10 +55,10 @@ class TblUserMaintain extends \yii\db\ActiveRecord
     public function faultCount(){
         //1. 统计维修表中，每个维修员正在维修的个数
         $info = (new \yii\db\Query())
-            ->select('count(*) as count, openid')
+            ->select('weixin_id, openid, count(*) as count')
             ->from('tbl_machine_service as t')
             ->where(['<','t.status',8])
-            ->groupBy('openid')
+            ->groupBy('weixin_id, openid')
             ->all();
 
 //        UPDATE mytable
@@ -70,15 +70,18 @@ class TblUserMaintain extends \yii\db\ActiveRecord
 //  WHERE id IN (1,2,3)
 
         //2. 拼接批量更新语句
-        $sql = 'UPDATE `tbl_user_maintain` SET `wait_repair_count` = CASE `openid` ';
+        $sql = 'UPDATE `tbl_user_maintain` SET `wait_repair_count` = CASE ';
         $opendids = [];
+        $weixin_ids = [];
         foreach ($info as $row){
             if(!$row['openid'])
                 continue;
-            $sql .= sprintf("WHEN '%s' THEN %d ", $row['openid'], $row['count']);
+            $sql .= sprintf("WHEN `openid` = '%s' AND `wx_id` = '%s' THEN %d ", $row['openid'], $row['weixin_id'], $row['count']);
             $opendids[] = "'".$row['openid']."'";
+            $weixin_ids[] = "'".$row['weixin_id']."'";
         }
-        $sql .= " END WHERE `openid` IN (".implode(',',$opendids).")";
+        $sql .= " END WHERE `openid` IN (".implode(',',$opendids).") AND `wx_id` IN (".implode(',',$weixin_ids).")";
+
 
         //3. 执行更新操作
         return Yii::$app->db->createCommand($sql)->execute();
