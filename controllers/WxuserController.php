@@ -10,6 +10,24 @@ use Yii;
 
 class WxuserController extends \yii\web\Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => \yii\filters\AccessControl::className(),
+                'only' => ['batch-update', 'show-rst'],
+                'rules' => [
+                    [
+                        'actions' => ['batch-update','show-rst'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+
+        ];
+    }
+
     public $layout = 'console';
     public function actionList()
     {
@@ -40,13 +58,58 @@ class WxuserController extends \yii\web\Controller
     }
 
     /*
-     * 公众号id,用户 openid
-     */
+      * 公众号id,用户 openid
+      */
     public function actionUpdate($wx_id,$openid)
     {
         $weixin = new WxUser($wx_id);
-        $weixin->updateUser($openid);
-        return $this->redirect(['list']);
+        if($weixin->updateUser($openid))
+            return $this->render('//tips/success', [
+                'tips' => '更新成功！',
+                'btnText' => '返回列表',
+                'btnUrl' => \yii\helpers\Url::toRoute(['/wxuser/list'])
+            ]);
+        else
+            return $this->render('//tips/error', [
+                'tips' => '修改保存失败！',
+                'btnText' => '重试',
+                'btnUrl' => \yii\helpers\Url::toRoute(['/wxuser/list'])
+            ]);
+        //return $this->redirect(['list']);
+    }
+
+
+    /*
+     * 批量更新用户信息
+     * 20170104 biao
+     */
+    public function actionBatchUpdate()
+    {
+        $wx = new WxUser(Cache::getWid());
+        if($wx->pullUser())
+            return 'success';
+    }
+
+    /*
+     * 处理批量更新的结果显示
+     * 20170104 biao
+     *
+     */
+    public function actionShowRst($rst)
+    {
+        if($rst == 'success')
+            return $this->render('//tips/success',[
+                'tips' => '更新成功！',
+                'btnText' => '返回',
+                'btnUrl' => \yii\helpers\Url::toRoute(['/wxuser/list'])
+            ]);
+        else
+            return $this->render('//tips/error', [
+                'tips' => '更新失败！ 【可能原因】: 超出每天更新限制的次数',
+                'btnText' => '返回',
+                'btnUrl' => \yii\helpers\Url::toRoute(['/wxuser/list'])
+            ]);
+
     }
 
     /*

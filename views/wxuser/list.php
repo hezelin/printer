@@ -5,10 +5,42 @@ use yii\helpers\Url;
 
 $this->title = '微信用户';
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerJs('
+ $(function () {
+        $(\'.btn-batch-update\').click(function () {
+            var $btn = $(this).button(\'loading\');
+            $(this).addClass("btn-warning");
+            
+            $.post("batch-update",{},function(rst){
+                if(rst == "success"){
+                    document.location.href = "show-rst?rst=success";
+                }else{
+                    document.location.href = "show-rst?rst=error";
+                }
+       
+                //setTimeout(function(){
+                 //   $(".btn-batch-update").removeClass("btn-warning");
+                 //   $btn.button(\'reset\');
+               // }, 1000);
+            });
+        });
+ 
+        options = new Array();
+        options["html"] = true;
+        options["content"] = "<div style=\'font-family: \"微软雅黑\";color:gray;\'><p >每天更新<span style=\'color:#d9534f\'>次数有限</span>，请不要频繁更新！</p><p>批量更新的时间比较长，请耐性等待！</p></div>";
+        
+        $(".btn-batch-update").popover(options);
+    });
+');
 ?>
 
 <?php
+echo Html::a('批量更新', 'javascript:void(0);', ['class' => 'btn btn-info btn-batch-update','tabindex'=>'0', 'role'=>'button','data-toggle'=>'popover', 'data-trigger'=>'hover', 'data-original-title'=>'<span style="color:#d9534f;font-weight: bold"><span class="glyphicon glyphicon-info-sign"></span> 批量更新全部用户信息</span>','data-loading-text'=>'正在更新...','autocomplete'=>'off']);
+?>
 
+<?php
+echo '<br>';
 echo GridView::widget([
     'dataProvider'=> $dataProvider,
     'filterModel' => $searchModel,
@@ -102,5 +134,5 @@ echo newerton\fancybox\FancyBox::widget([
         ],
     ]
 ]);
-
 ?>
+
