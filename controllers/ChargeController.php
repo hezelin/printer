@@ -19,6 +19,7 @@ class ChargeController extends \yii\web\Controller
         $model = new TblRentReport();
         if(Yii::$app->request->post('TblRentReport')){
             $model->load(Yii::$app->request->post());
+            $model->status = 2;//20170103 后台添加收租直接确认通过
             $model->machine_id = $machine_id;
             $model->add_time = time();
             $model->name = Yii::$app->user->identity->name;
