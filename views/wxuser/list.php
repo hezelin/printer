@@ -28,7 +28,7 @@ $this->registerJs('
  
         options = new Array();
         options["html"] = true;
-        options["content"] = "<div style=\'font-family: \"微软雅黑\";color:gray;\'><p >每天更新<span style=\'color:#d9534f\'>次数有限</span>，请不要频繁更新！</p><p>批量更新的时间比较长，请耐性等待！</p></div>";
+        options["content"] = "<div style=\'font-family: \"微软雅黑\";color:gray;\'><p >微信限制每天只能更新粉丝资料<span style=\'color:#d9534f\'> 2次</span>，请不要频繁更新！</p><p>批量更新的时间比较长，请耐性等待！</p></div>";
         
         $(".btn-batch-update").popover(options);
     });

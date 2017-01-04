@@ -105,7 +105,7 @@ class WxuserController extends \yii\web\Controller
             ]);
         else
             return $this->render('//tips/error', [
-                'tips' => '更新失败！ 【可能原因】: 超出每天更新限制的次数',
+                'tips' => '更新失败！ 【可能原因】: 超出微信限制每天更新的次数',
                 'btnText' => '返回',
                 'btnUrl' => \yii\helpers\Url::toRoute(['/wxuser/list'])
             ]);
