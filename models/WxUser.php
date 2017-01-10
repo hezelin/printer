@@ -135,7 +135,11 @@ class WxUser extends WxBase {
         foreach($info as $user)
         {
             $in = json_decode($user,true);
-            $nickname = trim($in['nickname']);
+            //[20170104 修改批量更新设置
+            if($in['subscribe'] == 0)
+                continue;
+            $nickname = addslashes((trim($in['nickname'])));
+            //20170104]
             $val .= "({$id},'{$in['openid']}','{$nickname}',{$in['sex']},'{$in['city']}','{$in['country']}','{$in['province']}','{$in['language']}','{$in['headimgurl']}',{$in['subscribe_time']},{$in['subscribe']}),";
         }
 
