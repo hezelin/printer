@@ -839,7 +839,7 @@ Modal::end();
     var newsTimer;
     var counter = 0;
     var fromtime;
-    var timeset = 5;//轮询的时间间隔：5分钟
+    var timeset = 1;//轮询的时间间隔：5分钟
     var notify_delay = 1000*60*1;//消息提示框停留时间：1分钟
     var notify_type = 'info';
 
