@@ -49,7 +49,7 @@ HomeAsset::register($this);
                     <p class="aui-ellipsis-1"><span class="iconfont icon-dizhi aui-color"></span> <?=$row['address']? :'未设置'?></p>
                     <p class="aui-btn aui-btn-color aui-btn-sm"><?php
                         if( Yii::$app->request->get('type')=='history' )
-                            echo date('Y-m-d',$row['add_time']);
+                            echo date('Y-m-d',$row['complete_time']);//20170110修改为完成时间
                         else
                             echo ConfigBase::getFixStatus($row['status']);
                         ?></p>

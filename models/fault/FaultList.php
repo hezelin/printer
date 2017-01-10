@@ -25,9 +25,7 @@ class FaultList
         $openid = WxBase::openId($this->id);
         //$openid = Yii::$app->request->get('id');
         $model = (new \yii\db\Query())
-            ->select('t.id, t.content as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status,
-                    m.address,m.name,m.phone
-            ')
+            ->select('t.id, t.content as fault_cover,t.desc,t.type as fault_type,t.add_time,t.status, t.complete_time, m.address,m.name,m.phone')
             ->from('tbl_machine_service as t')
             ->leftJoin('tbl_rent_apply as m','m.machine_id=t.machine_id and m.status<11')
             ->where(['t.openid' => $openid]);
@@ -36,7 +34,7 @@ class FaultList
             $model = $model->andWhere(['t.status'=>8]);
         elseif( Yii::$app->request->get('type') == 'history') {                  // 历史记录状态
             $model = $model->andWhere(['t.status' => 9])
-                ->andWhere('t.complete_time > '.strtotime('-10 days'));
+                ->andWhere('t.complete_time > '.strtotime('-3 days'));//20170110修改
                 //20161227 修改 维修员只能查看最近三天历史记录
         }
         else
