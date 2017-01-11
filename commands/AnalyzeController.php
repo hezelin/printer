@@ -122,4 +122,10 @@ class AnalyzeController extends \yii\console\Controller
         $ana = new TblAnalyzeRental();
         return $ana->historyDay(-4,0);
     }
+
+    public function actionEvaluate()
+    {
+        $machine_service = new TblMachineService();
+        echo $machine_service -> autoEvaluate();
+    }
 }

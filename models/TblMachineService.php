@@ -203,5 +203,6 @@ class TblMachineService extends \yii\db\ActiveRecord
                 throw new Exception('系统出错');
             }
         }
+        return true;
     }
 }
