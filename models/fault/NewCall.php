@@ -47,8 +47,8 @@ class NewCall
                 $this->machine = null;
             }
 
-            $this->rent = TblRentApply::find()->where(['machine_id'=>$machineId,'wx_id'=>$this->wid])->one();
-            if(!$this->rent || $this->rent->status == 11)
+            $this->rent = TblRentApply::find()->where(['machine_id'=>$machineId,'wx_id'=>$this->wid,'status'=>['1','2']])->one();
+            if(!$this->rent)
             {
                 $this->tips[] = '客户资料不存在，将新建客户资料';
                 $this->rent = null;
